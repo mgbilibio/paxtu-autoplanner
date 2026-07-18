@@ -214,6 +214,13 @@ const emptyEvaluation = (): ActivityEvaluation => ({
   evidenciasSugeridas: [],
 });
 
+const resolvePlanningMode = (params: GeneratorParams): 'from_selection' | 'auto_link' => {
+  if (params.planningMode === 'from_selection' || params.planningMode === 'auto_link') {
+    return params.planningMode;
+  }
+  return (params.objectives?.length || 0) > 0 ? 'from_selection' : 'auto_link';
+};
+
 const objectivesBlock = (params: GeneratorParams): string =>
   params.objectives.map((obj, i) => {
     const codePrefix = obj.code ? `[CÓDIGO: ${obj.code}]` : `[Sem Código]`;
@@ -227,21 +234,53 @@ const objectivesBlock = (params: GeneratorParams): string =>
   }).join('\n');
 
 const commonBrief = (params: GeneratorParams & { context?: { sectionName: string; groupName: string } }): string => {
+  const mode = resolvePlanningMode(params);
   const contextStr = params.context
     ? `Seção "${params.context.sectionName}" do grupo "${params.context.groupName}".`
     : '';
-  return [
+  const theme =
+    params.narrativeTheme ||
+    (mode === 'auto_link'
+      ? 'livre — invente um tema criativo e coerente com o ramo'
+      : 'livre — invente um tema coerente com os objetivos');
+
+  const lines = [
     `Ramo: ${params.branch}.`,
     contextStr,
+    `Modo de planejamento: ${mode === 'from_selection' ? 'FROM_SELECTION (partir dos itens marcados)' : 'AUTO_LINK (criar atividades e amarrar códigos do catálogo)'}.`,
     `Duração total: ${params.totalDuration} minutos.`,
     `Quantidade sugerida de atividades: ${params.activityCount || 3}.`,
     `Quantidade de jovens (estimativa): ${params.participantsCount || 20}.`,
-    `Tema narrativo solicitado: ${params.narrativeTheme || 'livre — invente um tema coerente com os objetivos'}.`,
+    `Tema narrativo solicitado: ${theme}.`,
     params.customInstruction ? `INSTRUÇÃO ESPECIAL: ${params.customInstruction}` : '',
     '',
-    'OBJETIVOS OBRIGATÓRIOS:',
-    objectivesBlock(params),
-  ].filter(Boolean).join('\n');
+  ];
+
+  if (mode === 'from_selection') {
+    lines.push(
+      'OBJETIVOS OBRIGATÓRIOS (cada um deve ser endereçado por pelo menos uma atividade):',
+      objectivesBlock(params) || '(nenhum — invente atividades e amarre códigos se houver catálogo)',
+    );
+  } else {
+    lines.push(
+      'MODO AUTO_LINK:',
+      '- Crie atividades ricas a partir do TEMA e da INSTRUÇÃO ESPECIAL (se houver).',
+      '- Em cada atividade, preencha progressionObjective com um CÓDIGO EXATO do catálogo abaixo + descrição curta.',
+      '- Prefira códigos de progressão (B…) e especialidades que realmente encaixem na atividade.',
+      '- Se houver "preferências" abaixo, tente usá-las, mas não se limite a elas.',
+      '',
+    );
+    if (params.objectives?.length) {
+      lines.push('PREFERÊNCIAS (opcionais, priorize se couberem):', objectivesBlock(params), '');
+    }
+    if (params.catalogDigest) {
+      lines.push(params.catalogDigest);
+    } else {
+      lines.push('(Sem digest de catálogo — invente progressionObjective descritivo sem inventar códigos oficiais.)');
+    }
+  }
+
+  return lines.filter(Boolean).join('\n');
 };
 
 const SYSTEM_BASE = [
@@ -399,11 +438,14 @@ const buildSkeletonPrompt = (
 ): { system: string; user: string } => {
   const n = params.activityCount || 3;
   const manuais = buildManuaisContextForBranch(params.branch);
+  const mode = resolvePlanningMode(params);
   const system = [
     SYSTEM_BASE,
     'Você está na FASE 1: esqueleto do roteiro (sem detalhar cada atividade).',
-    'Distribua os objetivos entre as atividades. A soma de durationMinutes = duração total.',
-    'Cada activity.progressionObjective deve citar o código do objetivo (ex: B5.F2) quando houver.',
+    'A soma de durationMinutes deve ser igual à duração total.',
+    mode === 'from_selection'
+      ? 'Distribua os OBJETIVOS OBRIGATÓRIOS entre as atividades. Cada activity.progressionObjective cita o código (ex: B5.F2).'
+      : 'AUTO_LINK: invente atividades coerentes com o tema; amarre cada uma a um código EXATO do catálogo em progressionObjective.',
   ].join('\n');
 
   const user = [
@@ -586,6 +628,8 @@ export const generateScoutCycle = async (params: {
   objectives: string[];
   customInstruction?: string;
   modelId?: string;
+  planningMode?: 'from_selection' | 'auto_link';
+  catalogDigest?: string;
 }): Promise<OllamaMeetingCycle> => {
   const config = getAppConfig();
   const model = params.modelId || config?.ollamaModel || '';
@@ -598,7 +642,11 @@ export const generateScoutCycle = async (params: {
   };
 
   const n = Math.max(1, Math.min(params.meetingCount || 4, 20));
-  const objs = params.objectives.map(o => `- ${o}`).join('\n');
+  const mode =
+    params.planningMode === 'from_selection' || params.planningMode === 'auto_link'
+      ? params.planningMode
+      : ((params.objectives?.length || 0) > 0 ? 'from_selection' : 'auto_link');
+  const objs = (params.objectives || []).map(o => `- ${o}`).join('\n');
 
   // Fase A: esqueleto do ciclo
   const skeleton = await callOllamaChatForJson<{
@@ -608,16 +656,20 @@ export const generateScoutCycle = async (params: {
   }>(
     {
       model,
-      system: SYSTEM_BASE + '\nFase A: esqueleto do CICLO (só títulos e objetivos por reunião).',
+      system: SYSTEM_BASE + '\nFase A: esqueleto do CICLO (só títulos e foco/código por reunião).',
       user: [
         `Ramo: ${params.branch}. Tema do ciclo: ${params.cycleTheme}.`,
         `Quantidade de reuniões: ${n}.`,
-        'Objetivos a distribuir (não repita o mesmo em mais de 2 reuniões):',
-        objs,
+        `Modo: ${mode === 'from_selection' ? 'FROM_SELECTION' : 'AUTO_LINK'}.`,
+        mode === 'from_selection'
+          ? 'Objetivos a distribuir (não repita o mesmo em mais de 2 reuniões):'
+          : 'AUTO_LINK: invente progressão de reuniões a partir do tema; amarre cada uma a um código EXATO do catálogo.',
+        mode === 'from_selection' ? objs : (objs ? `Preferências (opcionais):\n${objs}` : ''),
+        mode === 'auto_link' && params.catalogDigest ? params.catalogDigest : '',
         params.customInstruction ? `Instrução especial: ${params.customInstruction}` : '',
         '',
         'JSON:',
-        '{"theme":"...","rational":"estratégia do ciclo","meetings":[{"theme":"...","progressionObjective":"COD","generalNotes":"1 frase"}]}',
+        '{"theme":"...","rational":"estratégia do ciclo","meetings":[{"theme":"...","progressionObjective":"COD — descrição","generalNotes":"1 frase"}]}',
       ].filter(Boolean).join('\n'),
       numPredict: 6_144,
     },
@@ -627,9 +679,13 @@ export const generateScoutCycle = async (params: {
 
   const meetingsOutline = (skeleton.meetings || []).slice(0, n);
   while (meetingsOutline.length < n) {
+    const fallbackObj =
+      params.objectives.length > 0
+        ? params.objectives[meetingsOutline.length % params.objectives.length]
+        : '';
     meetingsOutline.push({
       theme: `Reunião ${meetingsOutline.length + 1}`,
-      progressionObjective: params.objectives[meetingsOutline.length % Math.max(1, params.objectives.length)] || '',
+      progressionObjective: fallbackObj || '',
       generalNotes: '',
     });
   }
@@ -739,6 +795,10 @@ export const generateScoutPlan = async (
     notifyProgress
   );
 
+  // Alguns modelos devolvem um único objeto em activities em vez de array.
+  if (skeleton.activities && !Array.isArray(skeleton.activities)) {
+    skeleton.activities = [skeleton.activities as PlanSkeletonActivity];
+  }
   if (!skeleton.activities?.length) {
     throw new Error('O esqueleto não trouxe atividades. Tente novamente ou reduza objetivos.');
   }

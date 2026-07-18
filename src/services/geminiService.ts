@@ -232,10 +232,19 @@ export const generateScoutCycle = async (params: {
     cycleTheme: string, 
     meetingCount: number, 
     objectives: string[],
-    modelId?: string
+    modelId?: string,
+    customInstruction?: string,
+    planningMode?: 'from_selection' | 'auto_link',
+    catalogDigest?: string,
 }): Promise<MeetingCycle> => {
   const apiKey = resolveApiKey();
   if (!apiKey) throw new Error("API Key não configurada.");
+
+  const mode =
+    params.planningMode === 'from_selection' || params.planningMode === 'auto_link'
+      ? params.planningMode
+      : ((params.objectives?.length || 0) > 0 ? 'from_selection' : 'auto_link');
+  const objs = (params.objectives || []).join('\n');
 
   const prompt = `
     Você é um Chefe Escoteiro Sênior e Planejador Estratégico.
@@ -244,8 +253,10 @@ export const generateScoutCycle = async (params: {
     
     TEMA DO CICLO: ${params.cycleTheme}
     QUANTIDADE DE REUNIÕES: ${params.meetingCount}
-    OBJETIVOS:
-    ${params.objectives.join('\n')}
+    MODO: ${mode === 'from_selection' ? 'FROM_SELECTION (distribuir objetivos marcados)' : 'AUTO_LINK (criar reuniões pelo tema e amarrar códigos do catálogo)'}
+    ${mode === 'from_selection' ? `OBJETIVOS A DISTRIBUIR:\n${objs || '(nenhum)'}` : `PREFERÊNCIAS (opcionais):\n${objs || '(nenhuma)'}`}
+    ${mode === 'auto_link' && params.catalogDigest ? `\n${params.catalogDigest}\n` : ''}
+    ${params.customInstruction ? `INSTRUÇÃO ESPECIAL: ${params.customInstruction}` : ''}
 
     RETORNE APENAS JSON neste formato:
     {
@@ -286,7 +297,12 @@ export const generateScoutPlan = async (params: GeneratorParams & { context?: { 
   const ai = new GoogleGenAI({ apiKey: apiKey });
   const selectedModel = params.modelId || 'gemini-2.5-flash';
 
-  const objectivesList = params.objectives.map((obj, i) => {
+  const planningMode =
+    params.planningMode === 'from_selection' || params.planningMode === 'auto_link'
+      ? params.planningMode
+      : ((params.objectives?.length || 0) > 0 ? 'from_selection' : 'auto_link');
+
+  const objectivesList = (params.objectives || []).map((obj, i) => {
     let codePrefix = obj.code ? `[CÓDIGO: ${obj.code}]` : `[Sem Código]`;
     let richContext = "";
     if (obj.requirementsContext) richContext += `\n   ⚠️ REQUISITOS: ${obj.requirementsContext}`;
@@ -305,7 +321,7 @@ export const generateScoutPlan = async (params: GeneratorParams & { context?: { 
 
   let bibliotecaContext = '';
   const manuaisText: string[] = [];
-  params.objectives.forEach(obj => {
+  (params.objectives || []).forEach(obj => {
       if (obj.code) {
           const detail = getProgressionDetail(obj.code);
           if (detail) manuaisText.push(`[${obj.code}]: ${detail}`);
@@ -318,14 +334,29 @@ export const generateScoutPlan = async (params: GeneratorParams & { context?: { 
   let userPromptBase = `
     Planeje para o Ramo ${params.branch}.
     ${contextStr}
+    Modo: ${planningMode === 'from_selection' ? 'FROM_SELECTION (partir dos itens marcados)' : 'AUTO_LINK (criar atividades e amarrar códigos do catálogo)'}.
     Duração total: ${params.totalDuration} min.
     Quantidade sugerida de atividades: ${params.activityCount || 3}.
     Quantidade de jovens (estimativa): ${params.participantsCount || 20}.
-    Tema: ${params.narrativeTheme || "Padrão"}.
-    
-    OBJETIVOS OBRIGATÓRIOS:
-    ${objectivesList}
+    Tema: ${params.narrativeTheme || (planningMode === 'auto_link' ? 'livre — invente tema criativo' : 'Padrão')}.
   `;
+
+  if (planningMode === 'from_selection') {
+    userPromptBase += `\nOBJETIVOS OBRIGATÓRIOS:\n${objectivesList || '(nenhum)'}\n`;
+  } else {
+    userPromptBase += `
+MODO AUTO_LINK:
+- Crie atividades a partir do TEMA e da INSTRUÇÃO ESPECIAL.
+- Em cada activity.progressionObjective use um CÓDIGO EXATO do catálogo + descrição curta.
+- Prefira códigos que realmente encaixem na atividade.
+`;
+    if (objectivesList) {
+      userPromptBase += `\nPREFERÊNCIAS (opcionais):\n${objectivesList}\n`;
+    }
+    if (params.catalogDigest) {
+      userPromptBase += `\n${params.catalogDigest}\n`;
+    }
+  }
 
   if (params.referenceUrls && params.referenceUrls.length > 0) {
       userPromptBase += `\nFONTES DE REFERÊNCIA:\n${params.referenceUrls.join('\n')}`;

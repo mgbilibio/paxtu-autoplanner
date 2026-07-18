@@ -95,6 +95,40 @@ export const getPlanningCatalog = (branch: ScoutBranch, system: 'LEGACY_2020' | 
 };
 
 /**
+ * Compacta o catálogo em linhas "COD | categoria | descrição" para o LLM
+ * amarrar atividades no modo auto_link (contexto 256k+ comporta bem).
+ */
+export const buildCatalogDigest = (
+  catalog: CatalogCategory[],
+  options?: { maxItems?: number; maxDescLen?: number },
+): string => {
+  const maxItems = options?.maxItems ?? 450;
+  const maxDescLen = options?.maxDescLen ?? 90;
+  const lines: string[] = [];
+  for (const cat of catalog) {
+    const catName = (cat.name || 'Geral').slice(0, 40);
+    for (const item of cat.items || []) {
+      if (lines.length >= maxItems) break;
+      const code = (item.code || '—').trim();
+      const desc = (item.description || '')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .slice(0, maxDescLen);
+      if (!desc && code === '—') continue;
+      lines.push(`${code} | ${catName} | ${desc}`);
+    }
+    if (lines.length >= maxItems) break;
+  }
+  if (lines.length === 0) {
+    return '(Catálogo vazio para este ramo — invente atividades coerentes sem códigos.)';
+  }
+  return [
+    `CATÁLOGO DE CÓDIGOS (${lines.length} itens — use códigos EXATOS em progressionObjective quando couber):`,
+    ...lines,
+  ].join('\n');
+};
+
+/**
  * Atalho para compatibilidade legada.
  */
 export const getCatalogForSection = (branch: ScoutBranch, section?: ScoutSection | null): CatalogCategory[] => {

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { ScoutBranch, ScoutSection, ObjectiveItem, CalendarEvent, CatalogItem } from '../types';
+import { ScoutBranch, ScoutSection, ObjectiveItem, CalendarEvent, CatalogItem, PlanningMode } from '../types';
 import { MeetingCycle } from '../services/geminiService';
 import { generateScoutCycleRouted } from '../services/llmProvider';
-import { getUnifiedCatalog } from '../services/catalogService';
+import { getUnifiedCatalog, buildCatalogDigest } from '../services/catalogService';
 import { saveCalendarEventAsync } from '../services/storageService';
 import { exportCycleHtml } from '../services/cycleHtmlExport';
 import { emitProcessDone, emitProcessProgress } from '../services/processFeedbackService';
@@ -27,6 +27,7 @@ export const CyclePlanner: React.FC<Props> = ({ branch, section }) => {
   const [startDate, setStartDate] = useState(new Date().toISOString().slice(0, 10));
   const [scheduling, setScheduling] = useState(false);
   
+  const [planningMode, setPlanningMode] = useState<PlanningMode>('auto_link');
   const [selectedObjectives, setSelectedObjectives] = useState<ObjectiveItem[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState<'ALL' | 'PROG' | 'SPEC'>('ALL');
@@ -87,6 +88,10 @@ export const CyclePlanner: React.FC<Props> = ({ branch, section }) => {
     });
   };
 
+  // Load FULL catalog
+  const system = section?.progressionSystem || 'POR_2025';
+  const catalog = getUnifiedCatalog(branch, system);
+
   const regenerateMeeting = async (i: number) => {
     if (!cycle) return;
     setRegeneratingIdx(i);
@@ -100,6 +105,8 @@ export const CyclePlanner: React.FC<Props> = ({ branch, section }) => {
         cycleTheme: cycle.theme,
         meetingCount: 1,
         objectives: selectedObjectives.map(o => `${o.code}: ${o.description}`),
+        planningMode: selectedObjectives.length > 0 ? 'from_selection' : 'auto_link',
+        catalogDigest: selectedObjectives.length === 0 ? buildCatalogDigest(catalog) : undefined,
         customInstruction: `${customInstruction || ''}\n\nGere apenas 1 reunião alternativa para a posição ${i + 1} do ciclo. NÃO repita estes temas/focos das outras semanas:\n${outras}`,
       });
       if (result.meetings && result.meetings.length > 0) {
@@ -115,22 +122,33 @@ export const CyclePlanner: React.FC<Props> = ({ branch, section }) => {
     }
   };
 
-  // Load FULL catalog
-  const system = section?.progressionSystem || 'POR_2025';
-  const catalog = getUnifiedCatalog(branch, system);
-
   const handleGenerate = async () => {
-    if (!theme || selectedObjectives.length === 0) return;
+    const themeTrim = theme.trim();
+    if (!themeTrim) {
+      setError('Informe o tema do ciclo.');
+      return;
+    }
+    if (planningMode === 'from_selection' && selectedObjectives.length === 0) {
+      setError('No modo "A partir da seleção", marque ao menos um objetivo — ou use "Tema livre + amarra".');
+      return;
+    }
     setLoading(true);
     setError(null);
-    emitProcessProgress(`Gerando ciclo com ${meetingCount} reunião(ões)...`);
+    emitProcessProgress(
+      planningMode === 'auto_link'
+        ? `Gerando ciclo (tema livre + amarra) com ${meetingCount} reunião(ões)...`
+        : `Gerando ciclo a partir da seleção (${meetingCount} reunião(ões))...`
+    );
     try {
         const result = await generateScoutCycleRouted({
             branch,
-            cycleTheme: theme,
+            cycleTheme: themeTrim,
             meetingCount,
             objectives: selectedObjectives.map(o => `${o.code}: ${o.description}`),
             customInstruction: customInstruction || undefined,
+            planningMode,
+            catalogDigest:
+              planningMode === 'auto_link' ? buildCatalogDigest(catalog) : undefined,
         });
         setCycle(result);
         emitProcessDone('Ciclo gerado.');
@@ -210,7 +228,24 @@ export const CyclePlanner: React.FC<Props> = ({ branch, section }) => {
         )}
         <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 mb-8">
             <h2 className="text-2xl font-bold text-slate-800 mb-2">🗓️ Planejador de Ciclo de Programa</h2>
-            <p className="text-slate-500 mb-6">Defina o tema e os objetivos que deseja cobrir em um período de várias semanas.</p>
+            <p className="text-slate-500 mb-4">Tema do ciclo e, se quiser, objetivos. No modo livre a IA amarra progressão/especialidades sozinha.</p>
+
+            <div className="flex gap-1 p-1 bg-slate-100 rounded-xl mb-6 max-w-md">
+              <button
+                type="button"
+                onClick={() => setPlanningMode('auto_link')}
+                className={`flex-1 text-xs font-bold py-2 rounded-lg ${planningMode === 'auto_link' ? 'bg-white shadow text-indigo-700' : 'text-slate-500'}`}
+              >
+                Tema livre + amarra
+              </button>
+              <button
+                type="button"
+                onClick={() => setPlanningMode('from_selection')}
+                className={`flex-1 text-xs font-bold py-2 rounded-lg ${planningMode === 'from_selection' ? 'bg-white shadow text-green-700' : 'text-slate-500'}`}
+              >
+                A partir da seleção
+              </button>
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <div className="md:col-span-2">
@@ -241,7 +276,9 @@ export const CyclePlanner: React.FC<Props> = ({ branch, section }) => {
                 {/* Selector */}
                 <div className="space-y-4">
                     <div className="flex justify-between items-center">
-                        <h3 className="font-bold text-slate-700">🎯 Selecione os Objetivos</h3>
+                        <h3 className="font-bold text-slate-700">
+                          🎯 {planningMode === 'auto_link' ? 'Preferências (opcional)' : 'Selecione os Objetivos'}
+                        </h3>
                         {/* Filters */}
                         <div className="flex bg-slate-100 rounded p-0.5">
                             <button onClick={() => setFilterType('ALL')} className={`px-2 py-1 text-[10px] font-bold rounded ${filterType === 'ALL' ? 'bg-white shadow text-slate-800' : 'text-slate-400'}`}>TUDO</button>
@@ -308,7 +345,9 @@ export const CyclePlanner: React.FC<Props> = ({ branch, section }) => {
 
                 {/* Selected */}
                 <div className="space-y-4">
-                    <h3 className="font-bold text-slate-700">📋 Itens para o Ciclo ({selectedObjectives.length})</h3>
+                    <h3 className="font-bold text-slate-700">
+                      📋 {planningMode === 'auto_link' ? 'Preferências' : 'Itens do ciclo'} ({selectedObjectives.length})
+                    </h3>
                     <div className="flex flex-wrap gap-2 max-h-96 overflow-y-auto content-start p-2 border border-dashed rounded-lg">
                         {selectedObjectives.map(o => (
                             <div key={o.id} className="bg-indigo-100 border border-indigo-200 text-indigo-800 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-2 shadow-sm animate-fade-in">
@@ -317,9 +356,18 @@ export const CyclePlanner: React.FC<Props> = ({ branch, section }) => {
                             </div>
                         ))}
                         {selectedObjectives.length === 0 && (
-                            <div className="w-full text-center py-10 text-slate-400 italic">
-                                <span className="text-2xl block mb-2">👇</span>
-                                Nenhum objetivo selecionado.<br/>Escolha itens ao lado.
+                            <div className="w-full text-center py-10 text-slate-400 italic text-sm">
+                                {planningMode === 'auto_link' ? (
+                                  <>
+                                    <span className="text-2xl block mb-2">✨</span>
+                                    Seleção opcional. Com só o tema a IA monta o ciclo e amarra códigos.
+                                  </>
+                                ) : (
+                                  <>
+                                    <span className="text-2xl block mb-2">👇</span>
+                                    Marque objetivos ao lado para este modo.
+                                  </>
+                                )}
                             </div>
                         )}
                     </div>
@@ -341,7 +389,7 @@ export const CyclePlanner: React.FC<Props> = ({ branch, section }) => {
 
             <button
                 onClick={handleGenerate}
-                disabled={loading || !theme || selectedObjectives.length === 0}
+                disabled={loading || !theme.trim() || (planningMode === 'from_selection' && selectedObjectives.length === 0)}
                 className="w-full mt-6 py-4 bg-slate-900 text-white font-bold rounded-2xl shadow-lg hover:bg-slate-800 disabled:bg-slate-300 transition-all flex items-center justify-center gap-2"
             >
                 {loading ? '🔮 Tecendo o Ciclo...' : '🚀 Gerar Estratégia de Ciclo'}

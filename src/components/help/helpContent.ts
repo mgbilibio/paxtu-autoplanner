@@ -63,13 +63,20 @@ export const TELA_HELP: Record<string, ScreenHelp> = {
   },
   GENERATOR: {
     titulo: 'Gerar roteiro',
-    corpo: 'Monta reunião a partir de objetivos de progressão e especialidades, com avaliação e materiais.',
-    dicas: ['Selecione poucos objetivos.', 'Use tema narrativo para conectar a reunião.'],
+    corpo: 'Monta reunião com dois modos: tema livre (a IA amarra progressão/especialidades) ou a partir da seleção de itens.',
+    dicas: [
+      'Modo "Tema livre + amarra": informe o tema e gere — sem marcar catálogo.',
+      'Modo "A partir da seleção": marque poucos objetivos e a IA parte deles.',
+      'Com Ollama cloud use contexto ≥256k; a geração roda em partes.',
+    ],
   },
   CYCLE: {
     titulo: 'Ciclo',
-    corpo: 'Planejamento sequencial de reuniões com avaliação e pendências distribuídas no tempo.',
-    dicas: ['Use para evitar improviso semanal.', 'Cada semana pode registrar acompanhamento.'],
+    corpo: 'Planejamento de várias semanas. Também aceita tema livre + amarração ou distribuição a partir da seleção.',
+    dicas: [
+      'Tema livre: a IA propõe o arco e códigos do catálogo.',
+      'Ajuste o esqueleto antes de agendar na Agenda.',
+    ],
   },
   ENCYCLOPEDIA: {
     titulo: 'Especialidades',
@@ -83,8 +90,11 @@ export const TELA_HELP: Record<string, ScreenHelp> = {
   },
   PROFILE_CONFIG: {
     titulo: 'Estrutura',
-    corpo: 'Cria grupo, seção, equipes e usuários da chefia.',
-    dicas: ['A ordem é grupo, seção, equipe e usuário.', 'Sem usuário não há login operacional.'],
+    corpo: 'Cria grupo, seção, equipes e usuários. Cadastro rápido: só o nome basta; lista de patrulha/chefia em um lance.',
+    dicas: [
+      'Use ⚡ Lista rápida para colar nomes da patrulha ou da chefia.',
+      'Complete nascimento e registro depois na edição.',
+    ],
   },
   LOGIN: {
     titulo: 'Login',

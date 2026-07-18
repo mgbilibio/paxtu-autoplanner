@@ -94,6 +94,10 @@ export interface ObjectiveItem {
   requirementsContext?: string; // New: For sub-tasks context
 }
 
+/** from_selection: atividades partem dos itens marcados.
+ *  auto_link: inventa atividades (tema/instrução) e amarra códigos do catálogo depois. */
+export type PlanningMode = 'from_selection' | 'auto_link';
+
 export interface GeneratorParams {
   branch: ScoutBranch;
   totalDuration: number;
@@ -104,6 +108,10 @@ export interface GeneratorParams {
   referenceUrls?: string[];
   activityCount?: number;
   participantsCount?: number;
+  /** Padrão: from_selection se houver objetivos; senão auto_link. */
+  planningMode?: PlanningMode;
+  /** Resumo compacto do catálogo (progressão + especialidades) para amarração no modo auto_link. */
+  catalogDigest?: string;
 }
 
 export interface GroupProfile {

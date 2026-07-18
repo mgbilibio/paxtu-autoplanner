@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ScoutBranch, MeetingPlan, ObjectiveItem, CatalogAnnotation, AppConfig, UserProfile, ScoutSection, CatalogItem } from './types';
+import { ScoutBranch, MeetingPlan, ObjectiveItem, CatalogAnnotation, AppConfig, UserProfile, ScoutSection, CatalogItem, PlanningMode } from './types';
 import { BRANCHES } from './constants';
-import { getPlanningCatalog } from './services/catalogService';
+import { getPlanningCatalog, buildCatalogDigest } from './services/catalogService';
 import { generateScoutPlanRouted as generateScoutPlan, listAvailableModels as getAvailableModels, getActiveProvider, getProviderById } from './services/llmProvider';
 import { getAnnotations, saveAnnotation, getAppConfig, saveAppConfig, normalizePath, downloadProgressBackup, importProgressBackup, saveSectionAsync, getAllMemberBlocoStates, downloadLocalAppBackup, importLocalAppBackup, ensureWorkspaceMetadata, acquireSectionEditLock, releaseSectionEditLock, renewSectionEditLock, EditLock } from './services/storageService';
 import { getProgressionDetail } from './services/progressionDetailService';
@@ -52,6 +52,8 @@ function App() {
   const [narrativeTheme, setNarrativeTheme] = useState<string>('');
   const [customInstruction, setCustomInstruction] = useState<string>('');
   const [referenceUrls] = useState<string[]>([]);
+  /** from_selection = partir dos itens; auto_link = tema livre e amarra códigos. */
+  const [planningMode, setPlanningMode] = useState<PlanningMode>('auto_link');
   const [selectedObjectives, setSelectedObjectives] = useState<ObjectiveItem[]>([]);
   const [customObjective, setCustomObjective] = useState<string>('');
   const [searchTerm, setSearchTerm] = useState<string>('');
@@ -535,12 +537,40 @@ function App() {
   };
 
   const handleGenerate = async () => {
-    if (!selectedBranch) return;
+    if (!selectedBranch) {
+      showToast('Escolha o ramo antes de gerar.', 'error');
+      setError('Escolha o ramo antes de gerar.');
+      return;
+    }
     const runId = Date.now();
     generationRef.current = { id: runId, cancelled: false };
     const activeProvider = appConfig?.llmProvider || 'gemini';
-    if (activeProvider === 'gemini' && !appConfig?.apiKey) { setShowSettings(true); return; }
-    if (selectedObjectives.length === 0) { setError("Selecione itens."); return; }
+    if (activeProvider === 'gemini' && !appConfig?.apiKey) {
+      setError('Configure a chave do Gemini em Configurações.');
+      showToast('Configure a chave do Gemini.', 'error');
+      setShowSettings(true);
+      return;
+    }
+    if (activeProvider === 'ollama' && !(selectedModel || appConfig?.ollamaModel)) {
+      setError('Nenhum modelo Ollama selecionado. Escolha um modelo no topo ou em Configurações.');
+      showToast('Selecione um modelo Ollama.', 'error');
+      setShowSettings(true);
+      return;
+    }
+    const effectiveMode: PlanningMode =
+      planningMode === 'from_selection' || planningMode === 'auto_link'
+        ? planningMode
+        : (selectedObjectives.length > 0 ? 'from_selection' : 'auto_link');
+
+    if (effectiveMode === 'from_selection' && selectedObjectives.length === 0) {
+      setError('No modo "A partir da seleção", marque ao menos um item do catálogo — ou mude para "Tema livre + amarra".');
+      showToast('Selecione itens ou mude o modo de geração.', 'error');
+      return;
+    }
+    if (effectiveMode === 'auto_link' && !narrativeTheme.trim() && !customInstruction.trim() && selectedObjectives.length === 0) {
+      // Ainda permite gerar (tema livre), mas avisa que tema ajuda
+      showToast('Dica: informe um tema ou instrução para guiar a IA.', 'info');
+    }
     // Guarda final: nunca enviar valores vazios/0/negativos/NaN ao prompt da IA.
     const safeTotalDuration = clampSettingNumber(totalDuration, 120, 30, 600);
     const safeActivityCount = clampSettingNumber(activityCount, 3, 1, 10);
@@ -554,12 +584,22 @@ function App() {
     };
     const reservedMinutes = estimateOperationalMinutes(safeActivityCount, scheduleOptions);
     const coreDuration = Math.max(30, safeTotalDuration - reservedMinutes);
+    const catalogDigest =
+      effectiveMode === 'auto_link'
+        ? buildCatalogDigest(getPlanningCatalog(selectedBranch, activeGeneratorSystem))
+        : undefined;
     setLoading(true);
     setError(null);
     setLlmStartedAt(Date.now());
-    setLlmProgress(activeProvider === 'ollama'
-      ? 'Ollama: geração em partes (esqueleto → atividades → guias)…'
-      : 'Preparando prompt e chamando Gemini...');
+    setLlmProgress(
+      effectiveMode === 'auto_link'
+        ? (activeProvider === 'ollama'
+            ? 'Ollama: tema livre + amarração ao catálogo (partes)…'
+            : 'Gemini: tema livre + amarração ao catálogo…')
+        : (activeProvider === 'ollama'
+            ? 'Ollama: a partir da seleção (partes)…'
+            : 'Gemini: a partir da seleção…')
+    );
     try {
       const context = currentSection ? { sectionName: currentSection.name, groupName: appConfig?.profile?.groupName || "Grupo Escoteiro" } : undefined;
       const generatedPlan = await generateScoutPlan({ 
@@ -572,6 +612,8 @@ function App() {
           referenceUrls,
           activityCount: safeActivityCount,
           participantsCount: safeParticipantsCount,
+          planningMode: effectiveMode,
+          catalogDigest,
           context
       });
       if (!isActiveGeneration(runId)) return;
@@ -585,8 +627,10 @@ function App() {
       finishProcessFeedback('Roteiro gerado e normalizado.');
     } catch (err: any) {
       if (!isActiveGeneration(runId)) return;
-      setError(err.message);
-      setLlmProgress(`Falha na geração: ${err.message}`);
+      const msg = err?.message || String(err) || 'Falha desconhecida na geração.';
+      setError(msg);
+      setLlmProgress(`Falha na geração: ${msg}`);
+      showToast('Falha ao gerar roteiro. Veja o aviso na tela.', 'error');
     } finally {
       if (generationRef.current.id === runId) setLoading(false);
     }
@@ -1209,15 +1253,61 @@ function App() {
                         </div>
                     </div>
                     <div className="lg:col-span-4 sticky top-24 bg-white rounded-2xl shadow-xl border flex flex-col max-h-[calc(100vh-120px)] overflow-hidden">
-                        <div className="p-5 border-b bg-slate-50 font-black text-slate-800 uppercase text-xs flex justify-between items-center"><span>📋 Seleção ({selectedObjectives.length})</span>{selectedObjectives.length > 0 && <button onClick={clearSelectedObjectives} className="text-red-400 hover:text-red-600">Limpar</button>}</div>
-                        <div className="flex-1 p-4 overflow-y-auto bg-slate-50/50 custom-scrollbar">
-                            {selectedObjectives.length === 0 ? <p className="text-center text-slate-400 text-xs mt-10">Vazio</p> : 
+                        <div className="p-4 border-b bg-slate-50 shrink-0 space-y-2">
+                          <div className="flex justify-between items-center">
+                            <span className="font-black text-slate-800 uppercase text-xs">📋 Planejamento</span>
+                            {selectedObjectives.length > 0 && (
+                              <button onClick={clearSelectedObjectives} className="text-red-400 hover:text-red-600 text-[10px] font-bold">Limpar seleção</button>
+                            )}
+                          </div>
+                          <div className="flex gap-1 p-0.5 bg-slate-200/80 rounded-lg">
+                            <button
+                              type="button"
+                              onClick={() => setPlanningMode('auto_link')}
+                              className={`flex-1 text-[10px] font-bold py-1.5 rounded-md transition-all ${planningMode === 'auto_link' ? 'bg-white shadow text-indigo-700' : 'text-slate-500'}`}
+                              title="Cria atividades pelo tema e amarra códigos do catálogo"
+                            >
+                              Tema livre + amarra
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setPlanningMode('from_selection')}
+                              className={`flex-1 text-[10px] font-bold py-1.5 rounded-md transition-all ${planningMode === 'from_selection' ? 'bg-white shadow text-green-700' : 'text-slate-500'}`}
+                              title="Parte dos itens que você marcou no catálogo"
+                            >
+                              A partir da seleção
+                            </button>
+                          </div>
+                          <p className="text-[10px] text-slate-500 leading-snug">
+                            {planningMode === 'auto_link'
+                              ? 'Não precisa marcar itens. Informe tema/instrução; a IA cria atividades e vincula progressão/especialidades do catálogo.'
+                              : `Marque itens no catálogo (+). Selecionados: ${selectedObjectives.length}.`}
+                          </p>
+                        </div>
+                        <div className="flex-1 min-h-0 p-4 overflow-y-auto bg-slate-50/50 custom-scrollbar">
+                            {planningMode === 'auto_link' && selectedObjectives.length === 0 ? (
+                              <p className="text-center text-slate-400 text-xs mt-6 px-2">
+                                Seleção opcional. Você pode só preencher o tema abaixo e gerar — ou marcar preferências no catálogo.
+                              </p>
+                            ) : selectedObjectives.length === 0 ? (
+                              <p className="text-center text-slate-400 text-xs mt-10">Vazio — clique + no catálogo para incluir objetivos.</p>
+                            ) : (
                                 selectedObjectives.map(obj => (
                                     <div key={obj.id} className="bg-white p-3 rounded-lg border mb-2 flex justify-between items-start shadow-sm"><div className="flex-1"><p className="text-[9px] font-black text-gray-400 uppercase">{obj.category}</p><p className="text-xs font-bold text-slate-700">{obj.description}</p></div><button onClick={() => removeObjective(obj.id)} className="text-gray-300 hover:text-red-500 ml-2">✕</button></div>
                                 ))
-                            }
+                            )}
                         </div>
-                        <div className="p-4 border-t space-y-3">
+                        <div className="p-4 border-t space-y-3 shrink-0 overflow-y-auto max-h-[55vh] bg-white">
+                            <div>
+                              <label className="text-[10px] font-bold text-slate-500 uppercase">Tema da reunião</label>
+                              <input
+                                type="text"
+                                value={narrativeTheme}
+                                onChange={(e) => setNarrativeTheme(e.target.value)}
+                                placeholder={planningMode === 'auto_link' ? 'Ex: Noite de nós e orientação' : 'Opcional'}
+                                className="mt-1 w-full p-2 border rounded-lg text-xs bg-slate-50 outline-none"
+                              />
+                            </div>
                             <div className="grid grid-cols-3 gap-2">
                                 <div>
                                     <label className="text-[10px] font-bold text-slate-500 uppercase">Duração (min)</label>
@@ -1232,29 +1322,49 @@ function App() {
                                     <input type="number" min="1" value={participantsCount} onChange={(e) => setParticipantsCount(Number(e.target.value))} onBlur={() => setParticipantsCount(v => clampSettingNumber(v, 20, 1, 500))} className="w-full p-2 border rounded-lg text-xs bg-slate-50 outline-none" />
                                 </div>
                             </div>
-                            <div className="rounded-xl border border-indigo-100 bg-indigo-50/60 p-3 space-y-2">
-                              <div className="flex items-center justify-between gap-2">
-                                <label className="text-[10px] font-black text-indigo-800 uppercase">Horário de início/bandeira</label>
-                                <input type="time" value={scheduleStartTime} onChange={(e) => setScheduleStartTime(e.target.value || '15:30')} className="p-1 border border-indigo-200 rounded text-xs bg-white font-bold" />
+                            <details className="rounded-xl border border-indigo-100 bg-indigo-50/60 p-3">
+                              <summary className="text-[10px] font-black text-indigo-800 uppercase cursor-pointer">Horário e cerimonial</summary>
+                              <div className="mt-2 space-y-2">
+                                <div className="flex items-center justify-between gap-2">
+                                  <label className="text-[10px] font-bold text-indigo-800 uppercase">Início/bandeira</label>
+                                  <input type="time" value={scheduleStartTime} onChange={(e) => setScheduleStartTime(e.target.value || '15:30')} className="p-1 border border-indigo-200 rounded text-xs bg-white font-bold" />
+                                </div>
+                                <label className="flex items-center gap-2 text-[11px] text-slate-700 font-bold">
+                                  <input type="checkbox" checked={includeOpening} onChange={(e) => setIncludeOpening(e.target.checked)} />
+                                  IBOA e abertura da bandeira
+                                </label>
+                                <label className="flex items-center gap-2 text-[11px] text-slate-700 font-bold">
+                                  <input type="checkbox" checked={includeBreaks} onChange={(e) => setIncludeBreaks(e.target.checked)} />
+                                  Banheiro/hidratação entre atividades
+                                </label>
+                                <label className="flex items-center gap-2 text-[11px] text-slate-700 font-bold">
+                                  <input type="checkbox" checked={includeClosing} onChange={(e) => setIncludeClosing(e.target.checked)} />
+                                  Encerramento da bandeira
+                                </label>
+                                <p className="text-[10px] text-indigo-700">
+                                  Reserva: {reservedOperationalMinutes} min · miolo IA: {Math.max(30, displayTotalDuration - reservedOperationalMinutes)} min
+                                </p>
                               </div>
-                              <label className="flex items-center gap-2 text-[11px] text-slate-700 font-bold">
-                                <input type="checkbox" checked={includeOpening} onChange={(e) => setIncludeOpening(e.target.checked)} />
-                                Incluir IBOA e abertura da bandeira
-                              </label>
-                              <label className="flex items-center gap-2 text-[11px] text-slate-700 font-bold">
-                                <input type="checkbox" checked={includeBreaks} onChange={(e) => setIncludeBreaks(e.target.checked)} />
-                                Inserir banheiro e hidratação entre atividades
-                              </label>
-                              <label className="flex items-center gap-2 text-[11px] text-slate-700 font-bold">
-                                <input type="checkbox" checked={includeClosing} onChange={(e) => setIncludeClosing(e.target.checked)} />
-                                Incluir encerramento da bandeira
-                              </label>
-                              <p className="text-[10px] text-indigo-700">
-                                Reserva operacional: {reservedOperationalMinutes} min. A IA recebe {Math.max(30, displayTotalDuration - reservedOperationalMinutes)} min para o miolo.
-                              </p>
-                            </div>
+                            </details>
                             <textarea value={customInstruction} onChange={(e) => setCustomInstruction(e.target.value)} placeholder="Instruções para a IA..." className="w-full p-2 border rounded-lg text-xs bg-slate-50 outline-none" rows={2}></textarea>
-                            <button onClick={handleGenerate} disabled={loading} className={`w-full py-3 rounded-xl font-bold text-white uppercase text-xs ${loading ? 'bg-slate-400' : 'bg-green-600 hover:bg-green-700'}`}>{loading ? 'Criando...' : '✨ Gerar Roteiro'}</button>
+                            {error && (
+                              <div className="bg-red-50 border border-red-200 text-red-800 text-[11px] rounded-lg p-2 whitespace-pre-wrap" role="alert">
+                                {error}
+                              </div>
+                            )}
+                            <button
+                              type="button"
+                              onClick={handleGenerate}
+                              disabled={loading}
+                              className={`w-full py-3 rounded-xl font-bold text-white uppercase text-xs shadow-md ${loading ? 'bg-slate-400 cursor-wait' : 'bg-green-600 hover:bg-green-700'}`}
+                            >
+                              {loading ? 'Criando...' : '✨ Gerar Roteiro'}
+                            </button>
+                            {loading && (
+                              <button type="button" onClick={cancelGeneration} className="w-full py-2 text-xs font-bold text-red-600 hover:bg-red-50 rounded-lg border border-red-100">
+                                Cancelar geração
+                              </button>
+                            )}
                         </div>
                     </div>
                   </div>

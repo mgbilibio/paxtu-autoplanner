@@ -64,6 +64,8 @@ export const generateScoutCycleRouted = async (params: {
   objectives: string[];
   customInstruction?: string;
   modelId?: string;
+  planningMode?: 'from_selection' | 'auto_link';
+  catalogDigest?: string;
 }): Promise<gemini.MeetingCycle> => {
   const config = getAppConfig();
   if (config?.llmProvider !== 'ollama') {
