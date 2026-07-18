@@ -1,0 +1,5 @@
+![img-313.jpeg](img-313.jpeg)
+
+Para prevenir crueldade, as regras devem ser visíveis ("sem apelidos, sem notas, sem votos"), direito de passar, tempo por fala e roteiro de avaliação "Observei — Gostei quando — Sugiro". Os monitores apenas reconhecem comportamentos, não "aprovam".
+
+Após a realização da Corte de Honra, o jovem deve ser convidado para receber o feedback e recomendações. Educativamente é um momento essencial, pois fortalece o clima da tropa ao realizar um feedback respeitoso e orientado a ações. Além disso, para o jovem que passa por esse processo, a avaliação dos pares mostra como suas atitudes impactam o coletivo: os colegas lembram fatos, o que ele fez bem e o que pode melhorar, em situações que viveram juntos. Isso reforça a responsabilidade junto aos demais, motivada pelo reconhecimento dos amigos e orienta metas simples para o futuro. Com a mediação dos escotistas o foco fica em fatos e caminhos de melhoria, não em julgamento.

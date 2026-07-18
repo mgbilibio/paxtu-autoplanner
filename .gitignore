@@ -1,0 +1,54 @@
+# Dependencias e build
+node_modules/
+dist/
+dist-electron/
+release/
+.genkit/
+__pycache__/
+*.pyc
+
+# Cache local
+.vite/
+*.tsbuildinfo
+.claude/
+
+# Logs e temp
+dev-server.log
+dev-server.err
+_data/temp/
+_data/results/
+*.log
+
+# Backups locais (devem ir via _data/results/snapshots/)
+*.bak
+conhecimento/archive/
+conhecimento/docs/backup_*.md
+conhecimento/docs/backup_*.json
+docs/backup_*.md
+conhecimento/por/2025/*/planilha/itens/
+
+# Segredos
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/launch.json
+.idea/
+*.swp
+.DS_Store
+
+# Sistema
+Thumbs.db
+
+# Dados de runtime do usuario (NUNCA versionar)
+meusarquivospaxtu/
+
+# Arquivos de arquivo e distribuicoes locais
+release_assets/
+docs/biblioteca/*
+!docs/biblioteca/manuais_essenciais/
+!docs/biblioteca/manuais_essenciais/**
+
+# Snapshots historicos grandes (decidir caso a caso)
+_data/results/snapshots/

@@ -1,0 +1,4 @@
+[
+  { "name": "Nível Preliminar", "items": [{ "code": "PREL-EAD", "description": "Cursos EAD: Integração e Proteção.", "guidance": "Realizar no sistema oficial de ensino da UEB." }] },
+  { "name": "Nível Intermediário", "items": [{ "code": "INT-PUD", "description": "Elaborar Plano de Unidade Didática.", "guidance": "Planejamento pedagógico." }] }
+]

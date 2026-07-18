@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual Completo - Paxtu AutoPlanner v2.7</title>
+    <style>
+        :root {
+            --primary: #1e293b;
+            --secondary: #2563eb;
+            --accent: #16a34a;
+            --warning: #f59e0b;
+            --bg: #f8fafc;
+            --text: #334155;
+            --white: #ffffff;
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background: var(--bg);
+            margin: 0;
+            padding: 0;
+        }
+        /* Layout */
+        .wrapper { display: flex; min-height: 100vh; }
+        .sidebar { width: 250px; background: var(--primary); color: white; padding: 20px; position: fixed; height: 100vh; overflow-y: auto; }
+        .content { margin-left: 250px; padding: 40px; flex: 1; }
+        
+        /* Typography */
+        h1 { margin: 0 0 10px 0; font-size: 2.5rem; color: var(--primary); }
+        h2 { border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; margin-top: 40px; color: var(--secondary); }
+        h3 { color: var(--primary); margin-top: 30px; font-size: 1.3rem; display: flex; align-items: center; gap: 8px; }
+        h4 { font-size: 1rem; font-weight: bold; margin-bottom: 5px; color: #475569; }
+        p { margin-bottom: 15px; }
+
+        /* Navigation */
+        .nav-link { display: block; color: #cbd5e1; text-decoration: none; padding: 8px 0; border-bottom: 1px solid #334155; transition: 0.2s; }
+        .nav-link:hover { color: white; padding-left: 5px; }
+        .nav-title { font-weight: bold; margin-top: 20px; color: white; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; }
+
+        /* Cards & UI Elements */
+        .card { background: var(--white); border-radius: 8px; padding: 25px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid #e2e8f0; }
+        .icon { font-size: 1.5em; }
+        .key { background: #e2e8f0; padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 0.9em; border: 1px solid #cbd5e1; color: #334155; }
+        
+        /* Highlights */
+        .tip { background: #eff6ff; border-left: 4px solid var(--secondary); padding: 15px; border-radius: 0 4px 4px 0; margin: 20px 0; }
+        .warning { background: #fffbeb; border-left: 4px solid var(--warning); padding: 15px; border-radius: 0 4px 4px 0; margin: 20px 0; color: #92400e; }
+        .new-feature { background: #dcfce7; color: #166534; padding: 2px 8px; border-radius: 12px; font-size: 0.7em; font-weight: bold; text-transform: uppercase; vertical-align: middle; margin-left: 10px; }
+
+        /* Tables */
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; background: white; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+        th { background: #f1f5f9; font-weight: 600; color: var(--primary); }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <div style="font-size: 1.2rem; font-weight: bold; margin-bottom: 20px;">⚜️ AutoPlanner</div>
+        <a href="#intro" class="nav-link">Introdução</a>
+        <a href="#config" class="nav-link">Configuração Inicial</a>
+        
+        <div class="nav-title">Módulos</div>
+        <a href="#secoes" class="nav-link">Seções e Perfis</a>
+        <a href="#efetivo" class="nav-link">Efetivo & Histórico</a>
+        <a href="#gerador" class="nav-link">Criar Atividade</a>
+        <a href="#ciclo" class="nav-link">Ciclo de Programa <span class="new-feature">NOVO</span></a>
+        <a href="#calendario" class="nav-link">Calendário</a>
+        <a href="#relatorios" class="nav-link">Relatórios <span class="new-feature">NOVO</span></a>
+        
+        <div class="nav-title">Avançado</div>
+        <a href="#ia-tips" class="nav-link">Dicas para a IA</a>
+        <a href="#faq" class="nav-link">Problemas Comuns</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+        
+        <section id="intro">
+            <h1>Manual do Usuário v2.7</h1>
+            <p class="subtitle">O guia definitivo para gestão estratégica da sua tropa.</p>
+            
+            <div class="card">
+                <h3>O que é o Paxtu AutoPlanner?</h3>
+                <p>É uma ferramenta offline (seus dados ficam no seu PC) que combina <strong>Inteligência Artificial</strong> (Google Gemini) com os manuais oficiais da <strong>UEB (União dos Escoteiros do Brasil)</strong>. Ele automatiza a criação de roteiros, controla a progressão individual e ajuda o chefe a visualizar o equilíbrio das atividades.</p>
+            </div>
+        </section>
+
+        <section id="config">
+            <h2>⚙️ Configuração Inicial</h2>
+            <div class="card">
+                <p>Ao abrir o app pela primeira vez, você precisará configurar duas coisas:</p>
+                <ol>
+                    <li><strong>API Key (O Cérebro):</strong> O app precisa de uma chave gratuita do Google para "pensar". Obtenha em <a href="https://aistudio.google.com/app/apikey" target="_blank">Google AI Studio</a>.</li>
+                    <li><strong>Pasta de Dados (A Memória):</strong> Escolha uma pasta segura no seu computador (ex: Meus Documentos/Escotismo). Todos os backups, roteiros e fichas ficarão salvos lá.</li>
+                </ol>
+                <div class="tip">
+                    <strong>Dica de Segurança:</strong> Se você formatar o computador, basta copiar a pasta de dados de volta para não perder nada.
+                </div>
+            </div>
+        </section>
+
+        <section id="secoes">
+            <h2>📂 Seções e Modo Híbrido</h2>
+            <div class="card">
+                <p>O sistema permite gerenciar múltiplas seções (ex: uma Alcatéia e uma Tropa).</p>
+                <h4>Sistema de Progressão (Importante!)</h4>
+                <p>Como estamos em período de transição de regras na UEB, ao criar uma seção você deve escolher:</p>
+                <ul>
+                    <li><strong>Novo POR 2025:</strong> Usa a nova estrutura de <em>Blocos de Aprendizagem</em> (ex: Vida ao Ar Livre, Autonomia) e <em>Eixos</em>. Recomendado para grupos que já migraram.</li>
+                    <li><strong>Sistema Antigo (Legado):</strong> Usa a estrutura antiga de <em>Áreas de Desenvolvimento</em> (Físico, Intelectual, Espiritual, etc).</li>
+                </ul>
+                <p><em>Essa escolha afeta quais itens aparecem no catálogo e como a IA sugere atividades.</em></p>
+            </div>
+        </section>
+
+        <section id="efetivo">
+            <h2>👥 Efetivo e Ficha Individual</h2>
+            <p>Cadastre aqui todos os membros da seção. Isso é vital para a lista de presença e cálculo de estatísticas.</p>
+            
+            <div class="card">
+                <h3>Funcionalidades dos Ícones</h3>
+                <table>
+                    <tr>
+                        <th width="50">Ícone</th>
+                        <th>Função</th>
+                    </tr>
+                    <tr>
+                        <td>📜</td>
+                        <td><strong>Ficha de Progressão Individual:</strong> Abre o histórico completo do jovem. Aqui você marca manualmente itens que ele conquistou no passado ou fora de atividades (ex: cursos externos).</td>
+                    </tr>
+                    <tr>
+                        <td>✏️</td>
+                        <td><strong>Editar:</strong> Altera nome, registro ou patrulha.</td>
+                    </tr>
+                    <tr>
+                        <td>🗑️</td>
+                        <td><strong>Excluir:</strong> Remove o jovem (cuidado: apaga o histórico dele).</td>
+                    </tr>
+                </table>
+
+                <h3 style="margin-top:20px">Exportação para Impressão <span class="new-feature">v2.7</span></h3>
+                <p>Dentro da Ficha de Progressão (ícone 📜), clique no botão azul <strong>"🖨️ Exportar para Impressão"</strong>. O sistema gerará um arquivo HTML limpo e profissional, contendo:</p>
+                <ul>
+                    <li>Cabeçalho com dados do Grupo e do Jovem.</li>
+                    <li>Lista completa de todos os itens do Ramo, marcando com ✅ os conquistados e a data.</li>
+                    <li>Ideal para imprimir e entregar aos pais ou colocar na pasta de acompanhamento.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="gerador">
+            <h2>✨ Criar Atividade (O Gerador)</h2>
+            <p>Aqui a mágica acontece. O processo tem 3 passos:</p>
+
+            <div class="card">
+                <h3>Passo 1: Seleção de Ramo</h3>
+                <p>Escolha para qual ramo vai planejar. O sistema carregará o catálogo correspondente (2025 ou Legado, dependendo da sua seção).</p>
+            </div>
+
+            <div class="card">
+                <h3>Passo 2: Definição de Objetivos (O Prompt)</h3>
+                <p>Preencha os parâmetros para guiar a IA:</p>
+                <ul>
+                    <li><strong>Tema:</strong> A "roupagem" da atividade (ex: "Zumbis", "Olimpíadas", "Star Wars"). A IA adaptará toda a narrativa para esse tema.</li>
+                    <li><strong>Instruções Adicionais:</strong> Ordens específicas. Ex: <em>"Temos um jovem cadeirante, adapte os jogos"</em> ou <em>"Vai chover, faça atividades de sede"</em>.</li>
+                    <li><strong>URLs de Referência:</strong> Cole links de sites reais (ex: uma notícia, um tutorial de nó). A IA lerá o site e usará as informações na atividade.</li>
+                </ul>
+
+                <h4>Botão "✨ Sugerir com base na Tropa"</h4>
+                <p>Ao clicar aqui, o sistema analisa o histórico de <strong>todos</strong> os jovens cadastrados. Ele identifica quais itens a maioria <em>ainda não tem</em> e sugere 3 temas focados nessas lacunas. É a melhor forma de garantir progressão real.</p>
+            </div>
+
+            <div class="card">
+                <h3>Passo 3: O Roteiro</h3>
+                <p>O sistema gera um plano completo com:</p>
+                <ul>
+                    <li><strong>Cronograma:</strong> Minuto a minuto.</li>
+                    <li><strong>Explicação Teórica (Para o Chefe):</strong> A IA pesquisa no Google e explica a teoria por trás dos jogos (ex: como funciona a bússola).</li>
+                    <li><strong>Materiais Necessários:</strong> Lista de compras.</li>
+                </ul>
+                <p>Você pode <strong>Salvar</strong> (vai para "Meus Roteiros") ou <strong>Exportar HTML</strong> (para enviar no WhatsApp).</p>
+            </div>
+        </section>
+
+        <section id="ciclo">
+            <h2>🗓️ Planejador de Ciclo <span class="new-feature">v2.7</span></h2>
+            <div class="card">
+                <p>Use esta aba para planejamento de médio prazo (mensal ou trimestral).</p>
+                <ol>
+                    <li><strong>Defina o Tema do Ciclo:</strong> Ex: "A Conquista do Espaço".</li>
+                    <li><strong>Duração:</strong> Escolha 4, 8 ou 12 reuniões.</li>
+                    <li><strong>Selecione os Objetivos:</strong> Marque no catálogo quais itens você quer cobrir <em>ao longo de todo o ciclo</em>.</li>
+                </ol>
+                <p><strong>Resultado:</strong> A IA criará uma estratégia sequencial. Ex:</p>
+                <ul>
+                    <li><em>Semana 1:</em> Treinamento de Astronautas (Foco físico).</li>
+                    <li><em>Semana 2:</em> Construção do Foguete (Pioneirias).</li>
+                    <li><em>Semana 3:</em> Navegação Estelar (Constelações).</li>
+                </ul>
+                <p><em>Nota: O Ciclo gera a "Estratégia". Depois, você usa o Gerador individual para criar o roteiro detalhado de cada sábado baseada nessa estratégia.</em></p>
+            </div>
+        </section>
+
+        <section id="calendario">
+            <h2>📅 Calendário & Presença</h2>
+            <div class="card">
+                <p>Para que o sistema saiba quem conquistou o quê, você precisa registrar a execução.</p>
+                <ol>
+                    <li>Vá em <strong>Meus Roteiros</strong> e clique em "Agendar" num plano salvo. Escolha a data.</li>
+                    <li>Vá na aba <strong>Calendário</strong>. O evento estará lá.</li>
+                    <li>Após a atividade, clique no evento e selecione <strong>Lista de Presença</strong>.</li>
+                    <li>Marque quem foi. Ao salvar, o sistema entende que aqueles jovens cumpriram os objetivos daquela atividade e atualiza a progressão deles automaticamente.</li>
+                </ol>
+            </div>
+        </section>
+
+        <section id="relatorios">
+            <h2>📊 Relatórios e Dashboard <span class="new-feature">v2.7</span></h2>
+            <div class="card">
+                <h3>O Dashboard Visual</h3>
+                <p>No topo da aba Relatórios, você vê:</p>
+                <ul>
+                    <li><strong>Equilíbrio por Eixo:</strong> Um gráfico de barras mostrando em quais áreas a tropa está forte (ex: muito desenvolvimento Físico) e onde está fraca (ex: pouco Espiritual). Use isso para planejar o próximo ciclo!</li>
+                    <li><strong>Snapshot:</strong> Números rápidos de frequência média e itens conquistados.</li>
+                </ul>
+
+                <h3>Matriz de Competências</h3>
+                <p>Clique em "Ver Matriz Geral" para ver uma tabela gigante (Excel-style) com todos os jovens nas linhas e todos os itens nas colunas. Ótimo para encontrar quem falta "aquele item" para fechar a etapa.</p>
+            </div>
+        </section>
+
+        <section id="ia-tips">
+            <h2>🧠 Dicas para a IA (Prompting)</h2>
+            <div class="tip">
+                <p>A qualidade da resposta da IA depende da qualidade do seu pedido. Veja exemplos:</p>
+                <ul>
+                    <li><strong>Ruim:</strong> "Faça uma atividade de nós."</li>
+                    <li><strong>Bom:</strong> "Faça uma atividade de nós com tema Pirata. O vilão capturou o monitor e a tropa precisa dar nós para consertar o navio e salvá-lo."</li>
+                    <li><strong>Ótimo:</strong> "Tema Minecraft. Ensine nós. Use a URL [link-do-youtube] como referência para o nó quadrado. Instrução extra: evite jogos de correr pois está muito calor."</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="faq">
+            <h2>❓ Problemas Comuns</h2>
+            <div class="warning">
+                <strong>Erro: "API Key inválida"</strong><br>
+                Verifique se copiou a chave inteira no menu de configurações (ícone de engrenagem). Não deixe espaços em branco no final.
+            </div>
+            <div class="warning">
+                <strong>Erro: "Falha ao gerar"</strong><br>
+                Geralmente é problema de internet ou o Google Gemini está temporariamente sobrecarregado. Espere 1 minuto e tente de novo. Se pediu muitos itens de uma vez, tente pedir menos.
+            </div>
+        </section>
+
+    </div>
+</div>
+
+</body>
+</html>

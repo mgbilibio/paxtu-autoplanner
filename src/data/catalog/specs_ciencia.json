@@ -1,0 +1,380 @@
+[
+  {
+    "code": "SP-CT-ACU",
+    "description": "Acústica",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a natureza física do som e como ele se propaga em diferentes meios. 2. Definir frequência (Hz), amplitude (dB) e timbre. 3. Explicar o fenômeno do eco e da reverberação. 4. Demonstrar como funciona o isolamento acústico usando diferentes materiais. 5. Saber o que é poluição sonora e quais os limites seguros para a audição humana. 6. Explicar como o ouvido humano transforma ondas sonoras em impulsos nervosos. 7. Descrever o efeito Doppler com um exemplo do cotidiano. 8. Identificar instrumentos musicais pela sua forma de produção sonora (cordas, sopro, percussão). 9. Realizar um experimento simples que demonstre a vibração do som (ex: areia sobre membrana).",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-AER",
+    "description": "Aeronáutica",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar as quatro forças que atuam em um avião (sustentação, peso, tração e arrasto). 2. Identificar as partes principais de uma aeronave e suas superfícies de comando. 3. Conhecer o alfabeto fonético internacional (Alfa, Bravo, Charlie...). 4. Explicar como funciona um motor a reação (turbina) e um motor a pistão. 5. Identificar as marcações e luzes de pista de um aeródromo. 6. Descrever a função do controle de tráfego aéreo e das torres de controle. 7. Conhecer a história de Santos Dumont e seus inventos (14-Bis e Demoiselle). 8. Saber como ler um altímetro e uma bússola aeronáutica. 9. Visitar um aeroclube ou hangar e identificar os procedimentos de segurança.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-AGR",
+    "description": "Agricultura",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a importância da agricultura para a economia e subsistência humana. 2. Identificar os tipos de solo (arenoso, argiloso, humífero) e sua aptidão agrícola. 3. Demonstrar como preparar um canteiro: limpeza, revolvimento e adubação. 4. Explicar a diferença entre sementes orgânicas, híbridas e transgênicas. 5. Saber identificar 5 pragas comuns e propor métodos de controle biológico. 6. Demonstrar o ciclo completo de uma cultura (plantio, trato e colheita). 7. Explicar a técnica de rotação de culturas e por que ela evita o esgotamento do solo. 8. Conhecer as principais ferramentas agrícolas e como mantê-las (enxada, ancinho, semeadeira). 9. Visitar uma pequena propriedade agrícola ou horta comunitária e relatar o manejo.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-AGRM",
+    "description": "Agrimensura",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar o que faz um agrimensor e a importância da medição de terras. 2. Demonstrar como usar uma trena e um nível de mangueira para medir um terreno. 3. Saber o que é um teodolito (ou estação total) e como ele mede ângulos e distâncias. 4. Desenhar o croqui de um terreno de pelo menos 100m² com as medidas perimetrais. 5. Explicar o conceito de escala em mapas e plantas (ex: 1:100, 1:500). 6. Saber calcular a área de polígonos simples (quadrados, retângulos, triângulos). 7. Explicar o que é o Georreferenciamento e como o GPS é usado na agrimensura moderna. 8. Conhecer a diferença entre rumo e azimute na demarcação de divisas. 9. Identificar marcos de divisa e explicar as leis sobre limites de propriedade.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-ANA",
+    "description": "Anatomia",
+    "guidance": "Consultar manual.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-ANT",
+    "description": "Antropologia",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar o conceito de cultura e como ela influencia o comportamento humano. 2. Diferenciar Antropologia Física de Antropologia Social e Cultural. 3. Descrever o processo de evolução humana (Hominização) e as principais descobertas fósseis. 4. Realizar uma pesquisa sobre a organização social de um povo não ocidental. 5. Explicar o que é etnocentrismo e como combatê-lo através do relativismo cultural. 6. Conhecer o trabalho de um antropólogo famoso (ex: Claude Lévi-Strauss ou Darcy Ribeiro). 7. Identificar os ritos de passagem em diferentes culturas e compará-los com a vida escoteira. 8. Debater sobre o impacto da globalização nas culturas tradicionais. 9. Realizar uma observação participante em um evento cultural diferente do seu habitual.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-AST",
+    "description": "Astronomia",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Identificar as fases da Lua e explicar o ciclo lunar. 2. Localizar o Cruzeiro do Sul e o Norte Geográfico pelas estrelas. 3. Identificar pelo menos 5 constelações visíveis na sua região. 4. Explicar a diferença entre estrelas, planetas e satélites. 5. Conhecer a história de um grande astrônomo. 6. Demonstrar o uso básico de um telescópio ou binóculo astronômico. 7. Explicar o que são eclipses solares e lunares. 8. Saber identificar os planetas visíveis a olho nu no céu noturno. 9. Explicar o conceito de anos-luz e a escala do universo.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-BIO",
+    "description": "Biologia",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a Teoria Celular e a diferença entre células procariontes e eucariontes. 2. Identificar as principais organelas celulares e suas funções básicas. 3. Descrever os processos de Mitose e Meiose e sua importância para a vida. 4. Explicar o conceito de ecossistema, bioma e biosfera. 5. Realizar um experimento simples de extração de DNA (ex: de morango ou banana). 6. Conhecer a classificação dos seres vivos nos 5 Reinos de Whittaker. 7. Explicar a importância da biodiversidade para o equilíbrio planetário. 8. Identificar 5 tipos de tecidos do corpo humano. 9. Debater sobre o impacto das atividades humanas na extinção de espécies.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-BIOQ",
+    "description": "Bioquímica",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar o papel das proteínas, carboidratos e lipídios no metabolismo humano. 2. Descrever a função das enzimas como catalisadores biológicos. 3. Explicar o processo de respiração celular e a produção de ATP. 4. Saber o que é o metabolismo basal e como ele é calculado. 5. Demonstrar a presença de amido em alimentos usando teste de iodo. 6. Explicar a importância do equilíbrio ácido-base (pH) no sangue humano. 7. Conhecer o papel dos hormônios na regulação das funções corporais. 8. Descrever como a insulina atua no transporte de glicose. 9. Relatar sobre os riscos do uso de anabolizantes e substâncias sintéticas no corpo.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-BOT",
+    "description": "Botânica",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar as partes de uma planta e suas funções (raiz, caule, folha, flor, fruto). 2. Identificar 10 espécies de árvores ou plantas nativas da sua região. 3. Explicar o processo de fotossíntese de forma simples. 4. Fazer uma coleção de 10 folhas diferentes, identificando-as (herbário). 5. Demonstrar como realizar uma enxertia ou polinização manual. 6. Explicar a importância das abelhas e pássaros na reprodução das plantas. 7. Cultivar uma planta a partir da semente e registrar seu crescimento. 8. Diferenciar plantas monocotiledôneas de dicotiledôneas. 9. Conhecer 3 plantas medicinais e seus usos tradicionais seguros.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-CAR",
+    "description": "Cartografia",
+    "guidance": "Consultar manual.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-CLIM",
+    "description": "Climatologia",
+    "guidance": "Consultar manual.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-ECO",
+    "description": "Ecologia",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar o que é um ecossistema e dar exemplos locais. 2. Identificar 5 problemas ambientais na sua cidade e sugerir soluções. 3. Conhecer o ciclo da água e o impacto da poluição nos rios. 4. Realizar uma coleta seletiva em casa ou na sede por um mês. 5. Explicar o que é efeito estufa e aquecimento global. 6. Identificar 3 espécies de fauna ou flora ameaçadas de extinção no Brasil. 7. Visitar um parque ambiental ou reserva e relatar a experiência. 8. Saber como fazer compostagem doméstica. 9. Organizar uma campanha de redução de plástico na sua seção.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-EST",
+    "description": "Estatística",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar os conceitos de média, mediana e moda. 2. Diferenciar população de amostra em uma pesquisa estatística. 3. Coletar dados de frequência da sua patrulha e criar um gráfico de barras. 4. Explicar o que é a margem de erro e o nível de confiança em pesquisas. 5. Saber interpretar gráficos de pizza, linhas e histogramas. 6. Explicar a importância da estatística na tomada de decisões governamentais. 7. Demonstrar como calcular a porcentagem de crescimento de um dado. 8. Identificar possíveis fontes de viés em uma coleta de dados. 9. Realizar um censo simples sobre as especialidades conquistadas no seu grupo.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-FIS",
+    "description": "Física",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Demonstrar conhecimento sobre as 3 Leis de Newton com exemplos práticos. 2. Explicar a diferença entre massa e peso. 3. Saber as formas de transmissão de calor: condução, convecção e irradiação. 4. Explicar o princípio da reflexão e refração da luz. 5. Demonstrar o funcionamento de uma alavanca e identificar os tipos (interfixa, etc). 6. Explicar o conceito de pressão e como ele se aplica à hidráulica. 7. Realizar um experimento sobre eletricidade estática. 8. Conhecer a diferença entre energias renováveis e não renováveis sob a ótica física. 9. Descrever a relação entre velocidade, tempo e aceleração em um percurso.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-GEM",
+    "description": "Gemologia",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a diferença entre pedras preciosas, semipreciosas (termo obsoleto) e gemas sintéticas. 2. Identificar as 4 características de avaliação de um diamante (4 Cs: Carat, Cut, Color, Clarity). 3. Saber usar uma lupa de 10x e um refratômetro para análise básica. 4. Identificar 5 tipos de lapidações clássicas (ex: Brilhante, Esmeralda, Gota). 5. Conhecer as principais gemas encontradas no Brasil e suas regiões produtoras. 6. Explicar o que são inclusões e como elas ajudam a identificar a origem da gema. 7. Saber a diferença entre gemas orgânicas (Pérola, Âmbar) e minerais. 8. Descrever o processo de tratamento de gemas (aquecimento, irradiação). 9. Conhecer a escala de dureza de Mohs aplicada especificamente a gemas.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-GEN",
+    "description": "Genética",
+    "guidance": "Consultar manual.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-GEOG",
+    "description": "Geografia",
+    "guidance": "Consultar manual.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-GEOL",
+    "description": "Geologia",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Identificar e classificar 10 tipos diferentes de rochas e minerais. 2. Explicar a Teoria da Tectônica de Placas e como ocorrem os terremotos. 3. Descrever o ciclo das rochas (magmáticas, sedimentares e metamórficas). 4. Localizar em um mapa as principais bacias sedimentares do Brasil. 5. Explicar como se formam os fósseis e qual sua importância para a ciência. 6. Identificar as camadas da Terra (crosta, manto e núcleo) e suas características. 7. Conhecer os processos de erosão e como prevenir o assoreamento de rios. 8. Explicar como se formam as cavernas e formações calcárias (estalagmites/tites). 9. Demonstrar o uso de uma escala de dureza de Mohs.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-HID",
+    "description": "Hidrologia",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar o ciclo hidrológico detalhado (evapotranspiração, condensação, etc). 2. Saber o que é um aquífero e citar a importância do Aquífero Guarani. 3. Identificar as fontes de contaminação de lençóis freáticos na sua região. 4. Demonstrar como medir a vazão de um pequeno riacho de forma artesanal. 5. Explicar o funcionamento de uma bacia de retenção de águas pluviais. 6. Conhecer as leis de proteção de mananciais. 7. Saber como tratar água para consumo humano em situações de emergência. 8. Descrever o impacto das barragens no ecossistema de um rio. 9. Propor uma ação de limpeza ou recuperação de uma margem de rio local.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-ICT",
+    "description": "Ictiologia",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a anatomia externa e interna de um peixe ósseo. 2. Diferenciar peixes ósseos de peixes cartilaginosos (ex: tubarões e raias). 3. Identificar 10 espécies de peixes nativos do Brasil e seus habitats. 4. Explicar como funciona a respiração branquial e a bexiga natatória. 5. Descrever o ciclo reprodutivo dos peixes e o fenômeno da piracema. 6. Saber as leis de pesca e a importância do tamanho mínimo de captura. 7. Identificar as principais ameaças aos ecossistemas de água doce e salgada. 8. Conhecer 3 espécies de peixes ameaçadas de extinção no Brasil. 9. Explicar a importância econômica e ecológica da pesca sustentável.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-INV",
+    "description": "Invenção",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar o processo de registro de uma patente no INPI. 2. Desenvolver um protótipo funcional para resolver um problema cotidiano do grupo. 3. Documentar todas as etapas da criação (desenhos, falhas, correções). 4. Pesquisar a biografia de um inventor que mudou o mundo. 5. Explicar a diferença entre descoberta e invenção. 6. Utilizar materiais recicláveis para construir uma engenhoca útil. 7. Saber o que é o 'design thinking' aplicado à criação de soluções. 8. Apresentar sua invenção para a seção explicando seu funcionamento técnico. 9. Explicar a importância da criatividade aliada à funcionalidade.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-MAT",
+    "description": "Matemática",
+    "guidance": "Consultar manual.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-MET",
+    "description": "Meteorologia",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Interpretar uma carta sinótica e identificar frentes e centros de pressão. 2. Explicar como se formam tornados, furacões e ciclones extratropicais. 3. Saber usar e calibrar um higrômetro e um anemômetro. 4. Descrever o fenômeno El Niño e La Niña e suas consequências no Brasil. 5. Explicar a formação do orvalho, geada e nevoeiro. 6. Identificar sinais naturais de mudança de tempo (comportamento animal, nuvens). 7. Saber ler imagens de satélite meteorológico em tempo real. 8. Explicar o efeito da altitude na pressão atmosférica e temperatura. 9. Realizar registros meteorológicos diários por duas semanas consecutivas.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-MIC",
+    "description": "Microbiologia",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar o que são microrganismos e citar os 4 grandes grupos (bactérias, fungos, vírus e protozoários). 2. Identificar as partes de um microscópio óptico e demonstrar seu uso correto. 3. Saber preparar uma lâmina simples para observação (ex: gota de água de poça). 4. Explicar o papel dos microrganismos na decomposição e no ciclo do nitrogênio. 5. Conhecer o trabalho de Louis Pasteur e Robert Koch. 6. Demonstrar como fazer uma cultura de fungos (bolor) em pão de forma segura. 7. Explicar a diferença entre microrganismos patogênicos e benéficos (ex: iogurte, pão). 8. Saber as normas de assepsia e esterilização em laboratório. 9. Descrever como os antibióticos atuam e o perigo da automedicação.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-MIN",
+    "description": "Mineralogia",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a estrutura cristalina dos minerais e os 7 sistemas de cristalização. 2. Identificar as propriedades físicas dos minerais: traço, brilho, clivagem e densidade. 3. Realizar o teste do traço em uma placa de porcelana com 3 minerais diferentes. 4. Saber identificar minerais através da reação com ácidos simples (ex: Calcário e HCl). 5. Explicar a diferença entre mineral, rocha e minério. 6. Descrever os processos de formação mineral: magmático, sedimentar e metamórfico. 7. Conhecer a importância econômica de 3 minerais estratégicos para o Brasil (ex: Nióbio, Ferro, Grafeno). 8. Identificar minerais fluorescentes sob luz ultravioleta. 9. Organizar uma caixa de minerais catalogada com local de coleta e propriedades.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-OCN",
+    "description": "Oceanologia",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a formação das bacias oceânicas e a deriva continental. 2. Identificar 5 tipos de sedimentos marinhos e sua origem. 3. Descrever o funcionamento de um sonar e sua utilidade na cartografia submarina. 4. Explicar como a temperatura e a salinidade afetam a densidade da água do mar. 5. Conhecer a importância dos manguezais para a preservação das costas. 6. Descrever o fenômeno da ressurgência e sua importância para a pesca. 7. Identificar em uma carta náutica as profundidades e tipos de fundo de uma região. 8. Explicar o impacto do lixo plástico na fauna marinha profunda. 9. Conhecer o trabalho de uma expedição científica oceanográfica moderna.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-OPT",
+    "description": "Óptica",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar as leis da reflexão e refração da luz. 2. Identificar a diferença entre lentes convergentes e divergentes. 3. Demonstrar como funciona um microscópio ou telescópio simples. 4. Explicar o fenômeno da decomposição da luz (prisma e arco-íris). 5. Saber como corrigir miopia, hipermetropia e astigmatismo através de lentes. 6. Demonstrar o funcionamento de uma 'Câmera Escura'. 7. Conhecer a velocidade da luz e como ela varia em diferentes meios. 8. Explicar o que são fibras ópticas e suas aplicações modernas. 9. Saber como limpar e conservar óculos, binóculos e lentes fotográficas.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-ORN",
+    "description": "Ornitologia",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a importância das aves no equilíbrio do ecossistema (dispersão de sementes, controle de pragas). 2. Identificar 10 espécies de aves comuns em sua região por aparência e, pelo menos 3, pelo canto. 3. Saber usar corretamente binóculos e guias de campo para observação. 4. Explicar a anatomia básica de uma ave e como suas penas e bicos se adaptam à alimentação. 5. Montar e manter um bebedouro ou comedouro para aves, registrando as visitas por 15 dias. 6. Conhecer as rotas migratórias de pelo menos duas espécies que passam pelo Brasil. 7. Saber como agir ao encontrar uma ave ferida ou um filhote fora do ninho. 8. Descrever a diferença entre aves rapinantes, psitacídeos e passeriformes. 9. Realizar um 'check-list' de aves observadas em um parque local usando aplicativos como eBird ou WikiAves.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-PAL",
+    "description": "Paleontologia",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar os diferentes processos de fossilização (permineralização, moldagem, carbonização). 2. Identificar 5 tipos de fósseis de invertebrados (aminites, trilobitas, etc.) e sua idade aproximada. 3. Descrever a evolução da vida na Terra desde os estromatólitos até a megafauna pleistocênica. 4. Explicar a importância dos fósseis guias para a datação relativa de rochas. 5. Saber como é feita a preparação e limpeza de um fóssil em laboratório. 6. Conhecer um sítio paleontológico brasileiro importante (ex: Bacia do Araripe ou Geoparque Paleorrota). 7. Diferenciar fósseis corporais de icnofósseis (pegadas, tocas, coprólitos). 8. Explicar as principais teorias sobre as grandes extinções em massa. 9. Saber as leis brasileiras que protegem o patrimônio fossilífero (fósseis são propriedade da União).",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-QUI",
+    "description": "Química",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a diferença entre fenômenos físicos e químicos. 2. Realizar 3 experimentos simples que demonstrem reações químicas. 3. Conhecer as normas de segurança em laboratório e uso de EPIs. 4. Identificar os estados físicos da matéria e como ocorrem as mudanças. 5. Explicar o que é o pH e testar o pH de 3 substâncias caseiras. 6. Identificar símbolos de perigo em rótulos de produtos químicos domésticos. 7. Conhecer a Tabela Periódica e identificar 5 elementos comuns (H, O, C, N, Fe). 8. Explicar como funcionam os extintores de incêndio químicos. 9. Descrever o processo de tratamento de água de sua cidade.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-SIS",
+    "description": "Sismologia",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a causa dos terremotos e o movimento das placas tectônicas. 2. Identificar a diferença entre hipocentro e epicentro. 3. Saber como funciona um sismógrafo e como ler um sismograma. 4. Diferenciar a Escala Richter (magnitude) da Escala Mercalli (intensidade). 5. Explicar o que são tsunamis e como eles se originam de sismos. 6. Conhecer as normas de segurança e construção antissísmica. 7. Identificar as principais zonas sísmicas do mundo e do Brasil. 8. Explicar o conceito de ondas P, ondas S e ondas de superfície. 9. Realizar um plano de emergência familiar para casos de tremores de terra.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-TAX",
+    "description": "Taxidermia",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a finalidade da taxidermia para a ciência e educação ambiental. 2. Conhecer as leis ambientais brasileiras sobre a coleta de animais (apenas animais de morte natural ou atropelados com autorização). 3. Identificar os materiais: bisturis, conservantes (bórax), algodão e arames. 4. Demonstrar conhecimento sobre a anatomia básica do grupo escolhido (ex: aves ou pequenos mamíferos). 5. Saber como realizar a retirada da pele (esfolamento) preservando penas ou pelos. 6. Explicar o processo de curtimento e preservação da pele. 7. Demonstrar como montar o manequim interno mantendo as proporções reais. 8. Saber como realizar o acabamento dos olhos e bico para um aspecto natural. 9. Organizar uma pequena aula sobre conservação baseada no exemplar montado.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-VET",
+    "description": "Veterinária",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Identificar as principais zoonoses e como prevenir o contágio. 2. Explicar a função do médico veterinário na saúde pública e inspeção de alimentos. 3. Demonstrar conhecimento sobre o sistema digestório de ruminantes vs monogástricos. 4. Saber como realizar a contenção segura de animais domésticos para exames. 5. Explicar o ciclo de vida e prevenção de endo e ectoparasitas comuns. 6. Conhecer o calendário básico de vacinação para cães e gatos. 7. Demonstrar como verificar a temperatura, pulso e respiração de um animal. 8. Explicar a importância da castração precoce para o controle populacional. 9. Visitar uma clínica veterinária e descrever os equipamentos básicos observados.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-ZBT",
+    "description": "Zoobotânica",
+    "guidance": "Consultar manual.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-ZOO",
+    "description": "Zoologia",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a classificação básica do Reino Animal (Invertebrados e Vertebrados). 2. Identificar 5 animais de cada classe: Mamíferos, Aves, Répteis, Anfíbios e Peixes. 3. Explicar o ciclo de vida de um animal (Ex: metamorfose da borboleta ou sapo). 4. Identificar sinais de presença de animais na natureza (pegadas, fezes, tocas). 5. Descrever a cadeia alimentar de um ecossistema que você visitou. 6. Explicar o conceito de animais ectotérmicos e endotérmicos. 7. Conhecer os principais órgãos e sistemas de um mamífero. 8. Relatar como o comportamento animal ajuda na sobrevivência da espécie. 9. Identificar 3 animais peçonhentos da sua região e como evitar acidentes.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-ZOT",
+    "description": "Zootecnia",
+    "guidance": "Consultar manual.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-AEROM",
+    "description": "Aeromodelismo",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a diferença entre aeromodelos de voo livre, VCC (Voo Controlado a Cabos) e rádio-controlados. 2. Identificar as partes de um motor a explosão (glow) e de um motor elétrico (brushless) para aeromodelos. 3. Demonstrar como realizar a linkagem correta dos servos com as superfícies de comando. 4. Explicar o que é o Centro de Gravidade (CG) e por que ele é crítico para o voo. 5. Construir um aeromodelo básico a partir de planta (madeira balsa ou depron) que voe com estabilidade. 6. Demonstrar domínio básico de pilotagem em simulador ou campo de voo (decolagem, circuito e pouso). 7. Saber como balancear uma hélice e explicar os perigos de uma hélice danificada. 8. Conhecer as normas da ANAC e do DECEA (ICA 100-40) para o uso de aeromodelos no Brasil. 9. Explicar o funcionamento das baterias LiPo e os cuidados especiais em sua carga e armazenamento.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-BOR",
+    "description": "Tec. Borracha",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a origem da borracha natural e o processo de sangria da seringueira. 2. Descrever o processo de vulcanização e sua importância para a indústria. 3. Identificar a diferença entre borracha natural e borrachas sintéticas (elastômeros). 4. Explicar o que é o látex e como ele é estabilizado para transporte. 5. Identificar 5 produtos de borracha usados no dia a dia e suas funções. 6. Descrever o processo de reciclagem de pneus e o conceito de logística reversa. 7. Conhecer a história do Ciclo da Borracha na Amazônia brasileira. 8. Explicar como a temperatura afeta as propriedades elásticas da borracha. 9. Demonstrar conhecimento sobre o uso da borracha em isolamentos elétricos e térmicos.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-CEL",
+    "description": "Tec. Celulose",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar o que é a celulose e em quais partes dos vegetais ela é encontrada. 2. Descrever o processo industrial de fabricação do papel a partir da madeira. 3. Diferenciar os processos Kraft e Sulfito na produção de polpa de celulose. 4. Identificar a função da lignina e como ela é removida no processo químico. 5. Explicar a importância do reflorestamento sustentável (Eucalipto e Pinus) para a indústria. 6. Demonstrar como é feito o branqueamento da celulose e os cuidados ambientais. 7. Saber a diferença entre papel, papelão e papéis especiais (ex: térmico). 8. Explicar o ciclo de reciclagem do papel e quantas vezes as fibras podem ser reutilizadas. 9. Realizar a produção artesanal de uma folha de papel reciclado em casa ou na sede.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-CON",
+    "description": "Construção Civil",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Identificar as etapas de uma obra: fundação, estrutura, alvenaria e acabamento. 2. Saber ler e interpretar uma planta baixa residencial simples. 3. Explicar a função de sapatas, vigas e pilares em uma edificação. 4. Demonstrar conhecimento sobre a mistura correta de concreto e argamassa. 5. Identificar as ferramentas: betoneira, vibrador, talhadeira e colher de pedreiro. 6. Explicar a importância do uso de EPIs e sinalização em canteiros de obra. 7. Conhecer os diferentes tipos de telhados e sistemas de drenagem pluvial. 8. Saber como funciona a instalação elétrica e hidráulica básica de uma parede. 9. Explicar o conceito de construção sustentável e uso de materiais reciclados.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-ELE",
+    "description": "Eletricidade",
+    "guidance": "Consultar manual.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-ELT",
+    "description": "Eletrônica",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Identificar e testar componentes passivos e ativos (resistores, capacitores, transistores, diodos). 2. Saber ler o código de cores de resistores e valores de capacitores. 3. Demonstrar habilidade em soldagem e dessoldagem de componentes em placas (PCB). 4. Explicar o funcionamento de um transistor como chave e como amplificador. 5. Montar um circuito prático usando uma 'Protoboard' e explicar sua lógica. 6. Saber usar um multímetro para medir tensão, corrente e resistência. 7. Explicar o funcionamento básico de um circuito integrado (CI) temporizador 555. 8. Demonstrar conhecimento sobre fontes de alimentação e reguladores de tensão. 9. Desenhar um esquema eletrônico simples usando software ou papel técnico.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-ENR",
+    "description": "Energias Renováveis",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Diferenciar fontes de energia renováveis de não-renováveis. 2. Explicar o funcionamento das energias: solar, eólica, biomassa e maremotriz. 3. Identificar as vantagens ambientais e econômicas da transição energética. 4. Demonstrar como funciona uma célula de hidrogênio verde (teórico). 5. Conhecer os principais parques eólicos ou solares em operação no Brasil. 6. Saber como reduzir o desperdício de energia em casa e no grupo escoteiro. 7. Explicar o conceito de 'matriz energética' e sua composição atual no país. 8. Demonstrar o funcionamento de um pequeno gerador eólico caseiro ou experimental. 9. Debater sobre o impacto social das grandes hidrelétricas vs geração distribuída.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-NUC",
+    "description": "Energia Nuclear",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a diferença entre fissão e fusão nuclear. 2. Identificar os componentes de um reator nuclear e o papel do moderador. 3. Conhecer a história das usinas nucleares de Angra dos Reis (Angra 1 e 2). 4. Explicar o que é radioatividade e identificar os símbolos de perigo biológico. 5. Saber como é feito o descarte seguro e armazenamento do lixo atômico. 6. Conhecer as aplicações da energia nuclear na medicina (radioterapia/exames). 7. Debater sobre a segurança nuclear após os eventos de Chernobyl e Fukushima. 8. Explicar o conceito de meia-vida de um elemento radioativo. 9. Descrever a função do urânio enriquecido no ciclo do combustível nuclear.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-ENG",
+    "description": "Engenharia",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a diferença entre as principais áreas da engenharia (Civil, Mecânica, Elétrica, Química). 2. Descrever o que é a análise de viabilidade técnica e econômica de um projeto. 3. Demonstrar como ler uma planta de situação e um corte técnico simples. 4. Explicar a importância da norma de desempenho nas construções modernas. 5. Realizar o cálculo de carga básica para uma estrutura simples (ex: prateleira ou banco). 6. Conhecer a função do CREA e a importância da ART (Anotação de Responsabilidade Técnica). 7. Explicar o conceito de prototipagem e a importância dos testes de estresse. 8. Visitar uma obra ou planta industrial e relatar os sistemas de segurança observados. 9. Saber como utilizar softwares de desenho assistido por computador (CAD).",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-ESP",
+    "description": "Engenharia Espacial",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar as Leis de Kepler e como elas regem o movimento dos planetas. 2. Descrever o funcionamento de um foguete de múltiplos estágios. 3. Conhecer a história das missões Apollo e a chegada do homem à Lua. 4. Explicar como os satélites permanecem em órbita (velocidade orbital). 5. Identificar os principais componentes de um traje espacial e sua função. 6. Descrever os desafios da vida em ambiente de microgravidade (ISS). 7. Explicar a diferença entre órbitas polares, geoestacionárias e de baixa altitude. 8. Saber como são obtidas as imagens de telescópios espaciais como o James Webb. 9. Montar e lançar um foguete de garrafa pet ou kit educacional com sucesso.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-FER",
+    "description": "Ferromodelismo",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a história das ferrovias no Brasil e sua importância econômica. 2. Identificar as principais escalas de ferromodelismo (HO, N, Z, G) e suas proporções. 3. Demonstrar como assentar trilhos e realizar a alimentação elétrica (DC ou DCC) de uma maquete. 4. Explicar o funcionamento de um decodificador digital (DCC) e suas vantagens. 5. Construir um elemento de cenário (prédio, ponte ou vegetação) usando técnicas de 'scratch building'. 6. Realizar a manutenção básica de uma locomotiva (limpeza de rodas e lubrificação de engrenagens). 7. Saber como projetar um diagrama de trilhos (layout) que permita manobras e circulação. 8. Demonstrar conhecimento sobre o material rodante: tipos de vagões e locomotivas (vapor, diesel, elétrica). 9. Organizar uma operação ferroviária simulada com horários e ordens de serviço.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-FOG",
+    "description": "Foguetismo",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar as leis de movimento de Newton aplicadas ao lançamento de foguetes. 2. Identificar as partes de um foguete: ogiva, corpo, empenas e motor. 3. Demonstrar como construir e lançar um foguete de garrafa PET (água e ar). 4. Saber calcular o centro de pressão (CP) e o centro de massa (CM) para estabilidade. 5. Explicar o funcionamento de motores a propelente sólido e líquido. 6. Conhecer a história do programa espacial brasileiro e a base de Alcântara. 7. Saber usar inclinômetros para calcular a altitude máxima atingida (apogeu). 8. Explicar a importância da recuperação por paraquedas para a integridade do foguete. 9. Conhecer as normas de segurança para lançamentos em áreas abertas.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-HIDR",
+    "description": "Hidráulica",
+    "guidance": "Consultar manual.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-INF",
+    "description": "Informática",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Identificar os principais componentes de hardware de um PC. 2. Instalar e configurar um sistema operacional ou software útil. 3. Demonstrar como usar ferramentas de escritório (texto, planilha). 4. Explicar os riscos de vírus e como manter o computador seguro. 5. Demonstrar como fazer backup de arquivos importantes na nuvem. 6. Realizar uma pesquisa avançada na internet sobre um tema escoteiro. 7. Criar uma apresentação digital para a sua patrulha. 8. Saber como identificar 'fake news' e fontes não confiáveis. 9. Explicar o que é LGPD e a importância da privacidade digital.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-MEC",
+    "description": "Mecânica",
+    "guidance": "Consultar manual.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-MEA",
+    "description": "Mecânica Aérea",
+    "guidance": "Consultar manual.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-METL",
+    "description": "Metalurgia",
+    "guidance": "Consultar manual.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-MTR",
+    "description": "Motorista",
+    "guidance": "Consultar manual.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-NAV",
+    "description": "Navegação Aérea",
+    "guidance": "Consultar manual.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-RAD",
+    "description": "Radioamadorismo",
+    "guidance": "Consultar manual.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-ROB",
+    "description": "Robótica",
+    "guidance": "Consultar manual.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-SID",
+    "description": "Siderurgia",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Descrever o processo de transformação do minério de ferro em aço. 2. Explicar o funcionamento de um alto-forno e a função do coque e do calcário. 3. Identificar a diferença entre ferro fundido e aço doce. 4. Conhecer os principais tipos de produtos siderúrgicos (vergalhões, chapas, perfis). 5. Explicar o impacto ambiental da indústria siderúrgica e as tecnologias de redução de danos. 6. Descrever o processo de laminação a quente e a frio. 7. Saber identificar as propriedades do aço: resistência à tração, dureza e elasticidade. 8. Conhecer a história de uma grande siderúrgica brasileira (ex: CSN ou Gerdau). 9. Explicar a importância da sucata metálica no processo de reciclagem siderúrgica.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-TEL",
+    "description": "Telecomunicações",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar como funciona a transmissão de dados via fibra óptica vs satélite. 2. Identificar os componentes de uma rede Wi-Fi doméstica e como protegê-la. 3. Conhecer a evolução das redes móveis (3G, 4G, 5G) e suas principais diferenças. 4. Explicar o que é o espectro eletromagnético e como as frequências são distribuídas. 5. Saber como crimpar um cabo de rede (RJ45) seguindo o padrão T568A ou T568B. 6. Demonstrar conhecimento sobre o funcionamento da telefonia IP (VoIP). 7. Explicar o papel da ANATEL na regulação das telecomunicações no Brasil. 8. Saber como realizar um teste de velocidade e interpretar latência (ping) e jitter. 9. Descrever como os cabos submarinos conectam os continentes.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-TEX",
+    "description": "Tec. Têxtil",
+    "guidance": "Consultar manual.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-TOP",
+    "description": "Topografia",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a finalidade da topografia e a diferença entre planimetria e altimetria. 2. Demonstrar como usar um nível de luneta ou laser para nivelar um terreno. 3. Saber realizar o levantamento de uma área usando trena e bússola (croqui). 4. Explicar o que são curvas de nível e como elas representam o relevo. 5. Conhecer os equipamentos: teodolito, estação total e prisma refletor. 6. Saber calcular a declividade de uma rampa ou terreno em porcentagem. 7. Explicar o conceito de azimute e rumo aplicados ao balizamento de divisas. 8. Demonstrar como realizar o piqueteamento de uma área para construção. 9. Conhecer o sistema de coordenadas UTM e sua aplicação em levantamentos.",
+    "category": "C&T"
+  },
+  {
+    "code": "SP-CT-WEB",
+    "description": "Web Design",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar o funcionamento de um servidor web e a relação entre DNS e IP. 2. Desenvolver um site simples usando HTML5 e CSS3 validado pelo W3C. 3. Demonstrar como criar um layout responsivo usando Flexbox ou Grid. 4. Explicar a importância da segurança em formulários web. 5. Configurar uma folha de estilo externa com variáveis e animações básicas. 6. Saber como otimizar imagens para a web reduzindo o tempo de carregamento. 7. Realizar a hospedagem do site criado em um serviço gratuito. 8. Explicar o que são as WCAG (Diretrizes de Acessibilidade para Conteúdo Web). 9. Utilizar o inspetor de elementos do navegador para depurar erros de layout.",
+    "category": "C&T"
+  }
+]

@@ -1,0 +1,332 @@
+[
+  {
+    "code": "SP-SV-ACE",
+    "description": "Acessibilidade",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar o conceito de desenho universal e sua aplicação. 2. Identificar barreiras arquitetônicas na sede e propor melhorias. 3. Demonstrar como auxiliar uma pessoa em cadeira de rodas em rampas. 4. Conhecer as normas básicas da ABNT NBR 9050. 5. Explicar o funcionamento de tecnologias assistivas digitais. 6. Identificar os símbolos internacionais de acesso e seus significados. 7. Saber como guiar uma pessoa com deficiência visual com segurança. 8. Pesquisar sobre as leis de cotas para PCD no mercado de trabalho. 9. Realizar uma atividade de sensibilização com sua patrulha.",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-ALF",
+    "description": "Alfabetização",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a importância social da alfabetização plena. 2. Diferenciar alfabetização de letramento. 3. Auxiliar uma criança em tarefas escolares de leitura por 1 mês. 4. Organizar um ponto de doação de livros no grupo ou bairro. 5. Conhecer 2 métodos pedagógicos de alfabetização (ex: Paulo Freire). 6. Realizar uma contação de histórias para lobinhos. 7. Identificar os níveis de escrita (pré-silábico a alfabético). 8. Criar um jogo didático que envolva formação de palavras. 9. Pesquisar os índices de alfabetização da sua região.",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-AMI",
+    "description": "Amigos do Bairro",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Identificar os problemas de infraestrutura e segurança do seu bairro. 2. Participar de uma reunião da Associação de Moradores ou CONSEG. 3. Realizar uma ação de melhoria comunitária (ex: mutirão de limpeza de praça). 4. Conhecer os canais oficiais para solicitação de serviços públicos (tapa-buraco, luz). 5. Elaborar um mapa de serviços básicos do bairro (postos de saúde, escolas, correio). 6. Promover uma campanha de conscientização sobre vizinhança solidária. 7. Identificar os marcos históricos e personagens relevantes da sua vizinhança. 8. Saber como denunciar problemas ambientais ou maus-tratos a animais no bairro. 9. Organizar uma atividade recreativa para crianças da sua rua ou condomínio.",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-CID",
+    "description": "Cidadania Mundo",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar o papel da ONU e suas principais agências (UNICEF, OMS). 2. Conhecer a Declaração Universal dos Direitos Humanos. 3. Debater sobre os Objetivos de Desenvolvimento Sustentável (ODS). 4. Identificar os impactos da globalização na cultura local. 5. Pesquisar sobre a situação de refugiados em algum lugar do mundo. 6. Participar de um projeto de ajuda humanitária internacional. 7. Explicar o conceito de pegada ecológica global. 8. Conhecer a história do Comitê Internacional da Cruz Vermelha. 9. Promover um debate sobre paz e cooperação entre as nações.",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-CIV",
+    "description": "Civismo",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar o significado de cada elemento da Bandeira Nacional. 2. Saber cantar o Hino Nacional e o Hino à Bandeira sem erros. 3. Conhecer as principais datas cívicas brasileiras. 4. Demonstrar como dobrar e guardar a Bandeira corretamente. 5. Explicar o protocolo de hasteamento e arriamento. 6. Conhecer a biografia resumida de 3 heróis da pátria. 7. Saber quais são os quatro Símbolos Nacionais do Brasil. 8. Explicar a importância do voto e da democracia. 9. Realizar um ato de zeladoria por um monumento público.",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-DCO",
+    "description": "Desenv. Comunitário",
+    "guidance": "Consultar manual.",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-DFC",
+    "description": "Defesa Consumidor",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar os direitos básicos contidos no CDC. 2. Saber o que é o PROCON e como registrar uma queixa. 3. Identificar cláusulas abusivas em contratos de adesão. 4. Explicar o direito de arrependimento em compras online. 5. Diferenciar garantia legal, contratual e estendida. 6. Saber ler e conferir os dados de uma Nota Fiscal. 7. Realizar uma pesquisa comparativa de preços de 5 itens. 8. Saber como identificar selos de certificação (Inmetro, Anvisa). 9. Analisar uma propaganda identificando publicidade enganosa.",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-DIR",
+    "description": "Direito",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Diferenciar Direito Civil, Penal e do Trabalho. 2. Conhecer os fundamentos da Constituição de 1988. 3. Explicar a função do Executivo, Legislativo e Judiciário. 4. Saber como tramita um projeto de lei federal. 5. Citar 5 direitos fundamentais do cidadão brasileiro. 6. Diferenciar crime de contravenção penal. 7. Explicar o papel do Ministério Público na sociedade. 8. Saber o que é o ECA e citar 3 artigos relevantes. 9. Assistir a uma audiência pública e relatar o ocorrido.",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-LIB",
+    "description": "Libras",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Demonstrar o alfabeto manual (datilologia) com clareza e velocidade média. 2. Saber os sinais de saudação, números (0-100) e cores básicas. 3. Sinalizar os termos escoteiros: Sempre Alerta, Patrulha, Chefe, Promessa e Lei. 4. Manter uma conversa simples de 5 minutos com um sinalizante ou instrutor. 5. Sinalizar os membros da família e os dias da semana. 6. Explicar a diferença entre 'Sinal' e 'Mímica' e o conceito de cultura surda. 7. Interpretar para Libras uma canção escoteira simples ou oração. 8. Saber como se portar e como chamar a atenção de uma pessoa surda com educação. 9. Conhecer a Lei 10.436/2002 que reconhece a Libras como meio legal de comunicação.",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-MED",
+    "description": "Mediação Conflitos",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar o que é mediação e como ela difere de uma decisão judicial ou arbitragem. 2. Identificar as etapas de um processo de mediação: abertura, escuta, clarificação e acordo. 3. Demonstrar a técnica de 'Escuta Ativa' e 'Parafraseamento'. 4. Saber o que é a Comunicação Não-Violenta (CNV) e seus 4 pilares. 5. Explicar a importância da imparcialidade e do sigilo do mediador. 6. Demonstrar como ajudar as partes a focar nos interesses e necessidades, não nas posições. 7. Realizar uma simulação de mediação para um conflito simples de patrulha. 8. Debater sobre o impacto dos conflitos mal resolvidos na saúde de um grupo. 9. Identificar situações em que a mediação não é recomendada (violência ou desequilíbrio extremo).",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-AUX",
+    "description": "Aux. Enfermagem",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Demonstrar a técnica correta de lavagem de mãos e uso de luvas estéreis. 2. Saber como realizar a aferição de sinais vitais: pressão, pulso e temperatura. 3. Explicar como realizar o curativo de uma ferida cirúrgica ou crônica (teórico). 4. Conhecer os cuidados com a higiene do leito e conforto de pacientes acamados. 5. Saber como auxiliar na alimentação e hidratação de pessoas com limitações. 6. Explicar a importância da ética, do sigilo e do acolhimento humano na saúde. 7. Identificar os principais grupos de medicamentos e suas vias de administração. 8. Demonstrar conhecimento sobre o descarte correto de resíduos de saúde (perfurocortantes). 9. Saber como agir em casos de urgência hospitalar simples (queda, vômito).",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-BOM",
+    "description": "Bombeiro",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar o triângulo do fogo (combustível, comburente e calor). 2. Identificar as classes de incêndio (A, B, C e D) e quais extintores usar em cada uma. 3. Demonstrar como usar um extintor de incêndio (PQS, CO2 ou Água) corretamente. 4. Explicar como agir em caso de vazamento de gás de cozinha com e sem fogo. 5. Demonstrar como sair de um ambiente enfumaçado (andar agachado). 6. Conhecer as normas de segurança para instalação de botijões de gás. 7. Saber como proceder em caso de fogo em roupas (parar, deitar e rolar). 8. Realizar uma vistoria de segurança na sede do grupo e apontar pontos de melhoria. 9. Explicar a importância das brigadas de incêndio e planos de evacuação.",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-DEF",
+    "description": "Defesa Civil",
+    "guidance": "Consultar manual.",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-DOE",
+    "description": "Doação Sangue",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar os requisitos básicos para ser um doador de sangue no Brasil. 2. Identificar os diferentes tipos sanguíneos e as regras de compatibilidade. 3. Descrever o processo da doação: triagem, coleta e recuperação. 4. Conhecer o que é feito com o sangue doado (processamento de hemocomponentes). 5. Saber os intervalos mínimos entre as doações para homens e mulheres. 6. Organizar uma campanha de divulgação para mobilizar doadores no grupo. 7. Explicar a importância da doação de medula óssea e como se cadastrar. 8. Descrever os mitos e verdades comuns sobre a doação de sangue. 9. Visitar um Hemocentro local e entrevistar um profissional de saúde.",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-HGD",
+    "description": "Higiene Dentária",
+    "guidance": "Consultar manual.",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-NUT",
+    "description": "Nutrição",
+    "guidance": "Consultar manual.",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-PRE",
+    "description": "Prev. Incêndio",
+    "guidance": "Consultar manual.",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-PRI",
+    "description": "Primeiros Socorros",
+    "guidance": "Consultar manual.",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-PSA",
+    "description": "Prim. Soc. Animais",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Demonstrar como abordar um animal ferido ou assustado com segurança. 2. Saber como fazer uma focinheira de emergência usando uma gaze ou cordão. 3. Demonstrar como imobilizar a pata de um cão ou gato em caso de suspeita de fratura. 4. Explicar como agir em caso de envenenamento ou ingestão de substâncias tóxicas por pets. 5. Saber como retirar carrapatos de forma segura para evitar infecções. 6. Demonstrar como limpar ferimentos leves em animais. 7. Conhecer os sinais vitais básicos de um cão (frequência respiratória e temperatura). 8. Identificar sintomas de insolação em animais de estimação. 9. Montar um kit de primeiros socorros veterinário básico.",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-SAL",
+    "description": "Salvamento",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Demonstrar como fazer e lançar um cabo de arremesso com precisão. 2. Explicar as técnicas de resgate em áreas alagadas ou correntezas. 3. Demonstrar como improvisar uma maca usando bastões e cordas ou camisas. 4. Conhecer os sinais de socorro internacionais (terra-ar). 5. Demonstrar como realizar nós de salvamento (Cadeira de Bombeiro e Lais de Guia). 6. Explicar os procedimentos de segurança em helicópteros de resgate. 7. Saber como realizar a triagem básica de vítimas em um acidente múltiplo. 8. Demonstrar técnicas de busca e varredura em matas. 9. Conhecer os riscos de panânico em multidões e como agir.",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-SAN",
+    "description": "Saneamento",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar como funciona o tratamento de água em sua cidade. 2. Identificar a diferença entre rede de esgoto sanitário e rede pluvial. 3. Demonstrar como limpar e vedar corretamente a caixa d'água doméstica. 4. Explicar os riscos do esgoto a céu aberto e como ele propaga doenças. 5. Conhecer o funcionamento de uma fossa séptica e biofiltros. 6. Saber como realizar o descarte correto de óleo de cozinha usado. 7. Identificar as etapas do tratamento de resíduos sólidos (lixão vs aterro). 8. Explicar a importância do flúor e do cloro na água potável. 9. Realizar uma vistoria na sede para identificar focos de água parada.",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-SAU",
+    "description": "Saúde Pública",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar os princípios básicos do Sistema Único de Saúde (SUS). 2. Identificar as principais vacinas do calendário nacional e sua importância. 3. Saber como prevenir doenças endêmicas (Dengue, Zika, Leptospirose). 4. Demonstrar como realizar a lavagem de mãos cirúrgica e higiene de alimentos. 5. Explicar a importância do pré-natal e do acompanhamento infantil. 6. Conhecer os riscos do uso indiscriminado de antibióticos e automedicação. 7. Saber onde fica a Unidade Básica de Saúde (UBS) e o que ela atende. 8. Realizar uma campanha de doação de sangue ou medula óssea (divulgação). 9. Debater sobre o impacto da poluição urbana na saúde respiratória.",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-ADM",
+    "description": "Administração",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar os conceitos básicos de Planejamento Estratégico (Missão, Visão e Valores). 2. Realizar uma análise SWOT (FOFA) de uma patrulha ou seção. 3. Demonstrar como elaborar um orçamento de custos para um evento de grande porte. 4. Explicar a diferença entre eficiência e eficácia com exemplos práticos. 5. Saber conduzir uma reunião de avaliação usando indicadores de desempenho. 6. Descrever os princípios da liderança servidora no contexto escoteiro. 7. Elaborar um cronograma de atividades usando ferramentas como Gráfico de Gantt. 8. Conhecer as rotinas básicas de gestão de pessoal e motivação de equipe. 9. Propor um plano de melhoria organizacional para o almoxarifado do grupo.",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-ALM",
+    "description": "Almoxarife",
+    "guidance": "Consultar manual.",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-ARQ",
+    "description": "Arquivologia",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar o ciclo de vida dos documentos (fase corrente, intermediária e permanente). 2. Diferenciar arquivo, biblioteca e museu. 3. Demonstrar como organizar documentos usando métodos alfabéticos, numéricos ou temáticos. 4. Explicar a importância do sigilo e da tabela de temporalidade documental. 5. Saber como digitalizar documentos garantindo a integridade da informação. 6. Identificar materiais adequados para guarda de longo prazo (caixas arquivo, envelopes PH neutro). 7. Organizar o arquivo de registros (atas e fichas) da sua patrulha. 8. Conhecer as leis brasileiras sobre o acesso à informação (LAI). 9. Demonstrar como recuperar um documento solicitado em menos de 2 minutos.",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-BAB",
+    "description": "Babá",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar as fases do desenvolvimento infantil (do bebê ao escolar). 2. Demonstrar como trocar fraldas e realizar o banho em um bebê com segurança. 3. Saber preparar uma mamadeira ou refeição infantil nutritiva. 4. Conhecer as normas de segurança doméstica para evitar acidentes com crianças. 5. Preparar uma lista de 5 brincadeiras adequadas para diferentes idades. 6. Saber como agir em caso de choro excessivo ou birras. 7. Conhecer os sinais de febre e primeiros socorros em engasgos infantis. 8. Atuar como auxiliar em uma atividade com lobinhos por um dia inteiro. 9. Explicar a importância da rotina (sono, alimentação) para a criança.",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-BIB",
+    "description": "Biblioteconomia",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar o sistema de Classificação Decimal de Dewey (CDD) ou Universal (CDU). 2. Demonstrar como realizar a catalogação básica de um livro (Autor, Título, Assunto). 3. Organizar a biblioteca do grupo escoteiro ou da sua escola por 1 mês. 4. Saber como recuperar informações usando bases de dados e repositórios digitais. 5. Explicar as normas de conservação física do papel (evitar fungos, umidade e luz). 6. Conhecer a história da Biblioteca Nacional do Brasil. 7. Demonstrar como orientar um usuário na busca por um tema específico. 8. Saber o que é ISBN e para que serve o código de barras nos livros. 9. Realizar um projeto de incentivo à leitura na sua seção.",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-CMN",
+    "description": "Comunicações",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar o processo de comunicação: emissor, receptor, mensagem e canal. 2. Demonstrar conhecimento sobre o Código Morse e Alfabeto Fonético. 3. Saber enviar e receber mensagens por semáfora de forma fluida. 4. Explicar o funcionamento básico da internet e protocolos de rede. 5. Conhecer a história das comunicações: do telégrafo ao satélite. 6. Demonstrar como usar equipamentos de sinalização visual (heliógrafo, lanternas). 7. Saber preencher um formulário oficial de rádio ou mensagem de campo. 8. Debater sobre a importância da comunicação clara em situações de crise. 9. Organizar um posto de comunicações em um acampamento de grupo.",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-COM",
+    "description": "Comércio",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar o ciclo básico de um produto: fornecedor, estoque, venda e pós-venda. 2. Demonstrar como realizar um atendimento ao cliente cortês e eficiente. 3. Saber a diferença entre lucro bruto e lucro líquido. 4. Explicar a importância da nota fiscal e quais impostos básicos estão embutidos nela. 5. Demonstrar como organizar uma vitrine ou prateleira de forma atrativa (Merchandising). 6. Conhecer as formas de pagamento modernas (Pix, Cartão, Boleto) e seus riscos. 7. Realizar uma pesquisa de preços de um item escoteiro em 3 estabelecimentos diferentes. 8. Saber como lidar com uma reclamação de cliente seguindo o CDC. 9. Auxiliar na organização do 'Bazar' ou venda de produtos do grupo escoteiro.",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-CON",
+    "description": "Contabilidade",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Diferenciar Ativo de Passivo em um balanço patrimonial simples. 2. Explicar o que é o Patrimônio Líquido de uma entidade. 3. Saber o que é um Livro Diário e como registrar uma entrada e saída. 4. Explicar a importância dos impostos para a sociedade. 5. Demonstrar como conferir uma nota fiscal e identificar erros comuns. 6. Conhecer os princípios básicos da ética contábil. 7. Saber calcular juros simples e compostos em situações de compra. 8. Explicar a diferença entre Pessoa Física (CPF) e Pessoa Jurídica (CNPJ). 9. Realizar a prestação de contas de uma jornada de patrulha.",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-COZ",
+    "description": "Cozinheiro",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Conhecer as normas de higiene e segurança na manipulação de alimentos. 2. Preparar um cardápio equilibrado para um acampamento de patrulha (2 dias). 3. Cozinhar arroz, feijão, uma proteína e uma guarnição para pelo menos 6 pessoas. 4. Demonstrar como limpar e conservar fogões e utensílios de cozinha. 5. Preparar um prato típico da sua região e explicar sua origem. 6. Saber como armazenar alimentos perecíveis em campo (geladeira de isopor ou térmica). 7. Fazer um orçamento de compras para a refeição planejada. 8. Explicar a pirâmide alimentar e a importância de cada grupo. 9. Demonstrar como descartar corretamente o óleo de cozinha e restos orgânicos.",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-DIG",
+    "description": "Digitação",
+    "guidance": "Consultar manual.",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-ECN",
+    "description": "Economia",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar os conceitos de inflação, deflação e poder de compra. 2. Diferenciar microeconomia de macroeconomia. 3. Saber ler e interpretar o índice IPCA e a taxa SELIC. 4. Elaborar um plano de investimentos fictício com diversificação (ações, renda fixa). 5. Explicar a lei da oferta e da procura com exemplos reais. 6. Saber o que é o PIB e como ele mede a riqueza de um país. 7. Debater sobre o impacto do comércio internacional na economia local. 8. Explicar a função do Banco Central do Brasil. 9. Realizar uma palestra sobre consumo consciente e planejamento financeiro.",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-GOV",
+    "description": "Governanta",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a gestão de suprimentos e o controle de validade em uma residência. 2. Demonstrar como organizar armários e despensas de forma lógica e acessível. 3. Saber planejar o cardápio semanal e a lista de compras otimizada. 4. Conhecer as técnicas de limpeza para diferentes materiais (mármore, madeira, inox). 5. Explicar as normas de segurança para uso de produtos químicos de limpeza. 6. Saber realizar pequenos reparos domésticos (troca de lâmpada, fusível, prego). 7. Demonstrar como organizar o fluxo de lavanderia e passadoria. 8. Saber como receber e orientar prestadores de serviço externos. 9. Explicar a importância da economia doméstica (água, luz e produtos).",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-GUI",
+    "description": "Guia",
+    "guidance": "Consultar manual.",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-HOS",
+    "description": "Hospitalidade",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar o conceito de hospitalidade e sua aplicação no turismo e recepção. 2. Demonstrar como recepcionar um convidado oficial com cortesia e eficiência. 3. Saber preparar um ambiente para hóspedes (quarto, toalhas, kit de boas-vindas). 4. Demonstrar conhecimento sobre etiqueta à mesa e serviço de bebidas. 5. Saber como lidar com reclamações de forma diplomática e resolutiva. 6. Identificar os diferentes tipos de hospedagem (Hotéis, Pousadas, Hostels). 7. Explicar a importância da higiene e apresentação pessoal na hospitalidade. 8. Realizar a organização de um 'Check-in' simulado para um evento escoteiro. 9. Conhecer 5 frases de boas-vindas e atendimento em um idioma estrangeiro.",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-ITP",
+    "description": "Intérprete",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Realizar a interpretação consecutiva de uma fala de 3 minutos. 2. Demonstrar a técnica de tomada de notas para auxílio na interpretação. 3. Explicar a diferença entre interpretação simultânea, consecutiva e sussurrada (chuchotage). 4. Saber as regras de ética e confidencialidade do intérprete. 5. Interpretar uma conversa simples entre um estrangeiro e um brasileiro. 6. Conhecer expressões idiomáticas e gírias comuns do idioma de trabalho. 7. Demonstrar controle vocal e clareza na dicção. 8. Explicar a importância da preparação prévia sobre o tema que será interpretado. 9. Atuar como ponte de comunicação em uma recepção oficial do grupo.",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-JOR",
+    "description": "Jornaleiro",
+    "guidance": "Consultar manual.",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-LET",
+    "description": "Letreirismo",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Demonstrar o uso de diferentes pincéis, canetas e marcadores para escrita. 2. Executar 3 estilos de fontes (Bastão, Cursiva e Decorativa) com espaçamento correto. 3. Explicar a diferença entre caligrafia, tipografia e lettering. 4. Demonstrar a técnica de 'falsa caligrafia' usando canetas comuns. 5. Criar um cartaz informativo para um evento do grupo usando técnicas de hierarquia visual. 6. Saber como preparar superfícies (lousas, vidros ou banners) para receber a arte. 7. Conhecer a teoria das cores aplicada à legibilidade de sinalização. 8. Demonstrar o uso de réguas e gabaritos para manutenção da linha de base. 9. Realizar a pintura de uma faixa ou letreiro mural para a sede.",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-LOC",
+    "description": "Locução",
+    "guidance": "Consultar manual.",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-MEN",
+    "description": "Mensageiro",
+    "guidance": "Consultar manual.",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-MKT",
+    "description": "Marketing",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a importância da segurança e privacidade nas redes sociais. 2. Criar e gerenciar um perfil ou página para sua patrulha ou seção por 1 mês. 3. Demonstrar como criar conteúdo engajador (posts, stories, vídeos curtos). 4. Explicar o conceito de 'algoritmo' e como ele afeta a entrega de conteúdo. 5. Identificar e explicar o que são Fake News e como não propagá-las. 6. Demonstrar o uso de ferramentas de agendamento e análise de métricas. 7. Conhecer as diretrizes da UEB sobre o uso de imagem de crianças e adolescentes. 8. Realizar uma campanha digital para divulgar uma atividade do grupo. 9. Explicar a diferença entre tráfego orgânico e tráfego pago.",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-MOR",
+    "description": "Mordomo",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Demonstrar como arrumar uma mesa formal para um jantar de 4 cursos. 2. Saber como dobrar guardanapos de tecido em pelo menos 3 estilos diferentes. 3. Explicar a ordem de serviço e a hierarquia do serviço de mesa clássico. 4. Demonstrar como limpar e polir cristais, pratas e porcelanas finas. 5. Saber como preparar e servir chá e café seguindo os protocolos tradicionais. 6. Demonstrar como cuidar de vestuário fino (passar camisas e organizar cabides). 7. Explicar a importância da discrição e do segredo profissional. 8. Saber realizar o gerenciamento de uma despensa e adega doméstica. 9. Atuar como 'anfitrião de mesa' em um jantar de grupo ou banquete de patrulha.",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-PAI",
+    "description": "Paisagismo",
+    "guidance": "Consultar manual.",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-REC",
+    "description": "Reciclagem",
+    "guidance": "Consultar manual.",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-RP",
+    "description": "Relações Públicas",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a função do profissional de RP em uma organização. 2. Escrever um 'press release' (comunicado à imprensa) sobre um evento escoteiro. 3. Demonstrar como organizar uma recepção ou evento de inauguração simples. 4. Explicar a importância da identidade visual e do uso correto da marca UEB. 5. Realizar um levantamento dos veículos de comunicação da sua cidade. 6. Demonstrar como lidar com críticas ou crises de imagem em ambiente digital. 7. Organizar um mural ou boletim informativo para os pais do grupo. 8. Explicar o que é 'público-alvo' e como segmentar a comunicação. 9. Participar da organização de uma cerimônia oficial de promessa.",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-SCB",
+    "description": "Segurança Cibernética",
+    "guidance": "Consultar manual.",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-SEC",
+    "description": "Secretariado",
+    "guidance": "Consultar manual.",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-SEG",
+    "description": "Segurança",
+    "guidance": "Consultar manual.",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-SIN",
+    "description": "Sinalização",
+    "guidance": "Consultar manual.",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-TAQ",
+    "description": "Taquigrafia",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar o conceito de taquigrafia e sua aplicação profissional. 2. Demonstrar conhecimento sobre o alfabeto e sinais de pontuação taquigráficos. 3. Escrever uma fala lenta de 2 minutos em taquigrafia. 4. Realizar a transcrição correta do taquigrama para o português. 5. Demonstrar o uso de abreviações para termos comuns e escoteiros. 6. Saber organizar o bloco e lápis para rapidez extrema. 7. Conhecer a história da taquigrafia no poder legislativo brasileiro. 8. Realizar a taquigrafia da Promessa Escoteira. 9. Explicar a diferença entre taquigrafia e estenotipia.",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-TRD",
+    "description": "Tradutor",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Traduzir um texto técnico de pelo menos 500 palavras de um idioma estrangeiro para o português. 2. Explicar o conceito de 'Falsos Amigos' (false cognates) com 5 exemplos. 3. Demonstrar o uso de dicionários especializados e glossários técnicos. 4. Saber como manter o estilo e o tom do autor original na tradução. 5. Explicar a importância da revisão gramatical após o processo de tradução. 6. Conhecer as ferramentas de tradução assistida (CAT Tools) e suas limitações. 7. Traduzir uma canção escoteira estrangeira para o português mantendo a métrica. 8. Saber as normas de direitos autorais para obras traduzidas. 9. Explicar a diferença entre tradução literal e tradução adaptada.",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-TRA",
+    "description": "Educ. Trânsito",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a hierarquia da sinalização de trânsito brasileira. 2. Identificar 30 placas (regulamentação, advertência e indicação). 3. Descrever os direitos e deveres do pedestre e do ciclista. 4. Saber as regras de uso do cinto de segurança e cadeirinhas. 5. Explicar os riscos do uso do celular e do álcool ao dirigir. 6. Conhecer os números de emergência (PRF e Trânsito Local). 7. Demonstrar como atravessar a via com segurança (faixa e passarelas). 8. Realizar uma palestra sobre comportamento seguro no trânsito para a seção. 9. Saber o significado das cores do semáforo e das luzes de sinalização veicular.",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-TUR",
+    "description": "Informação Turística",
+    "guidance": "Consultar manual.",
+    "category": "Serviços"
+  },
+  {
+    "code": "SP-SV-VIG",
+    "description": "Vigilância",
+    "guidance": "Consultar manual.",
+    "category": "Serviços"
+  }
+]

@@ -1,0 +1,64 @@
+{
+  "mar": [
+    { 
+      "name": "Etapa Grumete (Básico Mar)", 
+      "items": [
+        { "code": "MAR-GRU-01", "description": "Nomenclatura da Embarcação", "guidance": "Proa, popa, bombordo, boreste, quilha, leme." },
+        { "code": "MAR-GRU-02", "description": "Nós de Marinharia", "guidance": "Lais de guia, volta do fiel, escota, fateixa, volta redonda." },
+        { "code": "MAR-GRU-03", "description": "Remar", "guidance": "Comandos de voga, soga, leve remos. Remar em ritmo." },
+        { "code": "MAR-GRU-04", "description": "Natação Utilitária", "guidance": "Nadar 50m vestido. Flutuação de 5 min." },
+        { "code": "MAR-GRU-05", "description": "Segurança Embarcada", "guidance": "Uso correto do colete salva-vidas. Comportamento a bordo." }
+      ]
+    },
+    { 
+      "name": "Etapa Arrais (Intermediário Mar)", 
+      "items": [
+        { "code": "MAR-ARR-01", "description": "Governar Embarcação", "guidance": "Comandar leme e tripulação em bote ou escaler." },
+        { "code": "MAR-ARR-02", "description": "Vela Básica", "guidance": "Subir e baixar velas. Nomenclatura (mestra, buja, garruncho)." },
+        { "code": "MAR-ARR-03", "description": "Meteorologia Marinha", "guidance": "Identificar ventos locais e sinais de mau tempo." },
+        { "code": "MAR-ARR-04", "description": "Reparos Navais", "guidance": "Calafetar, pintar e lixar madeira/fibra." },
+        { "code": "MAR-ARR-05", "description": "RIPEAM Básico", "guidance": "Luzes de navegação e regras de preferência." }
+      ]
+    },
+    { 
+      "name": "Etapa Mestre (Avançado Mar)", 
+      "items": [
+        { "code": "MAR-MES-01", "description": "Navegação Costeira", "guidance": "Traçar rota em carta náutica. Uso de compasso e régua." },
+        { "code": "MAR-MES-02", "description": "Carta de Arrais Amador", "guidance": "Conhecimentos equivalentes à habilitação da Marinha." },
+        { "code": "MAR-MES-03", "description": "Salvamento Aquático", "guidance": "Técnicas de resgate de homem ao mar." },
+        { "code": "MAR-MES-04", "description": "Manobras à Vela", "guidance": "Bordo, jibe, orça e arribada com precisão." }
+      ]
+    }
+  ],
+  "ar": [
+    { 
+      "name": "Etapa Noviço (Básico Ar)", 
+      "items": [
+        { "code": "AR-NOV-01", "description": "História da Aviação", "guidance": "Santos Dumont, Irmãos Wright e Padre Landell." },
+        { "code": "AR-NOV-02", "description": "Nomenclatura de Aeronave", "guidance": "Fuselagem, asas, empenagem, trem de pouso." },
+        { "code": "AR-NOV-03", "description": "Aeromodelismo Básico", "guidance": "Montar e lançar planador de mão." },
+        { "code": "AR-NOV-04", "description": "Aeroportos", "guidance": "Identificar pista, hangar, torre e biruta." },
+        { "code": "AR-NOV-05", "description": "Fonia Básica", "guidance": "Alfabeto Fonético (Alpha, Bravo...) completo." }
+      ]
+    },
+    { 
+      "name": "Etapa Colaborador (Intermediário Ar)", 
+      "items": [
+        { "code": "AR-COL-01", "description": "Teoria de Voo", "guidance": "Sustentação, arrasto, peso e tração. Princípio de Bernoulli." },
+        { "code": "AR-COL-02", "description": "Meteorologia Aeronáutica", "guidance": "Nuvens (CB, Stratus), ventos e turbulência." },
+        { "code": "AR-COL-03", "description": "Navegação Aérea", "guidance": "Pontos cardeais, bússola e noções de rota." },
+        { "code": "AR-COL-04", "description": "Instrumentos Básicos", "guidance": "Altímetro, velocímetro e horizonte artificial." },
+        { "code": "AR-COL-05", "description": "Visita Técnica", "guidance": "Base aérea, aeroclube ou museu aeroespacial." }
+      ]
+    },
+    { 
+      "name": "Etapa Especialista (Avançado Ar)", 
+      "items": [
+        { "code": "AR-ESP-01", "description": "Mecânica de Motores", "guidance": "Motor a pistão vs reação. Ciclo 4 tempos." },
+        { "code": "AR-ESP-02", "description": "Tráfego Aéreo", "guidance": "Regras de voo visual (VFR). Circuito de tráfego." },
+        { "code": "AR-ESP-03", "description": "Segurança de Voo", "guidance": "Prevenção de acidentes e check-list." },
+        { "code": "AR-ESP-04", "description": "Construção de Aeromodelo", "guidance": "Modelo motorizado ou elástico de nível avançado." }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+# Celebração, Passagem e Acolhimento
+
+Avaliação da Progressão Pessoal: O último mês do jovem em seu ramo deve ser marcado pela conclusão das últimas ações educativas possíveis e, se for o caso e sendo aplicável, a conclusão e entrega do seu Reconhecimento de Ramo. É importante que na reta final, do seu Caminho, suas conquistas e seus desafios superados sejam reconhecidos e devidamente valorizados.
+
+![img-80.jpeg](img-80.jpeg)
+
+- Celebração de Despedida: Realizar uma atividade especial no ramo atual, onde o jovem possa compartilhar suas experiências e receber mensagens dos companheiros e escotistas. A despedida do jovem no seu ramo atual deve ser um momento especial, íntimo da seção e cheio de significado, valorizando sua trajetória e reforçando a continuidade de sua caminhada no Movimento Escoteiro. Esse momento pode ser organizado como uma atividade simbólica e afetiva, em que o jovem possa compartilhar suas experiências e se despedir de forma positiva.
+- Imediatamente após a Celebração de Despedida, deve ser realizada a Passagem. O jovem é acompanhado pelo escotista do novo ramo, juntamente com o seu novo monitor. Durante este caminho, que não deve ser longo, nem conter trotes, devem ser proferidas palavras de incentivo e que reforcem a importância dessa nova fase. O jovem também pode passar por um obstáculo simbólico (pular um obstáculo, atravessar uma ponte etc.). Durante a Passagem, ambas as seções devem manter contato visual. Os jovens devem ver seu companheiro ser bem recebido no ramo seguinte, de modo a criar um momento de estímulo e não de incertezas.
+- Boas-vindas na nova seção e Renovação da Promessa - A nova seção deve organizar um pequeno gesto de acolhimento, como um presente simbólico ou outra característica particular. Após a recepção, o jovem deve renovar a Promessa em seu novo ramo. Com este ato, o Caminho está finalizado.

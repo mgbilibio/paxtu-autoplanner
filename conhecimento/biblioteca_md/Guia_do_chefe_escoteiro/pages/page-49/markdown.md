@@ -1,0 +1,13 @@
+Os ideais dos Cavalheiros Medievais e seu Código de Honra são, antes de mais nada, o que deve ser incutido nos jovens. Levem-nos àquela forte compreensão da justiça que deve constituir parte integrante do seu caráter e permitir-lhes-á realmente tornarem-se bons cidadãos.
+
+Este hábito de “ver as coisas do ponto de vista dos outros”, pode ser desenvolvido em jogos ao ar livre, onde a honestidade, o cavalheirismo e o respeito “às regras do jogo” são essenciais. Quer se trate de um “assalto ao acampamento”, quer de uma simples corrida de estafetas, aquelas qualidades são fundamentais. Durante esses jogos têm que ser observadas rígidas regras, o que exige dos jogadores auto-controle e bom humor; no fim da partida a norma é que os vencedores se confraternizem com os vencidos, e que estes sejam os primeiros a ovacionar e congratularem-se com os vencedores. Isto deve ser praticado até vir a constituir um hábito.
+
+Um outro valioso auxiliar para incluir essas qualidades e justiça consiste em realizar debates entre os jovens, sobre assunto que lhes interesse, levando-os a argumentar de ambos os lados. Isto habitua a reconhecer que cada questão importante sempre tem dois lados, e que não devem se deixar arrebatar pela eloquência de um bom orador antes de ouvir o que tem a dizer sobre o assunto o defensor do outro ponto de vista; ensina-os a analisar por si mesmos os argumentos de ambas as partes antes de tomarem decisão e emitirem sua opinião favorável a um ou outro.
+
+Uma maneira prática de por isso em execução consiste em não permitir que as votações se executem simplesmente pelo levantar das mãos, pois desse modo quem estava hesitante (ou estava desatento), vota com a maioria. Cada qual deve registrar seu voto: “Sim!” ou “Não!” num pedaço de papel e entregá-lo pessoalmente. Este sistema, assegura a firmeza de opinião, fruto de conclusões próprias, depois de balanceados ambos os lados da questão.
+
+Do mesmo modo arbitragens de disputas e julgamentos simulados (se levados a sério e dentro das normas prescritas para os tribunais do júri) tem um enorme valor, pois dão aos jovens a ideia repetida do que significa justiça e jogo limpo, e também, uma pequena experiência sobre os deveres cívicos que, mais tarde, terão de exercer como jurados ou, talvez, testemunhas nos tribunais.
+
+A Corte de Honra da tropa escoteira é um outro passo nesse sentido. E como aí os jovens, na qualidade de membros, já tenham uma verdadeira responsabilidade, a seriedade de suas opiniões é de tal importância que os conduz a pensar e raciocinar cuidadosamente sobre a decisão a tomar, ouvindo
+
+50

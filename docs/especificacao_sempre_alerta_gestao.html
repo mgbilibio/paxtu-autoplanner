@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sempre Alerta - Gestão • Especificação</title>
+  <style>
+    body{font-family:Arial,Helvetica,sans-serif;margin:0;background:#f6f8fb;color:#172033;line-height:1.55}
+    main{max-width:980px;margin:0 auto;background:#fff;min-height:100vh;padding:32px 28px}
+    h1{margin-top:0;color:#0f172a;font-size:28px}
+    h2{border-bottom:2px solid #0ea5e9;padding-bottom:6px;color:#0f172a;margin-top:32px}
+    h3{color:#1e40af;margin-top:24px}
+    table{border-collapse:collapse;width:100%;margin:16px 0}
+    th,td{border:1px solid #cbd5e1;padding:8px 10px;text-align:left;font-size:14px}
+    th{background:#f1f5f9;color:#1e2937}
+    code{background:#e0e7ff;padding:2px 6px;border-radius:4px;font-size:13px}
+    .badge{display:inline-block;background:#0ea5e9;color:white;padding:2px 8px;border-radius:999px;font-size:12px;font-weight:600}
+    .section{background:#f8fafc;border-left:4px solid #0ea5e9;padding:12px 16px;margin:12px 0}
+    ul{margin:8px 0 8px 20px}
+    .decision{background:#fefce8;border:1px solid #eab308;padding:12px 16px;border-radius:6px}
+  </style>
+</head>
+<body>
+<main>
+  <h1>Sempre Alerta - Gestão</h1>
+  <p><strong>Especificação Técnica e Funcional • Módulo Operacional Web</strong></p>
+  <p><span class="badge">Opção B escolhida</span> &nbsp; <strong>Versão inicial:</strong> 2026-06</p>
+
+  <div class="decision">
+    <strong>Decisão do usuário (resposta "B"):</strong><br>
+    Criar versão web independente (Next.js + Supabase) em vez de evoluir o PaxtuAP Electron atual.<br>
+    Prioridade #1: Controle de material/equipamento em acampamentos e reuniões.<br>
+    Nome oficial: <strong>Sempre Alerta - Gestão</strong><br>
+    Local: <code>paxtu-gestao/</code> (ao lado de <code>PaxtuAP/</code>)
+  </div>
+
+  <h2>1. Contexto e Objetivo</h2>
+  <p>O Paxtu AutoPlanner já atende muito bem a <strong>progressão pessoal</strong> (blocos POR 2025+, especialidades, planejamento de reuniões, calendário). O grupo agora precisa de uma ferramenta operacional real para o dia a dia da gestão escoteira:</p>
+  <ul>
+    <li>Controle de patrimônio e estoque de equipamentos</li>
+    <li>Empréstimos e logística de acampamentos/reuniões</li>
+    <li>Caixa / tesouraria (fase 2)</li>
+    <li>Compras e fornecedores (fase 3)</li>
+  </ul>
+  <p>O sistema deve ser acessível por celular e computador por 4-8 escotistas/diretoria/tesoureiro, com dados em nuvem (Supabase) e fácil de usar por voluntários.</p>
+
+  <h2>2. Escopo do MVP (Fase 1)</h2>
+  <p><strong>Foco exclusivo:</strong> Patrimônio + Logística de Material (a dor mais relatada).</p>
+
+  <h3>Funcionalidades incluídas no MVP</h3>
+  <ul>
+    <li>Cadastro e catálogo de itens de estoque/patrimônio (com foto opcional, categoria, quantidade, estado, localização)</li>
+    <li>Categorias padrão escoteiras (Barracas, Dormir, Cozinha, Primeiros Socorros, Jogos, Uniformes, Outros)</li>
+    <li>Empréstimo de itens para eventos ou patrulhas (check-out / check-in)</li>
+    <li>Vinculação direta com eventos do calendário (ou cadastro simples de eventos dentro do sistema)</li>
+    <li>Checklist de material por evento/acampamento (o que cada patrulha deve levar)</li>
+    <li>Histórico completo de movimentações (quem pegou, quando, para qual evento, devolução)</li>
+    <li>Alertas de quantidade baixa e itens em manutenção</li>
+    <li>Relatórios simples: "O que está emprestado agora", "Material por evento", "Itens que precisam reposição"</li>
+  </ul>
+
+  <h3>Fora do escopo do MVP (fases futuras)</h3>
+  <ul>
+    <li>Caixa e controle de mensalidades</li>
+    <li>Compras e fluxo de aprovação</li>
+    <li>Integração automática com o PaxtuAP (import de membros/seções)</li>
+    <li>Multi-grupo (para já, um grupo por instância)</li>
+  </ul>
+
+  <h2>3. Entidades Principais (Modelo de Dados)</h2>
+
+  <h3>3.1 ItemEstoque (Patrimônio)</h3>
+  <table>
+    <tr><th>Campo</th><th>Tipo</th><th>Obrigatório</th><th>Observação</th></tr>
+    <tr><td>id</td><td>uuid</td><td>sim</td><td>Supabase</td></tr>
+    <tr><td>nome</td><td>text</td><td>sim</td><td></td></tr>
+    <tr><td>categoria</td><td>enum</td><td>sim</td><td>BARRACA, DORMIR, COZINHA, SOCORROS, JOGOS, UNIFORME, OUTROS</td></tr>
+    <tr><td>quantidade_total</td><td>int</td><td>sim</td><td></td></tr>
+    <tr><td>quantidade_disponivel</td><td>int</td><td>sim</td><td>calculado ou mantido</td></tr>
+    <tr><td>estado</td><td>enum</td><td>sim</td><td>NOVO, BOM, USADO, MANUTENCAO, BAIXA</td></tr>
+    <tr><td>localizacao</td><td>text</td><td>não</td><td>Sede, Depósito, Com fulano, etc.</td></tr>
+    <tr><td>codigo_interno</td><td>text</td><td>não</td><td>etiqueta / plaqueta</td></tr>
+    <tr><td>foto_url</td><td>text</td><td>não</td><td>Supabase Storage</td></tr>
+    <tr><td>observacoes</td><td>text</td><td>não</td><td></td></tr>
+    <tr><td>criado_em</td><td>timestamptz</td><td>sim</td><td></td></tr>
+    <tr><td>atualizado_em</td><td>timestamptz</td><td>sim</td><td></td></tr>
+  </table>
+
+  <h3>3.2 Emprestimo (Movimentação)</h3>
+  <table>
+    <tr><th>Campo</th><th>Tipo</th><th>Observação</th></tr>
+    <tr><td>id</td><td>uuid</td><td></td></tr>
+    <tr><td>item_id</td><td>uuid</td><td>FK para ItemEstoque</td></tr>
+    <tr><td>quantidade</td><td>int</td><td></td></tr>
+    <tr><td>responsavel_nome</td><td>text</td><td>Quem pegou (pode ser nome livre ou FK futuro para Membro)</td></tr>
+    <tr><td>patrulha</td><td>text</td><td></td></tr>
+    <tr><td>evento_id</td><td>uuid</td><td>FK para Evento (opcional)</td></tr>
+    <tr><td>data_saida</td><td>date</td><td></td></tr>
+    <tr><td>data_prevista_devolucao</td><td>date</td><td></td></tr>
+    <tr><td>data_devolucao_real</td><td>date</td><td>null enquanto emprestado</td></tr>
+    <tr><td>estado_na_devolucao</td><td>enum</td><td></td></tr>
+    <tr><td>observacoes</td><td>text</td><td></td></tr>
+    <tr><td>criado_por</td><td>uuid</td><td>FK para auth.users (futuro)</td></tr>
+  </table>
+
+  <h3>3.3 Evento (Calendário Operacional)</h3>
+  <p>Versão simplificada para vincular logística (pode ser expandida depois).</p>
+  <table>
+    <tr><th>Campo</th><th>Tipo</th><th>Observação</th></tr>
+    <tr><td>id</td><td>uuid</td><td></td></tr>
+    <tr><td>nome</td><td>text</td><td>Ex: Acampamento São José 2026</td></tr>
+    <tr><td>data_inicio</td><td>date</td><td></td></tr>
+    <tr><td>data_fim</td><td>date</td><td></td></tr>
+    <tr><td>local</td><td>text</td><td></td></tr>
+    <tr><td>tipo</td><td>enum</td><td>REUNIAO, ACAMPAMENTO, CAMINHADA, OUTRO</td></tr>
+    <tr><td>checklist_material_gerado</td><td>jsonb</td><td>Lista de itens planejados</td></tr>
+  </table>
+
+  <h3>3.4 Outras entidades futuras</h3>
+  <p>Membro (leve), Usuario (auth), MovimentacaoCaixa, Fornecedor, Compra, CompraItem.</p>
+
+  <h2>4. Permissões e Papéis</h2>
+  <p>Reaproveitar os papéis já existentes no Paxtu:</p>
+  <ul>
+    <li><strong>ADMINISTRADOR / Diretoria</strong> — acesso total, pode excluir, ver relatórios financeiros (futuro)</li>
+    <li><strong>Chefe de Seção / Assistente</strong> — cadastrar itens, registrar empréstimos, ver checklists</li>
+    <li><strong>Leitura/Auditoria</strong> — só visualização e relatórios</li>
+  </ul>
+
+  <h2>5. Arquitetura Técnica</h2>
+  <div class="section">
+    <strong>Stack escolhido:</strong><br>
+    • Next.js 15 (App Router, TypeScript, Server Actions)<br>
+    • Tailwind CSS (continuidade visual com PaxtuAP)<br>
+    • Supabase (Postgres + Auth + Storage + Realtime)<br>
+    • shadcn/ui ou componentes próprios leves (para manter simplicidade)<br>
+    • Deploy: Vercel (gratuito para hobby/non-profit)
+  </div>
+
+  <h3>Estratégia de integração com PaxtuAP (futuro)</h3>
+  <ul>
+    <li>Fase 1: sistemas independentes (membros cadastrados manualmente ou via import JSON simples)</li>
+    <li>Fase 2: exportar/importar membros e eventos do PaxtuAP via JSON ou arquivo</li>
+    <li>Fase 3 (opcional): PaxtuAP vira cliente "pesado" que consome a mesma API/Supabase para dados operacionais</li>
+  </ul>
+
+  <h2>6. Roadmap em Fases</h2>
+  <table>
+    <tr><th>Fase</th><th>Entrega</th><th>Status</th></tr>
+    <tr><td>0</td><td>Especificação + bootstrap do projeto + schema Supabase</td><td>Em andamento</td></tr>
+    <tr><td>1 (MVP)</td><td>Catálogo de itens + Empréstimos + Checklists por evento + Dashboard simples</td><td>Próximo</td></tr>
+    <tr><td>2</td><td>Caixa básico + Mensalidades + Relatórios de transparência</td><td>Futuro</td></tr>
+    <tr><td>3</td><td>Compras + Fornecedores + Entrada automática no estoque</td><td>Futuro</td></tr>
+    <tr><td>4</td><td>Integração bidirecional com PaxtuAP + PWA + modo offline leve</td><td>Futuro</td></tr>
+  </table>
+
+  <h2>7. Riscos e Mitigações</h2>
+  <ul>
+    <li><strong>Risco:</strong> Escotistas não adotarem mais um sistema → <strong>Mitigação:</strong> MVP extremamente simples (3 telas principais), mobile-first, sem curva de aprendizado.</li>
+    <li><strong>Risco:</strong> Perda de dados na nuvem → <strong>Mitigação:</strong> Supabase tem backups automáticos. Adicionar export JSON completo mensal.</li>
+    <li><strong>Risco:</strong> Custo da nuvem → <strong>Mitigação:</strong> Supabase tier gratuito é mais que suficiente para 1 grupo com poucos milhares de registros.</li>
+  </ul>
+
+  <h2>8. Próximos Passos Imediatos (após aprovação desta especificação)</h2>
+  <ol>
+    <li>Bootstrap do Next.js em <code>paxtu-gestao/</code></li>
+    <li>Criação do projeto no Supabase + schema inicial (SQL)</li>
+    <li>Setup de autenticação (email magic link + roles)</li>
+    <li>Tela de Catálogo de Itens (CRUD completo)</li>
+    <li>Fluxo de Empréstimo + Devolução</li>
+    <li>Atualização desta especificação e do versions.html principal</li>
+  </ol>
+
+  <hr style="margin:40px 0 20px">
+  <p style="font-size:12px;color:#64748b">
+    Documento criado em junho 2026 a partir da escolha explícita do usuário pela Opção B (web + nuvem).<br>
+    Todo desenvolvimento deve rastrear esta especificação. Alterações devem ser registradas em versions.html.
+  </p>
+</main>
+</body>
+</html>

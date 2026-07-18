@@ -1,0 +1,572 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { MeetingPlan, Activity, EducationalArea } from '../types';
+import { savePlanToCatalog } from '../services/storageService';
+import { normalizePlanForUse } from '../services/planNormalizationService';
+import { exportMeetingPlanHtml } from '../services/meetingPlanHtmlExport';
+import { ConfirmDialog } from './ConfirmDialog';
+
+interface Props {
+  plan: MeetingPlan;
+  onReset: () => void;
+  onRegenerate: () => void;
+  isGenerating?: boolean;
+}
+
+export const PlanDisplay: React.FC<Props> = ({ plan: initialPlan, onReset, onRegenerate, isGenerating }) => {
+  const [plan, setPlan] = useState<MeetingPlan>(normalizePlanForUse(initialPlan));
+  const [isSaved, setIsSaved] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [confirmRegenerate, setConfirmRegenerate] = useState(false);
+  // Autosave: rascunho gravado 2s após última edição, sem precisar clicar Salvar
+  const [autoSavedAt, setAutoSavedAt] = useState<string | null>(null);
+  const autosaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const dirtyRef = useRef(false);
+  // Ref sempre apontando para o plano atual: o save de unmount usa este valor
+  // em vez da closure do primeiro render (que descartaria edicoes recentes).
+  const planRef = useRef(plan);
+  planRef.current = plan;
+
+  const handleSave = async () => {
+    await savePlanToCatalog(plan);
+    setIsSaved(true);
+    dirtyRef.current = false;
+  };
+
+  // Persiste automaticamente quando o plano muda — debounce 2s
+  useEffect(() => {
+    if (!dirtyRef.current) return;
+    if (autosaveTimerRef.current) clearTimeout(autosaveTimerRef.current);
+    autosaveTimerRef.current = setTimeout(async () => {
+      await savePlanToCatalog(plan);
+      setAutoSavedAt(new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }));
+      dirtyRef.current = false;
+    }, 2000);
+    return () => {
+      if (autosaveTimerRef.current) clearTimeout(autosaveTimerRef.current);
+    };
+  }, [plan]);
+
+  // Salva pendência ao desmontar (ex: usuário clica Voltar antes do debounce disparar)
+  useEffect(() => {
+    return () => {
+      if (dirtyRef.current && autosaveTimerRef.current) {
+        clearTimeout(autosaveTimerRef.current);
+        savePlanToCatalog(planRef.current).catch(() => {});
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // V8: qualquer mutação invalida o "Salvo no Catálogo ✓" e marca para autosave
+  const markDirty = () => {
+    dirtyRef.current = true;
+    if (isSaved) setIsSaved(false);
+  };
+
+  const mutatePlan = (updater: (p: MeetingPlan) => MeetingPlan) => {
+    setPlan(p => updater(p));
+    markDirty();
+  };
+
+  const updateActivity = (index: number, field: keyof Activity, value: any) => {
+      // Forma funcional: lê o estado mais recente, não a closure do render.
+      setPlan(prev => {
+          const newActivities = [...prev.activities];
+          newActivities[index] = { ...newActivities[index], [field]: value };
+          return { ...prev, activities: newActivities };
+      });
+      markDirty();
+  };
+
+  const updateActivityEvaluation = (index: number, field: string, value: any) => {
+      // Forma funcional: lê o estado mais recente, não a closure do render.
+      setPlan(prev => {
+          const newActivities = [...prev.activities];
+          const current = newActivities[index].evaluation || {
+              acompanhamento: '',
+              avaliacaoJovens: '',
+              avaliacaoChefia: '',
+              requisitosObservaveis: [],
+              criteriosDeAceite: [],
+              evidenciasSugeridas: [],
+          };
+          newActivities[index] = {
+              ...newActivities[index],
+              evaluation: { ...current, [field]: value },
+          };
+          return { ...prev, activities: newActivities };
+      });
+      markDirty();
+  };
+
+  const lines = (value: string): string[] =>
+      value.split('\n').map(v => v.trim()).filter(Boolean);
+
+  const removeActivity = (index: number) => {
+      const newActivities = plan.activities.filter((_, i) => i !== index);
+      setPlan({ ...plan, activities: newActivities });
+      markDirty();
+  };
+
+  const addActivity = () => {
+      const newActivity: Activity = {
+          _uid: `act-new-${Date.now()}`,
+          title: "Nova Atividade",
+          description: "Descrição da atividade...",
+          durationMinutes: 15,
+          materials: [],
+          educationalArea: EducationalArea.CARATER,
+          progressionObjective: "",
+          evaluation: {
+              acompanhamento: '',
+              avaliacaoJovens: '',
+              avaliacaoChefia: '',
+              requisitosObservaveis: [],
+              criteriosDeAceite: [],
+              evidenciasSugeridas: [],
+          },
+      };
+      setPlan({ ...plan, activities: [...plan.activities, newActivity] });
+      markDirty();
+  };
+
+  // V23: timestamp acumulado por atividade ("00:00 → 00:15")
+  const formatHHMM = (mins: number) => {
+    const h = Math.floor(mins / 60), m = mins % 60;
+    return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+  };
+  const activityRanges = (() => {
+    let acc = 0;
+    return plan.activities.map(a => {
+      if (a.scheduledStartTime && a.scheduledEndTime) {
+        return `${a.scheduledStartTime} → ${a.scheduledEndTime}`;
+      }
+      const start = acc, end = acc + (a.durationMinutes || 0);
+      acc = end;
+      return `${formatHHMM(start)} → ${formatHHMM(end)}`;
+    });
+  })();
+
+  const cardTone = (act: Activity): string => {
+    if (act.operationalType === 'opening') return 'bg-blue-50 border-blue-200';
+    if (act.operationalType === 'break') return 'bg-cyan-50 border-cyan-200';
+    if (act.operationalType === 'closing') return 'bg-indigo-50 border-indigo-200';
+    return 'bg-white border-slate-200';
+  };
+
+  const bubbleTone = (act: Activity): string => {
+    if (act.operationalType === 'opening') return 'border-blue-600 text-blue-700 bg-blue-50';
+    if (act.operationalType === 'break') return 'border-cyan-600 text-cyan-700 bg-cyan-50';
+    if (act.operationalType === 'closing') return 'border-indigo-600 text-indigo-700 bg-indigo-50';
+    return 'border-indigo-600 text-indigo-700 bg-white';
+  };
+
+  return (
+    <div className="bg-white rounded-2xl shadow-xl overflow-hidden animate-slide-in border border-slate-200">
+      {confirmRegenerate && (
+        <ConfirmDialog
+          title="Gerar novamente"
+          message="Gerar novamente preservando os mesmos objetivos e tema? O plano atual sera descartado."
+          confirmText="Gerar"
+          danger
+          onCancel={() => setConfirmRegenerate(false)}
+          onConfirm={() => {
+            setConfirmRegenerate(false);
+            onRegenerate();
+          }}
+        />
+      )}
+      {/* Header Actions */}
+      <div className="bg-slate-900 p-4 flex justify-between items-center sticky top-0 z-20 shadow-md no-print">
+        <div className="flex items-center gap-3">
+          <button onClick={onReset} className="text-slate-400 hover:text-white text-sm font-bold">← Voltar</button>
+          {autoSavedAt && !isSaved && <span className="text-[10px] text-emerald-300 italic" title="Rascunho gravado automaticamente">💾 Autosalvo {autoSavedAt}</span>}
+        </div>
+        <div className="flex gap-2 flex-wrap">
+            <button
+                onClick={() => setConfirmRegenerate(true)}
+                disabled={isGenerating}
+                className="px-3 py-2 rounded-lg text-xs font-bold bg-amber-500 text-amber-900 hover:bg-amber-400 transition-all"
+                title="Re-dispara a IA com a mesma configuração (sem perder objetivos)"
+            >
+                {isGenerating ? 'Gerando...' : '🔄 Gerar de novo'}
+            </button>
+            <button
+                onClick={() => window.print()}
+                className="px-3 py-2 rounded-lg text-xs font-bold bg-slate-700 text-white hover:bg-slate-600 transition-all"
+                title="Abre diálogo de impressão (use 'Salvar como PDF')"
+            >
+                🖨️ Imprimir / PDF
+            </button>
+            <button
+                onClick={() => exportMeetingPlanHtml(plan)}
+                className="px-3 py-2 rounded-lg text-xs font-bold bg-blue-600 text-white hover:bg-blue-500 transition-all"
+                title="Salva uma página HTML responsiva para uso em campo"
+            >
+                🌐 Exportar HTML
+            </button>
+            <button
+                onClick={() => setIsEditing(!isEditing)}
+                className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${isEditing ? 'bg-yellow-500 text-yellow-900' : 'bg-slate-700 text-white hover:bg-slate-600'}`}
+            >
+                {isEditing ? '🔓 Editando...' : '✏️ Editar'}
+            </button>
+            <button
+                onClick={handleSave}
+                disabled={isSaved}
+                className={`px-6 py-2 rounded-lg text-xs font-bold uppercase tracking-widest transition-all ${isSaved ? 'bg-green-600 text-white cursor-default' : 'bg-indigo-600 text-white hover:bg-indigo-500 shadow-lg'}`}
+            >
+                {isSaved ? 'Salvo no Catálogo ✓' : '💾 Salvar Roteiro'}
+            </button>
+        </div>
+      </div>
+
+      <div className="p-8 max-w-4xl mx-auto">
+        {/* Title Section */}
+        <div className="text-center mb-10 border-b border-slate-100 pb-8">
+            {isEditing ? (
+                <input 
+                    value={plan.theme} 
+                    onChange={e => { setPlan({...plan, theme: e.target.value}); markDirty(); }}
+                    className="text-3xl font-black text-slate-800 text-center w-full border-b-2 border-dashed border-slate-300 focus:border-indigo-500 outline-none pb-2"
+                />
+            ) : (
+                <h2 className="text-3xl font-black text-slate-800 mb-2">{plan.theme}</h2>
+            )}
+            <div className="flex justify-center gap-4 text-xs font-bold text-slate-500 uppercase tracking-widest mt-2">
+                <span>{plan.branch}</span>
+                <span>•</span>
+                <span>{plan.totalDuration} min</span>
+            </div>
+            {isEditing ? (
+                <textarea 
+                    value={plan.generalNotes} 
+                    onChange={e => { setPlan({...plan, generalNotes: e.target.value}); markDirty(); }}
+                    className="w-full mt-4 p-2 border rounded text-sm text-slate-600 text-center"
+                    rows={2}
+                />
+            ) : (
+                <div className="space-y-4 max-w-3xl mx-auto mt-6">
+                    <p className="text-slate-600 italic text-center text-sm">"{plan.generalNotes}"</p>
+
+                    {plan.fundoDeCena && (
+                        <div className="bg-purple-50 p-4 rounded-xl border border-purple-200 text-left">
+                            <h4 className="text-xs font-black text-purple-800 uppercase mb-2 flex items-center gap-2">🎭 Fundo de Cena</h4>
+                            <p className="text-sm text-purple-900 leading-relaxed">{plan.fundoDeCena}</p>
+                        </div>
+                    )}
+
+                    {plan.preparacaoChefia && (
+                        <div className="bg-amber-50 p-4 rounded-xl border border-amber-200 text-left">
+                            <h4 className="text-xs font-black text-amber-800 uppercase mb-2 flex items-center gap-2">📋 Preparação da Chefia</h4>
+                            <p className="text-sm text-amber-900 leading-relaxed whitespace-pre-line">{plan.preparacaoChefia}</p>
+                        </div>
+                    )}
+
+                    {plan.educationalRationale && (
+                        <div className="bg-indigo-50 p-4 rounded-xl border border-indigo-100 text-left">
+                            <h4 className="text-xs font-black text-indigo-800 uppercase mb-2 flex items-center gap-2">🎯 Intencionalidade Educativa</h4>
+                            <p className="text-sm text-indigo-900 leading-relaxed">{plan.educationalRationale}</p>
+                        </div>
+                    )}
+                </div>
+            )}
+        </div>
+
+        {/* Activities Timeline */}
+        <div className="space-y-8 relative before:absolute before:left-[19px] before:top-0 before:h-full before:w-0.5 before:bg-slate-200">
+            {plan.activities.map((act, i) => (
+                <div key={act._uid || i} className="relative pl-12 group">
+                    {/* Time Bubble */}
+                    <div className={`absolute left-0 top-0 w-10 h-10 border-2 rounded-full flex items-center justify-center text-xs font-black shadow-sm z-10 ${bubbleTone(act)}`}>
+                        {i + 1}
+                    </div>
+
+                    {/* Card */}
+                    <div className={`border rounded-xl p-6 hover:shadow-md transition-shadow relative ${cardTone(act)}`}>
+                        {isEditing && (
+                            <button 
+                                onClick={() => removeActivity(i)}
+                                className="absolute top-2 right-2 text-red-300 hover:text-red-500 font-bold px-2"
+                            >
+                                🗑️
+                            </button>
+                        )}
+
+                        <div className="flex justify-between items-start mb-3">
+                            <div className="flex-1">
+                                {isEditing ? (
+                                    <input 
+                                        value={act.title}
+                                        onChange={e => updateActivity(i, 'title', e.target.value)}
+                                        className="font-bold text-lg text-slate-800 w-full mb-1 border-b border-dashed outline-none"
+                                    />
+                                ) : (
+                                    <h3 className="font-bold text-lg text-slate-800">{act.title}</h3>
+                                )}
+                                <div className="flex gap-2 mt-1">
+                                    <span className="bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded text-[10px] font-bold uppercase">{act.educationalArea}</span>
+                                    {isEditing ? (
+                                        <input 
+                                            type="number"
+                                            value={act.durationMinutes}
+                                            onChange={e => updateActivity(i, 'durationMinutes', Number(e.target.value))}
+                                            className="w-16 bg-slate-100 text-slate-600 px-2 py-0.5 rounded text-[10px] font-bold border"
+                                        />
+                                    ) : (
+                                        <span className="bg-slate-100 text-slate-600 px-2 py-0.5 rounded text-[10px] font-bold">⏱️ {act.durationMinutes} min · {activityRanges[i]}</span>
+                                    )}
+                                    {act.isOperational && (
+                                        <span className="bg-white/80 text-slate-700 px-2 py-0.5 rounded text-[10px] font-black uppercase border">Rotina</span>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+
+                        {isEditing ? (
+                            <textarea 
+                                value={act.description}
+                                onChange={e => updateActivity(i, 'description', e.target.value)}
+                                className="w-full text-sm text-slate-600 leading-relaxed p-2 border rounded h-24"
+                            />
+                        ) : (
+                            <p className="text-sm text-slate-600 leading-relaxed whitespace-pre-line">{act.description}</p>
+                        )}
+
+                        {/* Fundo de cena específico da atividade */}
+                        {(act.fundoDeCena || isEditing) && (
+                            <div className="mt-3 p-2 bg-purple-50 border-l-2 border-purple-400 rounded text-xs">
+                                <strong className="text-purple-900 block mb-1">🎭 Fundo de cena</strong>
+                                {isEditing ? (
+                                    <textarea
+                                        value={act.fundoDeCena || ''}
+                                        onChange={e => updateActivity(i, 'fundoDeCena', e.target.value)}
+                                        placeholder="Como esta atividade se encaixa na narrativa global..."
+                                        className="w-full p-1 border rounded text-xs italic"
+                                        rows={2}
+                                    />
+                                ) : (
+                                    <p className="italic text-purple-900">{act.fundoDeCena}</p>
+                                )}
+                            </div>
+                        )}
+
+                        {/* Instrução para chefia */}
+                        {(act.instrucaoChefia || isEditing) && (
+                            <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded text-xs">
+                                <strong className="text-amber-900 uppercase text-[10px] block mb-1">📋 Instrução para chefia</strong>
+                                {isEditing ? (
+                                    <textarea
+                                        value={act.instrucaoChefia || ''}
+                                        onChange={e => updateActivity(i, 'instrucaoChefia', e.target.value)}
+                                        placeholder="Passo-a-passo de execução para o chefe conduzir..."
+                                        className="w-full p-1 border rounded text-xs"
+                                        rows={3}
+                                    />
+                                ) : (
+                                    <p className="text-amber-900 whitespace-pre-line leading-relaxed">{act.instrucaoChefia}</p>
+                                )}
+                            </div>
+                        )}
+
+                        {/* Objetivo específico */}
+                        {(act.objetivoEspecifico || isEditing) && (
+                            <div className="mt-3 text-xs">
+                                <strong className="text-slate-500 uppercase text-[9px] block mb-1">🎯 Objetivo específico</strong>
+                                {isEditing ? (
+                                    <input
+                                        type="text"
+                                        value={act.objetivoEspecifico || ''}
+                                        onChange={e => updateActivity(i, 'objetivoEspecifico', e.target.value)}
+                                        placeholder="Ao final, o jovem será capaz de..."
+                                        className="w-full p-1 border rounded text-xs italic"
+                                    />
+                                ) : (
+                                    <p className="text-slate-700 italic">{act.objetivoEspecifico}</p>
+                                )}
+                            </div>
+                        )}
+
+                        {(act.evaluation || isEditing) && (
+                            <div className="mt-3 p-3 bg-emerald-50 border border-emerald-200 rounded text-xs">
+                                <strong className="text-emerald-900 uppercase text-[10px] block mb-2">✅ Acompanhamento e avaliação</strong>
+                                {isEditing ? (
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                        <textarea
+                                            value={act.evaluation?.acompanhamento || ''}
+                                            onChange={e => updateActivityEvaluation(i, 'acompanhamento', e.target.value)}
+                                            placeholder="Como acompanhar durante a atividade..."
+                                            className="w-full p-2 border rounded text-xs"
+                                            rows={3}
+                                        />
+                                        <textarea
+                                            value={act.evaluation?.avaliacaoJovens || ''}
+                                            onChange={e => updateActivityEvaluation(i, 'avaliacaoJovens', e.target.value)}
+                                            placeholder="Autoavaliação ou avaliação por pares..."
+                                            className="w-full p-2 border rounded text-xs"
+                                            rows={3}
+                                        />
+                                        <textarea
+                                            value={act.evaluation?.avaliacaoChefia || ''}
+                                            onChange={e => updateActivityEvaluation(i, 'avaliacaoChefia', e.target.value)}
+                                            placeholder="Como a chefia avalia e registra..."
+                                            className="w-full p-2 border rounded text-xs md:col-span-2"
+                                            rows={3}
+                                        />
+                                        <textarea
+                                            value={(act.evaluation?.requisitosObservaveis || []).join('\n')}
+                                            onChange={e => updateActivityEvaluation(i, 'requisitosObservaveis', lines(e.target.value))}
+                                            placeholder="Requisitos observáveis, um por linha"
+                                            className="w-full p-2 border rounded text-xs font-mono"
+                                            rows={3}
+                                        />
+                                        <textarea
+                                            value={(act.evaluation?.criteriosDeAceite || []).join('\n')}
+                                            onChange={e => updateActivityEvaluation(i, 'criteriosDeAceite', lines(e.target.value))}
+                                            placeholder="Critérios de aceite, um por linha"
+                                            className="w-full p-2 border rounded text-xs font-mono"
+                                            rows={3}
+                                        />
+                                        <textarea
+                                            value={(act.evaluation?.evidenciasSugeridas || []).join('\n')}
+                                            onChange={e => updateActivityEvaluation(i, 'evidenciasSugeridas', lines(e.target.value))}
+                                            placeholder="Evidências sugeridas, uma por linha"
+                                            className="w-full p-2 border rounded text-xs font-mono md:col-span-2"
+                                            rows={2}
+                                        />
+                                    </div>
+                                ) : (
+                                    <div className="space-y-3 text-emerald-950">
+                                        <p className="whitespace-pre-line">{act.evaluation?.acompanhamento}</p>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                            <div>
+                                                <strong className="block text-[9px] uppercase text-emerald-700 mb-1">Jovens</strong>
+                                                <p className="whitespace-pre-line">{act.evaluation?.avaliacaoJovens}</p>
+                                            </div>
+                                            <div>
+                                                <strong className="block text-[9px] uppercase text-emerald-700 mb-1">Chefia</strong>
+                                                <p className="whitespace-pre-line">{act.evaluation?.avaliacaoChefia}</p>
+                                            </div>
+                                        </div>
+                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                            <div>
+                                                <strong className="block text-[9px] uppercase text-emerald-700 mb-1">Requisitos</strong>
+                                                <ul className="list-disc list-inside space-y-0.5">
+                                                    {(act.evaluation?.requisitosObservaveis || []).map((r, idx) => <li key={idx}>{r}</li>)}
+                                                </ul>
+                                            </div>
+                                            <div>
+                                                <strong className="block text-[9px] uppercase text-emerald-700 mb-1">Critérios</strong>
+                                                <ul className="list-disc list-inside space-y-0.5">
+                                                    {(act.evaluation?.criteriosDeAceite || []).map((c, idx) => <li key={idx}>{c}</li>)}
+                                                </ul>
+                                            </div>
+                                            <div>
+                                                <strong className="block text-[9px] uppercase text-emerald-700 mb-1">Evidências</strong>
+                                                <ul className="list-disc list-inside space-y-0.5">
+                                                    {(act.evaluation?.evidenciasSugeridas || []).map((e, idx) => <li key={idx}>{e}</li>)}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
+                        {/* Preparação prévia */}
+                        {((act.preparacaoPrevia && act.preparacaoPrevia.length > 0) || isEditing) && (
+                            <div className="mt-3 text-xs">
+                                <strong className="text-slate-500 uppercase text-[9px] block mb-1">⚙️ Preparação prévia (uma por linha)</strong>
+                                {isEditing ? (
+                                    <textarea
+                                        value={(act.preparacaoPrevia || []).join('\n')}
+                                        onChange={e => updateActivity(i, 'preparacaoPrevia', e.target.value.split('\n').filter(Boolean))}
+                                        placeholder="Imprimir mapas em A3&#10;Separar 3 cordas de 5m"
+                                        className="w-full p-1 border rounded text-xs font-mono"
+                                        rows={3}
+                                    />
+                                ) : (
+                                    <ul className="list-disc list-inside text-slate-700 space-y-0.5">
+                                        {(act.preparacaoPrevia || []).map((p, idx) => <li key={idx}>{p}</li>)}
+                                    </ul>
+                                )}
+                            </div>
+                        )}
+
+                        <div className="mt-4 pt-4 border-t border-slate-100 grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                            <div>
+                                <strong className="text-slate-400 uppercase text-[9px] block mb-1">Materiais (uma por linha)</strong>
+                                {isEditing ? (
+                                    <textarea
+                                        value={act.materials.join('\n')}
+                                        onChange={e => updateActivity(i, 'materials', e.target.value.split('\n').map(s => s.trim()).filter(Boolean))}
+                                        placeholder={'Cordas\nApito\nFichas A4'}
+                                        className="w-full border rounded p-1 text-xs font-mono"
+                                        rows={3}
+                                    />
+                                ) : (
+                                    act.materials.length > 0 ? (
+                                        <ul className="list-disc list-inside text-slate-700 space-y-0.5">
+                                            {act.materials.map((m, idx) => <li key={idx}>{m}</li>)}
+                                        </ul>
+                                    ) : <span className="text-slate-500">Nenhum</span>
+                                )}
+                            </div>
+                            <div>
+                                <strong className="text-slate-400 uppercase text-[9px] block mb-1">Código de progressão</strong>
+                                <span className="text-indigo-600 font-medium">{act.progressionObjective || 'Geral'}</span>
+                            </div>
+                            {(act.manualReferencia || isEditing) && (
+                                <div>
+                                    <strong className="text-slate-400 uppercase text-[9px] block mb-1">📖 Manual de referência</strong>
+                                    {isEditing ? (
+                                        <input
+                                            type="text"
+                                            value={act.manualReferencia || ''}
+                                            onChange={e => updateActivity(i, 'manualReferencia', e.target.value)}
+                                            placeholder="Manual do Escotista 2025, Cap.X p.YYY"
+                                            className="w-full p-1 border rounded text-xs italic"
+                                        />
+                                    ) : (
+                                        <span className="text-slate-700 font-medium italic">{act.manualReferencia}</span>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            ))}
+            
+            {isEditing && (
+                <div className="pl-12">
+                    <button 
+                        onClick={addActivity}
+                        className="w-full py-3 border-2 border-dashed border-slate-300 rounded-xl text-slate-400 font-bold text-sm hover:border-indigo-400 hover:text-indigo-500 hover:bg-indigo-50 transition-all"
+                    >
+                        + Adicionar Atividade
+                    </button>
+                </div>
+            )}
+        </div>
+
+        {/* Footer Info */}
+        {!isEditing && (
+            <div className="mt-12 bg-slate-50 p-6 rounded-xl border border-slate-200">
+                <h4 className="font-bold text-slate-700 mb-4 flex items-center gap-2">📚 Guia do Chefe</h4>
+                <div className="space-y-4">
+                    {plan.studyGuide.map((guide, i) => (
+                        <div key={i} className="text-sm">
+                            <strong className="text-indigo-700 block mb-1">💡 {guide.activityTitle}</strong>
+                            <p className="text-slate-600 mb-2">{guide.conceptExplainer}</p>
+                            <div className="bg-yellow-50 p-2 rounded border-l-2 border-yellow-400 text-yellow-800 text-xs italic">
+                                "Dica: {guide.teachingTips}"
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        )}
+      </div>
+    </div>
+  );
+};

@@ -1,0 +1,5 @@
+# CAPÍTULO 4
+
+![img-106.jpeg](img-106.jpeg)
+
+# PATRULHAS, CORTE DE HONRA E ASSEMBLEIA DE TROPA

@@ -1,0 +1,5 @@
+outros. Ouça seus comentários, suas preocupações e pense em maneiras de ajudar cada um deles. Procure se aproximar de cada integrante e conheça seus principais interesses e talentos. Ajudando cada integrante individualmente a Patrulha será beneficiada como um todo.
+
+Membros mais novos da Patrulha normalmente necessitarão de mais atenção, especialmente para realização das atividades do Período Introdutório. Cabe a você neste momento mostrar como a Tropa funciona, as principais características da Patrulha e dar as primeiras informações sobre o Escotismo. Os mais novos também poderão apresentar mais dificuldade na hora de ir para uma excursão ou um acampamento. É extremamente importante acolher os novos membros de forma fraterna. O Período Introdutório é também um período de adaptação do jovem à Tropa e você deve se colocar no lugar dele. Imagine quais os anseios de alguém que está chegando novo na Patrulha e então, faça com que se sinta realmente acolhido, com que realmente se sinta parte integrante e necessária da Patrulha.
+
+![img-44.jpeg](img-44.jpeg)

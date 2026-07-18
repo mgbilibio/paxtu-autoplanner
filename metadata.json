@@ -1,0 +1,14 @@
+{
+  "name": "Paxtu AutoPlanner",
+  "short_name": "PaxtuPlanner",
+  "description": "O assistente definitivo para a chefia escoteira. Planeje ciclos, consulte o POR 2025, gerencie progressões e gere fichas de estudo com Inteligência Artificial. Desenvolvido por Margus, do Grupo Unisselva em Cuiabá-MT.",
+  "author": "Margus - Grupo Unisselva (Cuiabá/MT)",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ],
+  "requestFramePermissions": []
+}

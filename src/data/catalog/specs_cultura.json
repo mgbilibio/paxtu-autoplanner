@@ -1,0 +1,344 @@
+[
+  {
+    "code": "SP-CL-ART",
+    "description": "Artes Plásticas",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a diferença entre pintura, escultura e gravura. 2. Identificar e demonstrar o uso de 3 suportes diferentes (tela, papel canson e madeira). 3. Conhecer o círculo cromático e saber criar cores secundárias e terciárias a partir das primárias. 4. Explicar o conceito de perspectiva com um ponto de fuga em um desenho. 5. Apresentar uma obra original de sua autoria usando técnica de tinta (óleo, acrílica ou guache). 6. Conhecer a biografia de 3 pintores brasileiros de renome. 7. Demonstrar como limpar e conservar pincéis e espátulas após o uso. 8. Visitar uma galeria de arte ou exposição e descrever as sensações provocadas pelas obras. 9. Explicar a diferença entre arte figurativa e arte abstrata.",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-ARG",
+    "description": "Artes Gráficas",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a diferença entre impressão Offset, Flexografia e Rotogravura. 2. Identificar problemas comuns de impressão (moiré, 'trapping', falta de registro). 3. Demonstrar como criar uma imposição de páginas para um livreto de 16 páginas. 4. Explicar o conceito de 'Pantone' e como ele garante a fidelidade de cores. 5. Realizar a arte-finalização de um projeto complexo com marcas de corte e sangria. 6. Conhecer os diferentes pesos e acabamentos de papéis (Couché, Offset, Kraft). 7. Explicar o impacto ambiental das tintas e processos gráficos e como mitigá-los. 8. Demonstrar o uso de ferramentas de 'preflight' para verificação de arquivos. 9. Visitar uma gráfica de médio ou grande porte e descrever o fluxo de trabalho.",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-ATN",
+    "description": "Artesanato",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a importância do artesanato como expressão cultural e geração de renda. 2. Demonstrar o uso seguro de 5 ferramentas manuais (estiletes, alicates, agulhas, etc). 3. Apresentar uma peça original feita por você usando técnicas manuais. 4. Identificar 3 matérias-primas naturais e 3 recicladas usadas no artesanato local. 5. Explicar como calcular o preço de venda de um produto artesanal (materiais + tempo). 6. Saber como conservar e limpar peças delicadas feitas à mão. 7. Visitar uma feira de artesanato e entrevistar um artesão sobre seu ofício. 8. Ensinar uma técnica simples de artesanato para a sua seção. 9. Explicar a diferença entre produção artesanal e produção industrial em série.",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-CAR",
+    "description": "Caricaturista",
+    "guidance": "Consultar manual.",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-DEC",
+    "description": "Decoração",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar o círculo cromático e como usar cores análogas e complementares. 2. Demonstrar como planejar o layout de um ambiente (quarto ou sede) para melhor fluxo. 3. Identificar 3 estilos de decoração (ex: Minimalista, Rústico, Industrial). 4. Saber como utilizar a iluminação (direta e indireta) para criar diferentes sensações. 5. Criar um 'Moodboard' (painel de referências) para um projeto de redecoração. 6. Explicar a importância da ergonomia na escolha de móveis e disposição de itens. 7. Demonstrar como usar plantas e elementos naturais na decoração de interiores. 8. Saber como reaproveitar móveis antigos (upcycling) com pintura ou novos puxadores. 9. Conhecer as normas de segurança para instalações decorativas (evitar sobrecarga elétrica).",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-DES",
+    "description": "Desenho",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Demonstrar o uso de diferentes graduações de lápis grafite (H, HB, B, 6B). 2. Executar desenhos de observação de objetos inanimados (natureza morta). 3. Explicar a técnica de luz e sombra (chiaroscuro) para dar volume. 4. Demonstrar perspectiva com dois pontos de fuga. 5. Realizar um desenho de anatomia humana básica (mão, rosto ou pé). 6. Conhecer as técnicas de esfumado e hachura. 7. Saber como conservar desenhos usando fixadores ou pastas adequadas. 8. Criar uma composição original usando lápis de cor ou nanquim. 9. Apresentar um portfólio com pelo menos 5 desenhos autorais.",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-DG",
+    "description": "Desenho Geométrico",
+    "guidance": "Consultar manual.",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-ECL",
+    "description": "Escultura",
+    "guidance": "Consultar manual.",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-FOT",
+    "description": "Fotografia",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Demonstrar domínio sobre a abertura do diafragma, velocidade do obturador e ISO. 2. Explicar a profundidade de campo e como ela altera a percepção da imagem. 3. Realizar uma série fotográfica temática composta por pelo menos 10 fotos. 4. Identificar as diferenças entre sensores Full Frame e APS-C. 5. Saber como utilizar o histograma para garantir a exposição correta. 6. Demonstrar técnicas de pós-processamento básico em software de edição. 7. Explicar o uso de filtros polarizadores e de densidade neutra. 8. Conhecer as regras de composição: Regra dos Terços, Proporção Áurea e Linhas Guia. 9. Realizar a limpeza e manutenção básica de lentes e corpo da câmera.",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-ILU",
+    "description": "Ilustração",
+    "guidance": "Consultar manual.",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-VID",
+    "description": "Vídeo",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Identificar as partes de uma câmera de vídeo ou smartphone voltado para filmagem. 2. Explicar os principais planos de enquadramento (Plano Geral, Médio, Close-up). 3. Demonstrar como capturar um áudio limpo usando microfones internos ou externos. 4. Realizar a iluminação básica de uma cena (luz principal, preenchimento e contra-luz). 5. Produzir, editar e finalizar um vídeo de até 5 minutos sobre uma atividade escoteira. 6. Saber como utilizar transições e cortes secos para manter o ritmo da narrativa. 7. Conhecer os principais formatos de arquivo (MP4, MOV) e resoluções (HD, 4K). 8. Explicar as regras de direitos autorais para trilhas sonoras em vídeos para internet. 9. Demonstrar como fazer o backup e a organização bruta dos arquivos de vídeo (brutos).",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-XIL",
+    "description": "Xilogravura",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar o que é a xilogravura (gravura em madeira) e sua relação com o Cordel. 2. Demonstrar o uso correto das goivas (U, V e formão) e facas de entalhe. 3. Saber preparar a matriz de madeira (lixamento e selagem) antes do corte. 4. Executar o entalhe de um desenho original, cuidando para não ferir as mãos. 5. Demonstrar a entintagem da matriz usando rolo de borracha e tinta específica. 6. Realizar a impressão manual usando um 'barren' ou colher de pau. 7. Diferenciar xilogravura de topo de xilogravura de fio. 8. Apresentar uma série de 3 impressões assinadas e numeradas corretamente. 9. Saber como limpar a matriz e as goivas após o uso para conservação.",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-BAN",
+    "description": "Banda",
+    "guidance": "Consultar manual.",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-CNT",
+    "description": "Canto",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Demonstrar exercícios de respiração diafragmática para o canto. 2. Realizar o aquecimento e desaquecimento vocal corretamente. 3. Cantar uma música afinada com acompanhamento ou a cappella. 4. Explicar a diferença entre as classificações vocais (Soprano, Tenor, Baixo, etc). 5. Demonstrar boa articulação e dicção ao pronunciar as letras. 6. Conhecer a anatomia básica das pregas vocais e laringe. 7. Saber o que é ressonância e como projetar a voz sem esforço. 8. Participar de um coral ou grupo vocal por pelo menos 3 meses. 9. Apresentar uma canção folclórica brasileira para a seção.",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-CIN",
+    "description": "Cinema",
+    "guidance": "Consultar manual.",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-COR",
+    "description": "Coreografia",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar as origens da Literatura de Cordel e sua importância para a cultura do Nordeste brasileiro. 2. Identificar a estrutura clássica de rimas e métricas (sextilha, septilha ou décima). 3. Conhecer a obra de grandes cordelistas como Leandro Gomes de Barros ou Patativa do Assaré. 4. Explicar a relação entre o Cordel e a Xilogravura. 5. Escrever um folheto de cordel original (mínimo de 10 estrofes) sobre um tema escoteiro. 6. Demonstrar como é feita a declamação de um cordel, respeitando o ritmo e a entonação. 7. Ilustrar a capa de um cordel usando técnica de desenho que simule xilogravura. 8. Conhecer a história de 'A Chegada de Lampião ao Inferno' ou outro clássico popular. 9. Organizar um varal de cordéis em uma atividade do grupo.",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-DNC",
+    "description": "Dança",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Executar uma coreografia completa de um estilo de dança escolhido. 2. Demonstrar conhecimento sobre o ritmo e a métrica musical do estilo. 3. Explicar a origem histórica da dança praticada. 4. Demonstrar alongamento e flexibilidade adequados para a modalidade. 5. Saber como realizar a expressão corporal e facial durante a dança. 6. Conhecer os figurinos tradicionais e acessórios do estilo. 7. Participar de uma apresentação pública de dança (escola, grupo ou festival). 8. Demonstrar a técnica de improviso baseada no ritmo musical. 9. Ensinar um passo básico de dança para os colegas da seção.",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-IMP",
+    "description": "Improviso",
+    "guidance": "Consultar manual.",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-MAG",
+    "description": "Mágica",
+    "guidance": "Consultar manual.",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-MAR",
+    "description": "Marionetes",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Diferenciar Marionete (fios), Fantoche (mão), Boneco de Vara e Teatro de Sombras. 2. Construir um boneco de luva (fantoche) com cabeça de papel machê ou espuma. 3. Demonstrar a técnica de manipulação: olhar do boneco, respiração e sincronia labial. 4. Montar um palco simples (tapadeira) para apresentações itinerantes. 5. Escrever um roteiro curto (esquete) para teatro de bonecos com fundo moral. 6. Realizar a voz característica para pelo menos dois personagens diferentes. 7. Demonstrar como confeccionar os controles (cruzetas) para uma marionete de fios. 8. Organizar uma apresentação de 5 minutos para uma seção do grupo. 9. Saber como realizar a manutenção e guarda dos bonecos para não embaraçar os fios.",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-MIM",
+    "description": "Mímica",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a história da mímica moderna e a importância de Marcel Marceau. 2. Demonstrar os exercícios básicos de isolamento corporal (cabeça, ombros, quadril). 3. Executar as ilusões clássicas: 'A Parede Invisível', 'Caminhada no Lugar' e 'Cabo de Guerra'. 4. Saber transmitir emoções (alegria, medo, raiva, surpresa) apenas com o rosto e corpo. 5. Criar uma narrativa silenciosa com início, meio e fim (mínimo 2 minutos). 6. Demonstrar o uso de objetos imaginários respeitando o peso, volume e resistência. 7. Explicar o que é o 'ponto fixo' na mímica e sua importância para a credibilidade. 8. Realizar uma performance de mímica em um Fogo de Conselho ou atividade de grupo. 9. Saber como aplicar a maquiagem clássica de Pierrot ou mimo, se necessário.",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-MUS",
+    "description": "Música",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Identificar auditivamente 5 instrumentos de famílias diferentes (cordas, sopro, percussão). 2. Explicar os conceitos básicos de ritmo, melodia e harmonia. 3. Saber ler uma partitura simples ou tablatura. 4. Tocar uma música completa em um instrumento de sua escolha ou cantar afinado. 5. Conhecer a biografia de um grande compositor erudito e um popular. 6. Explicar a função do maestro em uma orquestra ou regente em um coro. 7. Apresentar uma canção escoteira para sua seção ensinando a letra. 8. Visitar um ensaio ou concerto musical e fazer um breve relato. 9. Conhecer a história do Hino Nacional Brasileiro e saber cantá-lo corretamente.",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-TEA",
+    "description": "Teatro",
+    "guidance": "Consultar manual.",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-ARC",
+    "description": "Arqueologia",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a diferença entre Arqueologia e Paleontologia. 2. Descrever os métodos de datação (Carbono-14, Estratigrafia). 3. Identificar as etapas de uma escavação arqueológica profissional. 4. Conhecer um sítio arqueológico brasileiro importante (ex: Serra da Capivara). 5. Explicar a importância da preservação do patrimônio arqueológico. 6. Demonstrar como limpar e catalogar um 'artefato' simulado. 7. Descrever a vida cotidiana de uma civilização antiga baseada em achados. 8. Saber o que é a 'Lei de Proteção ao Patrimônio' no Brasil. 9. Identificar 5 tipos de artefatos (cerâmica, pedra lascada, metal, etc.).",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-BIB",
+    "description": "Bíblia",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Identificar a divisão da Bíblia em Antigo e Novo Testamento. 2. Saber localizar rapidamente capítulos e versículos indicados. 3. Conhecer a história dos 4 Evangelistas e seus símbolos. 4. Explicar a diferença entre parábolas, salmos e profecias. 5. Relatar a história de 3 personagens bíblicos importantes. 6. Saber quais são os livros do Pentateuco. 7. Explicar o contexto histórico básico da escrita dos textos bíblicos. 8. Demonstrar como a Bíblia é usada na liturgia ou cultos. 9. Memorizar e recitar 3 versículos que inspirem a vida escoteira.",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-CAT",
+    "description": "Catequese",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar os fundamentos da doutrina cristã católica. 2. Identificar os 7 sacramentos e explicar o significado de cada um. 3. Conhecer as orações fundamentais (Pai Nosso, Ave Maria, Credo). 4. Participar ativamente da vida comunitária da paróquia. 5. Explicar o significado do Ano Litúrgico e suas cores. 6. Saber a história de um santo padroeiro ou mártir cristão. 7. Auxiliar na preparação de uma atividade de catequese para crianças. 8. Conhecer os 10 Mandamentos e sua aplicação no dia a dia. 9. Explicar o conceito de Santíssima Trindade.",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-CRI",
+    "description": "Crítica de Arte",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a diferença entre gosto pessoal e análise crítica fundamentada. 2. Escrever uma crítica de 2 páginas sobre uma exposição, filme ou peça teatral. 3. Identificar os elementos de composição em uma obra visual (equilíbrio, contraste). 4. Saber pesquisar o contexto histórico e biográfico do artista analisado. 5. Conhecer as funções da arte: estética, pragmática e expressiva. 6. Analisar o impacto de uma obra de arte na sociedade de sua época. 7. Debater sobre o conceito de 'belo' através dos tempos. 8. Demonstrar conhecimento sobre os principais movimentos de vanguarda. 9. Realizar uma palestra sobre a importância da crítica para o público leigo.",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-CBR",
+    "description": "Cultura Brasileira",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Identificar os 5 pratos típicos nacionais de maior relevância. 2. Conhecer a história do Samba, Choro e Bossa Nova. 3. Descrever 3 festas populares brasileiras (ex: Círio de Nazaré, Bumba-meu-boi). 4. Identificar as principais contribuições indígenas e africanas na nossa língua. 5. Conhecer a biografia de 3 escritores clássicos do Brasil. 6. Explicar o que é o 'sincretismo cultural' brasileiro. 7. Realizar uma apresentação sobre as belezas naturais e turísticas do Brasil. 8. Identificar os principais biomas brasileiros e sua importância cultural. 9. Organizar um 'Dia Cultural' com músicas e curiosidades do Brasil.",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-ETI",
+    "description": "Etiqueta",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Demonstrar postura correta ao caminhar, sentar e em apresentações oficiais. 2. Saber como realizar apresentações entre pessoas de diferentes idades e cargos. 3. Explicar as regras de etiqueta digital (Netiqueta) em e-mails e redes sociais. 4. Demonstrar o uso correto dos talheres, copos e guardanapo em uma mesa formal. 5. Saber como se vestir adequadamente para diferentes tipos de eventos. 6. Explicar a importância da pontualidade e do agradecimento (cartões ou notas). 7. Demonstrar como receber e presentear com elegância. 8. Conhecer o protocolo básico para recepção de autoridades civis e religiosas. 9. Saber como agir com discrição em situações sociais imprevistas ou gafes.",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-ETN",
+    "description": "Etnologia",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a diferença entre Etnia e Raça sob o ponto de vista científico. 2. Identificar os principais grupos étnicos que formaram a população brasileira. 3. Descrever as características de uma cultura indígena específica do seu estado. 4. Conhecer a história das migrações humanas e como elas moldaram o mundo atual. 5. Explicar o conceito de aculturação e sincretismo religioso no Brasil. 6. Identificar elementos da cultura africana presentes na língua, culinária e artes brasileiras. 7. Realizar um levantamento sobre as comunidades quilombolas ou tradicionais da sua região. 8. Pesquisar sobre o mito de criação de uma cultura diferente da sua. 9. Participar de uma atividade que celebre a diversidade cultural e relatar a experiência.",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-FIL",
+    "description": "Filatelia",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a origem da Filosofia na Grécia Antiga. 2. Identificar as ideias principais de Sócrates, Platão e Aristóteles. 3. Diferenciar Ética de Moral de forma filosófica. 4. Debater um dilema ético contemporâneo usando argumentos lógicos. 5. Explicar o que é o 'Método Científico' e sua base filosófica. 6. Conhecer a diferença entre Racionalismo e Empirismo. 7. Escrever um pequeno ensaio sobre 'O que é a Verdade?'. 8. Explicar o conceito de Cidadania na visão de um filósofo moderno. 9. Identificar a influência da filosofia nas leis e na democracia atual.",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-FOL",
+    "description": "Folclore",
+    "guidance": "Consultar manual.",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-GEN",
+    "description": "Genealogia",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Montar sua árvore genealógica até a quarta geração (bisavós). 2. Saber como realizar pesquisas em cartórios e arquivos digitais (ex: FamilySearch). 3. Explicar o que são as certidões de nascimento, casamento e óbito e sua importância. 4. Identificar a origem do seu sobrenome e sua história. 5. Realizar uma entrevista com o familiar mais velho sobre as origens da família. 6. Localizar documentos ou fotos antigas e digitalizá-los com cuidado. 7. Explicar o conceito de ascendência e descendência. 8. Conhecer os processos de imigração que trouxeram seus antepassados ao Brasil. 9. Saber como organizar as informações genealógicas em softwares ou fichas.",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-HER",
+    "description": "Heráldica",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a origem e a finalidade dos brasões de armas. 2. Identificar os elementos de um brasão: escudo, timbre, paquife e lema. 3. Conhecer as regras de esmaltes (cores e metais) e partições do escudo. 4. Desenhar o brasão de armas de sua cidade ou estado e explicar os símbolos. 5. Criar um brasão pessoal ou para sua patrulha seguindo as normas heráldicas. 6. Saber a diferença entre heráldica de família, de domínio e eclesiástica. 7. Identificar as figuras heráldicas mais comuns (leão, águia, flor-de-lis). 8. Explicar a importância da heráldica no Movimento Escoteiro. 9. Visitar um local com exposição de brasões ou pesquisar sobre a heráldica nacional.",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-HAR",
+    "description": "História da Arte",
+    "guidance": "Consultar manual.",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-HBR",
+    "description": "História do Brasil",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Descrever os principais eventos que levaram à Independência do Brasil. 2. Explicar as causas e consequências da Proclamação da República. 3. Conhecer a história da escravidão no Brasil e o processo de abolição. 4. Identificar as principais revoltas coloniais e do império (ex: Inconfidência Mineira). 5. Descrever o papel do Brasil na Segunda Guerra Mundial (FEB). 6. Conhecer a história da construção de Brasília e seu impacto no país. 7. Explicar o período da Era Vargas e as principais mudanças sociais ocorridas. 8. Pesquisar sobre a história do seu estado ou cidade e apresentar para a seção. 9. Visitar um museu histórico ou local de memória e fazer um relatório.",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-HIS",
+    "description": "História",
+    "guidance": "Consultar manual.",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-HESC",
+    "description": "Hist. Escotismo",
+    "guidance": "Consultar manual.",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-HES",
+    "description": "História Espacial",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a importância da missão Sputnik 1 para a humanidade. 2. Descrever a trajetória de Yuri Gagarin e sua famosa frase. 3. Citar os principais eventos da Corrida Espacial (EUA vs URSS). 4. Explicar como funciona o ônibus espacial e por que foi aposentado. 5. Conhecer a história da Estação Espacial Internacional (ISS). 6. Pesquisar sobre o desastre do Challenger e as lições aprendidas. 7. Identificar as contribuições de cientistas mulheres para a NASA. 8. Explicar o objetivo das missões Artemis para o retorno à Lua. 9. Relatar sobre a exploração de Marte por rovers (Curiosity, Perseverance).",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-HMA",
+    "description": "História Marítima",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Citar os principais tipos de embarcações da Antiguidade (Galés, Caravelas). 2. Explicar a importância das Grandes Navegações para o comércio global. 3. Relatar a história da Batalha de Riachuelo e seu papel no Brasil. 4. Conhecer a evolução dos navios: da vela ao vapor e propulsão nuclear. 5. Identificar os grandes exploradores marítimos (Colombo, Gama, Cabral). 6. Explicar o que foi a pirataria clássica vs corsários oficiais. 7. Descrever a importância do Canal de Suez e do Panamá para o mar. 8. Saber a história do naufrágio do Titanic e as mudanças de segurança. 9. Pesquisar sobre a Marinha do Brasil e sua atuação histórica.",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-IND",
+    "description": "Tradições Indígenas",
+    "guidance": "Consultar manual.",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-LEN",
+    "description": "Lendas e Mitos",
+    "guidance": "Consultar manual.",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-LIN",
+    "description": "Línguas Indígenas",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Identificar os principais troncos linguísticos indígenas do Brasil (Tupi e Macro-Jê). 2. Aprender e usar 10 palavras de origem indígena que usamos no português cotidiano. 3. Conhecer a situação atual das línguas indígenas no Brasil (quantas existem e riscos). 4. Saber cumprimentar e se apresentar em uma língua indígena específica (ex: Guarani). 5. Conhecer a história da preservação das línguas indígenas pelo SPI e FUNAI. 6. Pesquisar sobre a literatura ou tradição oral de um povo indígena específico. 7. Explicar a importância da preservação das línguas para a manutenção da cultura de um povo. 8. Visitar uma aldeia ou centro cultural indígena e aprender sobre sua comunicação. 9. Elaborar um glossário com termos indígenas relacionados à natureza (flora e fauna).",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-MUSG",
+    "description": "Museologia",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar o que é um museu e quais são suas principais funções (coleta, conservação, pesquisa e exposição). 2. Diferenciar museus de arte, história, ciência e museus comunitários. 3. Saber como realizar o inventário e a catalogação básica de um objeto histórico. 4. Explicar as normas de conservação preventiva (controle de luz, umidade e temperatura). 5. Demonstrar como manusear objetos antigos usando luvas e técnicas adequadas. 6. Projetar uma pequena exposição temática para a sede do grupo escoteiro. 7. Conhecer a história de um grande museu nacional (ex: Museu Nacional ou MASP). 8. Explicar o papel educativo dos museus na sociedade atual. 9. Visitar os bastidores (reserva técnica) de um museu, se possível, ou entrevistar um curador.",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-NUM",
+    "description": "Numismática",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Apresentar uma coleção de pelo menos 30 moedas ou cédulas de diferentes épocas ou países. 2. Explicar os termos técnicos: anverso, reverso, orla, legenda e dístico. 3. Saber identificar o estado de conservação de uma moeda (MBC, Soberba, Flor de Cunho). 4. Conhecer a história do dinheiro no Brasil (Réis, Cruzeiro, Cruzado, Real). 5. Saber identificar moedas comemorativas e moedas com erro de cunhagem. 6. Demonstrar como limpar e armazenar moedas e cédulas sem danificá-las (uso de holders). 7. Explicar o que é inflação e como ela afetou as mudanças de moedas no Brasil. 8. Pesquisar sobre o funcionamento da Casa da Moeda do Brasil. 9. Identificar os sistemas de segurança presentes em uma cédula de Real atual.",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-PAT",
+    "description": "Patrimônio Histórico",
+    "guidance": "Consultar manual.",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-POL",
+    "description": "Poliglota",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Demonstrar fluência em conversação básica em pelo menos duas línguas estrangeiras. 2. Traduzir um texto curto (aprox. 200 palavras) de um idioma estrangeiro para o português. 3. Escrever uma carta ou e-mail formal em um idioma estrangeiro. 4. Identificar as principais diferenças gramaticais entre o português e um idioma escolhido. 5. Atuar como intérprete para um visitante estrangeiro em uma atividade escoteira simples. 6. Conhecer 5 expressões idiomáticas de um país que fale o idioma estudado. 7. Ler um artigo de jornal ou revista estrangeira e fazer um resumo para a seção. 8. Explicar a importância econômica e cultural de ser poliglota no mundo atual. 9. Participar de uma conversa de pelo menos 15 minutos com um nativo ou professor.",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-PRE",
+    "description": "Presépios",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a origem histórica do presépio (São Francisco de Assis). 2. Identificar as figuras obrigatórias e seus significados simbólicos. 3. Montar um presépio completo usando materiais alternativos ou reciclados. 4. Conhecer as diferentes tradições de presépios no mundo (ex: Napolitano). 5. Saber como planejar a iluminação e a cenografia de um presépio de grande porte. 6. Explicar a cronologia dos eventos representados no presépio. 7. Realizar uma exposição ou visita guiada sobre o presépio do grupo escoteiro. 8. Pesquisar sobre o artesanato de figuras de barro em comunidades tradicionais. 9. Organizar um concurso de mini-presépios artesanais na seção.",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-REL",
+    "description": "Religião",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Identificar as 5 maiores religiões do mundo e seus livros sagrados. 2. Explicar o conceito de Ecumenismo e Diálogo Inter-religioso. 3. Conhecer a história e os princípios básicos da fé que você professa (ou de uma escolhida). 4. Descrever o papel da religião na formação ética e moral da sociedade brasileira. 5. Visitar um templo de uma religião diferente da sua e relatar a experiência com respeito. 6. Identificar símbolos religiosos universais e seus significados. 7. Debater sobre o conceito de liberdade religiosa garantido pela Constituição Brasileira. 8. Saber a diferença entre misticismo, religiosidade e ateísmo. 9. Apresentar uma biografia de um líder religioso que lutou pela paz (ex: Gandhi, Teresa de Calcutá).",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-SOC",
+    "description": "Sociologia",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar o conceito de fato social segundo Émile Durkheim. 2. Descrever a diferença entre estratificação social e desigualdade social. 3. Identificar as principais instituições sociais (família, escola, religião, estado). 4. Realizar uma pesquisa sobre a evolução da estrutura familiar na sua comunidade. 5. Explicar o conceito de 'Socialização' primária e secundária. 6. Debater sobre o impacto das mídias sociais nas relações interpessoais modernas. 7. Saber o que é 'diversidade cultural' e por que ela é fundamental para a democracia. 8. Conhecer a biografia de um sociólogo brasileiro de destaque (ex: Florestan Fernandes). 9. Analisar um problema social da sua cidade sob uma perspectiva sociológica.",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-ESC",
+    "description": "Escritor",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Escrever um conto, crônica ou ensaio original de pelo menos 3 páginas. 2. Explicar a diferença entre narrativa em primeira e terceira pessoa. 3. Demonstrar como criar o perfil psicológico de um personagem (ficha de personagem). 4. Saber o que é o 'clímax' e o 'desfecho' em uma estrutura narrativa. 5. Realizar a revisão gramatical e ortográfica de um texto de um colega. 6. Conhecer os principais gêneros literários e identificar o seu favorito. 7. Explicar o processo de publicação de um livro (Editora, Gráfica, Distribuição). 8. Manter um blog, diário ou coluna por pelo menos 3 meses. 9. Apresentar uma resenha de um livro clássico para a sua seção.",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-ESP",
+    "description": "Esperanto",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar quem foi L. L. Zamenhof e por que ele criou o Esperanto. 2. Demonstrar conhecimento sobre os 16 princípios básicos da gramática do Esperanto. 3. Saber saudar, se apresentar e manter uma conversa básica no idioma. 4. Escrever um texto curto (15 linhas) em Esperanto sobre o Escotismo. 5. Saber o que significa o símbolo da Estrela Verde e a bandeira do Esperanto. 6. Identificar a relação histórica entre o Esperanto e o Movimento Escoteiro (Skolta Esperanto Ligo). 7. Cantar uma canção escoteira traduzida para o Esperanto. 8. Saber como encontrar comunidades esperantistas online ou em sua região. 9. Explicar o conceito de 'Ideia Interna' (interna ideo) do idioma.",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-JOR",
+    "description": "Jornalismo",
+    "guidance": "Consultar manual.",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-LEI",
+    "description": "Leitura",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Listar pelo menos 5 livros lidos no último ano e seus autores. 2. Fazer um resumo crítico de seu livro favorito para a seção. 3. Explicar como organizar uma pequena biblioteca pessoal. 4. Visitar uma biblioteca pública e explicar como funciona o empréstimo. 5. Conhecer os diferentes gêneros literários (romance, conto, poesia...). 6. Saber como conservar e limpar livros corretamente. 7. Ler um livro técnico sobre escotismo ou natureza e aplicar um ensinamento. 8. Participar de um clube de leitura ou debate literário. 9. Demonstrar conhecimento sobre um grande autor da literatura brasileira.",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-LIT",
+    "description": "Literatura",
+    "guidance": "Consultar manual.",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-ORA",
+    "description": "Oratória",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Realizar um discurso de 5 minutos sobre um tema escoteiro para uma grande audiência. 2. Demonstrar o uso de pausas dramáticas e variações de tom de voz. 3. Explicar a importância da linguagem corporal (gestos, olhar, postura) no discurso. 4. Saber como elaborar um roteiro de tópicos para não ler o texto integralmente. 5. Demonstrar técnicas de respiração diafragmática para controle de nervosismo. 6. Saber como usar microfones e equipamentos de som corretamente. 7. Debater um tema polêmico respeitando o tempo e o direito de fala do oponente. 8. Identificar e evitar vícios de linguagem (ex: 'né', 'tipo', 'então'). 9. Organizar e mediar uma mesa redonda ou debate na seção.",
+    "category": "Cultura"
+  },
+  {
+    "code": "SP-CL-RAD",
+    "description": "Radiofonia",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a diferença entre as bandas de frequência (AM, FM, HF, VHF, UHF). 2. Conhecer o alfabeto fonético internacional e o código Q básico. 3. Demonstrar como operar um rádio transceptor portátil (Talkabout ou similar). 4. Explicar as regras de ética e cortesia nas transmissões de rádio. 5. Saber como proceder em caso de pedido de socorro (Mayday ou SOS) via rádio. 6. Conhecer a legislação básica sobre o uso do espectro de rádio no Brasil (ANATEL). 7. Realizar uma transmissão de pelo menos 5 minutos seguindo os protocolos. 8. Explicar o que é uma estação repetidora e como ela aumenta o alcance. 9. Identificar as partes principais de um rádio e tipos de antenas.",
+    "category": "Cultura"
+  }
+]

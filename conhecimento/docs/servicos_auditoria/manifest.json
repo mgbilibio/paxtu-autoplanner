@@ -1,0 +1,127 @@
+[
+  {
+    "kind": "html",
+    "url": "https://www.escoteiros.org.br/especialidades/",
+    "file": "E:\\PY\\paxtuplanner\\conhecimento\\docs\\servicos_auditoria\\html\\\\especialidades_index.html"
+  },
+  {
+    "kind": "html",
+    "url": "https://www.escoteiros.org.br/especialidades/alfabetizacao/",
+    "file": "E:\\PY\\paxtuplanner\\conhecimento\\docs\\servicos_auditoria\\html\\\\alfabetizacao.html"
+  },
+  {
+    "kind": "html",
+    "url": "https://www.escoteiros.org.br/especialidades/barismo/",
+    "file": "E:\\PY\\paxtuplanner\\conhecimento\\docs\\servicos_auditoria\\html\\\\barismo.html"
+  },
+  {
+    "kind": "html",
+    "url": "https://www.escoteiros.org.br/especialidades/garcom/",
+    "file": "E:\\PY\\paxtuplanner\\conhecimento\\docs\\servicos_auditoria\\html\\\\garcom.html"
+  },
+  {
+    "kind": "html",
+    "url": "https://www.escoteiros.org.br/especialidades/licenciatura/",
+    "file": "E:\\PY\\paxtuplanner\\conhecimento\\docs\\servicos_auditoria\\html\\\\licenciatura.html"
+  },
+  {
+    "kind": "html",
+    "url": "https://www.escoteiros.org.br/especialidades/lides-campeiras/",
+    "file": "E:\\PY\\paxtuplanner\\conhecimento\\docs\\servicos_auditoria\\html\\\\lides-campeiras.html"
+  },
+  {
+    "kind": "html",
+    "url": "https://www.escoteiros.org.br/especialidades/liturgia-catolica/",
+    "file": "E:\\PY\\paxtuplanner\\conhecimento\\docs\\servicos_auditoria\\html\\\\liturgia-catolica.html"
+  },
+  {
+    "kind": "html",
+    "url": "https://www.escoteiros.org.br/especialidades/missionario-catolico/",
+    "file": "E:\\PY\\paxtuplanner\\conhecimento\\docs\\servicos_auditoria\\html\\\\missionario-catolico.html"
+  },
+  {
+    "kind": "html",
+    "url": "https://www.escoteiros.org.br/especialidades/serralheria/",
+    "file": "E:\\PY\\paxtuplanner\\conhecimento\\docs\\servicos_auditoria\\html\\\\serralheria.html"
+  },
+  {
+    "kind": "html",
+    "url": "https://www.escoteiros.org.br/especialidades/socorrismo/",
+    "file": "E:\\PY\\paxtuplanner\\conhecimento\\docs\\servicos_auditoria\\html\\\\socorrismo.html"
+  },
+  {
+    "kind": "html",
+    "url": "https://www.escoteiros.org.br/especialidades/topografia/",
+    "file": "E:\\PY\\paxtuplanner\\conhecimento\\docs\\servicos_auditoria\\html\\\\topografia.html"
+  },
+  {
+    "kind": "html",
+    "url": "https://www.escoteiros.org.br/especialidades/reciclagem/",
+    "file": "E:\\PY\\paxtuplanner\\conhecimento\\docs\\servicos_auditoria\\html\\\\reciclagem.html"
+  },
+  {
+    "kind": "html",
+    "url": "https://www.escoteiros.org.br/especialidades/contabilidade/",
+    "file": "E:\\PY\\paxtuplanner\\conhecimento\\docs\\servicos_auditoria\\html\\\\contabilidade.html"
+  },
+  {
+    "kind": "html",
+    "url": "https://www.escoteiros.org.br/especialidades/minhocultura/",
+    "file": "E:\\PY\\paxtuplanner\\conhecimento\\docs\\servicos_auditoria\\html\\\\minhocultura.html"
+  },
+  {
+    "kind": "html",
+    "url": "https://www.escoteiros.org.br/especialidades/compostagem/",
+    "file": "E:\\PY\\paxtuplanner\\conhecimento\\docs\\servicos_auditoria\\html\\\\compostagem.html"
+  },
+  {
+    "kind": "pdf",
+    "url": "https://ead.escoteiros.org.br/pluginfile.php/169494/mod_folder/content/0/Especialidades%20e%20Insignias/Guia_de_especialidades.pdf",
+    "file": "E:\\PY\\paxtuplanner\\conhecimento\\docs\\servicos_auditoria\\pdf\\\\guia_especialidades.pdf"
+  },
+  {
+    "kind": "pdf",
+    "url": "https://www.escoteiros.org.br/wp-content/uploads/2021/09/examinador_especialidades.pdf",
+    "file": "E:\\PY\\paxtuplanner\\conhecimento\\docs\\servicos_auditoria\\pdf\\\\guia_examinador_especialidades.pdf"
+  },
+  {
+    "kind": "pdf",
+    "url": "https://www.escoteiros.org.br/wp-content/uploads/2016/06/Mission%C3%A1rio_cat%C3%B3lico.pdf",
+    "file": "E:\\PY\\paxtuplanner\\conhecimento\\docs\\servicos_auditoria\\pdf\\\\missionario_catolico.pdf"
+  },
+  {
+    "kind": "pdf",
+    "url": "https://www.escoteiros.org.br/wp-content/uploads/2016/06/Serralheria.pdf",
+    "file": "E:\\PY\\paxtuplanner\\conhecimento\\docs\\servicos_auditoria\\pdf\\\\serralheria.pdf"
+  },
+  {
+    "kind": "pdf",
+    "url": "https://www.escoteiros.org.br/wp-content/uploads/2016/06/Socorrismo.pdf",
+    "file": "E:\\PY\\paxtuplanner\\conhecimento\\docs\\servicos_auditoria\\pdf\\\\socorrismo.pdf"
+  },
+  {
+    "kind": "pdf",
+    "url": "https://www.escoteiros.org.br/wp-content/uploads/2016/06/Topografia.pdf",
+    "file": "E:\\PY\\paxtuplanner\\conhecimento\\docs\\servicos_auditoria\\pdf\\\\topografia.pdf"
+  },
+  {
+    "kind": "pdf",
+    "url": "https://www.escoteiros.org.br/wp-content/uploads/2020/07/Compostagem.pdf",
+    "file": "E:\\PY\\paxtuplanner\\conhecimento\\docs\\servicos_auditoria\\pdf\\\\compostagem.pdf"
+  },
+  {
+    "kind": "pdf",
+    "url": "https://www.escoteiros.org.br/wp-content/uploads/2020/07/Contabilidade.pdf",
+    "file": "E:\\PY\\paxtuplanner\\conhecimento\\docs\\servicos_auditoria\\pdf\\\\contabilidade.pdf"
+  },
+  {
+    "kind": "pdf",
+    "url": "https://www.escoteiros.org.br/wp-content/uploads/2021/05/Reciclagem.pdf",
+    "file": "E:\\PY\\paxtuplanner\\conhecimento\\docs\\servicos_auditoria\\pdf\\\\reciclagem.pdf"
+  },
+  {
+    "kind": "pdf",
+    "url": "https://www.escoteiros.org.br/wp-content/uploads/2020/07/Minhocultura.pdf",
+    "file": "E:\\PY\\paxtuplanner\\conhecimento\\docs\\servicos_auditoria\\pdf\\\\minhocultura.pdf"
+  }
+]

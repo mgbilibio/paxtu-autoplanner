@@ -1,0 +1,5 @@
+REGRA 006
+PROMESSA DE ADULTOS
+
+CAPÍTULO 1 • Fundamentos do Escotismo
+15

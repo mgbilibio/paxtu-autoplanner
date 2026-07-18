@@ -1,0 +1,3 @@
+# ANOTAÇÕES
+
+![img-145.jpeg](img-145.jpeg)

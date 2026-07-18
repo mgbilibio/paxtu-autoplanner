@@ -1,0 +1,11 @@
+interessa ao jovem (tal como aconteceu comigo quando pela primeira vez o ouvi) saberem como, em cada um, vai aparecendo o germe de um outro ser a surgir dele. Interessa-lhes saberem que esse germe tem sido transmitido de pai/mãe para filho/filha, de geração em geração. Ele recebeu esse dom de Deus (a capacidade de criar uma vida) e é seu dever conservá-lo até que se case e o junte ao da pessoa querida, para reprodução da espécie. Não poderá esquecer sua missão, gastando e aviltando-se, neste intervalo de tempo. Sofrerá muitas tentações, sob várias formas, mas terá de ser forte e guardar-se. Para cada diferente jovem, em cada diferente idade, pode-se necessitar usar um processo diferente de tratar o assunto. A coisa mais importante para o Chefe é conquistar, inicialmente, plena confiança dos jovens e manter para com eles a atitude de um irmão mais velho, podendo ambos falar abertamente.
+
+Ao mesmo tempo, devo acrescentar algumas palavras de alerta aos Chefes jovens e inexperientes. O fato de terem pouca idade, sendo quase tão jovens como os escoteiros, não constitui nenhuma vantagem. Frequentemente é uma desvantagem e muitas vezes um **real perigo**. Do que acima ficou escrito sobre o assunto, uma falsa impressão pode ser deduzida: de que eu considero **dever** de cada Chefe Escoteiro esclarecer cada um dos seus escoteiros nesse assunto. **Isto nunca foi minha intenção**. Agir assim seria derrubar todo o edifício do sistema familiar. O que eu quero fazer é atrair a atenção dos Chefes Escoteiros para o problema e pedir-lhes que se interessem e façam com que seus escoteiros recebam os necessários esclarecimentos de pessoa competente, na ocasião oportuna. Nas mais frequentes das vezes essa pessoa adequada é o pai, o pastor, o médico ou outra e NÃO O CHEFE ESCOTEIRO!
+
+## TABAGISMO
+
+Alguém certa vez redigiu uma edição “aperfeiçoada” de “ESCOTISMO PARA RAPAZES” e nela determinava que “Escoteiros não podiam fumar”. É, geralmente, perigoso proibir algo aos jovens. Isso imediatamente excita-os à aventura, a fazer justamente o contrário do que lhes foi determinado. Aconselhe-se-os a respeito de uma coisa, ou fale-se-lhes dela mostrando ser desprezível ou tola, e eles evitá-la-ão.
+
+Estou convencido que este é o método em questões de linguagem obscena, dos hábitos de jogar, de fumar e de outros erros da juventude.
+
+81

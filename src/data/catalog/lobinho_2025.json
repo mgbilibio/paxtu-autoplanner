@@ -1,0 +1,84 @@
+[
+  { "name": "Caminho do Integrar", "items": [
+    { "code": "L-INT-01", "description": "Matilha e Lobinhos.", "guidance": "Pertencimento." },
+    { "code": "L-INT-02", "description": "Vozes de Comando e Apito.", "guidance": "Alcateia, Alcateia!" },
+    { "code": "L-INT-03", "description": "Lema, Saudação e Grande Uivo.", "guidance": "Melhor Possível." },
+    { "code": "L-INT-04", "description": "História: Irmãos de Mowgli.", "guidance": "Vida na Jângal." },
+    { "code": "L-INT-05", "description": "Lei e Promessa do Lobinho.", "guidance": "Compromisso alegre." }
+  ]},
+  { "name": "BA: Aprendizagem e Vocação", "items": [
+    { "code": "BA-ACDV-F1", "description": "Especialidade Nova.", "guidance": "Descobrir talento." },
+    { "code": "BA-ACDV-V1", "description": "Frases em outra língua.", "guidance": "Comunicação plural." },
+    { "code": "BA-ACDV-V2", "description": "Talento Artístico/Técnico.", "guidance": "Expressão pessoal." },
+    { "code": "BA-ACDV-V3", "description": "Visita Biblioteca/Museu.", "guidance": "Acesso à cultura." },
+    { "code": "BA-ACDV-V4", "description": "Entrevistar Profissional.", "guidance": "Curiosidade social." }
+  ]},
+  { "name": "AUTLID - Autonomia e Liderança", "items": [
+    { "code": "BA-AUTLID-F1", "description": "Bornal/Mochila Sozinho.", "guidance": "Organização." },
+    { "code": "BA-AUTLID-V1", "description": "Liderar Brincadeira/Canção.", "guidance": "Confiança." },
+    { "code": "BA-AUTLID-V2", "description": "Compras e Troco.", "guidance": "Matemática básica." },
+    { "code": "BA-AUTLID-V3", "description": "Evitar Riscos em Casa.", "guidance": "Segurança doméstica." }
+  ]},
+  { "name": "CRINOV - Criatividade e Inovação", "items": [
+    { "code": "BA-CRINOV-F1", "description": "Engenhoca de Canto.", "guidance": "Construção criativa." },
+    { "code": "BA-CRINOV-V1", "description": "Código Secreto.", "guidance": "Polar Tenis ou Emojis." },
+    { "code": "BA-CRINOV-V2", "description": "Arte com Recicláveis.", "guidance": "Brinquedo novo." }
+  ]},
+  { "name": "CONRESP - Consumo Responsável", "items": [
+    { "code": "BA-CONRESP-F1", "description": "Kit Reutilizável.", "guidance": "Lixo zero em campo." },
+    { "code": "BA-CONRESP-V1", "description": "Separar Lixo em Casa.", "guidance": "Reciclagem." }
+  ]},
+  { "name": "MUDCLI - Clima", "items": [
+    { "code": "BA-MUDCLI-V1", "description": "Observar e desenhar Nuvens.", "guidance": "Previsão do tempo." },
+    { "code": "BA-MUDCLI-V2", "description": "Plantar horta ou vaso.", "guidance": "Ciclo da vida." }
+  ]},
+  { "name": "BIO - Biodiversidade", "items": [
+    { "code": "BA-BIO-F1", "description": "Observação de Fauna/Flora.", "guidance": "Respeito à natureza." },
+    { "code": "BA-BIO-V1", "description": "Cuidar de Planta/Pet.", "guidance": "Responsabilidade." }
+  ]},
+  { "name": "ARLIVRE - Vida ao Ar Livre", "items": [
+    { "code": "BA-ARLIVRE-F1", "description": "Nós: Direito, Escota, Fiel.", "guidance": "Técnica de jângal." },
+    { "code": "BA-ARLIVRE-F2", "description": "Montar Barraca (Auxílio).", "guidance": "Campo básico." },
+    { "code": "BA-ARLIVRE-F3", "description": "Fogueira: Espetinho Frutas.", "guidance": "Cozinha mateira básica." },
+    { "code": "BA-ARLIVRE-V1", "description": "Identificar Cruzeiro do Sul.", "guidance": "Navegação noturna." },
+    { "code": "BA-ARLIVRE-V2", "description": "Trilha com Sinais Pista.", "guidance": "Exploração." }
+  ]},
+  { "name": "COMUN - Comunidade", "items": [
+    { "code": "BA-COMUN-F1", "description": "Visita Bombeiros/SAMU.", "guidance": "Serviços essenciais." },
+    { "code": "BA-COMUN-V1", "description": "Boa Ação Coletiva.", "guidance": "Limpeza ou doação." }
+  ]},
+  { "name": "DEMO - Democracia", "items": [
+    { "code": "BA-DEMO-F1", "description": "Dar opinião na Roca.", "guidance": "Voz ativa." },
+    { "code": "BA-DEMO-V1", "description": "Votar em Tema de Atividade.", "guidance": "Escolha coletiva." }
+  ]},
+  { "name": "HERCULT - Herança Cultural", "items": [
+    { "code": "BA-HERCULT-F1", "description": "Hastear Bandeira Nacional.", "guidance": "Civismo." },
+    { "code": "BA-HERCULT-V1", "description": "Cantar Hino Nacional.", "guidance": "Símbolos pátrios." },
+    { "code": "BA-HERCULT-V2", "description": "História de Herói Nacional.", "guidance": "Raízes brasileiras." }
+  ]},
+  { "name": "PROMPAZ - Promoção da Paz", "items": [
+    { "code": "BA-PROMPAZ-V1", "description": "Jogo sem Perdedores.", "guidance": "Cooperação." },
+    { "code": "BA-PROMPAZ-V2", "description": "Visitar Templo diferente.", "guidance": "Diversidade." }
+  ]},
+  { "name": "VALORES - Ética", "items": [
+    { "code": "BA-VALORES-F1", "description": "Explicar Lei com exemplos.", "guidance": "Conduta." },
+    { "code": "BA-VALORES-V1", "description": "Participar de Conselho.", "guidance": "Reflexão." }
+  ]},
+  { "name": "CORPO - Cuidado Corpo", "items": [
+    { "code": "BA-CORPO-F1", "description": "Curativo e Limpeza.", "guidance": "Socorro básico." },
+    { "code": "BA-CORPO-V1", "description": "Jogo do Kim (Sentidos).", "guidance": "Autopercepção." }
+  ]},
+  { "name": "HABSAU - Hábitos Saudáveis", "items": [
+    { "code": "BA-HABSAU-F1", "description": "Lavar Mãos (Higiene).", "guidance": "Prevenção." },
+    { "code": "BA-HABSAU-V1", "description": "Higiene Bucal Diária.", "guidance": "Saúde." }
+  ]},
+  { "name": "SAUMENT - Saúde Mental", "items": [
+    { "code": "BA-SAUMENT-V1", "description": "Momento Silêncio/Reflexão.", "guidance": "Equilíbrio." }
+  ]},
+  { "name": "VINC - Vínculos", "items": [
+    { "code": "BA-VINC-F1", "description": "Acolher Lobinho Novo.", "guidance": "Fraternidade." }
+  ]},
+  { "name": "ESPIRIT - Espiritualidade", "items": [
+    { "code": "BA-ESPIRIT-V1", "description": "Respeitar Fé de Amigos.", "guidance": "Espírito escoteiro." }
+  ]}
+]

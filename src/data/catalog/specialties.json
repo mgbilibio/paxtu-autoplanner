@@ -1,0 +1,82 @@
+{
+  "habilidades": [
+    { "code": "ESP-TEC-ACAMP", "description": "Acampamento", "guidance": "Técnica de montar campo, higiene e pernoite." },
+    { "code": "ESP-TEC-COZ", "description": "Culinária", "guidance": "Cardápio mateiro e higiene alimentar." },
+    { "code": "ESP-TEC-PION", "description": "Pioneiria", "guidance": "Amarras, nós e construções de campo." },
+    { "code": "ESP-TEC-SOC", "description": "Primeiros Socorros", "guidance": "Item obrigatório para Lis de Ouro/Cruzeiro do Sul." },
+    { "code": "ESP-TEC-INF", "description": "Informática", "guidance": "Uso de ferramentas digitais e segurança." },
+    { "code": "ESP-TEC-FOT", "description": "Fotografia", "guidance": "Técnica, composição e registro." },
+    { "code": "ESP-TEC-REP", "description": "Reparos Domésticos", "guidance": "Elétrica básica, pintura e consertos." },
+    { "code": "ESP-TEC-MARC", "description": "Marcenaria", "guidance": "Uso de ferramentas de madeira." },
+    { "code": "ESP-TEC-COST", "description": "Costura", "guidance": "Reparo de roupas e confecção simples." },
+    { "code": "ESP-TEC-AERO", "description": "Aeromodelismo", "guidance": "Construção e voo de modelos." },
+    { "code": "ESP-TEC-MECA", "description": "Mecânica", "guidance": "Manutenção de motores ou bicicletas." },
+    { "code": "ESP-TEC-ELET", "description": "Eletrônica", "guidance": "Circuitos e componentes básicos." },
+    { "code": "ESP-TEC-JARD", "description": "Jardinagem", "guidance": "Plantio, poda e paisagismo." },
+    { "code": "ESP-TEC-NAV", "description": "Navegação", "guidance": "Orientação técnica e cartas." },
+    { "code": "ESP-TEC-RAST", "description": "Rastreamento", "guidance": "Sinais de pista e pegadas." }
+  ],
+  "servicos": [
+    { "code": "ESP-SRV-CIV", "description": "Civismo", "guidance": "Símbolos nacionais e cidadania." },
+    { "code": "ESP-SRV-ECO", "description": "Ecologia", "guidance": "Preservação e impacto ambiental." },
+    { "code": "ESP-SRV-DEF", "description": "Defesa Civil", "guidance": "Prevenção de desastres e segurança." },
+    { "code": "ESP-SRV-SOC", "description": "Serviço Social", "guidance": "Voluntariado em instituições." },
+    { "code": "ESP-SRV-LIBR", "description": "Libras", "guidance": "Comunicação inclusiva básica." },
+    { "code": "ESP-SRV-ALF", "description": "Alfabetização", "guidance": "Apoio educacional." },
+    { "code": "ESP-SRV-BIB", "description": "Biblioteconomia", "guidance": "Organização de livros e acervos." },
+    { "code": "ESP-SRV-TRAM", "description": "Trânsito", "guidance": "Regras de segurança viária." },
+    { "code": "ESP-SRV-SALV", "description": "Salvamento", "guidance": "Técnicas de resgate aquático ou terrestre." },
+    { "code": "ESP-SRV-CONS", "description": "Cons. Energia", "guidance": "Eficiência energética doméstica." }
+  ],
+  "cultura": [
+    { "code": "ESP-CUL-ART", "description": "Artes Plásticas", "guidance": "Desenho, pintura ou escultura." },
+    { "code": "ESP-CUL-MUS", "description": "Música", "guidance": "Tocar instrumento ou teoria." },
+    { "code": "ESP-CUL-TEAT", "description": "Teatro", "guidance": "Atuação, roteiro ou cenário." },
+    { "code": "ESP-CUL-LEIT", "description": "Leitura", "guidance": "Hábito e interpretação de textos." },
+    { "code": "ESP-CUL-HIST", "description": "História", "guidance": "Pesquisa histórica local ou geral." },
+    { "code": "ESP-CUL-FOLC", "description": "Folclore", "guidance": "Tradições e lendas regionais." },
+    { "code": "ESP-CUL-LING", "description": "Línguas", "guidance": "Fluência em idioma estrangeiro." },
+    { "code": "ESP-CUL-JORN", "description": "Jornalismo", "guidance": "Redação e reportagem." },
+    { "code": "ESP-CUL-COL", "description": "Colecionismo", "guidance": "Organização de acervo (selos, moedas)." },
+    { "code": "ESP-CUL-DAN", "description": "Dança", "guidance": "Expressão corporal e ritmo." }
+  ],
+  "desportos": [
+    { "code": "ESP-DES-NAT", "description": "Natação", "guidance": "Estilos e resistência na água." },
+    { "code": "ESP-DES-ATL", "description": "Atletismo", "guidance": "Corridas, saltos ou arremessos." },
+    { "code": "ESP-DES-CIC", "description": "Ciclismo", "guidance": "Pedaladas e manutenção da bike." },
+    { "code": "ESP-DES-FUT", "description": "Futebol", "guidance": "Técnica e regras do esporte." },
+    { "code": "ESP-DES-VOL", "description": "Vôlei", "guidance": "Fundamentos e jogo." },
+    { "code": "ESP-DES-BAS", "description": "Basquete", "guidance": "Drible, passe e arremesso." },
+    { "code": "ESP-DES-ART", "description": "Artes Marciais", "guidance": "Disciplina e técnica de luta." },
+    { "code": "ESP-DES-XAD", "description": "Xadrez", "guidance": "Estratégia e tática do jogo." },
+    { "code": "ESP-DES-PES", "description": "Pesca", "guidance": "Técnica e respeito ambiental." },
+    { "code": "ESP-DES-COR", "description": "Corrida Orient.", "guidance": "Navegação com mapa em velocidade." }
+  ],
+  "ciencia": [
+    { "code": "ESP-CIE-AST", "description": "Astronomia", "guidance": "Observação do céu e astros." },
+    { "code": "ESP-CIE-BOT", "description": "Botânica", "guidance": "Identificação de plantas e cultivo." },
+    { "code": "ESP-CIE-MET", "description": "Meteorologia", "guidance": "Clima, nuvens e previsão." },
+    { "code": "ESP-CIE-ZOO", "description": "Zoologia", "guidance": "Estudo de animais e habitats." },
+    { "code": "ESP-CIE-QUI", "description": "Química", "guidance": "Experimentos e elementos." },
+    { "code": "ESP-CIE-FIS", "description": "Física", "guidance": "Leis naturais e experimentos." },
+    { "code": "ESP-CIE-GEO", "description": "Geologia", "guidance": "Rochas, minerais e solo." },
+    { "code": "ESP-CIE-MIN", "description": "Mineralogia", "guidance": "Identificação de minerais." },
+    { "code": "ESP-CIE-INF", "description": "Informática (C)", "guidance": "Ciência da computação e lógica." },
+    { "code": "ESP-CIE-SAU", "description": "Saúde", "guidance": "Corpo humano e prevenção." }
+  ],
+  "insignias_especiais": [
+    { "code": "INS-CONE", "description": "Insígnia do Cone Sul", "guidance": "Integração Latino-Americana." },
+    { "code": "INS-LUSO", "description": "Insígnia da Lusofonia", "guidance": "Países de Língua Portuguesa." },
+    { "code": "INS-IMMA", "description": "Campeões da Natureza", "guidance": "Sustentabilidade (Antiga IMMA)." },
+    { "code": "INS-MOP", "description": "Mensageiros da Paz", "guidance": "Projetos de impacto global." },
+    { "code": "INS-BA", "description": "Insígnia da Boa Ação", "guidance": "Lobinho: Serviço contínuo." },
+    { "code": "INS-AP", "description": "Insígnia do Aprender", "guidance": "Lobinho: Desempenho escolar." },
+    { "code": "INS-DES", "description": "Insígnia do Desafio", "guidance": "Sênior: Superação física." },
+    { "code": "INS-CID", "description": "Insígnia da Cidadania", "guidance": "Pioneiro: Atuação civil." }
+  ],
+  "cordoes": [
+    { "code": "CORD-VA", "description": "Cordão Verde e Amarelo", "guidance": "6 especialidades / 5 ramos." },
+    { "code": "CORD-VB", "description": "Cordão Vermelho e Branco", "guidance": "12 especialidades / 5 ramos." },
+    { "code": "CORD-DOURADO", "description": "Cordão Dourado", "guidance": "Sênior: Máximo de especialidades." }
+  ]
+}

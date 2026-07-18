@@ -1,0 +1,10 @@
+![img-16.jpeg](img-16.jpeg)
+SÉNIOR
+
+![img-17.jpeg](img-17.jpeg)
+PIONEIRO
+
+- VOCAÇÕES
+- PROFUNDIDADE E AUTONOMIA
+- AUTOCONHECIMENTO
+- POTENCIALIDADES

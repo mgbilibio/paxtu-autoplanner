@@ -1,0 +1,8 @@
+O 9. Localizar 1 (um) objeto, ou local específico na sua localidade ou arredores, a partir de dados e informações fornecidos pelo examinador, em 1 (um) prazo máximo de trinta dias.
+
+- NÍVEL 1 | 3 itens ____ / ____ / ____
+- NÍVEL 2 | 6 itens ____ / ____ / ____
+- NÍVEL 3 | 9 itens ____ / ____ / ____
+
+O joven tem a liberdade de escolher quaisquer itens para a conquista do nível que desejar, não sendo obrigatório seguir a ordem da numeração.
+

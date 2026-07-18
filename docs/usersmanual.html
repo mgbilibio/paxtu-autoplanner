@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Paxtu AutoPlanner - Manual do Usuario</title>
+  <style>
+    body{font-family:Arial,Helvetica,sans-serif;margin:0;background:#eef2f7;color:#172033;line-height:1.55}
+    main{max-width:900px;margin:0 auto;background:#fff;min-height:100vh;padding:28px;box-sizing:border-box}
+    h1{margin-top:0;color:#0f172a}h2{border-bottom:1px solid #dbe3ef;padding-bottom:6px;margin-top:28px}
+    code{background:#eef2ff;padding:2px 5px;border-radius:4px}li{margin:7px 0}.note{background:#eff6ff;border-left:4px solid #2563eb;padding:12px 14px}
+    @media(max-width:600px){main{padding:18px}h1{font-size:25px}h2{font-size:19px}}
+  </style>
+</head>
+<body>
+<main>
+  <h1>Manual do Usuario</h1>
+  <p>Paxtu AutoPlanner, distribuicao <strong>20260709-1904</strong>. Ferramenta local para a chefia e diretoria acompanharem planejamento, progressao e especialidades de Lobinhos e Escoteiros.</p>
+
+  <h2>Instalar ou usar sem instalar</h2>
+  <ul>
+    <li><strong>Instalador:</strong> execute <code>Paxtu AutoPlanner_Setup_20260709-1904.exe</code>.</li>
+    <li><strong>Portátil:</strong> execute <code>Paxtu AutoPlanner_Portable_20260709-1904.exe</code>. Não exige Node.js, Python nem instalação.</li>
+    <li><strong>ZIP:</strong> descompacte <code>Paxtu AutoPlanner_20260709-1904_x64.zip</code> e abra <code>Paxtu AutoPlanner.exe</code>.</li>
+  </ul>
+  <p class="note">O arquivo <code>INICIAR_APP.bat</code> pertence apenas ao ambiente de desenvolvimento. Não use esse arquivo em máquinas da chefia.</p>
+
+  <h2>Primeiro acesso e trabalho compartilhado</h2>
+  <ol>
+    <li>Crie ou selecione a pasta de dados da seção.</li>
+    <li>Para trabalho conjunto, use uma pasta sincronizada do Google Drive e mantenha uma pasta segregada por Alcateia ou Tropa.</li>
+    <li>Cadastre seção, usuários, jovens e adultos.</li>
+    <li>Respeite o aviso de modo consulta: uma pessoa deve editar cada seção por vez.</li>
+  </ol>
+
+  <h2>Progressão POR 2025+</h2>
+  <p>O padrão do app é o POR 2025+ para Lobinho e Escoteiro. Cada jovem é acompanhado nos 18 blocos de aprendizagem, com ações fixas, variáveis, substituições, evidências e reconhecimento de ramo.</p>
+  <ol>
+    <li>Abra o jovem em <strong>Efetivo</strong> e acesse <strong>Blocos de Aprendizagem</strong>.</li>
+    <li>Marque somente as ações efetivamente realizadas e registre observações e avaliador.</li>
+    <li>Use a checklist de reconhecimento após os 18 blocos, respeitando idade, autoavaliação e homologação.</li>
+    <li>O modo 2020 é histórico e só deve ser usado para registros legados.</li>
+  </ol>
+
+  <h2>Especialidades</h2>
+  <p>O catálogo POR 2025+ usa o <strong>Guia de Especialidades, 18ª edição (2024-1)</strong>: 274 especialidades e 2.741 requisitos. Uma atividade pode iniciar uma especialidade, mas não a conclui automaticamente.</p>
+  <ol>
+    <li>Abra <code>POR 2025+ &gt; Enciclopédia de Especialidades</code>.</li>
+    <li>Abra a ficha do jovem, registre o status, a evidência e a avaliação de cada requisito.</li>
+    <li>Use <strong>Selecionar para exportar fichas</strong> para trabalho offline. A devolução <code>.paxtuficha.json</code> é validada antes de ser aplicada.</li>
+    <li>Use o link de fonte para abrir o Guia na página da especialidade quando estiver disponível.</li>
+  </ol>
+
+  <h2>Roteiros, ciclo e agenda</h2>
+  <ul>
+    <li>Monte o roteiro com objetivos de bloco e especialidades; revise materiais, avaliação, horários e rotinas operacionais.</li>
+    <li>Exporte HTML para leitura no celular durante a atividade.</li>
+    <li>Na agenda, registre presença e aplique a progressão: ações de bloco são lançadas; especialidades oficiais ficam em estudo até a avaliação por requisito.</li>
+    <li>Use ciclo e relatórios para acompanhar cobertura, frequência, pendências e decisões da diretoria.</li>
+  </ul>
+
+  <h2>IA e privacidade</h2>
+  <p>Gemini e Ollama são opcionais. Sem IA, o app continua consultando dados e registrando progressão. Ollama exige instalação local apenas quando essa opção for escolhida. A pasta de dados contém informações pessoais: compartilhe somente com a chefia autorizada e faça backups regulares.</p>
+
+  <h2>Fontes consultadas</h2>
+  <ul>
+    <li>POR 2026.02 e materiais de transição do Programa Educativo.</li>
+    <li>Manual do Escotista - Lobinho, 2025.10.</li>
+    <li>Manual do Escotista - Escoteiro, 2025.10.</li>
+    <li>Guia de Especialidades, 18ª edição, 2024-1.</li>
+    <li>Acervo documental local em <code>docs/biblioteca</code>, mantido para auditoria de fonte.</li>
+  </ul>
+</main>
+</body>
+</html>

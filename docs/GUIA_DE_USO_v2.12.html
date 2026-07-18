@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual Completo - Paxtu AutoPlanner v2.12</title>
+    <style>
+        :root {
+            --primary: #1e293b;
+            --secondary: #2563eb;
+            --accent: #16a34a;
+            --warning: #f59e0b;
+            --bg: #f8fafc;
+            --text: #334155;
+            --white: #ffffff;
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background: var(--bg);
+            margin: 0;
+            padding: 0;
+        }
+        /* Layout */
+        .wrapper { display: flex; min-height: 100vh; }
+        .sidebar { width: 250px; background: var(--primary); color: white; padding: 20px; position: fixed; height: 100vh; overflow-y: auto; }
+        .content { margin-left: 250px; padding: 40px; flex: 1; }
+
+        /* Typography */
+        h1 { margin: 0 0 10px 0; font-size: 2.5rem; color: var(--primary); }
+        h2 { border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; margin-top: 40px; color: var(--secondary); }
+        h3 { color: var(--primary); margin-top: 30px; font-size: 1.3rem; display: flex; align-items: center; gap: 8px; }
+        h4 { font-size: 1rem; font-weight: bold; margin-bottom: 5px; color: #475569; }
+        p { margin-bottom: 15px; }
+
+        /* Navigation */
+        .nav-link { display: block; color: #cbd5e1; text-decoration: none; padding: 8px 0; border-bottom: 1px solid #334155; transition: 0.2s; }
+        .nav-link:hover { color: white; padding-left: 5px; }
+        .nav-title { font-weight: bold; margin-top: 20px; color: white; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; }
+
+        /* Cards & UI Elements */
+        .card { background: var(--white); border-radius: 8px; padding: 25px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid #e2e8f0; }
+        .icon { font-size: 1.5em; }
+        .key { background: #e2e8f0; padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 0.9em; border: 1px solid #cbd5e1; color: #334155; }
+
+        /* Highlights */
+        .tip { background: #eff6ff; border-left: 4px solid var(--secondary); padding: 15px; border-radius: 0 4px 4px 0; margin: 20px 0; }
+        .warning { background: #fffbeb; border-left: 4px solid var(--warning); padding: 15px; border-radius: 0 4px 4px 0; margin: 20px 0; color: #92400e; }
+        .new-feature { background: #dcfce7; color: #166534; padding: 2px 8px; border-radius: 12px; font-size: 0.7em; font-weight: bold; text-transform: uppercase; vertical-align: middle; margin-left: 10px; }
+        .steps { counter-reset: step; list-style: none; padding-left: 0; }
+        .steps > li { counter-increment: step; position: relative; padding: 8px 0 8px 42px; margin-bottom: 4px; }
+        .steps > li::before { content: counter(step); position: absolute; left: 0; top: 8px; width: 28px; height: 28px; background: var(--secondary); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.9rem; }
+
+        /* Tables */
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; background: white; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+        th { background: #f1f5f9; font-weight: 600; color: var(--primary); }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <div style="font-size: 1.2rem; font-weight: bold; margin-bottom: 20px;">⚜️ AutoPlanner</div>
+        <a href="#intro" class="nav-link">Introdução</a>
+        <a href="#config" class="nav-link">Configuração Inicial</a>
+
+        <div class="nav-title">Módulos</div>
+        <a href="#secoes" class="nav-link">Seções e Perfis</a>
+        <a href="#efetivo" class="nav-link">Efetivo & Histórico</a>
+        <a href="#gerador" class="nav-link">Criar Atividade</a>
+        <a href="#ciclo" class="nav-link">Ciclo de Programa</a>
+        <a href="#calendario" class="nav-link">Calendário</a>
+        <a href="#relatorios" class="nav-link">Relatórios</a>
+        <a href="#especialidades" class="nav-link">Especialidades & Fichas <span class="new-feature">NOVO</span></a>
+
+        <div class="nav-title">Avançado</div>
+        <a href="#ia-motores" class="nav-link">Motores de IA (Gemini/Ollama) <span class="new-feature">NOVO</span></a>
+        <a href="#atualizar" class="nav-link">Atualizar o App</a>
+        <a href="#ia-tips" class="nav-link">Dicas para a IA</a>
+        <a href="#faq" class="nav-link">Problemas Comuns</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+
+        <section id="intro">
+            <h1>Manual do Usuário v2.12</h1>
+            <p class="subtitle">O guia definitivo para gestão estratégica da sua tropa.</p>
+
+            <div class="card">
+                <h3>O que é o Paxtu AutoPlanner?</h3>
+                <p>É uma ferramenta offline (seus dados ficam no seu PC) que combina <strong>Inteligência Artificial</strong> (Google Gemini) com os manuais oficiais da <strong>UEB (União dos Escoteiros do Brasil)</strong>. Ele automatiza a criação de roteiros, controla a progressão individual, organiza as especialidades e ajuda o chefe a visualizar o equilíbrio das atividades.</p>
+            </div>
+        </section>
+
+        <section id="config">
+            <h2>⚙️ Configuração Inicial</h2>
+            <div class="card">
+                <p>Ao abrir o app pela primeira vez, você precisará configurar duas coisas:</p>
+                <ol>
+                    <li><strong>API Key (O Cérebro):</strong> O app precisa de uma chave gratuita do Google para "pensar". Obtenha em <a href="https://aistudio.google.com/app/apikey" target="_blank">Google AI Studio</a>.</li>
+                    <li><strong>Pasta de Dados (A Memória):</strong> Escolha uma pasta segura no seu computador (ex: Meus Documentos/Escotismo). Todos os backups, roteiros e fichas ficarão salvos lá.</li>
+                </ol>
+                <div class="tip">
+                    <strong>Dica de Segurança:</strong> Se você formatar o computador, basta copiar a pasta de dados de volta para não perder nada.
+                </div>
+            </div>
+        </section>
+
+        <section id="secoes">
+            <h2>📂 Seções e Modo Híbrido</h2>
+            <div class="card">
+                <p>O sistema permite gerenciar múltiplas seções (ex: uma Alcatéia e uma Tropa).</p>
+                <h4>Sistema de Progressão (Importante!)</h4>
+                <p>Como estamos em período de transição de regras na UEB, ao criar uma seção você deve escolher:</p>
+                <ul>
+                    <li><strong>Novo POR 2025:</strong> Usa a nova estrutura de <em>Blocos de Aprendizagem</em> (ex: Vida ao Ar Livre, Autonomia) e <em>Eixos</em>. Recomendado para grupos que já migraram.</li>
+                    <li><strong>Sistema Antigo (Legado):</strong> Usa a estrutura antiga de <em>Áreas de Desenvolvimento</em> (Físico, Intelectual, Espiritual, etc).</li>
+                </ul>
+                <p><em>Essa escolha afeta quais itens aparecem no catálogo e como a IA sugere atividades.</em></p>
+                <div class="tip"><strong>Faixas etárias (POR 2025):</strong> Lobinho 6,5–10 anos; Escoteiro 11–14; Sênior 15–17; Pioneiro 18–21.</div>
+            </div>
+        </section>
+
+        <section id="efetivo">
+            <h2>👥 Efetivo e Ficha Individual</h2>
+            <p>Cadastre aqui todos os membros da seção. Isso é vital para a lista de presença e cálculo de estatísticas.</p>
+
+            <div class="card">
+                <h3>Funcionalidades dos Ícones</h3>
+                <table>
+                    <tr>
+                        <th width="50">Ícone</th>
+                        <th>Função</th>
+                    </tr>
+                    <tr>
+                        <td>📜</td>
+                        <td><strong>Ficha de Progressão Individual:</strong> Abre o histórico completo do jovem. Aqui você marca manualmente itens que ele conquistou no passado ou fora de atividades (ex: cursos externos).</td>
+                    </tr>
+                    <tr>
+                        <td>✏️</td>
+                        <td><strong>Editar:</strong> Altera nome, registro ou patrulha.</td>
+                    </tr>
+                    <tr>
+                        <td>🗑️</td>
+                        <td><strong>Excluir:</strong> Remove o jovem. <em>A partir da v2.11, a exclusão também apaga os dados do disco e limpa o cache (conformidade LGPD).</em></td>
+                    </tr>
+                </table>
+
+                <h3 style="margin-top:20px">Exportação para Impressão</h3>
+                <p>Dentro da Ficha de Progressão (ícone 📜), clique no botão azul <strong>"🖨️ Exportar para Impressão"</strong>. O sistema gera um arquivo HTML limpo com o cabeçalho do Grupo e do Jovem e a lista de itens do Ramo, marcando ✅ os conquistados e a data.</p>
+            </div>
+        </section>
+
+        <section id="gerador">
+            <h2>✨ Criar Atividade (O Gerador)</h2>
+            <p>Aqui a mágica acontece. O processo tem 3 passos: seleção de ramo, definição de objetivos (tema, instruções, URLs de referência) e geração do roteiro completo (cronograma, teoria para o chefe e materiais). Você pode <strong>Salvar</strong> (vai para "Meus Roteiros") ou <strong>Exportar HTML</strong> (para enviar no WhatsApp).</p>
+            <div class="tip"><strong>Botão "✨ Sugerir com base na Tropa":</strong> analisa o histórico de todos os jovens, identifica as lacunas e sugere temas focados nelas.</div>
+        </section>
+
+        <section id="ciclo">
+            <h2>🗓️ Planejador de Ciclo</h2>
+            <div class="card">
+                <p>Use esta aba para planejamento de médio prazo (mensal ou trimestral): defina o tema do ciclo, a duração (4, 8 ou 12 reuniões) e os objetivos a cobrir. A IA cria uma estratégia sequencial; depois você usa o Gerador individual para detalhar cada sábado.</p>
+            </div>
+        </section>
+
+        <section id="calendario">
+            <h2>📅 Calendário & Presença</h2>
+            <div class="card">
+                <p>Para que o sistema saiba quem conquistou o quê, registre a execução: agende um roteiro salvo, abra o evento no Calendário e use a <strong>Lista de Presença</strong>. Ao salvar, a progressão dos presentes é atualizada automaticamente.</p>
+            </div>
+        </section>
+
+        <section id="relatorios">
+            <h2>📊 Relatórios e Dashboard</h2>
+            <div class="card">
+                <p>Veja o <strong>Equilíbrio por Eixo</strong> (onde a tropa está forte/fraca), o <strong>Snapshot</strong> de frequência e a <strong>Matriz de Competências</strong> (tabela jovens × itens). A partir da v2.11, os relatórios refletem a progressão <strong>real</strong> (blocos homologados + conquistas), e a frequência ignora eventos anteriores ao ingresso do jovem.</p>
+            </div>
+        </section>
+
+        <!-- ============ NOVA SEÇÃO ============ -->
+        <section id="especialidades">
+            <h2>🏅 Especialidades e Fichas <span class="new-feature">v2.12</span></h2>
+
+            <div class="card">
+                <h3>📘 Enciclopédia de Especialidades</h3>
+                <p>Acesse pelo menu <strong>POR 2025 → Enciclopédia de Especialidades</strong>. Ela traz as <strong>274 especialidades</strong> oficiais (com 2.741 requisitos), organizadas pelas 5 áreas. Você pode:</p>
+                <ul>
+                    <li><strong>Filtrar por ramo</strong> (Ciência &amp; Tecnologia, Cultura, Desportos, Serviços, Habilidades Escoteiras) e <strong>buscar pelo nome</strong> (ex: "Culinária").</li>
+                    <li><strong>Abrir uma especialidade</strong> para ver a lista completa de requisitos e os níveis (N1, N2, N3).</li>
+                    <li><strong>Abrir o Guia oficial na página exata</strong> da especialidade: clique em <strong>"📄 Fonte (pág. N)"</strong> no rodapé da especialidade. O PDF do <em>Guia de Especialidades 18ª Ed.</em> abre numa janela do próprio app, já na página certa.</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>⬇️ Exportar fichas para preencher fora do app</h3>
+                <p>Serve para entregar a ficha da especialidade ao jovem/avaliador preencher em casa, no celular ou impressa — e depois lançar de volta no app.</p>
+                <ol class="steps">
+                    <li>Na Enciclopédia, clique em <strong>"☑ Selecionar para exportar fichas"</strong>.</li>
+                    <li>Filtre e clique nos cards para marcar (✓ verde). Use <strong>"Selecionar visíveis"</strong> para pegar todos os resultados do filtro de uma vez.</li>
+                    <li>No seletor, escolha <strong>um jovem</strong> (a ficha já vem pré-preenchida com o progresso atual dele) ou deixe <strong>"Em branco (sem jovem)"</strong>.</li>
+                    <li>Clique em <strong>"⬇ Exportar"</strong>. O app gera um arquivo <span class="key">.html</span> autocontido.</li>
+                </ol>
+                <div class="tip"><strong>Lotes de 50:</strong> se você selecionar muitas especialidades, o app divide automaticamente em arquivos de até 50 cada (<span class="key">..._parte1de6.html</span>, etc.), para não travar o navegador.</div>
+                <div class="warning"><strong>A logo do grupo</strong> aparece no topo da ficha. Na impressão A4 ela sai como um quadrado de 3×3 cm; na tela, pequena e visível.</div>
+            </div>
+
+            <div class="card">
+                <h3>📝 Preencher a ficha (offline, no celular ou no PC)</h3>
+                <p>O arquivo <span class="key">.html</span> abre em <strong>qualquer navegador</strong>, sem internet. O layout é <strong>responsivo</strong> (bom em celulares como S22, iPhone 13, Redmi Note e em telas grandes). Para cada requisito há uma caixa de marcação, um status (Em estudo / Cumprido / Validado / Revisar) e um campo de evidência/anotação; no topo de cada especialidade, campos de Avaliador e Notas.</p>
+                <ol class="steps">
+                    <li>Marque os requisitos, ajuste status e escreva as evidências.</li>
+                    <li>Clique em <strong>"⬇ Gerar arquivo de devolução"</strong>. O navegador baixa um arquivo <span class="key">.paxtuficha.json</span>.</li>
+                    <li>Envie esse arquivo de volta para quem cuida do app (WhatsApp, e-mail, pen drive).</li>
+                </ol>
+                <div class="warning"><strong>Imprimir / PDF</strong> serve só para arquivo físico — o PDF <u>não</u> é reimportável. Quem precisa lançar de volta no app deve usar o botão <strong>"Gerar arquivo de devolução"</strong>.</div>
+            </div>
+
+            <div class="card">
+                <h3>⬆️ Importar a devolução (lançar no jovem)</h3>
+                <ol class="steps">
+                    <li>Na Enciclopédia, clique em <strong>"⬆ Importar devolução"</strong> e escolha o arquivo <span class="key">.paxtuficha.json</span>.</li>
+                    <li>Se a ficha foi exportada <strong>com jovem</strong>, o app aplica direto naquele jovem.</li>
+                    <li>Se foi exportada <strong>em branco</strong>, o app pergunta <strong>a qual jovem</strong> aplicar — selecione e confirme.</li>
+                </ol>
+                <p>O app grava as fichas por jovem e valida tudo contra o guia oficial (especialidade existente, posições válidas, status correto). O nível e a data de conclusão são recalculados pelo próprio app — não se confia em dados adulterados no arquivo.</p>
+                <div class="tip"><strong>Fluxo completo:</strong> Selecionar especialidades → Exportar (com ou sem jovem) → entregar → preencher → "Gerar devolução" → "Importar devolução" → conferir na ficha do jovem.</div>
+            </div>
+        </section>
+
+        <section id="atualizar">
+            <h2>⬆️ Atualizar o App (sem perder dados)</h2>
+            <div class="card">
+                <p>As novas versões são distribuídas como um instalador único. Para atualizar:</p>
+                <ol>
+                    <li>Baixe o <span class="key">.zip</span> recebido e extraia.</li>
+                    <li>Rode o <strong>Paxtu AutoPlanner_Setup_&lt;versão&gt;.exe</strong>.</li>
+                    <li>Ele instala do zero <strong>ou</strong> atualiza por cima de uma versão anterior. <strong>Seus dados são preservados</strong> (perfis, progressões e especialidades ficam na pasta de dados, fora do diretório de instalação).</li>
+                </ol>
+                <div class="warning"><strong>SmartScreen do Windows:</strong> por ser um app novo, pode aparecer um aviso. Clique em <strong>"Mais informações" → "Executar assim mesmo"</strong>.</div>
+            </div>
+        </section>
+
+        <section id="ia-motores">
+            <h2>🤖 Motores de IA: Gemini e Ollama <span class="new-feature">v2.12</span></h2>
+
+            <div class="card">
+                <p>O app pode "pensar" usando <strong>dois motores</strong> de IA, escolhidos em <strong>Configurações ⚙️ &gt; IA</strong>. Você não precisa dos dois — escolha o que melhor se encaixa na sua realidade.</p>
+                <table>
+                    <tr><th>Motor</th><th>Onde roda</th><th>Custo</th><th>Bom para</th></tr>
+                    <tr><td><strong>Google Gemini</strong></td><td>Nuvem do Google</td><td>Grátis (cota generosa) / pago opcional</td><td>Facilidade e qualidade. Precisa de internet e de uma chave.</td></tr>
+                    <tr><td><strong>Ollama — local</strong></td><td>No seu PC</td><td>Grátis, sem cota</td><td>Privacidade total e uso offline. Exige um PC com boa memória.</td></tr>
+                    <tr><td><strong>Ollama — nuvem</strong></td><td>Servidores do Ollama</td><td>Cota grátis / plano pago</td><td>Quem não tem PC potente mas quer modelos abertos.</td></tr>
+                </table>
+            </div>
+
+            <div class="card">
+                <h3>☁️ Google Gemini (recomendado para começar)</h3>
+                <p>É o caminho mais simples. Crie uma chave gratuita no <a href="https://aistudio.google.com/app/apikey" target="_blank">Google AI Studio</a> e cole em <strong>Configurações &gt; IA</strong>.</p>
+                <h4>O que o plano gratuito cobre (jun/2026)</h4>
+                <ul>
+                    <li>Os modelos <strong>Flash</strong> e <strong>Flash-Lite</strong> (rápidos) são gratuitos — incluindo o <strong>Gemini 2.5 Flash</strong> e os novos <strong>3 / 3.1 Flash</strong>. A janela de contexto é enorme (1 milhão de tokens), o que sobra para os manuais + seu pedido.</li>
+                    <li>As cotas gratuitas giram em torno de <strong>~10 pedidos por minuto</strong> e de <strong>centenas a ~1.500 pedidos por dia</strong> (varia por modelo). <strong>Para gerar os roteiros da semana, isso sobra com folga.</strong></li>
+                    <li>Os modelos <strong>Pro</strong> passaram a ser <strong>pagos</strong> (não são necessários para este app). As cotas são por projeto e reiniciam diariamente; o número exato você confere no painel do AI Studio.</li>
+                </ul>
+                <div class="tip">
+                    <strong>O app atualiza a lista de modelos sozinho:</strong> ao configurar a chave, ele consulta a API do Google e mostra no menu de Configurações apenas os modelos que a <em>sua</em> conta pode usar, do mais novo para o mais antigo. Basta escolher um da linha <strong>Flash</strong>.
+                </div>
+                <div class="warning">
+                    <strong>Quebras e atualizações (importante):</strong> o Google <u>aposenta modelos antigos com o tempo</u>. Ex.: os modelos <em>1.5</em> viraram legado e o <em>2.0 Flash</em> foi descontinuado em <strong>1º/jun/2026</strong> (migrar para 2.5 Flash ou 3 Flash). Quando um modelo é desligado, uma geração presa naquele modelo pode falhar. O que fazer:
+                    <ul>
+                        <li>Como o app lista os modelos vigentes automaticamente, basta <strong>escolher um modelo Flash atual</strong> no menu de IA das Configurações.</li>
+                        <li>Se aparecer erro de "modelo não encontrado/indisponível", troque o modelo selecionado por um mais recente e gere de novo.</li>
+                        <li><strong>Mantenha o app atualizado</strong> — novas versões acompanham os modelos padrão vigentes.</li>
+                    </ul>
+                </div>
+                <div class="tip"><strong>Privacidade:</strong> no Gemini, seu pedido é enviado para a nuvem do Google. Não inclua dados sensíveis dos jovens no texto livre se isso for uma preocupação.</div>
+            </div>
+
+            <div class="card">
+                <h3>💻 Ollama — modelos abertos (local ou na nuvem)</h3>
+                <p>O <a href="https://ollama.com" target="_blank">Ollama</a> roda modelos de IA abertos (Llama, gpt-oss, etc.). No app, em <strong>Configurações &gt; IA</strong>, escolha <em>Ollama</em>, informe a URL (padrão <span class="key">http://localhost:11434</span>) e selecione o modelo na lista que o app carrega sozinho.</p>
+
+                <h4>Opção A — Rodar no seu computador (offline, sem cota)</h4>
+                <ul>
+                    <li>Baixe em <a href="https://ollama.com/download" target="_blank">ollama.com/download</a>, instale e baixe um modelo: <span class="key">ollama pull llama3.1:8b</span>.</li>
+                    <li><strong>Com GPU:</strong> bem mais rápido. Uma placa com 8 GB de memória roda modelos de ~7–8B com fluidez.</li>
+                    <li><strong>Sem GPU (só CPU):</strong> funciona, porém mais lento — prefira modelos menores (3B–8B). Regra prática de memória: ~7–8B precisam de ~8 GB; ~32B precisam de ~32 GB.</li>
+                    <li><strong>Vantagem:</strong> 100% offline, privado e <strong>sem cota</strong> de uso.</li>
+                </ul>
+
+                <h4>Opção B — Ollama na nuvem (sem precisar de PC potente)</h4>
+                <ul>
+                    <li>O Ollama oferece <strong>modelos na nuvem</strong> que rodam nas GPUs do datacenter deles — você <strong>não precisa de GPU</strong>, só de internet e uma conta Ollama.</li>
+                    <li>Tem um <strong>plano gratuito</strong> com limites por sessão (que reiniciam a cada poucas horas) e um limite semanal. <strong>Para o volume de um app de planejamento — gerar as atividades da semana — a cota grátis costuma sobrar.</strong> Para uso intenso, há plano pago.</li>
+                    <li>Como usar: faça login no Ollama (<span class="key">ollama signin</span>) e use um modelo de nuvem (os nomes terminam com <span class="key">-cloud</span>, ex.: <span class="key">gpt-oss:20b-cloud</span>). Ele aparece na lista de modelos do app normalmente, pela mesma URL local.</li>
+                </ul>
+                <div class="tip"><strong>Resumo prático:</strong> sem internet ou querendo privacidade total → <strong>Ollama local</strong>. Sem PC potente → <strong>Gemini</strong> (mais fácil) ou <strong>Ollama nuvem</strong> (modelos abertos). A cota grátis de qualquer um dos dois é suficiente para os roteiros da semana.</div>
+            </div>
+        </section>
+
+        <section id="ia-tips">
+            <h2>🧠 Dicas para a IA (Prompting)</h2>
+            <div class="tip">
+                <p>A qualidade da resposta da IA depende da qualidade do seu pedido. Veja exemplos:</p>
+                <ul>
+                    <li><strong>Ruim:</strong> "Faça uma atividade de nós."</li>
+                    <li><strong>Bom:</strong> "Faça uma atividade de nós com tema Pirata. O vilão capturou o monitor e a tropa precisa dar nós para consertar o navio e salvá-lo."</li>
+                    <li><strong>Ótimo:</strong> "Tema Minecraft. Ensine nós. Use a URL [link-do-youtube] como referência para o nó quadrado. Instrução extra: evite jogos de correr pois está muito calor."</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="faq">
+            <h2>❓ Problemas Comuns</h2>
+            <div class="warning">
+                <strong>Erro: "API Key inválida"</strong><br>
+                Verifique se copiou a chave inteira no menu de configurações (ícone de engrenagem). Não deixe espaços em branco no final.
+            </div>
+            <div class="warning">
+                <strong>Erro: "Falha ao gerar"</strong><br>
+                Geralmente é problema de internet ou o Google Gemini está temporariamente sobrecarregado. Espere 1 minuto e tente de novo. Se pediu muitos itens de uma vez, tente pedir menos.
+            </div>
+            <div class="warning">
+                <strong>"Importar devolução" recusou o arquivo</strong><br>
+                Confirme que é o arquivo <span class="key">.paxtuficha.json</span> gerado pelo botão "Gerar arquivo de devolução" — um PDF ou o próprio HTML não servem para reimportar.
+            </div>
+            <div class="warning">
+                <strong>O PDF do guia não abriu</strong><br>
+                Na v2.12 o guia abre numa janela do próprio app. Se aparecer um aviso, confirme que o pacote foi instalado completo (o instalador inclui os PDFs dos manuais).
+            </div>
+        </section>
+
+    </div>
+</div>
+
+</body>
+</html>

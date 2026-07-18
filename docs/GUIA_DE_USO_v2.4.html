@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guia de Uso - Paxtu AutoPlanner v2.7</title>
+    <style>
+        :root {
+            --primary: #1e293b;
+            --secondary: #2563eb;
+            --accent: #16a34a;
+            --bg: #f8fafc;
+            --text: #334155;
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background: var(--bg);
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        header {
+            background: var(--primary);
+            color: white;
+            padding: 40px 0;
+            margin-bottom: 40px;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        h1 { margin: 0; font-size: 2.5rem; }
+        .subtitle { opacity: 0.8; font-size: 1.1rem; }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid #e2e8f0;
+        }
+        h2 {
+            color: var(--primary);
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+        h3 {
+            color: var(--secondary);
+            margin-top: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .badge {
+            background: var(--accent);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+        .tip {
+            background: #eff6ff;
+            border-left: 4px solid var(--secondary);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 4px 4px 0;
+        }
+        .warning {
+            background: #fef2f2;
+            border-left: 4px solid #ef4444;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 4px 4px 0;
+            color: #991b1b;
+        }
+        code {
+            background: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="container" style="padding: 0;">
+        <h1>Paxtu AutoPlanner</h1>
+        <p class="subtitle">Manual do Usuário • Versão 2.7 (Edição Gestão Completa)</p>
+    </div>
+</header>
+
+<div class="container">
+
+    <div class="card" style="border-left: 5px solid var(--accent);">
+        <h2>🚀 Novidades da Versão 2.7 (Gestão Completa)</h2>
+        
+        <h3>🗓️ Planejador de Ciclo de Programa</h3>
+        <p>Agora a IA não planeja apenas um sábado, mas um ciclo inteiro! Vá na aba <strong>"Ciclo de Programa"</strong>, defina um tema (ex: "Jogos Olímpicos"), a duração (ex: 8 semanas) e os objetivos que deseja cobrir. O sistema criará uma estratégia sequencial, distribuindo as atividades de forma lógica para que a tropa evolua passo a passo.</p>
+
+        <h3>📄 Relatórios para Impressão (PDF)</h3>
+        <p>Precisa entregar um relatório para os pais? Na ficha de qualquer jovem (aba Efetivo -> ícone 📜), clique no novo botão <strong>"🖨️ Exportar para Impressão"</strong>. O sistema gera um documento limpo e profissional com todo o histórico de conquistas do jovem.</p>
+
+        <h3>📊 Dashboard Visual da Tropa</h3>
+        <p>Na aba <strong>Relatórios</strong>, adicionamos gráficos visuais que mostram o "Equilíbrio da Tropa". Veja rapidamente se sua programação está muito focada em apenas uma área (ex: só atividades físicas) e identifique lacunas nos 4 Eixos (Habilidades, Meio Ambiente, Paz, Saúde).</p>
+
+        <h3>v2.6 - Ramo Lobinho Atualizado</h3>
+        <p>O Ramo Lobinho agora conta com o <strong>Caminho do Integrar</strong> e os <strong>18 Blocos de Aprendizagem</strong> oficiais de 2025.</p>
+    </div>
+
+    <div class="card">
+        <h2>⚙️ Configuração Inicial & Sistema Híbrido</h2>
+        <p>O AutoPlanner suporta dois modos de operação para respeitar o tempo de transição de cada grupo:</p>
+        <ul>
+            <li><strong>Modo POR 2025 (Padrão):</strong> Usa a nova estrutura de Blocos de Aprendizagem e Eixos. Recomendado para quem já migrou.</li>
+            <li><strong>Modo Legado (2020):</strong> Mantém a estrutura antiga de Áreas de Desenvolvimento (Físico, Intelectual, etc).</li>
+        </ul>
+        <p>Você escolhe esse modo ao criar sua Seção no perfil.</p>
+        
+        <div class="tip">
+            <strong>Dica:</strong> Se sua tropa está "no meio do caminho", você pode criar duas seções no app (uma "Tropa Antiga" e uma "Tropa Nova") para gerenciar a transição gradualmente.
+        </div>
+    </div>
+        
+        <div class="step">
+            <div class="step-num">1</div>
+            <div>
+                <strong>Obter sua API Key do Gemini:</strong><br>
+                O aplicativo usa a IA do Google. É gratuito. Acesse <a href="https://aistudio.google.com/app/apikey" target="_blank">Google AI Studio</a>, faça login com sua conta Google e clique em "Create API Key".
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-num">2</div>
+            <div>
+                <strong>Configurar no App:</strong><br>
+                No AutoPlanner, clique no ícone de engrenagem (⚙️) no menu ou na tela de login. Cole sua chave no campo "Gemini API Key".
+            </div>
+        </div>
+        <div class="tip">
+            <strong>Privacidade:</strong> Sua chave e os dados dos jovens ficam salvos <strong>apenas no seu computador</strong>. Nada é enviado para servidores externos além do texto necessário para a IA gerar a atividade.
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>👥 Painel: Efetivo & Histórico (O Coração)</h2>
+        <p>Para que a IA dê sugestões úteis, ela precisa saber quem são seus jovens e o que eles precisam.</p>
+
+        <h3>Cadastrando Jovens</h3>
+        <p>Vá na aba <strong>Efetivo</strong>. Cadastre seus jovens indicando o Ramo (Lobinho, Escoteiro...) e a Função (Juvenil). Isso é vital para a lista de presença.</p>
+
+        <h3><span class="badge">NOVO v2.2</span> Ficha de Progressão Individual</h3>
+        <p>Seus jovens já têm uma vida escoteira antes do app. Você precisa contar isso ao sistema:</p>
+        <ol>
+            <li>Na lista de Efetivo, clique no ícone de pergaminho (📜) ao lado do nome do jovem.</li>
+            <li>Uma janela abrirá com <strong>todo o catálogo oficial</strong> do ramo dele.</li>
+            <li>Marque as caixas ☑️ dos itens que ele <strong>já conquistou</strong> no passado.</li>
+        </ol>
+        <p><em><strong>Lógica:</strong> Isso cria uma "linha de base". O sistema saberá que o "João" já tem a etapa Pistas, mas falta a Trilha. Assim, ele não vai sugerir atividades repetidas.</em></p>
+    </div>
+
+    <div class="card">
+        <h2>✨ Painel: Criar Novo (O Cérebro)</h2>
+        <p>Aqui é onde a mágica acontece. O processo é dividido em 3 passos:</p>
+
+        <h3>Passo 1: Escolha do Ramo</h3>
+        <p>Selecione para qual ramo você está planejando. O sistema carregará o catálogo específico (ex: Ramo Escoteiro = Blocos de Aprendizagem).</p>
+
+        <h3>Passo 2: Definição de Objetivos</h3>
+        <p>Você tem duas formas de preencher isso:</p>
+        
+        <h4>A. Modo Manual (Você escolhe)</h4>
+        <p>Use a barra de pesquisa para encontrar itens do catálogo (ex: "Nós", "Culinária", "BA-ARLIVRE-F1"). Clique no "+" para adicionar à lista de objetivos da atividade.</p>
+
+        <h4>B. <span class="badge">NOVO v2.3</span> Sugestão Inteligente (A IA escolhe)</h4>
+        <p>Clique no botão <strong>"✨ Sugerir com base na Tropa"</strong>.</p>
+        <div class="tip">
+            <strong>A Lógica por trás:</strong> O sistema analisa o histórico de TODOS os jovens da seção. Ele vê quais itens estão "faltando" para a maioria (ex: 80% da tropa não cumpriu o Bloco de Vida ao Ar Livre). A IA então cria 3 sugestões de temas criativos focados exatamente nessas lacunas.
+        </div>
+
+        <h3>Passo 3: O Plano Gerado</h3>
+        <p>A IA gera o roteiro completo com:</p>
+        <ul>
+            <li><strong>Cronograma:</strong> Atividades passo a passo com duração.</li>
+            <li><strong>Ficha de Estudo (Chefia):</strong> Explicação teórica do assunto (ex: como funciona o nó, a história da bússola) para você não chegar despreparado.</li>
+            <li><strong>Links Reais:</strong> Referências do Google Search para aprofundamento.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h2>📅 Painel: Calendário & Presença</h2>
+        <p>Não deixe seus planos no papel. Salve-os!</p>
+        <ul>
+            <li>Ao salvar um plano, ele vai para o seu <strong>Catálogo Pessoal</strong>.</li>
+            <li>No Calendário, clique em um dia e "Agende" esse plano.</li>
+            <li>Após a atividade, clique no evento no calendário e vá em <strong>Lista de Presença</strong>.</li>
+        </ul>
+        <div class="warning">
+            <strong>Importante:</strong> Ao marcar "Presente" para um jovem em uma atividade que tinha objetivos (ex: Fazer Fogo), o sistema entende que ele <strong>conquistou</strong> ou praticou aquele item. Isso atualiza a progressão dele automaticamente!
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>🏅 Especialidades & Regras 2025</h2>
+        <p>O aplicativo já está atualizado com as diretrizes da UEB para 2025.</p>
+        
+        <h3>Ramos Lobinho e Escoteiro</h3>
+        <p>As especialidades aparecem divididas em <strong>Nível 1</strong> (Conhecimento/Prata) e <strong>Nível 2</strong> (Habilidade/Ouro). Não existe mais Nível 3.</p>
+
+        <h3>Ramos Sênior e Pioneiro</h3>
+        <p>As especialidades são tratadas como <strong>Projetos</strong>. Ao selecionar uma especialidade para estes ramos, a IA irá sugerir um roteiro baseado nas etapas: <em>Conhecer, Fazer e Compartilhar</em>.</p>
+    </div>
+
+    <div class="card">
+        <h2>Dicas de Ouro</h2>
+        <ul>
+            <li><strong>HTML Portátil:</strong> No final do plano gerado, você pode baixar um arquivo HTML. Ele é leve, abre em qualquer celular e pode ser enviado no WhatsApp do grupo de chefia.</li>
+            <li><strong>Personalização:</strong> No Passo 2, o campo "Instruções Adicionais" é poderoso. Use para coisas como: "Temos um jovem cadeirante, adapte os jogos" ou "Está chovendo, faça atividades de sede".</li>
+            <li><strong>Backup:</strong> Seus dados ficam na pasta <code>meusarquivospaxtu</code> dentro da pasta do programa. Faça cópias dessa pasta se for mudar de computador.</li>
+        </ul>
+    </div>
+
+    <footer style="text-align: center; margin-top: 50px; color: #64748b; font-size: 0.9em;">
+        <p>Paxtu AutoPlanner • Desenvolvido para facilitar a vida do Escotista.</p>
+    </footer>
+
+</div>
+
+</body>
+</html>

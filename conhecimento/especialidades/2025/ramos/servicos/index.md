@@ -1,0 +1,111 @@
+# Serviços
+
+Fonte: `planilhaprogressao.xlsx`
+Subtotal: 1083 itens
+
+## Especialidades
+
+- `administracao` - Administração - 9 requisitos
+- `agricultura` - Agricultura - 15 requisitos
+- `alfabetizacao` - Alfabetização - 9 requisitos
+- `animacao-da-fe` - Animação da Fé - 15 requisitos
+- `aquicultura` - Aquicultura - 6 requisitos
+- `arte-digital` - Arte Digital - 6 requisitos
+- `baba` - Babá - 9 requisitos
+- `barismo` - Barismo - 12 requisitos
+- `biblioteconomia` - Biblioteconomia - 15 requisitos
+- `bolsa-de-valores` - Bolsa de Valores - 9 requisitos
+- `braille` - Braille - 12 requisitos
+- `carpintaria` - Carpintaria - 9 requisitos
+- `cartografia` - Cartografia - 12 requisitos
+- `churrasco` - Churrasco - 9 requisitos
+- `civismo` - Civismo - 9 requisitos
+- `compostagem` - Compostagem - 9 requisitos
+- `comercio-exterior` - Comércio Exterior - 9 requisitos
+- `confeitaria` - Confeitaria - 9 requisitos
+- `construcao-civil` - Construção Civil - 15 requisitos
+- `contabilidade` - Contabilidade - 9 requisitos
+- `costura` - Costura - 12 requisitos
+- `criacao-de-animais-de-estimacao` - Criação de Animais de Estimação - 12 requisitos
+- `cuidados-bucais` - Cuidados Bucais - 12 requisitos
+- `cuidados-com-idosos` - Cuidados com Idosos - 6 requisitos
+- `culinaria-vegetariana` - Culinária Vegetariana - 9 requisitos
+- `decoracao` - Decoração - 12 requisitos
+- `defesa-civil` - Defesa Civil - 12 requisitos
+- `defesa-nacional` - Defesa Nacional - 9 requisitos
+- `dublagem` - Dublagem - 9 requisitos
+- `educacao-financeira` - Educação Financeira - 9 requisitos
+- `empreendedorismo` - Empreendedorismo - 9 requisitos
+- `encadernacao` - Encadernação - 12 requisitos
+- `entrega-de-mensagens` - Entrega de Mensagens - 12 requisitos
+- `estilismo` - Estilismo - 9 requisitos
+- `etiqueta` - Etiqueta - 9 requisitos
+- `faixa-do-cidadao` - Faixa do Cidadão - 9 requisitos
+- `fiscalizacao-de-patio-de-aerodromo` - Fiscalização de Pátio de Aeródromo - 9 requisitos
+- `garcom` - Garçom - 6 requisitos
+- `horticultura` - Horticultura - 9 requisitos
+- `inclusao` - Inclusão - 9 requisitos
+- `informacoes-turisticas` - Informações Turísticas - 9 requisitos
+- `internet` - Internet - 12 requisitos
+- `investigacao` - Investigação - 9 requisitos
+- `jardinagem` - Jardinagem - 12 requisitos
+- `jornalismo` - Jornalismo - 12 requisitos
+- `libras` - Libras - 9 requisitos
+- `licenciatura` - Licenciatura - 6 requisitos
+- `lides-campeiras` - Lides Campeiras - 15 requisitos
+- `liturgia-catolica` - Liturgia Católica - 12 requisitos
+- `linguas` - Línguas - 9 requisitos
+- `manicure` - Manicure - 12 requisitos
+- `manutencao-eletrica` - Manutenção Elétrica - 15 requisitos
+- `maquete` - Maquete - 12 requisitos
+- `maquiagem` - Maquiagem - 9 requisitos
+- `marcenaria` - Marcenaria - 15 requisitos
+- `mecanica-aerea` - Mecânica Aérea - 9 requisitos
+- `mecanica-de-automoveis` - Mecânica de Automóveis - 21 requisitos
+- `mecanica-de-motor-de-popa` - Mecânica de Motor de Popa - 6 requisitos
+- `minhocultura` - Minhocultura - 6 requisitos
+- `missionario-catolico` - Missionário Católico - 9 requisitos
+- `navegacao-aerea` - Navegação Aérea - 12 requisitos
+- `nutricao` - Nutrição - 9 requisitos
+- `observacao-aerea` - Observação Aérea - 6 requisitos
+- `paisagismo` - Paisagismo - 9 requisitos
+- `pintura` - Pintura - 12 requisitos
+- `plantas-medicinais` - Plantas Medicinais - 6 requisitos
+- `prevencao-a-fake-news` - Prevenção a Fake News - 7 requisitos
+- `prevencao-ao-alcoolismo` - Prevenção ao Alcoolismo - 6 requisitos
+- `prevencao-ao-bullying` - Prevenção ao Bullying - 6 requisitos
+- `prevencao-ao-crime` - Prevenção ao Crime - 12 requisitos
+- `prevencao-ao-uso-de-drogas` - Prevenção ao Uso de Drogas - 9 requisitos
+- `prevencao-de-incendio` - Prevenção de Incêndio - 12 requisitos
+- `prevencao-em-saude` - Prevenção em Saúde - 15 requisitos
+- `primeiros-socorros` - Primeiros Socorros - 18 requisitos
+- `producao-de-laticinios` - Produção de Laticínios - 9 requisitos
+- `propaganda-e-marketing` - Propaganda e Marketing - 9 requisitos
+- `protecao-animal` - Proteção Animal - 18 requisitos
+- `protecao-de-animais-silvestres` - Proteção de Animais Silvestres - 12 requisitos
+- `radioamadorismo` - Radioamadorismo - 12 requisitos
+- `radioescuta` - Radioescuta - 9 requisitos
+- `reciclagem` - Reciclagem - 9 requisitos
+- `recreacao-infantil` - Recreação Infantil - 9 requisitos
+- `reparos-domesticos` - Reparos Domésticos - 15 requisitos
+- `reparos-navais` - Reparos Navais - 9 requisitos
+- `salvamento` - Salvamento - 9 requisitos
+- `secretariado` - Secretariado - 15 requisitos
+- `seguranca` - Segurança - 12 requisitos
+- `seguranca-aerea` - Segurança Aérea - 10 requisitos
+- `seguranca-domestica` - Segurança Doméstica - 18 requisitos
+- `seguranca-publica` - Segurança Pública - 9 requisitos
+- `seguranca-no-mar` - Segurança no Mar - 12 requisitos
+- `seguranca-no-trabalho` - Segurança no Trabalho - 9 requisitos
+- `seguranca-no-transito` - Segurança no Trânsito - 12 requisitos
+- `serralheria` - Serralheria - 12 requisitos
+- `sinalizacao` - Sinalização - 6 requisitos
+- `sobrevivencia` - Sobrevivência - 12 requisitos
+- `sobrevivencia-no-mar` - Sobrevivência no Mar - 9 requisitos
+- `socorrismo` - Socorrismo - 13 requisitos
+- `topografia` - Topografia - 12 requisitos
+- `trabalho-voluntario` - Trabalho Voluntário - 6 requisitos
+- `transporte-ferroviario` - Transporte Ferroviário - 6 requisitos
+- `vendas` - Vendas - 12 requisitos
+- `video-maker` - Video Maker - 9 requisitos
+- `vigilancia-epidemiologica` - Vigilância Epidemiológica - 9 requisitos

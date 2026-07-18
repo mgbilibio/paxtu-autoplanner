@@ -1,0 +1,11 @@
+![img-18.jpeg](img-18.jpeg)
+SÉNIOR
+
+![img-19.jpeg](img-19.jpeg)
+PIONEIRO
+
+RECONHECIMENTO
+
+CERTIFICAÇÃO EXTERNA
+
+REALIZAÇÃO DAS ETAPAS

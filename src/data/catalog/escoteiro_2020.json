@@ -1,0 +1,59 @@
+[
+  {
+    "name": "Pistas (Integração)",
+    "items": [
+      { "code": "E-PS-FIS-01", "description": "Higiene Pessoal e de Campo.", "guidance": "Manter-se limpo em acampamento." },
+      { "code": "E-PS-FIS-02", "description": "Mochila para 1 dia.", "guidance": "O que levar e como arrumar." },
+      { "code": "E-PS-INT-01", "description": "Nó Direito e Escota.", "guidance": "Revisão e aplicação correta." },
+      { "code": "E-PS-INT-02", "description": "Nó Lais de Guia e Volta do Fiel.", "guidance": "Salvamento e início de amarra." },
+      { "code": "E-PS-INT-03", "description": "Nó de Correr e Oito.", "guidance": "Ajuste e terminal de corda." },
+      { "code": "E-PS-INT-04", "description": "Fogo: Segurança e Tipos.", "guidance": "Limpar local e montar pirâmide." },
+      { "code": "E-PS-INT-05", "description": "Bússola: Rosa dos Ventos.", "guidance": "16 pontos cardeais e colaterais." },
+      { "code": "E-PS-CAR-01", "description": "Lei Escoteira (10 artigos).", "guidance": "Saber e explicar." },
+      { "code": "E-PS-CAR-02", "description": "Promessa Escoteira.", "guidance": "Entender o compromisso." },
+      { "code": "E-PS-AFE-01", "description": "Grito e História da Patrulha.", "guidance": "Identidade e tradição." },
+      { "code": "E-PS-SOC-01", "description": "Hasteamento da Bandeira.", "guidance": "Protocolo e respeito." },
+      { "code": "E-PS-SOC-02", "description": "Sinais de Pista (10 sinais).", "guidance": "Comunicação em trilha." },
+      { "code": "E-PS-ESP-01", "description": "Fogo de Conselho.", "guidance": "Participação respeitosa." }
+    ]
+  },
+  {
+    "name": "Trilha (Desenvolvimento)",
+    "items": [
+      { "code": "E-TL-FIS-01", "description": "Primeiros Socorros: Cortes/Queimaduras.", "guidance": "Tratamento básico." },
+      { "code": "E-TL-FIS-02", "description": "Montar Barraca.", "guidance": "Técnica e cuidado com o material." },
+      { "code": "E-TL-INT-01", "description": "Amarra Quadrada.", "guidance": "Para ângulos de 90 graus." },
+      { "code": "E-TL-INT-02", "description": "Amarra Diagonal.", "guidance": "Para travar estruturas em X." },
+      { "code": "E-TL-INT-03", "description": "Azimutes.", "guidance": "Navegação com bússola de visada." },
+      { "code": "E-TL-INT-04", "description": "Cozinha Mateira: Espeto/Brasa.", "guidance": "Cozinhar sem utensílios." },
+      { "code": "E-TL-INT-05", "description": "Machadinha e Facão.", "guidance": "Regras de segurança e uso." },
+      { "code": "E-TL-CAR-01", "description": "Encargo na Patrulha.", "guidance": "Responsabilidade (ex: Intendente)." },
+      { "code": "E-TL-SOC-01", "description": "Boa Ação de Patrulha.", "guidance": "Serviço coletivo." },
+      { "code": "E-TL-ESP-01", "description": "Momento Espiritual.", "guidance": "Conduzir uma reflexão curta." }
+    ]
+  },
+  {
+    "name": "Rumo (Eficiência)",
+    "items": [
+      { "code": "E-RM-FIS-01", "description": "Jornada de 10-15km.", "guidance": "Resistência física." },
+      { "code": "E-RM-FIS-02", "description": "Socorros: Transporte de feridos.", "guidance": "Maca improvisada." },
+      { "code": "E-RM-INT-01", "description": "Amarra de Tripé.", "guidance": "Base para estruturas." },
+      { "code": "E-RM-INT-02", "description": "Pioneiria: Torre ou Pórtico.", "guidance": "Projeto de médio porte." },
+      { "code": "E-RM-INT-03", "description": "Croquis de Percurso.", "guidance": "Desenho técnico de trilha." },
+      { "code": "E-RM-INT-04", "description": "Avaliação de Distâncias.", "guidance": "Passo duplo e estimativa." },
+      { "code": "E-RM-CAR-01", "description": "Liderar a Patrulha.", "guidance": "Atuar como Monitor/Sub em atividade." },
+      { "code": "E-RM-SOC-01", "description": "Projeto Comunitário.", "guidance": "Participação em projeto do Grupo." }
+    ]
+  },
+  {
+    "name": "Travessia (Mestria)",
+    "items": [
+      { "code": "E-TV-INT-01", "description": "Grande Pioneiria de Campo.", "guidance": "Mesa, cozinha ou abrigo elevado." },
+      { "code": "E-TV-INT-02", "description": "Pernoite em Abrigo Natural.", "guidance": "Bivaque técnico." },
+      { "code": "E-TV-INT-03", "description": "Mapa Topográfico.", "guidance": "Leitura de curvas de nível." },
+      { "code": "E-TV-CAR-01", "description": "Mentoria de novatos.", "guidance": "Ensinar itens de Pistas." },
+      { "code": "E-TV-SOC-01", "description": "Jornada de Travessia Sênior.", "guidance": "Desafio de transição de ramo." },
+      { "code": "E-TV-ESP-01", "description": "Relatório de Vida Escoteira.", "guidance": "Autoavaliação da trajetória." }
+    ]
+  }
+]

@@ -1,0 +1,350 @@
+[
+  {
+    "code": "SP-HB-ADS",
+    "description": "Adestramento",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Ensinar ao cão o comando 'Sentar' e 'Ficar'. 2. Ensinar ao cão o comando 'Vir' quando chamado. 3. Demonstrar como caminhar com o cão ao lado, sem puxar a guia. 4. Explicar a importância do reforço positivo no treinamento. 5. Conhecer as necessidades básicas de saúde e vacinação canina. 6. Demonstrar como socializar o cão com outras pessoas e animais. 7. Explicar a linguagem corporal básica dos cães (medo, alegria, agressão). 8. Saber como limpar e higienizar o local onde o cão vive. 9. Demonstrar como escovar e cuidar da pelagem do animal.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-API",
+    "description": "Apicultura",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Identificar as espécies de abelhas mais produtivas e as abelhas nativas do Brasil. 2. Explicar o ciclo de vida das abelhas e o papel da abelha rainha. 3. Identificar as plantas melíferas da sua região e seus períodos de florada. 4. Demonstrar o uso correto do fumegador e das ferramentas de manejo. 5. Saber como realizar a colheita do mel sem estressar a colônia. 6. Explicar os benefícios nutricionais e medicinais do mel e da geleia real. 7. Identificar sinais de doenças na colmeia e saber como tratá-las. 8. Saber como realizar a divisão de uma colônia (enxameação artificial). 9. Montar um quadro de cera alveolada e explicar sua finalidade.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-AQU",
+    "description": "Aquarismo",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a diferença entre aquários de água doce e água salgada. 2. Identificar os equipamentos básicos: filtro, termostato, iluminação e aerador. 3. Explicar o ciclo do nitrogênio e a importância da biologia no aquário. 4. Saber como realizar a TPA (Troca Parcial de Água) corretamente. 5. Identificar 5 espécies de peixes ornamentais e suas compatibilidades. 6. Demonstrar como testar o pH, amônia e nitrito da água. 7. Conhecer as necessidades nutricionais das espécies criadas. 8. Saber identificar doenças comuns como Ictio e como tratá-las. 9. Montar e manter um aquário equilibrado por pelo menos 3 meses.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-AVI",
+    "description": "Avicultura",
+    "guidance": "Consultar manual.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-CAE",
+    "description": "Criação de Cães",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Identificar 10 raças de cães e suas funções originais (pastoreio, guarda, etc). 2. Explicar a importância da vacinação (V10, Raiva) e vermifugação periódica. 3. Demonstrar como realizar a higiene básica: banho, limpeza de ouvidos e corte de unhas. 4. Conhecer as leis sobre posse responsável e uso de focinheira em locais públicos. 5. Explicar o processo de gestação e cuidados com a cadela e os filhotes. 6. Saber identificar sinais de doenças graves como Cinomose e Parvovirose. 7. Demonstrar comandos básicos de obediência (senta, deita, aqui). 8. Conhecer a dieta adequada para cada fase da vida do cão (filhote, adulto, sênior). 9. Realizar o manejo completo de um cão por 60 dias, registrando as atividades.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-CRI",
+    "description": "Criação de Animais",
+    "guidance": "Consultar manual.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-CUN",
+    "description": "Cunicultura",
+    "guidance": "Consultar manual.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-MIN",
+    "description": "Minhocultura",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a importância da minhoca na fertilidade e aeração do solo. 2. Identificar a espécie mais usada na compostagem (Minhoca Vermelha da Califórnia). 3. Demonstrar como montar um minhocário doméstico (compostagem de baldes). 4. Saber quais alimentos podem e quais não podem ser colocados no minhocário. 5. Explicar o processo de transformação da matéria orgânica em húmus. 6. Saber como extrair e utilizar o biofertilizante líquido (chorume orgânico). 7. Identificar sinais de desequilíbrio no minhocário (cheiro forte, fuga de minhocas). 8. Demonstrar como realizar a separação do húmus das minhocas para uso no jardim. 9. Conhecer o ciclo reprodutivo das minhocas e a formação dos casulos.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-PIS",
+    "description": "Piscicultura",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a diferença entre piscicultura extensiva, intensiva e semi-intensiva. 2. Identificar 3 espécies de peixes adequadas para criação em tanques na sua região. 3. Saber como monitorar a qualidade da água (oxigênio, pH e temperatura). 4. Descrever o processo de preparação do tanque: calagem e adubação. 5. Explicar como funciona o sistema de recirculação de água (RAS). 6. Identificar o ponto ideal de povoamento (alevinos) e o tempo de abate. 7. Saber como prevenir doenças fúngicas e parasitárias em peixes de criadouro. 8. Conhecer a legislação ambiental para a construção de tanques e uso de água. 9. Demonstrar como realizar a biometria (pesagem e medição) dos peixes.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-SER",
+    "description": "Sericicultura",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar o ciclo de vida do bicho-da-seda (Bombyx mori). 2. Descrever a importância da amoreira na alimentação das lagartas. 3. Identificar as etapas de formação do casulo e o processo de fiação da seda. 4. Saber como realizar o controle de temperatura e higiene no criadouro. 5. Explicar a diferença entre a seda natural e a seda artificial (viscose). 6. Conhecer a história da Rota da Seda e sua importância para o comércio mundial. 7. Demonstrar como identificar um fio de seda puro através do teste de queima. 8. Descrever as doenças comuns que afetam o bicho-da-seda e como preveni-las. 9. Visitar um polo de produção de seda ou relatar o manejo através de pesquisa documental.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-BON",
+    "description": "Bonsai",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a história do Bonsai e a diferença entre Bonsai e Penjing. 2. Identificar 5 estilos clássicos de Bonsai (ex: Chokkan, Moyogi, Kengai). 3. Demonstrar as técnicas de poda de manutenção e poda de estrutura. 4. Saber como realizar a aramação de um galho sem danificar a casca. 5. Explicar a importância da composição do solo (drenagem) para árvores em vasos pequenos. 6. Demonstrar o processo de transplante e poda de raízes. 7. Identificar as espécies mais adequadas para Bonsai no clima da sua região. 8. Conhecer as pragas comuns e como realizar o tratamento fitossanitário adequado. 9. Manter um Bonsai sob seus cuidados por pelo menos 6 meses, registrando a evolução.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-FLOR",
+    "description": "Floricultura",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Identificar 10 espécies de flores comerciais e suas épocas de floração. 2. Explicar as condições ideais de luz e rega para orquídeas, suculentas e rosas. 3. Demonstrar como preparar um arranjo floral (buquê) harmonioso. 4. Saber como realizar a propagação de flores por sementes, bulbos e estaquia. 5. Explicar a função dos fertilizantes NPK e como aplicá-los com segurança. 6. Conhecer as técnicas de conservação de flores de corte para que durem mais. 7. Identificar e saber combater pulgões e cochonilhas de forma orgânica. 8. Demonstrar como montar um vaso com sistema de drenagem eficiente. 9. Visitar uma garden center ou exposição de flores e relatar as técnicas observadas.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-HOR",
+    "description": "Horticultura",
+    "guidance": "Consultar manual.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-JAR",
+    "description": "Jardinagem",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Identificar 5 tipos de plantas ornamentais comuns. 2. Preparar o solo (adubação e limpeza) para um plantio. 3. Plantar e cuidar de uma muda até que ela se desenvolva. 4. Demonstrar como fazer mudas por estaquia ou sementes. 5. Conhecer as ferramentas básicas e como conservá-las. 6. Identificar pragas comuns e saber como combatê-las organicamente. 7. Explicar a importância da rega correta para cada tipo de planta. 8. Montar um pequeno jardim ou horta em vasos. 9. Fazer uma composteira doméstica simples.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-PES",
+    "description": "Pesca",
+    "guidance": "Consultar manual.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-ALV",
+    "description": "Alvenaria",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Identificar as ferramentas básicas (colher de pedreiro, nível, prumo, trena). 2. Explicar a composição e preparo de diferentes tipos de massa (reboco, assentamento). 3. Demonstrar como levantar um pequeno trecho de parede usando tijolos ou blocos. 4. Explicar a importância do prumo e do nível na construção de uma parede. 5. Saber como preparar uma superfície para receber chapisco e emboço. 6. Conhecer os equipamentos de proteção individual (EPI) necessários na obra. 7. Explicar a diferença entre cimento, cal e areia e suas proporções. 8. Demonstrar como realizar um pequeno reparo em uma parede rachada ou com infiltração. 9. Saber como calcular a quantidade de tijolos para uma área específica.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-BAT",
+    "description": "Batik",
+    "guidance": "Consultar manual.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-BIJ",
+    "description": "Bijuteria",
+    "guidance": "Consultar manual.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-BIS",
+    "description": "Biscuit",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a composição da massa de biscuit (cola branca, amido, conservantes e vaselina). 2. Demonstrar como colorir a massa natural usando tinta a óleo ou pigmentos específicos. 3. Executar as modelagens básicas: bolinha, coxinha, quibe e rolinho. 4. Criar uma figura humana ou personagem mantendo as proporções e equilíbrio. 5. Demonstrar o uso de estecas, boleadores e cortadores para dar acabamento. 6. Saber como unir partes da peça usando cola branca ou arame interno para sustentação. 7. Explicar o processo de secagem e a retração (diminuição) da peça após seca. 8. Realizar a pintura de detalhes (olhos, bochechas) e aplicação de verniz protetor. 9. Confeccionar 5 lembrancinhas temáticas para um evento do grupo escoteiro.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-BRD",
+    "description": "Bordado",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Identificar os diferentes tipos de agulhas e tecidos para bordado. 2. Executar 5 pontos básicos: atrás, corrente, cheio, nó francês e haste. 3. Saber como transferir um risco do papel para o tecido corretamente. 4. Demonstrar o uso do bastidor para manter a tensão do tecido. 5. Realizar um bordado original contendo pelo menos 3 tipos de pontos. 6. Saber como finalizar o avesso do bordado de forma limpa. 7. Conhecer a diferença entre linhas de meada, perlé e fios metalizados. 8. Explicar como lavar e conservar peças bordadas à mão. 9. Ensinar um ponto de bordado para um colega da seção.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-CAR",
+    "description": "Carpintaria",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Identificar e classificar 5 tipos de madeiras usadas em construção e móveis. 2. Demonstrar o uso correto de serrote, trena, esquadro e formão. 3. Realizar um encaixe simples de madeira (ex: meia-madeira ou respiga). 4. Explicar a diferença entre pregos, parafusos e cavilhas e quando usar cada um. 5. Demonstrar como lixar uma peça de madeira seguindo o sentido dos veios. 6. Conhecer os produtos de acabamento e proteção (verniz, seladora, stain). 7. Construir um objeto útil de madeira (caixa, prateleira ou banco pequeno). 8. Explicar as normas de segurança para operar máquinas elétricas (serra circular, lixadeira). 9. Saber como recuperar uma peça de madeira atacada por cupins.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-CES",
+    "description": "Cestaria",
+    "guidance": "Consultar manual.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-COU",
+    "description": "Couro",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Identificar os diferentes tipos de couro (vaqueta, soleta, camurça) e curtumes. 2. Demonstrar o uso de facas de corte, vazadores e estecas para couro. 3. Executar a técnica de costura manual com duas agulhas (ponto de sela). 4. Saber como realizar o entalhe ou gravação decorativa no couro (carimbos). 5. Confeccionar um objeto útil (ex: bainha para faca, carteira ou cinto). 6. Demonstrar a aplicação de fivelas, rebites e botões de pressão. 7. Saber como hidratar e conservar artigos de couro para aumentar a durabilidade. 8. Explicar o processo de acabamento das bordas (brunidura). 9. Conhecer as alternativas sintéticas e o impacto ambiental do curtimento.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-CRM",
+    "description": "Cerâmica",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a diferença entre argila, cerâmica e porcelana. 2. Identificar as ferramentas básicas de modelagem (estecas, fios de corte, torninhos). 3. Demonstrar a técnica de construção por 'rolinhos' (cobrinhas) para criar um vaso. 4. Executar a técnica de 'beliscão' para criar uma tigela ou cuia pequena. 5. Explicar o processo de secagem (ponto de couro) e por que as peças estouram no forno. 6. Saber como preparar o 'barbotina' para colar partes de argila. 7. Realizar a queima de uma peça (ou explicar detalhadamente o funcionamento de um forno cerâmico). 8. Demonstrar técnicas de decoração: esmaltação, incisão ou pintura com engobe. 9. Conhecer a história da cerâmica utilitária em uma cultura indígena brasileira.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-CRO",
+    "description": "Crochê",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Identificar os diferentes tamanhos de agulhas e sua relação com a espessura do fio. 2. Executar os pontos básicos: correntinha, ponto baixíssimo, ponto baixo e ponto alto. 3. Saber ler e interpretar gráficos de crochê simples. 4. Realizar um trabalho circular (ex: descanso de copo ou centro de mesa). 5. Confeccionar uma peça de vestuário ou acessório (ex: cachecol ou gorro). 6. Demonstrar como fazer o arremate invisível e a troca de cores. 7. Explicar a diferença entre fios naturais (algodão) e sintéticos. 8. Saber como lavar e secar peças de crochê para não deformarem. 9. Ensinar os pontos básicos para dois colegas da seção.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-CST",
+    "description": "Costura",
+    "guidance": "Consultar manual.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-DEC",
+    "description": "Decoupage",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar o conceito de decoupage e as superfícies onde pode ser aplicada. 2. Demonstrar como preparar a superfície (lixamento e fundo) antes da colagem. 3. Realizar a colagem de guardanapo ou papel específico sem deixar bolhas ou rugas. 4. Saber como fazer o recorte preciso de figuras complexas. 5. Demonstrar o uso de vernizes e selantes para acabamento e proteção. 6. Criar um objeto decorativo (caixa, prato ou tela) usando a técnica. 7. Explicar a diferença entre decoupage plana e decoupage 3D. 8. Saber como limpar os pincéis usados com colas e vernizes. 9. Conhecer a origem histórica da decoupage como arte popular.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-ECD",
+    "description": "Encadernação",
+    "guidance": "Consultar manual.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-ENC",
+    "description": "Encanador",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Identificar os diferentes tipos de tubulações (PVC marrom, branco, CPVC, PPR). 2. Demonstrar como cortar e lixar um tubo e fazer uma colagem correta com adesivo plástico. 3. Saber como vedar uma rosca usando fita veda-rosca (Teflon). 4. Demonstrar como trocar o reparo (carrapeta) de uma torneira que está pingando. 5. Explicar o funcionamento de um sifão e como realizar sua limpeza. 6. Saber como desentupir um ralo ou vaso sanitário usando métodos simples. 7. Conhecer o funcionamento básico de uma caixa d'água e da boia. 8. Identificar os registros gerais de água de uma residência. 9. Explicar como evitar o desperdício de água através da manutenção preventiva.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-ENT",
+    "description": "Entalhe",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Identificar as ferramentas básicas: formões (reto, goiva, V) e macetes. 2. Demonstrar como manter as ferramentas de corte sempre afiadas e seguras. 3. Executar o entalhe de uma placa de madeira com um desenho em relevo simples. 4. Saber escolher madeiras adequadas para entalhe (macias e sem muitos nós). 5. Explicar a diferença entre entalhe em baixo relevo e entalhe em alto relevo. 6. Demonstrar como seguir o veio da madeira para evitar lascas. 7. Realizar o acabamento da peça entalhada usando lixas finas e cera. 8. Saber como transferir o desenho para a madeira respeitando as dimensões. 9. Conhecer as normas de segurança para proteção das mãos durante o corte.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-FER",
+    "description": "Ferraria",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Conhecer as normas de segurança rigorosas para o uso da forja e bigorna. 2. Identificar os tipos de carvão e como manter o fogo da forja na temperatura ideal. 3. Demonstrar o uso correto de tenazes, martelos de forja e punções. 4. Executar as operações básicas: estiramento, recalque e dobramento a quente. 5. Saber realizar a têmpera e o revenimento de uma ferramenta simples. 6. Forjar um objeto utilitário (ex: um gancho, um espeto ou um saca-pinos). 7. Explicar a diferença entre ferro forjado, aço carbono e ferro fundido. 8. Demonstrar como limpar a carepa e realizar o acabamento da peça. 9. Conhecer a história da ferraria e sua evolução tecnológica.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-FUN",
+    "description": "Funilaria",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Identificar as ferramentas: martelos de face plana, bola, penas e diversos tipos de tanchonetes. 2. Explicar o processo de desamasso manual (rebater) e o uso de massa plástica. 3. Demonstrar como realizar o lixamento técnico (seco e úmido) em superfícies metálicas. 4. Saber aplicar o fundo (primer) e identificar problemas de aderência. 5. Executar o corte de chapa fina usando tesoura de funileiro de forma segura. 6. Demonstrar a união de peças através de solda ponto ou brasagem simples. 7. Explicar como evitar a oxidação galvânica entre metais diferentes. 8. Realizar o reparo de uma mossa (amassado) em uma peça metálica até o ponto de pintura. 9. Conhecer as normas de segurança para proteção ocular e respiratória no ofício.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-GRA",
+    "description": "Gravação",
+    "guidance": "Consultar manual.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-LAT",
+    "description": "Latoaria",
+    "guidance": "Consultar manual.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-MAC",
+    "description": "Macramê",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a origem do macramê e a diferença entre fios de algodão, poliamida e sisal. 2. Demonstrar a execução dos nós fundamentais: Nó de Montagem, Nó Quadrado (Duplo) e Nó 'Festonê'. 3. Saber como calcular a metragem de fio necessária para um projeto (regra de 4 vezes o tamanho final). 4. Realizar um suporte para plantas (Hanger) usando pelo menos dois tipos de nós diferentes. 5. Confeccionar um painel decorativo de parede explorando franjas e padrões geométricos. 6. Demonstrar como realizar o arremate invisível e a colagem de pontas se necessário. 7. Criar um acessório de vestuário (ex: cinto ou pulseira) em macramê. 8. Saber como tingir fios de algodão naturalmente para uso no artesanato. 9. Ensinar o nó quadrado para três pessoas da sua seção.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-MAR",
+    "description": "Marcenaria",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Identificar as ferramentas manuais básicas: plaina, formão, graminho, esquadro e serrote de costa. 2. Demonstrar como afiar corretamente um formão e uma lâmina de plaina. 3. Realizar 3 tipos de encaixes clássicos: rabo de andorinha simples, espiga e fenda, e meia-madeira. 4. Explicar a diferença entre madeira maciça, MDF, compensado e aglomerado. 5. Demonstrar como aplicar folha de madeira (marchetaria básica) ou fita de borda. 6. Construir um pequeno móvel (ex: criado-mudo ou estante) com acabamento de seladora ou cera. 7. Saber como calcular o aproveitamento de uma chapa de madeira para minimizar o desperdício. 8. Explicar o funcionamento e a segurança no uso da serra de fita e da lixadeira de disco. 9. Identificar 5 tipos de ferragens (dobradiças, corrediças) e saber instalá-las.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-MCH",
+    "description": "Marchetaria",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a história da marchetaria e as diferentes madeiras usadas como lâminas. 2. Demonstrar o uso correto do estilete de precisão e da fita crepe para fixação. 3. Realizar um corte em 'V' ou 'Janela' para encaixe de duas cores de madeira. 4. Criar um padrão geométrico simples (ex: tabuleiro de xadrez) usando lâminas. 5. Demonstrar como colar as lâminas sobre uma base rígida (MDF ou compensado). 6. Saber como lixar a peça final sem romper a fina camada de madeira. 7. Aplicar acabamento em seladora ou cera para realçar os veios. 8. Conhecer a técnica de sombreamento em areia quente. 9. Apresentar uma caixa ou painel decorado com a técnica de marchetaria.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-MOD",
+    "description": "Modelismo",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a diferença entre modelismo estático e rádio-controlado. 2. Identificar as principais escalas usadas (1:72, 1:48, 1:35, etc.). 3. Montar um modelo complexo (navio, carro ou avião) com atenção aos detalhes. 4. Demonstrar o uso de ferramentas de precisão: pinças, estiletes e limas. 5. Saber aplicar técnicas de pintura com aerógrafo ou pincel de alta qualidade. 6. Realizar a montagem de um cenário (diorama) para o seu modelo. 7. Explicar como pesquisar a fidelidade histórica do modelo escolhido. 8. Manter um espaço de trabalho organizado e limpo. 9. Participar de uma exposição ou clube de modelismo local.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-MOS",
+    "description": "Mosaico",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Identificar os materiais usados: pastilhas de vidro, cerâmica, azulejos e torquês. 2. Demonstrar como cortar as tesselas (peças pequenas) com precisão. 3. Explicar a diferença entre o método direto e o método indireto de montagem. 4. Preparar a base e o adesivo (cola branca ou argamassa) adequadamente. 5. Criar um desenho original e preenchê-lo respeitando o 'andamento' das peças. 6. Demonstrar como aplicar o rejunte e realizar a limpeza final. 7. Saber como impermeabilizar o mosaico para uso em áreas externas. 8. Conhecer a história dos mosaicos bizantinos e romanos. 9. Realizar um objeto utilitário (ex: porta-copos ou tampo de mesa) em mosaico.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-ORG",
+    "description": "Origami",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a história e o significado cultural do origami no Japão. 2. Demonstrar as dobras básicas (vale, montanha, dobra invertida). 3. Executar com perfeição o Tsuru (Grou) e explicar seu simbolismo. 4. Dobrar pelo menos 5 figuras diferentes de níveis de dificuldade variados. 5. Saber escolher o papel adequado para cada tipo de modelo. 6. Explicar como ler e interpretar diagramas de origami (setas e símbolos). 7. Realizar uma composição ou quadro usando origamis dobrados por você. 8. Ensinar uma dobra simples para a sua patrulha ou matilha. 9. Conhecer a obra de um grande mestre do origami (ex: Akira Yoshizawa).",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-PAP",
+    "description": "Papel Machê",
+    "guidance": "Consultar manual.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-PIP",
+    "description": "Pipa",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Construir 3 tipos diferentes de pipas (ex: Raia, Peixinho, Barrilete). 2. Saber como fazer a armação usando varetas de bambu ou fibra. 3. Demonstrar como fazer o estiramento (cabresto) para equilíbrio no voo. 4. Saber escolher a linha adequada para o tamanho e peso da pipa. 5. Conhecer e respeitar as leis que proíbem o uso de cerol ou linha chilena. 6. Demonstrar como empinar e controlar a pipa em diferentes intensidades de vento. 7. Explicar os perigos de soltar pipas perto de redes elétricas. 8. Saber como fazer rabiolas eficientes para cada modelo. 9. Organizar um festival de pipas para os lobinhos da sua alcateia.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-PIR",
+    "description": "Pirografia",
+    "guidance": "Consultar manual.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-PLS",
+    "description": "Plastimodelismo",
+    "guidance": "Consultar manual.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-PNT",
+    "description": "Pintura",
+    "guidance": "Consultar manual.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-SAB",
+    "description": "Saboaria",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar o processo químico básico da saponificação. 2. Conhecer as normas de segurança para manipulação de bases e essências. 3. Preparar um sabonete artesanal usando o método de 'derreter e verter' (Glicerina). 4. Explicar a função das propriedades hidratantes (óleos vegetais, manteigas). 5. Saber como usar corantes e fragrâncias de forma equilibrada. 6. Criar um sabonete com elementos decorativos (ervas secas, sementes). 7. Explicar como embalar e rotular corretamente para conservação. 8. Demonstrar como fazer sabão líquido ou detergente caseiro biodegradável. 9. Conhecer a diferença entre sabonetes artesanais e industriais.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-TAP",
+    "description": "Tapeçaria",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a diferença entre urdidura e trama em um tear. 2. Identificar os materiais usados: fios de lã, algodão, sisal e tipos de agulhas. 3. Montar um tear manual simples (pode ser de papelão ou madeira). 4. Executar 3 tipos de pontos ou nós de tapeçaria (ex: Ponto Russo, Nó de Ghiordes). 5. Criar uma peça decorativa pequena (mínimo 20x20cm) com design original. 6. Saber como fazer o acabamento das franjas e o arremate final da peça. 7. Explicar como limpar e conservar tapeçarias antigas para evitar traças e mofo. 8. Conhecer a história dos tapetes Persas ou da tapeçaria de Aubusson. 9. Identificar as fibras naturais e sintéticas e suas vantagens para o trabalho.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-TEC",
+    "description": "Tecelagem",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar o funcionamento de um tear de pente liço ou tear de pregos. 2. Demonstrar como fazer a montagem da urdidura (fios verticais). 3. Executar a trama (fios horizontais) mantendo as bordas retas. 4. Saber como emendar fios de cores diferentes durante a tecelagem. 5. Confeccionar uma peça utilitária (ex: jogo americano ou mini tapete). 6. Identificar fibras naturais e sintéticas usadas na tecelagem. 7. Saber como realizar o arremate final retirando a peça do tear. 8. Criar um padrão decorativo simples (listras ou xadrez) no tecido. 9. Conhecer a história da tecelagem manual em comunidades tradicionais.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-TOR",
+    "description": "Tornearia",
+    "guidance": "Consultar manual.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-TRI",
+    "description": "Tricô",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Identificar os tipos de agulhas de tricô (retas, circulares e de duas pontas). 2. Demonstrar como colocar os pontos na agulha (montagem). 3. Executar o ponto meia e o ponto tricô com tensão uniforme. 4. Saber como aumentar e diminuir pontos durante a execução da peça. 5. Realizar o arremate final da peça evitando que desmanche. 6. Confeccionar um par de meias, luvas ou um cachecol em tricô. 7. Saber como recuperar um ponto que 'caiu' da agulha. 8. Interpretar receitas de tricô com abreviações técnicas. 9. Explicar as propriedades térmicas das diferentes lãs e fibras.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-VEL",
+    "description": "Velas",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Identificar os diferentes tipos de ceras e parafinas para fabricação de velas. 2. Conhecer os riscos de incêndio e queimaduras no manuseio de parafina quente. 3. Preparar uma vela aromática usando um molde ou recipiente de vidro. 4. Saber como centralizar e escolher o pavio correto para o diâmetro da vela. 5. Explicar como adicionar cores e aromas à cera derretida. 6. Criar uma vela decorativa com camadas de cores diferentes ou inclusões. 7. Demonstrar como limpar os utensílios usados na fabricação das velas. 8. Saber como consertar defeitos comuns (furos, bolhas de ar). 9. Explicar os cuidados necessários ao acender velas em casa e no campo.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-CHU",
+    "description": "Churrasco",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Identificar os principais cortes de carne bovina, suína e de aves para churrasco. 2. Demonstrar como acender o carvão sem usar produtos perigosos ou inflamáveis líquidos. 3. Explicar a diferença entre fogo direto, brasa e calor indireto. 4. Saber temperar diferentes tipos de carne usando sal grosso e marinadas. 5. Demonstrar o ponto correto da carne (selada, malpassada, ao ponto, bem passada). 6. Preparar os acompanhamentos clássicos (farofa, vinagrete, pão de alho). 7. Saber como calcular a quantidade de carne e carvão por pessoa. 8. Demonstrar a limpeza e conservação da grelha e espetos. 9. Organizar um churrasco para sua patrulha ou família com segurança.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-COL",
+    "description": "Colecionismo",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Apresentar uma coleção própria contendo pelo menos 50 itens diferentes. 2. Demonstrar como a coleção é organizada (ordem alfabética, cronológica, temática). 3. Explicar os métodos de conservação usados para evitar danos aos itens. 4. Relatar a história ou origem de pelo menos 3 itens raros da sua coleção. 5. Participar de uma feira ou grupo de trocas relacionado ao seu hobby. 6. Demonstrar como pesquisar o valor ou a raridade de um item da coleção. 7. Manter um catálogo atualizado (físico ou digital) da sua coleção. 8. Explicar a ética do colecionador (não adquirir itens de origem duvidosa). 9. Montar uma pequena exposição da sua coleção para a seção ou grupo.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-CNF",
+    "description": "Confeitaria",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Identificar os utensílios básicos: batedeira, balança, espátulas e bicos de confeitar. 2. Explicar a função dos ingredientes básicos (farinha, açúcar, ovos, gordura, fermento). 3. Preparar uma massa base de bolo (pão de ló ou amanteigada) com sucesso. 4. Demonstrar como fazer e aplicar coberturas como brigadeiro gourmet ou chantilly. 5. Executar técnicas de decoração usando saco de confeitar (pitangas, conchas, escrita). 6. Saber como rechear e nivelar um bolo de camadas. 7. Preparar uma sobremesa gelada (mousse ou pavê) com boa apresentação. 8. Conhecer as normas de higiene específicas para manipulação de doces e cremes. 9. Saber como armazenar e transportar bolos decorados com segurança.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-CUL",
+    "description": "Culinária",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Demonstrar habilidade no corte de legumes (Julienne, Brunoise e Cubos). 2. Preparar uma refeição completa com entrada, prato principal e sobremesa. 3. Conhecer os diferentes tipos de panelas e suas aplicações (ferro, barro, teflon). 4. Explicar como preparar e conservar molhos básicos (ex: Tomate, Bechamel). 5. Demonstrar como temperar e grelhar carnes, peixes ou aves corretamente. 6. Saber como organizar uma 'Mise en place' antes de começar a cozinhar. 7. Conhecer as normas de vigilância sanitária para cozinhas profissionais. 8. Preparar um prato vegetariano ou vegano nutricionalmente equilibrado. 9. Explicar como reduzir o desperdício de alimentos na cozinha (uso integral).",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-DOC",
+    "description": "Doceira",
+    "guidance": "Consultar manual.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-JOG",
+    "description": "Jogos",
+    "guidance": "Consultar manual.",
+    "category": "Hobbies"
+  },
+  {
+    "code": "SP-HB-PAN",
+    "description": "Panificação",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a função do fermento biológico e do fermento químico. 2. Preparar um pão caseiro sovado à mão até atingir o 'ponto de véu'. 3. Demonstrar como fazer pão de queijo ou pães sem glúten. 4. Explicar o processo de fermentação natural (Levain) e seus benefícios. 5. Saber as temperaturas ideais de forno para diferentes tipos de pães. 6. Preparar uma massa de pizza e demonstrar como abri-la corretamente. 7. Conhecer a diferença entre farinhas (comum, integral, de arroz). 8. Demonstrar técnicas de modelagem de pães (tranças, bolas, baguetes). 9. Explicar como armazenar pães para que durem mais tempo frescos.",
+    "category": "Hobbies"
+  }
+]

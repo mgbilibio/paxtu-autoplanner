@@ -1,0 +1,152 @@
+[
+  {
+    "name": "Físico",
+    "items": [
+      {
+        "code": "SEN-F1",
+        "description": "Condicionamento Sênior",
+        "guidance": "Consultar manual.",
+        "category": "Físico"
+      },
+      {
+        "code": "SEN-F2",
+        "description": "Saúde Sexual",
+        "guidance": "Consultar manual.",
+        "category": "Físico"
+      },
+      {
+        "code": "SEN-F3",
+        "description": "Esporte de Aventura",
+        "guidance": "Consultar manual.",
+        "category": "Físico"
+      },
+      {
+        "code": "SEN-F4",
+        "description": "Sobrevivência 48h",
+        "guidance": "Consultar manual.",
+        "category": "Físico"
+      }
+    ]
+  },
+  {
+    "name": "Intelectual",
+    "items": [
+      {
+        "code": "SEN-I1",
+        "description": "Pioneiria Técnica",
+        "guidance": "Consultar manual.",
+        "category": "Intelectual"
+      },
+      {
+        "code": "SEN-I2",
+        "description": "Orientação Noturna",
+        "guidance": "Consultar manual.",
+        "category": "Intelectual"
+      },
+      {
+        "code": "SEN-I3",
+        "description": "Comunicação Digital",
+        "guidance": "Consultar manual.",
+        "category": "Intelectual"
+      },
+      {
+        "code": "SEN-I4",
+        "description": "Projeto de Vida",
+        "guidance": "Consultar manual.",
+        "category": "Intelectual"
+      }
+    ]
+  },
+  {
+    "name": "Caráter",
+    "items": [
+      {
+        "code": "SEN-C1",
+        "description": "Maturidade de BP",
+        "guidance": "Consultar manual.",
+        "category": "Caráter"
+      },
+      {
+        "code": "SEN-C2",
+        "description": "Ética Profissional",
+        "guidance": "Consultar manual.",
+        "category": "Caráter"
+      },
+      {
+        "code": "SEN-C3",
+        "description": "Liderança de Tropa",
+        "guidance": "Consultar manual.",
+        "category": "Caráter"
+      },
+      {
+        "code": "SEN-C4",
+        "description": "Integridade",
+        "guidance": "Consultar manual.",
+        "category": "Caráter"
+      }
+    ]
+  },
+  {
+    "name": "Afetivo",
+    "items": [
+      {
+        "code": "SEN-A1",
+        "description": "Autoconhecimento",
+        "guidance": "Consultar manual.",
+        "category": "Afetivo"
+      },
+      {
+        "code": "SEN-A2",
+        "description": "Relacionamentos",
+        "guidance": "Consultar manual.",
+        "category": "Afetivo"
+      }
+    ]
+  },
+  {
+    "name": "Social",
+    "items": [
+      {
+        "code": "SEN-S1",
+        "description": "Cidadania Regional",
+        "guidance": "Consultar manual.",
+        "category": "Social"
+      },
+      {
+        "code": "SEN-S2",
+        "description": "Projeto de Serviço",
+        "guidance": "Consultar manual.",
+        "category": "Social"
+      },
+      {
+        "code": "SEN-S3",
+        "description": "Política Ativa",
+        "guidance": "Consultar manual.",
+        "category": "Social"
+      }
+    ]
+  },
+  {
+    "name": "Espiritual",
+    "items": [
+      {
+        "code": "SEN-E1",
+        "description": "Espiritualidade Reflexiva",
+        "guidance": "Consultar manual.",
+        "category": "Espiritual"
+      },
+      {
+        "code": "SEN-E2",
+        "description": "Diálogo Inter-religioso",
+        "guidance": "Consultar manual.",
+        "category": "Espiritual"
+      },
+      {
+        "code": "SEN-E3",
+        "description": "Misticismo Sênior",
+        "guidance": "Consultar manual.",
+        "category": "Espiritual"
+      }
+    ]
+  }
+]

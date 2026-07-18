@@ -1,0 +1,3 @@
+# ANOTAÇÕES
+
+![img-224.jpeg](img-224.jpeg)

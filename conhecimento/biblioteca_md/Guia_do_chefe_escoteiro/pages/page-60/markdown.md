@@ -1,0 +1,11 @@
+a) Exemplo Pessoal - Não há dúvida nenhuma que, os olhos de um jovem, o que interessa é o que a pessoa faz e não o que ela diz.
+
+Um chefe tem, portanto, pesando sobre seus ombros, a grande responsabilidade de fazer as coisas corretas e por motivos corretos, deixando que os jovens observem seu procedimento, sem contudo, fazer alarde de sua conduta. A atitude de irmão maior, aqui, impacta mais do que a de professor.
+
+b) Estudo da Natureza - Há verdadeiras lições de crença e fé na observação da natureza; na vida dos pássaros, por exemplo, a formação de cada pena, igualzinha a de outro da mesma espécie que vive a milhares de quilômetros de distância, a migração periódica, a construção dos ninhos, a coloração dos ovos, o crescimento dos filhotes, seu nascimento sob cuidados maternos, sua alimentação, a arte de voar, etc., etc., tudo, enfim, realizado sem o auxílio humano, mas unicamente pelas leis do Criador; estas são as melhores práticas e sermões para os jovens.
+
+As flores em suas ordens, as plantas de toda a espécie, brotando ou já árvore de casca grossa; os animais, suas diversas espécies com hábitos próprios; as estrelas no céu com seus lugares definidos e seus movimentos regulares pelo espaço, tudo isso, enfim, dá a qualquer um a primeira concepção do Infinito e da imensa obra do Criador, na qual o ser humano representa muito pouco. Tudo isto é fascinante para os jovens, pois exerce uma influência absorvente sobre sua curiosidade, espírito de pesquisa e poder de observação, conduzindo-os diretamente a reconhecer a mão de Deus neste mundo de maravilhas, desde que alguém atraia sua atenção para tais fenômenos. O que mais me admira de tudo isto, é que alguns professores abandonam esses meios fáceis e infalíveis de educar, e esforçam-se em impor a instrução de catecismo como primeiro passo para obrigar a um jovem, irriquieto e cheio de vida, a pensar em coisas elevadas.
+
+c) Boas Ações - Com um pouco de estímulo por parte do Chefe a prática da boa ação diária se torna como mania juvenil, e constitui um dos melhores passos para torná-los religiosos de fato e não simplesmente em teoria. O jovem tem um instinto natural para o bem, se encontrar uma maneira prática de fazê-lo. E esse "negócio" de boa ação, vem ao seu encontro. Desenvolvendo esse instinto, a boa ação diária faz brotar o espírito da caridade para com o próximo.
+
+61

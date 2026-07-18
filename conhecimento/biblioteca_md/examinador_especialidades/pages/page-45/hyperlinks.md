@@ -1,0 +1,1 @@
+https://www.google.com/url?q=https://www.escoteiros.org.br/wp-content/uploads/2020/10/Formul%25C3%25A1rio-de-Especialidades.doc&source=gmail-imap&ust=1633485791000000&usg=AOvVaw1Yc2_esi_sNpltagdkeFN0

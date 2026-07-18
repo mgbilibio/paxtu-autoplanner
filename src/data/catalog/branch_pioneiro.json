@@ -1,0 +1,104 @@
+[
+  {
+    "name": "Físico",
+    "items": [
+      {
+        "code": "PIO-F1",
+        "description": "Equilíbrio Biológico",
+        "guidance": "Consultar manual.",
+        "category": "Físico"
+      },
+      {
+        "code": "PIO-F2",
+        "description": "Autonomia Física",
+        "guidance": "Consultar manual.",
+        "category": "Físico"
+      }
+    ]
+  },
+  {
+    "name": "Intelectual",
+    "items": [
+      {
+        "code": "PIO-I1",
+        "description": "Cultura Geral",
+        "guidance": "Consultar manual.",
+        "category": "Intelectual"
+      },
+      {
+        "code": "PIO-I2",
+        "description": "Empreendedorismo",
+        "guidance": "Consultar manual.",
+        "category": "Intelectual"
+      }
+    ]
+  },
+  {
+    "name": "Caráter",
+    "items": [
+      {
+        "code": "PIO-C1",
+        "description": "Define metas baseadas no lema pioneiro.",
+        "guidance": "Consultar manual.",
+        "category": "Caráter"
+      },
+      {
+        "code": "PIO-C2",
+        "description": "Exemplo de Conduta",
+        "guidance": "Consultar manual.",
+        "category": "Caráter"
+      }
+    ]
+  },
+  {
+    "name": "Afetivo",
+    "items": [
+      {
+        "code": "PIO-A1",
+        "description": "Estabilidade Emocional",
+        "guidance": "Consultar manual.",
+        "category": "Afetivo"
+      },
+      {
+        "code": "PIO-A2",
+        "description": "Cuidado ao Próximo",
+        "guidance": "Consultar manual.",
+        "category": "Afetivo"
+      }
+    ]
+  },
+  {
+    "name": "Social",
+    "items": [
+      {
+        "code": "PIO-S1",
+        "description": "Participação Civil",
+        "guidance": "Consultar manual.",
+        "category": "Social"
+      },
+      {
+        "code": "PIO-S2",
+        "description": "Grande Projeto Pioneiro",
+        "guidance": "Consultar manual.",
+        "category": "Social"
+      }
+    ]
+  },
+  {
+    "name": "Espiritual",
+    "items": [
+      {
+        "code": "PIO-E1",
+        "description": "Aprofundamento de Fé",
+        "guidance": "Consultar manual.",
+        "category": "Espiritual"
+      },
+      {
+        "code": "PIO-E2",
+        "description": "Simbolismo da Forquilha",
+        "guidance": "Consultar manual.",
+        "category": "Espiritual"
+      }
+    ]
+  }
+]

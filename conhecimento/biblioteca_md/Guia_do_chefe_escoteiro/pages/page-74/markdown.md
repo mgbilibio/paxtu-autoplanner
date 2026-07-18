@@ -1,0 +1,13 @@
+Não faz muito tempo mostraram-me um acampamento-modelo de jovens escolares, com várias filas de barracas corretamente armadas e perfeitamente alinhadas, com um grande e fino refeitório sob enorme barraca apropriada e com completa e bem equipada instalação de cozinha. Tudo fora muito bem planejado e excelentemente montado pelo construtor contratante. O organizador de tudo isto só tivera que pagar uma certa importância e tudo fora feito. Fora um negócio simples e vantajoso.
+
+Meu único comentário a respeito é que isso não era acampamento. **Viver sob barracas** é muito diferente de **acampar**. Qualquer animal, por assim dizer, pode também viver debaixo de uma barraca desde que pertença ao rebanho, com tudo feito para ele.
+
+Mas, com respeito ao bem que isto lhe proporciona, poderia igualmente ter ficado em casa, sem grande diferença.
+
+Sabemos, no Escotismo, que o que atrai os jovens, constituindo simultaneamente uma educação para eles, é um acampamento verdadeiro, isto é, onde eles preparem suas próprias instalações, levando isto ao ponto de fazer e costurar antecipadamente suas próprias barracas e aprender a fazer e cozinhar sua própria comida.
+
+Deste modo, então, o levantar barracas por patrulhas, em locais separados uns dos outros, tendo escolhido seus recantos apropriados, o arranjo da água e da lenha, a adaptação de banheiros, cozinhas de campo, privadas, fossas para gorduras e detritos, etc., a utilização de expedientes de campo e a confecção de utensílios e mobiliário rústico, tudo isto desperta um interesse saudável e constitui inavaliável treinamento.
+
+Quem for responsável por uma quantidade grande de jovens numa cidade de barracas, será forçado a dar-lhes exercícios e instrução especial, como uma maneira de dar ocupação a todos enquanto que, com algumas patrulhas, além de seus próprios trabalhos de acampamento, que ocupam um bom espaço de tempo, há sempre e continuamente oportunidade para educação sobre conhecimento da natureza e desenvolvimento da saúde do corpo e do espírito, por meio de excursões, corridas de obstáculos naturais e da própria vida a céu aberto, na floresta.
+
+O acampamento ideal, para mim, é aquele onde todo o mundo vive alegre e ocupado, onde as patrulhas são mantidas intactas em quaisquer circunstâncias e onde cada um dos monitores e dos escoteiros adquire um justo e saudável orgulho de seu campo e seu material. Em um acampamento pequeno assim, muito mais

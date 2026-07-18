@@ -1,0 +1,386 @@
+[
+  {
+    "code": "SP-DP-CAN",
+    "description": "Canoagem",
+    "guidance": "Consultar manual.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-MER",
+    "description": "Mergulho",
+    "guidance": "Consultar manual.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-MERL",
+    "description": "Mergulho Livre",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a fisiologia da apneia e o fenômeno do 'reflexo de imersão'. 2. Demonstrar técnicas de respiração e relaxamento pré-mergulho. 3. Executar a compensação de ouvido (Manobra de Valsalva) corretamente. 4. Realizar uma apneia estática de pelo menos 1 minuto e 30 segundos. 5. Nadar 25 metros em apneia dinâmica horizontal. 6. Demonstrar a técnica de 'Duck Dive' (pato) para submersão vertical. 7. Conhecer os riscos do apagamento (blackout) e a importância do sistema de dupla. 8. Saber como usar e ajustar máscara, snorkel e nadadeiras de pala longa. 9. Identificar sinais de fadiga e saber quando interromper o mergulho.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-NAT",
+    "description": "Natação",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Demonstrar capacidade de nadar 50 metros em estilo livre sem tocar o fundo. 2. Executar corretamente o nado de costas por pelo menos 25 metros. 3. Demonstrar a técnica de flutuação vertical por 3 minutos. 4. Realizar um mergulho de ponta a partir da borda da piscina. 5. Recuperar um objeto no fundo de uma piscina com profundidade de pelo menos 2 metros. 6. Explicar as regras de segurança para banho em rios, mar e piscinas. 7. Demonstrar como ajudar uma pessoa em dificuldades na água usando um objeto flutuante (sem entrar na água). 8. Conhecer os riscos de cãibras e congestão e como evitá-los. 9. Saber como agir em caso de corrente de retorno no mar.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-POL",
+    "description": "Polo Aquático",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Demonstrar a técnica de 'Eggbeater' (pernada de sustentação) por 2 minutos. 2. Executar o drible com a bola (nado livre mantendo a bola entre os braços). 3. Demonstrar o arremesso de ombro com uma mão saindo da água. 4. Explicar as faltas ordinárias, faltas de exclusão e o tempo de posse de bola. 5. Saber as dimensões oficiais da piscina e as cores das toucas dos times. 6. Demonstrar como realizar a recepção da bola sem deixá-la tocar na água. 7. Explicar o papel do goleiro e as regras específicas para ele. 8. Participar de uma partida simulada demonstrando resistência e tática. 9. Conhecer a história do esporte nas Olimpíadas.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-REM",
+    "description": "Remo",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Identificar as partes de um barco a remo e os tipos de remos (fixos e móveis). 2. Demonstrar como entrar e sair de uma embarcação com segurança e equilíbrio. 3. Executar as manobras básicas: remar para frente, para trás e girar sobre o eixo. 4. Conhecer as regras de segurança e o uso obrigatório do colete salva-vidas. 5. Demonstrar como atracar o barco em um píer ou margem sem impacto. 6. Percorrer uma distância de 500 metros mantendo a cadência e direção. 7. Saber como agir em caso de emborcamento (desvirar o barco ou flutuar). 8. Explicar como fazer a manutenção básica do casco (limpeza e inspeção). 9. Conhecer a sinalização náutica básica de rios ou represas onde pratica.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-SAL",
+    "description": "Saltos Ornamentais",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Demonstrar os 4 grupos de saltos: Frente, Costas, Pontapé e Revirado. 2. Executar a saída de pé e a saída de ponta do trampolim de 1 metro. 3. Saber como realizar a entrada na água com o menor respingo possível. 4. Explicar as posições do corpo: Estendido (A), Carpado (B) e Grupado (C). 5. Demonstrar os exercícios de flexibilidade necessários para a modalidade. 6. Saber as regras de pontuação e critérios de avaliação dos juízes. 7. Conhecer os procedimentos de segurança em piscinas de saltos (profundidade). 8. Realizar um salto com uma volta completa (pirueta ou mortal simples). 9. Explicar a importância da concentração mental e visualização do salto.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-SRF",
+    "description": "Surfe",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Identificar os tipos de pranchas (Longboard, Funboard, Shortboard) e suas finalidades. 2. Demonstrar o uso correto do leash (estropo) e a aplicação da parafina. 3. Explicar como ler a previsão de ondas (tamanho, período e vento). 4. Executar a técnica de 'furar a onda' (joelhinho ou tartaruga) para chegar ao outside. 5. Demonstrar o 'Pop-up' (subida rápida na prancha) com equilíbrio. 6. Saber as regras de prioridade e etiqueta no mar (não 'rabear' a onda alheia). 7. Realizar um 'bottom turn' (curva na base da onda) com controle. 8. Conhecer os perigos das correntes de retorno e como sair delas com segurança. 9. Explicar o impacto do lixo marinho na vida oceânica e participar de uma limpeza de praia.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-VEL",
+    "description": "Vela",
+    "guidance": "Consultar manual.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-AIK",
+    "description": "Aikido",
+    "guidance": "Consultar manual.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-BOX",
+    "description": "Boxe",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a história do boxe moderno e as regras de Queensberry. 2. Demonstrar a guarda correta e o deslocamento lateral (footwork). 3. Executar com técnica os golpes: Jab, Direto, Cruzado e Uppercut. 4. Demonstrar movimentos de esquiva (bob and weave) e bloqueio. 5. Explicar o sistema de pontuação e o papel do árbitro no ringue. 6. Conhecer os equipamentos de segurança obrigatórios e bandagem. 7. Realizar um treino de saco de pancadas mantendo a postura por 3 rounds. 8. Citar 3 grandes campeões mundiais de boxe e suas trajetórias. 9. Explicar a importância do controle emocional e disciplina no esporte.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-CAP",
+    "description": "Capoeira",
+    "guidance": "Consultar manual.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-ESG",
+    "description": "Esgrima",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Diferenciar as três armas da esgrima: Florete, Espada e Sabre. 2. Demonstrar a posição de 'Em Guarda' e os deslocamentos básicos (marcha e rompe). 3. Executar o movimento de 'Afundo' (lunge) com extensão correta do braço. 4. Demonstrar uma técnica de ataque simples e uma resposta após a parada (parry). 5. Explicar o sistema de pontuação eletrônica e a prioridade de ataque (convenção). 6. Conhecer os equipamentos de segurança: máscara, jaqueta, plastron, luva e calça. 7. Saber as dimensões da pista de esgrima e as regras de limite de espaço. 8. Identificar os sinais manuais básicos do árbitro durante um combate. 9. Participar de um assalto (combate) amistoso respeitando a etiqueta (saudação).",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-JIU",
+    "description": "Jiu-Jitsu",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Conhecer a história do Jiu-Jitsu e a importância da família Gracie no Brasil. 2. Demonstrar as 3 posições de controle básicas: Montada, Guarda e 100 quilos. 3. Executar 2 técnicas de raspagem a partir da guarda. 4. Demonstrar 2 finalizações básicas (ex: Armlock e Estrangulamento clássico). 5. Saber como realizar o 'rolamento' e a 'fuga de quadril' com fluidez. 6. Explicar o sistema de graduação (faixas) e as regras de pontuação em competições. 7. Demonstrar a 'passagem de guarda' com controle. 8. Saber a importância do 'tap out' (bater) para a segurança do praticante. 9. Participar de um treino de 'rola' (combate) demonstrando respeito e técnica.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-JUD",
+    "description": "Judô",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Conhecer a história do Judô e a vida de Jigoro Kano. 2. Explicar o significado de 'Rei' (saudação) e sua importância. 3. Demonstrar as quedas básicas (Ukemi): Mae-ukemi, Ushiro-ukemi e Yoko-ukemi. 4. Executar com perfeição 3 técnicas de projeção (Nage-waza). 5. Executar 2 técnicas de imobilização (Osaekomi-waza). 6. Explicar os termos: Ippon, Waza-ari e Yuko. 7. Demonstrar como amarrar o Obi (faixa) e dobrar o Judogi corretamente. 8. Participar de um Shiai (competição) ou treino interclubes. 9. Explicar o conceito de 'Ceder para Vencer'.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-KAR",
+    "description": "Karatê",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Conhecer a história do Karatê e a filosofia do Dojo Kun. 2. Demonstrar as bases fundamentais (Dachi): Zenkutsu, Kokutsu e Kiba-dachi. 3. Executar uma sequência de Kihon (técnicas básicas de soco e chute). 4. Demonstrar a aplicação de 2 defesas (Uke) contra ataques de soco. 5. Executar um Kata completo correspondente à sua graduação. 6. Explicar o que é 'Kiai' e qual sua função técnica e psicológica. 7. Demonstrar controle de distância e precisão em um exercício de Kumite. 8. Conhecer os principais estilos de Karatê (Shotokan, Goju-ryu, etc.). 9. Explicar a importância da disciplina e do respeito fora do Dojo.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-KEN",
+    "description": "Kendô",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a origem do Kendô a partir das artes dos Samurais (Kenjutsu). 2. Identificar as partes do Shinai (espada de bambu) e do Bogu (armadura). 3. Demonstrar a postura básica (Chudan-no-kamae) e o manuseio da espada. 4. Executar os cortes fundamentais: Men (cabeça), Kote (pulso) e Do (tronco). 5. Demonstrar o deslocamento 'Okuri-ashi' e a coordenação de pés e mãos. 6. Explicar o conceito de 'Ki-Ken-Tai-Ichi' (Espírito, Espada e Corpo em um só). 7. Demonstrar como vestir e dobrar o Hakama e o Keikogi corretamente. 8. Saber as normas de etiqueta (Reiho) dentro do Dojo. 9. Participar de uma sessão de treinamento de ataques coordenados (Uchikomi).",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-KUN",
+    "description": "Kung Fu",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a origem do Kung Fu e a lenda do Templo Shaolin. 2. Demonstrar as 5 bases fundamentais (Ma Bu, Gong Bu, etc). 3. Executar uma sequência de golpes de mão (socos e palmas). 4. Executar chutes básicos e saltos característicos do estilo praticado. 5. Demonstrar um Tao Lu (forma) básico de mãos livres. 6. Explicar o conceito de Yin e Yang aplicado às artes marciais. 7. Saber o uso básico de uma arma tradicional (Bastão ou Espada). 8. Conhecer as normas de saudação e hierarquia no Kwoon (academia). 9. Participar de um treino de condicionamento físico específico (estático).",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-LUT",
+    "description": "Luta Olímpica",
+    "guidance": "Consultar manual.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-TKD",
+    "description": "Taekwondo",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Conhecer a origem coreana do Taekwondo e o significado do nome. 2. Demonstrar as bases (Seogi) fundamentais. 3. Executar os chutes básicos: Ap Chagi (frente), Dollyo Chagi (circular) e Yop Chagi (lateral). 4. Demonstrar uma sequência de defesas (Makki) contra ataques variados. 5. Executar o primeiro Poomsae (forma) da sua graduação. 6. Explicar os 5 princípios do Taekwondo (Cortesia, Integridade, Perseverança, Autodomínio, Espírito Indomável). 7. Saber como usar o protetor de tórax (Hogu) e demais equipamentos de segurança. 8. Demonstrar o grito de força (Kihap) no momento correto do golpe. 9. Participar de um exame de faixa ou competição oficial.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-BAD",
+    "description": "Badminton",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar as regras básicas do Badminton e as dimensões da quadra. 2. Demonstrar como segurar a raquete corretamente (backhand e forehand). 3. Executar os 4 tipos de batidas: Clear, Drop, Drive e Smash. 4. Demonstrar o saque curto e o saque longo (serviço). 5. Saber como funciona o sistema de pontuação (rally point) até 21 pontos. 6. Explicar a diferença entre o jogo de simples e o jogo de duplas. 7. Conhecer a história da peteca (shuttlecock) e seus materiais (penas vs sintética). 8. Realizar um aquecimento específico para evitar lesões nos ombros e tornozelos. 9. Participar de um torneio ou festival da modalidade.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-BAS",
+    "description": "Basquete",
+    "guidance": "Consultar manual.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-BEI",
+    "description": "Beisebol",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Identificar as posições dos jogadores em campo (Pitcher, Catcher, Infielders, Outfielders). 2. Explicar o que é um Home Run, um Strike Out e um Fly Out. 3. Demonstrar a técnica correta de rebatida e a corrida pelas bases. 4. Saber como usar e conservar a luva, o taco e o capacete de proteção. 5. Explicar as regras de 'Innings' e como se marca um ponto (Run). 6. Demonstrar o arremesso básico de cima para baixo com precisão. 7. Saber a diferença entre Beisebol e Softbol. 8. Identificar os sinais manuais básicos usados pelo técnico ou árbitro. 9. Assistir a uma partida completa e explicar as jogadas principais para a seção.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-BIL",
+    "description": "Bilhar",
+    "guidance": "Consultar manual.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-BOC",
+    "description": "Bocha",
+    "guidance": "Consultar manual.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-BLN",
+    "description": "Bolão",
+    "guidance": "Consultar manual.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-BOL",
+    "description": "Boliche",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar as regras básicas do boliche e o sistema de pontuação (Strike, Spare). 2. Demonstrar a técnica de aproximação (passadas) e o movimento de pêndulo. 3. Saber como escolher uma bola com o peso e furação adequados para sua mão. 4. Realizar uma partida completa mantendo uma média mínima definida pelo examinador. 5. Explicar a importância do calçado específico e da etiqueta nas pistas. 6. Identificar as marcações na pista (setas e pontos) e como usá-las para mira. 7. Explicar como fechar um 'Split' comum. 8. Conhecer a história do boliche e suas variações (Bolão, etc). 9. Demonstrar o tratamento correto com os funcionários e outros jogadores.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-FUT",
+    "description": "Futebol",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar as 17 regras oficiais do futebol aprovadas pela IFAB. 2. Demonstrar os fundamentos básicos: passe curto, passe longo, domínio e condução. 3. Executar com precisão 3 tipos de finalização (chute de peito, chapa e cabeceio). 4. Saber explicar o que é a regra do impedimento (fora de jogo). 5. Demonstrar posicionamento tático defensivo e ofensivo em campo. 6. Explicar as funções do árbitro principal, assistentes e o papel do VAR. 7. Saber como realizar o aquecimento e alongamento específico para futebol. 8. Participar de um campeonato organizado e relatar sua experiência técnica. 9. Explicar a importância da ética e do respeito ao adversário e arbitragem.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-FSL",
+    "description": "Futsal",
+    "guidance": "Consultar manual.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-FTV",
+    "description": "Futvôlei",
+    "guidance": "Consultar manual.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-GOL",
+    "description": "Golfe",
+    "guidance": "Consultar manual.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-HND",
+    "description": "Handebol",
+    "guidance": "Consultar manual.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-HOQ",
+    "description": "Hóquei",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar as diferenças entre Hóquei no Gelo, Hóquei em Patins (Tradicional) e Hóquei em Linha. 2. Identificar os equipamentos de proteção obrigatórios: capacete com grade, caneleiras, cotoveleiras e luvas. 3. Demonstrar como segurar o stick corretamente e realizar o controle do disco (puck) ou bola. 4. Executar passes curtos e longos com precisão em movimento. 5. Demonstrar a técnica de remate (slap shot ou wrist shot) em direção ao gol. 6. Explicar as regras básicas de falta e o tempo de exclusão por penalidade. 7. Demonstrar habilidade de patinação: frenagem em T, curvas fechadas e patinação de costas. 8. Saber as dimensões oficiais do campo ou pista e o posicionamento dos jogadores. 9. Participar de uma partida simulada demonstrando espírito de equipe.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-PET",
+    "description": "Peteca",
+    "guidance": "Consultar manual.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-RUG",
+    "description": "Rúgbi",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a origem do Rúgbi e a lenda de William Webb Ellis. 2. Demonstrar as regras básicas de passe (sempre para trás) e o 'knock-on'. 3. Explicar o funcionamento e a segurança do Scrum, Ruck e Maul. 4. Saber a pontuação: Try, Conversão, Drop Goal e Penalidade. 5. Demonstrar a técnica de tackle seguro (ombro no quadril, cabeça para o lado). 6. Conhecer a história do 'Haka' e sua importância cultural para os All Blacks. 7. Explicar a diferença entre o Rúgbi Union (15 jogadores) e o Rúgbi Sevens. 8. Identificar as funções dos jogadores (Avançados e Linha). 9. Participar de um treino completo ou jogo amistoso seguindo o código de ética.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-SOF",
+    "description": "Softbol",
+    "guidance": "Consultar manual.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-SQU",
+    "description": "Squash",
+    "guidance": "Consultar manual.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-TEN",
+    "description": "Tênis de Mesa",
+    "guidance": "Consultar manual.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-TNC",
+    "description": "Tênis de Campo",
+    "guidance": "Consultar manual.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-VOL",
+    "description": "Vôlei",
+    "guidance": "Consultar manual.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-ARC",
+    "description": "Tiro com Arco",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Identificar as partes de um arco (empunhadura, lâminas, corda) e de uma flecha. 2. Explicar as regras de segurança fundamentais em um estande de tiro. 3. Demonstrar a postura correta (Stance), a ancoragem e a largada. 4. Saber como armar e desarmar o arco com segurança. 5. Realizar uma sequência de 6 disparos a 10 metros com agrupamento satisfatório. 6. Explicar a diferença entre arcos recurvos, compostos e tradicionais. 7. Saber como cuidar e armazenar o equipamento para evitar danos. 8. Conhecer o sistema de pontuação oficial em alvos circulares. 9. Demonstrar como retirar as flechas do alvo com segurança.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-ATL",
+    "description": "Atletismo",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar as diferentes provas de pista (velocidade, meio-fundo e fundo). 2. Identificar as provas de campo: saltos (altura, distância) e lançamentos (peso, dardo). 3. Demonstrar a técnica de saída de blocos para provas de velocidade. 4. Executar corretamente a passagem de bastão em um revezamento 4x100m. 5. Realizar um salto em distância com técnica de impulsão e queda. 6. Explicar as regras de desclassificação por queima de largada. 7. Conhecer a história dos Jogos Olímpicos e o lema 'Citius, Altius, Fortius'. 8. Realizar uma prova de 1000 metros mantendo um ritmo constante. 9. Saber como realizar o aquecimento neuromuscular específico para o atletismo.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-CIC",
+    "description": "Ciclismo",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Demonstrar como realizar a manutenção básica (ajuste de freios, lubrificação de corrente). 2. Saber consertar um pneu furado (retirar, remendar e recolocar). 3. Identificar as partes principais da bicicleta e sua função. 4. Conhecer e usar os equipamentos de segurança obrigatórios (capacete, sinalização). 5. Demonstrar os sinais de mão usados por ciclistas para indicar manobras no trânsito. 6. Realizar um percurso de 15km em terreno variado (asfalto e terra). 7. Explicar as leis de trânsito brasileiras aplicadas aos ciclistas. 8. Montar um kit de ferramentas básico para levar em jornadas de bicicleta. 9. Saber como planejar uma rota segura usando mapas digitais ou físicos.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-COR",
+    "description": "Corrida",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Diferenciar corrida de rua, corrida em pista e trail running. 2. Explicar a importância da escolha do tênis adequado para o seu tipo de pisada. 3. Demonstrar a postura correta de corrida: inclinação do tronco e movimento dos braços. 4. Saber calcular o ritmo médio (Pace) de uma corrida em min/km. 5. Completar uma prova ou treino de 5km sem caminhar. 6. Explicar o que é o VO2 Máximo e sua importância para o condicionamento. 7. Saber realizar o alongamento dinâmico pré-treino e estático pós-treino. 8. Conhecer as estratégias de hidratação durante corridas de longa distância. 9. Manter um diário de treinos por 30 dias registrando distância e tempo.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-CRO",
+    "description": "Cross Country",
+    "guidance": "Consultar manual.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-ESC",
+    "description": "Escalada",
+    "guidance": "Consultar manual.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-ESP",
+    "description": "Espeleologia",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a formação das cavernas (carstificação) e tipos de rochas. 2. Identificar espeleotemas: estalactites, estalagmites, colunas e cortinas. 3. Conhecer as regras de segurança e o equipamento triplo de iluminação. 4. Descrever a fauna troglóbia e as adaptações à escuridão total. 5. Explicar a importância da preservação arqueológica e hídrica das cavernas. 6. Demonstrar como realizar a navegação e o mapeamento básico (topografia). 7. Conhecer a ética de visitação (Mínimo Impacto). 8. Saber os riscos do 'Mal da Caverna' (Histoplasmose). 9. Identificar as zonas da caverna: entrada, transição e afótica.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-ESQ",
+    "description": "Esqui",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar a diferença entre Esqui Alpino, de Fundo (Cross-country) e Freestyle. 2. Identificar as partes do esqui, fixações, botas e bastões. 3. Demonstrar como calçar, descalçar e subir em 'espinhada' ou 'escada'. 4. Executar a técnica de frenagem em cunha (snowplow). 5. Realizar curvas controladas em cunha e início de paralelo. 6. Conhecer o código de conduta da FIS para segurança nas pistas. 7. Saber como agir em caso de quedas para evitar lesões. 8. Explicar o sistema de cores das pistas de esqui (Verde a Preta). 9. Saber escolher a vestimenta adequada para o frio extremo (camadas).",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-FIS",
+    "description": "Cultura Física",
+    "guidance": "Consultar manual.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-GIN",
+    "description": "Ginástica",
+    "guidance": "Consultar manual.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-HIP",
+    "description": "Hipismo",
+    "guidance": "Consultar manual.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-IOG",
+    "description": "Ioga",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar o que é Ioga e seus benefícios para mente e corpo. 2. Demonstrar 5 asanas (posturas) básicas de equilíbrio e flexibilidade. 3. Executar técnicas de respiração (Pranayama) para relaxamento. 4. Explicar o conceito de meditação e praticar por 10 minutos. 5. Conhecer a saudação ao sol (Surya Namaskar) completa. 6. Demonstrar postura de relaxamento final (Savasana). 7. Explicar a importância da coluna alinhada e consciência corporal. 8. Pesquisar sobre os diferentes estilos de Ioga (Hatha, Vinyasa, etc). 9. Realizar uma sessão de Ioga ao ar livre com sua patrulha.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-KAR2",
+    "description": "Kart",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Explicar o funcionamento básico de um motor de kart (2 tempos ou 4 tempos). 2. Identificar os significados das bandeiras de sinalização de pista (Verde, Amarela, Azul, Preta e Quadriculada). 3. Demonstrar a postura de pilotagem correta e o uso de pedais (aceleração e frenagem). 4. Explicar o conceito de 'tangência' em curvas e o traçado ideal de pista. 5. Conhecer e usar os equipamentos de segurança: capacete fechado, protetor de pescoço, macacão e luvas. 6. Saber como agir em caso de rodada ou pane no meio da pista. 7. Participar de uma bateria de kart mantendo a constância de tempos. 8. Explicar a influência da pressão dos pneus no desempenho do kart. 9. Demonstrar conhecimento sobre a etiqueta na pista e respeito às ultrapassagens.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-MOT",
+    "description": "Motociclismo",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Identificar os diferentes estilos de motocicletas: Street, Custom, Trail e Esportiva. 2. Explicar a importância do uso de equipamentos de proteção certificados (Capacete, Luvas, Jaqueta com proteções e Botas). 3. Demonstrar conhecimento sobre a manutenção básica: tensão da corrente, nível de óleo e estado dos pneus. 4. Explicar o conceito de 'contraesterço' na pilotagem de motocicletas. 5. Saber identificar os comandos: manete de embreagem, freio dianteiro, pedal de câmbio e freio traseiro. 6. Conhecer as técnicas de frenagem de emergência (distribuição de força entre freios). 7. Explicar os perigos do 'ponto cego' dos motoristas e a importância da visibilidade. 8. Saber como realizar o check-list de segurança pré-viagem. 9. Relatar a importância da disciplina e atenção constante na pilotagem defensiva.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-MNT",
+    "description": "Montanhismo",
+    "guidance": "Consultar manual.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-ORI",
+    "description": "Orientação",
+    "guidance": "Consultar manual.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-PAI",
+    "description": "Paintball",
+    "guidance": "Consultar manual.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-PRQ",
+    "description": "Paraquedismo",
+    "guidance": "Consultar manual.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-PAT",
+    "description": "Patinação",
+    "guidance": "Consultar manual.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-RAP",
+    "description": "Rapel",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Identificar e explicar o uso do equipamento: cadeirinha, freio oito, mosquetões e luvas. 2. Demonstrar como fazer o nó de encordamento (oito duplo) e o nó de backup. 3. Saber montar uma ancoragem simples usando dois pontos redundantes. 4. Executar a descida de um paredão de pelo menos 10 metros com controle de velocidade. 5. Demonstrar a técnica de parada (blocagem) no meio da descida. 6. Saber como realizar o rapel em negativo (sem contato dos pés com a parede). 7. Explicar os cuidados com a corda (não pisar, lavar após uso, inspeção de alma). 8. Demonstrar os sinais de comunicação (Vou descer, Corda livre, Atenção). 9. Saber como agir em caso de cabelo ou roupa presa no freio.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-SKT",
+    "description": "Skate",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Identificar as partes do skate: shape, trucks, rodas, rolamentos e lixa. 2. Demonstrar a posição de base (Goofy ou Regular) e como dar o impulso. 3. Executar a frenagem básica (pé no chão) e o 'Power Slide'. 4. Realizar manobras básicas de equilíbrio: 'Manual' e 'Nose Manual'. 5. Executar o 'Ollie' (salto com o skate) em movimento. 6. Descer uma rampa pequena ou transição mantendo o equilíbrio. 7. Saber realizar a limpeza e lubrificação dos rolamentos. 8. Conhecer e usar os equipamentos de proteção: capacete, joelheiras e cotoveleiras. 9. Explicar a história do skate e sua evolução da piscina para as ruas.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-TIR",
+    "description": "Tiro Esportivo",
+    "guidance": "Consultar manual.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-TRI",
+    "description": "Triatlo",
+    "guidance": "Consultar manual.",
+    "category": "Desportos"
+  },
+  {
+    "code": "SP-DP-XAD",
+    "description": "Xadrez",
+    "guidance": "REQUISITOS (1/3=N1, 2/3=N2, Tudo=N3): 1. Conhecer a história do xadrez e sua evolução até os dias atuais. 2. Explicar o movimento de todas as peças e seus valores relativos. 3. Demonstrar as regras especiais: Roque (curto e longo), En Passant e Promoção. 4. Explicar o que é Xeque, Xeque-Mate e as situações de empate (afogamento, etc). 5. Saber usar a notação algébrica para registrar uma partida completa. 6. Demonstrar 3 aberturas clássicas e explicar seus objetivos. 7. Resolver 5 problemas de 'Mate em 2' propostos pelo examinador. 8. Participar de um torneio (escolar, de clube ou online) e relatar os resultados. 9. Explicar a importância da ética e do 'fair play' no xadrez.",
+    "category": "Desportos"
+  }
+]

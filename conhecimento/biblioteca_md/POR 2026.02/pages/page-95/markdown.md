@@ -1,0 +1,2 @@
+O órgão da UEB que pretender convidar membros do Movimento Escoteiro de associações escoteiras estrangeiras e/ou associações escoteiras estrangeiras para visitar o Brasil, participando ou não de atividades escoteiras organizadas pelo anfitrião, deve providenciar a prévia autorização junto à Diretoria Executiva Nacional por meio do Comissariado Internacional, e, adicionalmente, às Diretorias Regionais com jurisdição sobre as áreas a serem visitadas.
+

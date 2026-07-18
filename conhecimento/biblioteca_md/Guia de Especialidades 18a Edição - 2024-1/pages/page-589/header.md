@@ -1,0 +1,3 @@
+MEDALIDADE RÁSICA
+
+Revisada

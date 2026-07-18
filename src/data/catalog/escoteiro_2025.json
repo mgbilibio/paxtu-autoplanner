@@ -1,0 +1,43 @@
+[
+  { "name": "Caminho do Integrar", "items": [
+    { "code": "E-INT-01", "description": "História Escotismo e B-P.", "guidance": "Fundamentos." },
+    { "code": "E-INT-02", "description": "Lei e Promessa Escoteira.", "guidance": "Compromisso ético." },
+    { "code": "E-INT-03", "description": "Grito e Cores de Patrulha.", "guidance": "Mística e Unidade." },
+    { "code": "E-INT-04", "description": "Nós: Direito, Escota e Lais de Guia.", "guidance": "Técnica inicial." }
+  ]},
+  { "name": "BA: Aprendizagem e Vocação", "items": [
+    { "code": "BA-ACDV-F1", "description": "Especialidade Nível 2.", "guidance": "Domínio técnico." },
+    { "code": "BA-ACDV-F2", "description": "Percurso Gilwell 5km.", "guidance": "Jornada e Bússola." },
+    { "code": "BA-ACDV-V1", "description": "Alfabeto Fonético e Morse.", "guidance": "Sinalização." },
+    { "code": "BA-ACDV-V2", "description": "Uso de Rádio e Sinais.", "guidance": "Comunicação." }
+  ]},
+  { "name": "BA: Autonomia e Liderança", "items": [
+    { "code": "BA-AUT-F1", "description": "Mochila Cargueira 2 dias.", "guidance": "Logística e Campo." },
+    { "code": "BA-AUT-V1", "description": "Liderar Jornada Patrulha.", "guidance": "Monitoria." },
+    { "code": "BA-AUT-V2", "description": "Orçamento e Compras.", "guidance": "Administração." }
+  ]},
+  { "name": "BA: Criatividade e Inovação", "items": [
+    { "code": "BA-CRINOV-F1", "description": "Animar Fogo de Conselho.", "guidance": "Mística." },
+    { "code": "BA-CRINOV-F2", "description": "Pioneiria: Torres ou Pontes.", "guidance": "Estruturas funcionais." },
+    { "code": "BA-CRINOV-V1", "description": "Criar e Aplicar Grande Jogo.", "guidance": "InovaÃ§Ã£o." }
+  ]},
+  { "name": "BA: Vida ao Ar Livre", "items": [
+    { "code": "BA-ARL-F1", "description": "Amarras: Quadrada e Diagonal.", "guidance": "Firmeza técnica." },
+    { "code": "BA-ARL-F2", "description": "Amarras: Tripé e Paralela.", "guidance": "Construção avançada." },
+    { "code": "BA-ARL-F3", "description": "Cozinha Mateira: Fogo Chão.", "guidance": "Autonomia alimentar." },
+    { "code": "BA-ARL-F4", "description": "Navegação por Azimute.", "guidance": "Uso da bússola." },
+    { "code": "BA-ARL-F5", "description": "Uso Seguro de Machadinha.", "guidance": "Ferramentas." },
+    { "code": "BA-ARL-F6", "description": "Pernoite em Bivaque.", "guidance": "Sobrevivência." }
+  ]},
+  { "name": "BA: Saúde e Socorrismo", "items": [
+    { "code": "BA-COR-F1", "description": "Imobilização e Bandagens.", "guidance": "Socorro básico." },
+    { "code": "BA-COR-F2", "description": "Primeiros Socorros: RCP.", "guidance": "Vida." },
+    { "code": "BA-HAB-F1", "description": "Cardápio Saudável 3 dias.", "guidance": "Nutrição em campo." }
+  ]},
+  { "name": "BA: Cidadania e Valores", "items": [
+    { "code": "BA-COM-F1", "description": "Projeto Social 4 meses.", "guidance": "Impacto comunitário." },
+    { "code": "BA-DEM-F1", "description": "Assembleia de Tropa.", "guidance": "Participação democrática." },
+    { "code": "BA-VAL-F1", "description": "Viver a Lei no Cotidiano.", "guidance": "Caráter." },
+    { "code": "BA-ESP-V1", "description": "Reflexão Inter-religiosa.", "guidance": "Espiritualidade plural." }
+  ]}
+]

@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Paxtu AutoPlanner - Versoes</title>
+  <style>
+    body{font-family:Arial,Helvetica,sans-serif;margin:0;background:#f6f8fb;color:#172033;line-height:1.55}
+    main{max-width:900px;margin:0 auto;background:#fff;min-height:100vh;padding:28px}
+    h1{margin-top:0;color:#0f172a} h2{border-bottom:1px solid #dbe3ef;padding-bottom:6px}
+    code{background:#eef2ff;padding:2px 5px;border-radius:4px}
+    li{margin:6px 0}
+  </style>
+</head>
+<body>
+<main>
+  <h1>Historico de Versoes</h1>
+  <h2>20260709-1904</h2>
+  <p>Revisão de coerência entre conteúdo oficial, telas e distribuição.</p>
+  <ul>
+    <li><strong>Catálogo POR 2025+ corrigido:</strong> o planejador, ciclo e ficha individual passam a usar as 274 especialidades e 2.741 requisitos do Guia de Especialidades 18ª edição. A lista paralela de 297 itens permanece apenas para consulta do legado 2020.</li>
+    <li><strong>Filtros corrigidos:</strong> gerador e planejador de ciclo identificam especialidades pelo código estruturado, sem depender do nome visual da categoria.</li>
+    <li><strong>Lançamento pela agenda corrigido:</strong> códigos de bloco <code>B#.F#</code> e <code>B#.V#</code> atualizam <code>MemberBlocoState</code>. Especialidades oficiais são iniciadas, mas sua conclusão continua dependente da avaliação requisito a requisito.</li>
+    <li><strong>Ficha e relatórios:</strong> passam a considerar o nível efetivamente obtido nas fichas oficiais de especialidades.</li>
+    <li><strong>Reconhecimentos:</strong> o mapa individual deixou de exibir regras antigas de cordões e aponta para a checklist oficial nos Blocos de Aprendizagem.</li>
+    <li><strong>Distribuição:</strong> o build volta a gerar instalador, portátil e ZIP. O manual empacotado foi atualizado e não instrui mais a usar Node.js em máquinas de uso final.</li>
+  </ul>
+  <h2>2.13.0 — 20260613-0700</h2>
+  <p>Revisao geral profunda: funcionalidades que estavam silenciosamente quebradas voltaram a funcionar, mais robustez de dados, IA e seguranca.</p>
+  <ul>
+    <li><strong>Premiacoes e niveis de especialidade voltaram a funcionar</strong>: o app reconhece corretamente as especialidades do planejador, conta os ramos de conhecimento sem duplicar, e o seletor de <strong>Nivel 1/2/3</strong> volta a abrir. Cruzeiro do Sul, Cordoes e Lis de Ouro passam a avaliar os requisitos certos.</li>
+    <li><strong>Requisitos por nivel reaparecem no Mapa de Progressao</strong> (extracao de texto do guia corrigida) em vez do aviso generico "consultar o manual".</li>
+    <li><strong>Etapas de progressao</strong> (Cacador/Travessia etc.) agora contam os <strong>blocos homologados do POR 2025</strong>, nao apenas conquistas legadas.</li>
+    <li><strong>Pasta compartilhada mais segura</strong>: gravacoes serializadas (sem perder alteracoes quando dois salvamentos ocorrem juntos), leitura sem dados defasados e revalidacao do bloqueio de secao contra o disco.</li>
+    <li><strong>Especialidades entram no backup</strong>: exportar/restaurar progresso passa a incluir o progresso de especialidades por jovem.</li>
+    <li><strong>IA mais robusta e segura</strong>: a chave nunca e embutida no instalador; a checagem do Ollama expira rapido (nao trava por minutos); leitura de respostas tolerante a falhas; erros nunca exibem a chave de API.</li>
+    <li><strong>Seguranca do app</strong>: janela de leitura de PDF e previa de HTML com restricoes de navegacao; PDFs guardados em subpastas voltam a abrir na pagina certa.</li>
+    <li><strong>Agenda</strong>: dias com varias atividades agora listam todos os eventos para escolher qual editar/excluir, com botao "Nova atividade" para nao sobrescrever os existentes.</li>
+    <li><strong>Relatorios</strong>: percentuais limitados a 100% e calculados sobre a mesma base do catalogo; as cores de ramo nao somem mais no app instalado.</li>
+  </ul>
+  <h2>2.12.0 — 20260601-1320</h2>
+  <p>Fichas de especialidade exportaveis, preenchiveis offline e reimportaveis por jovem.</p>
+  <ul>
+    <li><strong>Enciclopedia de Especialidades</strong> ganhou modo de selecao: filtrar, selecionar uma ou varias especialidades e <strong>exportar como HTML autocontido</strong>, preenchivel offline em qualquer navegador.</li>
+    <li>Ficha <strong>responsiva (mobile-first)</strong>: cards empilhados com alvos de toque grandes em celulares (S22, iPhone 13, Redmi Note, S24 Ultra) e layout espacoso em telas maiores. Imprime/gera PDF limpo.</li>
+    <li>Exportacao em <strong>lotes de ate 50 especialidades por arquivo</strong> (evita travar o navegador com selecoes grandes); selecoes maiores saem em varios arquivos numerados.</li>
+    <li>Botao <strong>"Gerar arquivo de devolucao"</strong> dentro da ficha baixa um <code>.paxtuficha.json</code> (requisitos marcados + status + avaliador/notas + evidencias).</li>
+    <li><strong>Dois modos de vinculo</strong>: exportar amarrado a um jovem (pre-preenche com a ficha atual) ou em branco; na reimportacao, se vier sem jovem, o app pergunta a quem aplicar.</li>
+    <li><strong>Importar devolucao</strong> grava as fichas por jovem, validando tudo contra o guia oficial (especialidade existe, posicoes na faixa, status no enum); nivel/conclusao recalculados pelo app — nao se confia no arquivo externo.</li>
+    <li>Instalador unico: <strong>instala do zero e atualiza por cima</strong> de versao anterior sem perda de dados.</li>
+  </ul>
+  <h2>2.11.0 — 20260529-0430</h2>
+  <p>Conclusao da revisao geral (Fases C, D, E): integridade de dados, relatorios corretos, acessibilidade e robustez.</p>
+  <ul>
+    <li><strong>Relatorios agora refletem a progressao REAL</strong> (blocos homologados + conquistas), nao mais inferencia por presenca. Frequencia ignora eventos anteriores ao ingresso do jovem.</li>
+    <li><strong>Exclusao de jovem/secao remove os dados do disco</strong> (perfil, progressao) e limpa o cache — conformidade LGPD.</li>
+    <li>Modo consulta (pasta compartilhada): gravacoes bloqueadas dao aviso claro em vez de travar a tela.</li>
+    <li>Importacao de backup valida cada item (rejeita dados adulterados).</li>
+    <li>Acessibilidade: dialogos de confirmacao, calendario e avisos navegaveis por teclado e leitor de tela.</li>
+    <li>Geracao de roteiro mais robusta (parsing de IA tolerante + nova tentativa; chave de API nunca aparece em erros).</li>
+    <li>Faixas etarias corrigidas (Lobinho 6,5-10, Escoteiro 11-14). Conteudo de Senior/Pioneiro sem arquivos contraditorios.</li>
+    <li>Busca da biblioteca sem ruido de cabecalho/rodape de pagina.</li>
+  </ul>
+  <h2>2.10.0 — 20260529-0345</h2>
+  <p>Busca da biblioteca funciona sem Python, faixas etarias corrigidas e lote de correcoes da revisao geral (Fase A).</p>
+  <ul>
+    <li><strong>Busca dentro dos livros agora funciona no app distribuido</strong>: a consulta FTS5 migrou de subprocess Python para <code>better-sqlite3</code> (nativo), rodando dentro do processo Electron. Nao depende mais de Python instalado na maquina.</li>
+    <li>Faixas etarias corrigidas: Lobinho 6,5-10, Escoteiro 11-14 (POR 2025).</li>
+    <li>Robustez de dados: cache corrompido nao derruba mais a progressao; escrita em pasta compartilhada ficou atomica (filesystem antes do cache); controle de concorrencia de blocos passou a funcionar de fato.</li>
+    <li>Seguranca: relatorio de progressao exportado agora escapa todo conteudo (sem injecao de HTML).</li>
+    <li>UX: "Gerar de novo" atualiza a tela corretamente; campos numericos do gerador nao enviam mais valores invalidos a IA; sair do perfil fecha modais abertos; perfis sem permissao de planejar nao veem botoes de geracao.</li>
+  </ul>
+  <h2>20260527-refactor</h2>
+  <p>Higiene da arvore-fonte, protecao de dados e refactor do storage layer. Mudancas internas (zero mudanca de dados em disco — refactor byte-equivalente).</p>
+  <ul>
+    <li>Higiene: 155 MB de pastas orfaos movidos para <code>_data/temp/orfaos_2026-05-27/</code>; arquivos <code>.bak</code> em src/ movidos para <code>_data/temp/bak_2026-05-27/</code>; <code>appMappa/</code> (stubs mortos) deletado.</li>
+    <li>Protecao: <code>.gitignore</code> criado (segredos, builds, runtime data). Script <code>conhecimento/tools/snapshot_runtime_data.py</code> criado.</li>
+    <li>Refactor storage: novo modulo <code>src/services/storage/dualBackend.ts</code> consolida padrao fileSystem + localStorage. Refatorados 10 modulos (member, section, user, group, calendar, catalog, bloco, specialty, reconhecimento, legacy progress). Total de linhas do storage caiu ~20%.</li>
+    <li>App.tsx parcial: extraido <code>useGlobalEvents</code> hook (keyboard, click outside, events Ollama/HTML). De 1341 para 1277 linhas. Decomposicao em views (LoginView, GeneratorView, etc.) ainda pendente — requer smoke tests.</li>
+    <li>Documentacao: <code>docs/data_pipeline.md</code> mapeia fontes, derivados e runtime.</li>
+  </ul>
+  <h2>20260515-1731</h2>
+  <p>Release focado em finalizar fluxo de campo, feedback de processamento e pacote distribuivel.</p>
+  <ul>
+    <li>Previa interna para exportacoes HTML de roteiro, catalogo, ciclo e agenda.</li>
+    <li>Cancelamento de geracao com abort de chamadas Ollama e descarte de resposta atrasada.</li>
+    <li>Configuracao avancada de Ollama: contexto e saida maxima editaveis.</li>
+    <li>Feedback com tempo decorrido em geracao, ciclo, agenda e backups.</li>
+    <li>HTML mobile mais colorido e consistente com o PDF.</li>
+    <li>Rotinas opcionais: IBOA/abertura, banheiro/hidratacao e encerramento.</li>
+  </ul>
+  <h2>Notas de Build</h2>
+  <p>Build validado com <code>npm run build</code>. Release gerado por <code>npm run dist</code> em <code>release/20260515-1731</code>.</p>
+  <p>Pacote simples para envio: <code>release/Paxtu_AutoPlanner_portatil_20260515-1731.zip</code>.</p>
+
+  <h2>202606 - Sempre Alerta Gestão (Opção B)</h2>
+  <p><strong>Decisão estratégica:</strong> Criação de aplicativo web independente (Next.js + Supabase) para gestão operacional do grupo escoteiro, separado do PaxtuAP (progressão).</p>
+  <ul>
+    <li>Usuário escolheu explicitamente a <strong>Opção B</strong> (web + BD nuvem) após análise de prós/contras.</li>
+    <li>Nome oficial definido: <strong>Sempre Alerta - Gestão</strong></li>
+    <li>Localização: <code>paxtu-gestao/</code> (nova pasta no monorepo)</li>
+    <li>Prioridade #1: Controle de material/estoque + logística de acampamentos (empréstimos, checklists, vinculação com eventos).</li>
+    <li>Escopo inicial: sem migração forçada de membros do PaxtuAP. Cadastro leve de membros dentro do novo sistema.</li>
+    <li>Visual: continuidade com Paxtu atual (Tailwind + cores por ramo + estilo de cards).</li>
+    <li>Documento completo: <a href="especificacao_sempre_alerta_gestao.html">especificacao_sempre_alerta_gestao.html</a></li>
+  </ul>
+  <p><strong>Próximo passo:</strong> Bootstrap do Next.js + projeto Supabase + schema inicial do módulo de Patrimônio.</p>
+</main>
+</body>
+</html>

@@ -1,0 +1,62 @@
+[
+  {
+    "name": "Pata-Tenra (Integração)",
+    "items": [
+      { "code": "L-PT-FIS-01", "description": "Higiene: Lavar mãos, rosto e dentes.", "guidance": "Autonomia básica de higiene pessoal." },
+      { "code": "L-PT-FIS-02", "description": "Arrumar sua própria cama.", "guidance": "Responsabilidade doméstica diária." },
+      { "code": "L-PT-FIS-03", "description": "Participar de jogos de correr e pular.", "guidance": "Desenvolvimento motor grosso." },
+      { "code": "L-PT-INT-01", "description": "História: Irmãos de Mowgli.", "guidance": "Conhecer a entrada de Mowgli na alcateia." },
+      { "code": "L-PT-INT-02", "description": "Significado da Boa Ação.", "guidance": "Entender o conceito de ajudar sem pedir nada." },
+      { "code": "L-PT-INT-03", "description": "Conhecer o Hino do Lobinho.", "guidance": "Saber cantar a primeira estrofe e o refrão." },
+      { "code": "L-PT-CAR-01", "description": "Lei do Lobinho: 5 Artigos.", "guidance": "Saber de cor e entender o significado simples." },
+      { "code": "L-PT-CAR-02", "description": "Máximas da Jângal.", "guidance": "Conhecer as frases principais (ex: O Lobinho pensa primeiro nos outros)." },
+      { "code": "L-PT-AFE-01", "description": "Conhecer o nome dos Chefes.", "guidance": "Identificar Akela, Bagheera, Baloo, etc." },
+      { "code": "L-PT-AFE-02", "description": "Conhecer sua Matilha.", "guidance": "Saber a cor e o nome do Primo." },
+      { "code": "L-PT-SOC-01", "description": "Saudação do Lobinho.", "guidance": "Significado dos dois dedos (orelhas)." },
+      { "code": "L-PT-SOC-02", "description": "O Grande Uivo.", "guidance": "Participar do cerimonial corretamente." },
+      { "code": "L-PT-ESP-01", "description": "Oração do Lobinho.", "guidance": "Momento de reverência e gratidão." }
+    ]
+  },
+  {
+    "name": "Saltador (Descoberta)",
+    "items": [
+      { "code": "L-SL-FIS-01", "description": "Saber tratar um arranhão.", "guidance": "Limpeza com água e sabão." },
+      { "code": "L-SL-FIS-02", "description": "Cambalhota e equilíbrio.", "guidance": "Coordenação motora." },
+      { "code": "L-SL-INT-01", "description": "Nó Direito.", "guidance": "Para unir cordas da mesma espessura." },
+      { "code": "L-SL-INT-02", "description": "Nó de Escota.", "guidance": "Para unir cordas de espessuras diferentes." },
+      { "code": "L-SL-INT-03", "description": "Coleção com 15 objetos.", "guidance": "Zelo e organização (selos, pedras, etc)." },
+      { "code": "L-SL-CAR-01", "description": "Verdade e Mentira.", "guidance": "Diferenciar e escolher a verdade." },
+      { "code": "L-SL-AFE-01", "description": "Presente para alguém da família.", "guidance": "Feito pelo próprio lobinho." },
+      { "code": "L-SL-SOC-01", "description": "Sinais de Pista (5 sinais).", "guidance": "Início, Fim, Caminho a Seguir, Água, Perigo." },
+      { "code": "L-SL-SOC-02", "description": "Participar de uma Boa Ação.", "guidance": "Atividade coletiva da Alcateia." },
+      { "code": "L-SL-ESP-01", "description": "Admirar a natureza.", "guidance": "Observar criação de Deus em passeio." }
+    ]
+  },
+  {
+    "name": "Rastreador (Autonomia)",
+    "items": [
+      { "code": "L-RS-FIS-01", "description": "Andar de bicicleta ou nadar.", "guidance": "Superação física." },
+      { "code": "L-RS-FIS-02", "description": "Saber pedir socorro (192/193).", "guidance": "Segurança e comunicação de emergência." },
+      { "code": "L-RS-INT-01", "description": "Pontos Cardeais (Rosa dos Ventos).", "guidance": "Norte, Sul, Leste, Oeste." },
+      { "code": "L-RS-INT-02", "description": "Nó Lais de Guia.", "guidance": "Nó de salvamento que não corre." },
+      { "code": "L-RS-INT-03", "description": "Nó Volta do Fiel.", "guidance": "Para iniciar amarras." },
+      { "code": "L-RS-INT-04", "description": "Relógio e Horas.", "guidance": "Saber ver as horas em relógio analógico." },
+      { "code": "L-RS-CAR-01", "description": "Encargo na Matilha.", "guidance": "Assumir responsabilidade (almoxarife, secretário)." },
+      { "code": "L-RS-SOC-01", "description": "Economia de água e luz.", "guidance": "Consciência ecológica em casa." },
+      { "code": "L-RS-SOC-02", "description": "Bandeira Nacional.", "guidance": "Cores e significado." }
+    ]
+  },
+  {
+    "name": "Caçador (Mestria)",
+    "items": [
+      { "code": "L-CZ-FIS-01", "description": "Preparar Lanche Saudável.", "guidance": "Higiene e nutrição." },
+      { "code": "L-CZ-INT-01", "description": "Cozinha Mateira Básica.", "guidance": "Pão de caçador ou ovo na brasa." },
+      { "code": "L-CZ-INT-02", "description": "Orientação pelo Sol/Estrelas.", "guidance": "Sem uso de bússola." },
+      { "code": "L-CZ-INT-03", "description": "Construir Abrigo simples.", "guidance": "Toca ou bivaque com lençol." },
+      { "code": "L-CZ-CAR-01", "description": "Lei Escoteira (Introdução).", "guidance": "Conhecer a lei da Tropa." },
+      { "code": "L-CZ-SOC-01", "description": "Visita à Tropa Escoteira.", "guidance": "Conhecer a futura patrulha (Passagem)." },
+      { "code": "L-CZ-SOC-02", "description": "História de B-P.", "guidance": "Quem foi o fundador." },
+      { "code": "L-CZ-ESP-01", "description": "Reflexão de Despedida.", "guidance": "O que aprendeu na Alcateia." }
+    ]
+  }
+]

@@ -1,0 +1,5 @@
+Para estar certo que as opiniões de todos se refletirão na Corte de Honra, deve-se organizar, antes desta reunião, um Conselho de Patrulha onde discutirão os temas que serão debatidos na Corte de Honra. Durante o Conselho de Patrulha é imprescindível tomar nota dos comentários mais importantes e das decisões que se tomem. O Monitor levará estes apontamentos à Corte de Honra, pois servirão de ajuda de memória.
+
+O Monitor não deve impor suas ideias e preferências na Corte de Honra, aproveitando-se de que ali não estão presentes os demais integrantes da sua Patrulha, ao mesmo tempo deve ter a prudência de evitar tomar decisões que não possam ser consultadas aos seus companheiros. Mas, há ocasiões em que as decisões não podem ser consultadas e o Monitor, que é o líder de Patrulha, tomará as decisões pensando no que é melhor para sua Patrulha; mas estas situações devem ser excepcionais.
+
+![img-23.jpeg](img-23.jpeg)

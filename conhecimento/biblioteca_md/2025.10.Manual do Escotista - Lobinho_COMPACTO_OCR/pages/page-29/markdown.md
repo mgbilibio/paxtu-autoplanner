@@ -1,0 +1,4 @@
+# CAPÍTULO 3
+O Marco Simbólico
+
+![img-47.jpeg](img-47.jpeg)

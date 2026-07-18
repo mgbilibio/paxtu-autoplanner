@@ -1,0 +1,13 @@
+# DESENVOLVIMENTO DA ATIVIDADE
+
+Chegado o momento planificado para a realização da atividade - a que lobinhos e lobinhas conhecem desde o momento em que a selecionaram e incluíram no calendário das atividades - os escotistas começarão o trabalho referindo-se a natureza com uma expressão da presença de Deus e convidando os lobinhos a observar o mundo que os rodeia de uma maneira diferente, descobrindo e valorizando os detalhes que revelam a presença nele do Criador.
+
+Em seguida, o escotista convida a Alcatéia a percorrer a área do Acampamento, observando com cuidado e atenção todos os elementos que nela se encontram: flores, árvores, ninhos, pássaros, colinas, folhas, etc. Durante esta caminhada, e depois de um tempo prudente para que os lobinhos observem com calma, cada lobinho deverá escolher um elemento. O elemento escolhido poderá ser o que pareça mais bonito, impressionante, ou estranho; que lhe inspire ternura, tranquilidade ou alegria; ou de mais belas cores, texturas ou formas, etc. Qualquer que seja a razão, o mais importante é que aquele elemento represente para quem escolher a presença de Deus na natureza.
+
+Seguindo as instruções do anexo técnico a seguir, cada participante confeccionará uma lanterna de papel que represente o elemento selecionado. Uma vez terminados, e enquanto a Alcatéia prepara sua cerimônia da noite, as lanternas ficarão em um lugar seguro onde possam secar.
+
+Quando a noite chegar, se levará a cabo a cerimônia preparada por todos. Durante esta, cada participante mostrará sua lanterna e explicará aos demais as razões que o levaram a escolher este elemento. Na medida que se apresentem as lanternas, o escotista entregará a cada participante uma vela pequena para que este acenda e a coloque dentro da lanterna. Ao concluir cada apresentação, as lanternas serão depositadas (ou penduradas) nos locais previamente escolhidos.
+
+Quando todas as lanternas estiverem acesas, e sob a bonita luz, os escotistas convidarão os lobinhos a encerrar o dia com uma reflexão e o compromisso de cada um dos lobinhos de cuidar e proteger a natureza, obra e presente de Deus à humanidade.
+
+No dia seguinte, ao regressar do acampamento, a Alcatéia poderá se reunir para comentar a atividade realizada, compartilhar a experiência e pensar em atividades similares que possam ser realizadas numa próxima ocasião. Os comentários que os lobinhos fizerem, junto com as observações efetuadas pelos escotistas durante o desenvolvimento da atividade, lhes permitirão obter informações sobre o desenvolvimento dos lobinhos da Alcatéia.

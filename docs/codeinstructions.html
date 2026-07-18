@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Paxtu AutoPlanner - Instrucoes de Codigo</title>
+  <style>
+    body{font-family:Arial,Helvetica,sans-serif;margin:0;background:#f8fafc;color:#172033;line-height:1.55}main{max-width:900px;margin:0 auto;background:#fff;min-height:100vh;padding:28px;box-sizing:border-box}h1{margin-top:0}h2{border-bottom:1px solid #dbe3ef;padding-bottom:6px}code{background:#eef2ff;padding:2px 5px;border-radius:4px}li{margin:7px 0}@media(max-width:600px){main{padding:18px}}
+  </style>
+</head>
+<body>
+<main>
+  <h1>Instrucoes de Codigo</h1>
+  <p>Atualizado em <strong>20260709-1904</strong>. Aplicam-se ao app alvo em <code>PaxtuAP/</code>.</p>
+  <h2>Arquitetura atual</h2>
+  <ul>
+    <li><code>src/</code>: interface React e regras de apresentação.</li>
+    <li><code>electron/</code>: processo principal, IPC e acesso controlado a arquivos/PDFs.</li>
+    <li><code>src/services/storage/</code>: persistência local e em pasta compartilhada; <code>storageService.ts</code> é a fachada pública.</li>
+    <li><code>conhecimento/bd/</code>: bancos SQLite auditáveis de progressão, especialidades e biblioteca.</li>
+    <li><code>src/data/generated/</code>: derivados TypeScript dos bancos. Não editar manualmente.</li>
+  </ul>
+  <h2>Fonte normativa e catálogo</h2>
+  <ul>
+    <li><code>progressao_2025.sqlite</code> contém 18 blocos, 80 ações fixas, 230 variáveis e os reconhecimentos oficiais de Lobinho e Escoteiro.</li>
+    <li><code>especialidades_guia.sqlite</code> contém 274 especialidades e 2.741 requisitos do Guia 18ª edição.</li>
+    <li><code>src/data/officialSpecialtyCatalog.ts</code> adapta o Guia para o catálogo POR 2025+. Códigos são <code>ESP-GUIA-&lt;id&gt;</code>.</li>
+    <li><code>specs_*.json</code> e as regras de premiação antigas são compatibilidade do POR 2020, não fonte de verdade do POR 2025+.</li>
+  </ul>
+  <h2>Regras de persistência</h2>
+  <ul>
+    <li>Ações de bloco usam <code>MemberBlocoState</code>.</li>
+    <li>Especialidades usam <code>MemberSpecialtyState</code>, por requisito, com evidência, status e avaliador.</li>
+    <li>O lançamento pela agenda marca ações de bloco e inicia especialidades. Nunca deve concluir automaticamente os requisitos de uma especialidade.</li>
+    <li>Preservar os registros legados <code>SP-*</code> e <code>PAXTU_PROG_*</code>; não os misturar com o fluxo POR 2025+.</li>
+  </ul>
+  <h2>Validação e release</h2>
+  <ol>
+    <li><code>npm run build</code>.</li>
+    <li><code>python conhecimento/tools/audit_dados_operacionais.py</code>.</li>
+    <li><code>python conhecimento/tools/run_release_check.py --dist</code>.</li>
+  </ol>
+  <p>O release deve produzir instalador, executável portátil e ZIP em <code>release/20260709-1904/</code>. Os filtros de especialidade devem usar <code>isSpecialtyCode</code>, jamais o texto visível da categoria. Atualize este documento, <code>usersmanual.html</code> e <code>versions.html</code> em qualquer alteração de comportamento, dados ou distribuição.</p>
+</main>
+</body>
+</html>

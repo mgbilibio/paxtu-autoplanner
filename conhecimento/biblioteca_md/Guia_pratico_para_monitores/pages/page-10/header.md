@@ -1,0 +1,1 @@
+A Patrulha é um grupo de amigos

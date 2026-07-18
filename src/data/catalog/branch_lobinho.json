@@ -1,0 +1,283 @@
+[
+  {
+    "name": "Acolhida",
+    "items": [
+      {
+        "code": "AC1",
+        "description": "Conhecer Matilha",
+        "guidance": "Consultar manual.",
+        "category": "Acolhida"
+      },
+      {
+        "code": "AC2",
+        "description": "Vozes de Comando",
+        "guidance": "Consultar manual.",
+        "category": "Acolhida"
+      },
+      {
+        "code": "AC3",
+        "description": "Lema e Saudação",
+        "guidance": "Consultar manual.",
+        "category": "Acolhida"
+      },
+      {
+        "code": "AC4",
+        "description": "Lei e Promessa",
+        "guidance": "Consultar manual.",
+        "category": "Acolhida"
+      },
+      {
+        "code": "AC5",
+        "description": "Lenço Escoteiro",
+        "guidance": "Consultar manual.",
+        "category": "Acolhida"
+      },
+      {
+        "code": "AC6",
+        "description": "Irmãos de Mowgli",
+        "guidance": "Consultar manual.",
+        "category": "Acolhida"
+      },
+      {
+        "code": "AC7",
+        "description": "Uniforme e Distintivos",
+        "guidance": "Consultar manual.",
+        "category": "Acolhida"
+      }
+    ]
+  },
+  {
+    "name": "B1: Aprendizagem",
+    "items": [
+      {
+        "code": "B1-F1",
+        "description": "Especialidade Inédita",
+        "guidance": "Consultar manual.",
+        "category": "B1: Aprendizagem"
+      },
+      {
+        "code": "B1-V1",
+        "description": "Novo Idioma",
+        "guidance": "Consultar manual.",
+        "category": "B1: Aprendizagem"
+      },
+      {
+        "code": "B1-V2",
+        "description": "Visita à Biblioteca",
+        "guidance": "Consultar manual.",
+        "category": "B1: Aprendizagem"
+      }
+    ]
+  },
+  {
+    "name": "B10: Cultura",
+    "items": [
+      {
+        "code": "B10-F1",
+        "description": "Bandeira Nacional",
+        "guidance": "Consultar manual.",
+        "category": "B10: Cultura"
+      }
+    ]
+  },
+  {
+    "name": "B11: Democracia",
+    "items": [
+      {
+        "code": "B11-F1",
+        "description": "Votar na Roca",
+        "guidance": "Consultar manual.",
+        "category": "B11: Democracia"
+      }
+    ]
+  },
+  {
+    "name": "B12: Serviço",
+    "items": [
+      {
+        "code": "B12-F1",
+        "description": "Contatos de Emergência",
+        "guidance": "Consultar manual.",
+        "category": "B12: Serviço"
+      }
+    ]
+  },
+  {
+    "name": "B13: Valores",
+    "items": [
+      {
+        "code": "B13-F1",
+        "description": "Tigre! Tigre!",
+        "guidance": "Consultar manual.",
+        "category": "B13: Valores"
+      }
+    ]
+  },
+  {
+    "name": "B14: Hábitos",
+    "items": [
+      {
+        "code": "B14-F1",
+        "description": "Lanche Colorido",
+        "guidance": "Consultar manual.",
+        "category": "B14: Hábitos"
+      }
+    ]
+  },
+  {
+    "name": "B15: Mente",
+    "items": [
+      {
+        "code": "B15-F1",
+        "description": "Elogiar um Amigo",
+        "guidance": "Consultar manual.",
+        "category": "B15: Mente"
+      }
+    ]
+  },
+  {
+    "name": "B16: Corpo",
+    "items": [
+      {
+        "code": "B16-F1",
+        "description": "Curativo Simples",
+        "guidance": "Consultar manual.",
+        "category": "B16: Corpo"
+      }
+    ]
+  },
+  {
+    "name": "B17: Vínculos",
+    "items": [
+      {
+        "code": "B17-F1",
+        "description": "Irmão de Todos",
+        "guidance": "Consultar manual.",
+        "category": "B17: Vínculos"
+      }
+    ]
+  },
+  {
+    "name": "B18: Espiritual",
+    "items": [
+      {
+        "code": "B18-F1",
+        "description": "Oração ou Reflexão",
+        "guidance": "Consultar manual.",
+        "category": "B18: Espiritual"
+      }
+    ]
+  },
+  {
+    "name": "B2: Autonomia",
+    "items": [
+      {
+        "code": "B2-F1",
+        "description": "Arrumar Mochila",
+        "guidance": "Consultar manual.",
+        "category": "B2: Autonomia"
+      },
+      {
+        "code": "B2-V1",
+        "description": "Lidar com Dinheiro",
+        "guidance": "Consultar manual.",
+        "category": "B2: Autonomia"
+      }
+    ]
+  },
+  {
+    "name": "B3: Criatividade",
+    "items": [
+      {
+        "code": "B3-F1",
+        "description": "Engenhoca de Sucata",
+        "guidance": "Consultar manual.",
+        "category": "B3: Criatividade"
+      },
+      {
+        "code": "B3-V1",
+        "description": "Teatro de Sombras",
+        "guidance": "Consultar manual.",
+        "category": "B3: Criatividade"
+      }
+    ]
+  },
+  {
+    "name": "B4: Emoções",
+    "items": [
+      {
+        "code": "B4-F1",
+        "description": "Dança da Jângal",
+        "guidance": "Consultar manual.",
+        "category": "B4: Emoções"
+      }
+    ]
+  },
+  {
+    "name": "B5: Clima",
+    "items": [
+      {
+        "code": "B5-F1",
+        "description": "Ciclo da Água",
+        "guidance": "Consultar manual.",
+        "category": "B5: Clima"
+      }
+    ]
+  },
+  {
+    "name": "B6: Consumo",
+    "items": [
+      {
+        "code": "B6-F1",
+        "description": "Reduzir e Reciclar",
+        "guidance": "Consultar manual.",
+        "category": "B6: Consumo"
+      }
+    ]
+  },
+  {
+    "name": "B7: Natureza",
+    "items": [
+      {
+        "code": "B7-F1",
+        "description": "Explorar Fauna Local",
+        "guidance": "Consultar manual.",
+        "category": "B7: Natureza"
+      }
+    ]
+  },
+  {
+    "name": "B8: Ar Livre",
+    "items": [
+      {
+        "code": "B8-F1",
+        "description": "Nós Básicos",
+        "guidance": "Consultar manual.",
+        "category": "B8: Ar Livre"
+      },
+      {
+        "code": "B8-V1",
+        "description": "Pernoite na Natureza",
+        "guidance": "Consultar manual.",
+        "category": "B8: Ar Livre"
+      },
+      {
+        "code": "B8-V2",
+        "description": "Cozinha Mateira",
+        "guidance": "Consultar manual.",
+        "category": "B8: Ar Livre"
+      }
+    ]
+  },
+  {
+    "name": "B9: Paz",
+    "items": [
+      {
+        "code": "B9-F1",
+        "description": "Flor Vermelha",
+        "guidance": "Consultar manual.",
+        "category": "B9: Paz"
+      }
+    ]
+  }
+]

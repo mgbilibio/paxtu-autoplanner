@@ -1,0 +1,1 @@
+Como saber se está indo bem?

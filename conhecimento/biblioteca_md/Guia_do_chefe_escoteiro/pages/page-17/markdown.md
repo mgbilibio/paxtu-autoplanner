@@ -1,0 +1,2 @@
+A organização e a propagação do Movimento Escoteiro são devidas a este exército de trabalhadores voluntários. Nós temos a notável (embora silenciosa) evidência do belo espírito patriótico que subsiste na maioria dos países. Estas pessoas renunciam a uma boa parte do seu tempo e energia (e em muitos casos também de seu dinheiro), para a tarefa de treinamento de jovens, sem qualquer ideia de recompensa ou esperando elogios pelo que estão fazendo. Fazem-no, unicamente, por amor ao seu país e a seus semelhantes.
+

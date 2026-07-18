@@ -1,0 +1,7 @@
+Esteja ciente de como você está se sentindo enquanto ouve. Se você está com frio, fome, sono, se está muito calor, atrasado para uma reunião, zangado ou preocupado. Qualquer um destes fatores pode prejudicar a sua atenção e afetar a sua capacidade de ouvir bem. Perceber como está se sentido pode ajudá-lo a compreender melhor o que os outros estão dizendo e ter mais foco na mensagem que está sendo passada. Na maioria das vezes você pode solicitar uma pausa para tentar resolver estes problemas: colocar uma blusa, dar uma mordida em algo para espantar a fome, etc. Quando você voltar, as condições podem ser mais favoráveis para você absorver as informações.
+
+Procure exercitar a escuta eficaz, pois ela pode ser uma ferramenta poderosa para resolver problemas, resolver conflitos e construir o "Espírito de Patrulha".
+
+Escute e reaja tanto quanto ao conteúdo da mensagem, quanto aos sentimentos expressos na voz, nos gestos e nas expressões, porque a verdadeira mensagem, muitas vezes, está nos sentimentos de quem fala. A mensagem real não está no que é dito, mas sim, porque é dito.
+
+Manter todos bem informados: comunicar-se é uma tarefa constante do Monitor. É sua responsabilidade manter os integrantes da Patrulha informados sobre as atividades. Algumas vezes um ou outro membro de sua Patrulha faltará na atividade e você deverá passar as informações posteriormente. Outras vezes, a Patrulha tem algo planejado e por algum motivo inesperado o plano deverá ser alterado no último minuto. Seguem algumas etapas de acompanhamento para garantir uma comunicação eficaz:

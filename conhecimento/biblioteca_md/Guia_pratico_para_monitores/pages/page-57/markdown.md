@@ -1,0 +1,7 @@
+"show de um homem só". Cada integrante da Patrulha precisa de alguma forma ser envolvido. Sempre que puder delegue as atribuições antecipadamente, fazendo com que cada um saiba qual será sua função. Desta forma, os membros da Patrulha terão tempo de se preparar e assumirão um papel mais ativo durante as discussões e preparação de atividades.
+
+É no Conselho de Patrulha que a organização para uma atividade acontece e a Patrulha organiza sua lista de materiais, elabora o cardápio e planeja o treinamento de seus integrantes para que eles tirem o máximo de proveito das atividades.
+
+Mais cedo ou mais tarde, uma Patrulha pode desejar realizar suas próprias atividades, tais como um passeio de bicicleta, uma excursão, visita ao museu, aprender mais sobre informática, ou qualquer outra coisa que seja de interesse de seus membros. Como líder mantenha-se atento para ouvir que tipo de atividade os membros da Patrulha têm interesse de realizar. Procure perguntar quais são suas sugestões e quais destas são de interesse da maioria. As atividades de Patrulha são definidas pela própria Patrulha no Conselho de Patrulha, mas devem constar no Calendário do Ciclo de Programa da Tropa.
+
+![img-25.jpeg](img-25.jpeg)

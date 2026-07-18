@@ -1,0 +1,9 @@
+Independente da função que você assuma dentro do Escotismo, viver de acordo com a Lei e a Promessa Escoteira são requisitos fundamentais. São elas que permitem que os escoteiros sigam adiante, com entusiasmo, e superem qualquer obstáculo. O "Espírito de Patrulha" se baseia fundamentalmente nestes dois fatores. Este sentimento contribui para que os integrantes da patrulha ampliem sua visão de mundo, suas boas atitudes e pró-atividade. Através de sua união, a Patrulha dispõe seu tempo e sua energia para apoiar a sua Tropa e sua comunidade, mostrando que coletivamente somos ainda mais fortes.
+
+Dos Monitores, espera-se que o "Espírito de Patrulha" seja mostrado aos demais e que a Patrulha trabalhe realmente junta para alcançar seus objetivos. Como líder da Patrulha, você pode ajudá-la a conseguir qualquer coisa, utilizando e incentivando a sua união.
+
+O "Espírito de Patrulha" é moldado pelas experiências que você e os demais integrantes da Patrulha trazem consigo "na mochila". Cada pessoa possui um conjunto de qualidades e cabe a você, Monitor, explorar estes pontos para que a Patrulha construa sua história.
+
+Mesmo as desventuras podem ser úteis, pois através da superação de dificuldades a Patrulha torna-se mais forte e coesa. São nesses momentos que as experiências que o Escotismo proporciona tornam-se valiosas para todos. São bons ensinamentos para o futuro.
+
+Além das experiências coletivas, a Patrulha terá inúmeras oportunidades para construir o "Espírito da Patrulha". Utilizamos algumas ferramentas para fortalecer este espírito, tais como: o nome da Patrulha, sua bandeirola, seu canto, seu grito, suas

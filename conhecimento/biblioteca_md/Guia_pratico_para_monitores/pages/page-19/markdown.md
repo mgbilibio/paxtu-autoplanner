@@ -1,0 +1,3 @@
+# CONSTRUINDO O ESPÍRITO DE PATRULHA
+
+![img-10.jpeg](img-10.jpeg)

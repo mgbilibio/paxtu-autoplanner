@@ -1,0 +1,8 @@
+Dê o exemplo: não há dúvida que o exemplo pessoal é um fator primordial. De nada adianta ensinar uma coisa e praticar outra. Por exemplo, se você cobrar pontualidade e não for pontual, se pedir ajuda mas não ajudar, se fala sobre a importância da progressão pessoal, mas não evolui a sua, não conseguirá resultados satisfatórios. Da mesma maneira que a tropa é o espelho da chefia, seus amigos de Patrulha serão seu espelho, ou seja, refletirão a liderança que possuem.
+
+Tenha boas atitudes: pessoas otimistas são contagiantes! Manter uma atitude positiva pode fazer as pessoas ao seu redor partilharem de seu entusiasmo. Basta estar bem disposto e fazer o seu melhor, em vez de se sentir fracassado diante das dificuldades. A atividade positiva favorece para que as pessoas trabalhem em equipe e tornam o ambiente mais leve e alegre.
+
+Aja com maturidade: ganhar o respeito daqueles que você está liderando depende basicamente de você. É importante que você seja consciente e justo em suas ações. Seja flexível, de maneira que haja possibilidade de mudança de planos, caso algo não esteja indo bem e for o melhor a fazer por sua Patrulha. Seja claro em suas orientações, e evite mudar de ideia a cada momento, fazendo com que os outros se confundam. Lembre-se que os integrantes de sua Patrulha responderão melhor à sua liderança quando souberem o que esperar de você.
+
+Seja organizado: seja cuidadoso ao preparar os conselhos, reuniões e atividades de Patrulha. Preste atenção nos detalhes e procure delegar tarefas a todos os integrantes. Desta forma, você canalizará melhor as energias e aproveitará melhor o tempo.
+

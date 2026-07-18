@@ -1,0 +1,4 @@
+Estes últimos geralmente oferecem bons pagamentos a quem está começando e, pelo fato de assim melhorarem a situação financeira da família, são escolhidos prontamente pelos pais do jovem, sem considerarem circunstância que não lhe proporcionam nenhum progresso para o futuro, na profissão, quando adulto.
+
+E, entre as colocações que realmente oferecem futuro, é preciso escolher cuidadosamente a que de fato se adapte às capacidades individuais. E assim o jovem pode ser preparado para ela enquanto ainda for escoteiro. Um emprego que exija uma perícia especial é positivamente melhor que outro que possa ser ocupado por qualquer pessoa, no que concerne ao êxito futuro, na vida. Deve-se, também, tomar cuidado em evitar que tudo isso seja considerado tardivamente, quando já seja tarde para o adolescente pôr-se em condições de satisfazer às exigências e padrões da carreira ambicionada.
+
