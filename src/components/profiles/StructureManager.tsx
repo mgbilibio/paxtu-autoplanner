@@ -26,6 +26,11 @@ import {
     getAppConfig,
 } from '../../services/storageService';
 import { ConfirmDialog } from '../ConfirmDialog';
+import {
+  buildMinimalMember,
+  isMemberProfileIncomplete,
+  parseMemberLines,
+} from '../../utils/memberQuickAdd';
 
 type ConfirmAction = {
   title: string;
@@ -62,9 +67,15 @@ export const StructureManager: React.FC = () => {
   const [createLoginAccount, setCreateLoginAccount] = useState(false);
   const [showArchived, setShowArchived] = useState<Record<string, boolean>>({}); 
   
-  // Bulk Import State
-  const [importMode, setImportMode] = useState<{sectionId: string} | null>(null);
+  // Bulk Import State — patrulha/chefia em um lance (só nomes)
+  const [importMode, setImportMode] = useState<{
+    sectionId: string;
+    patrol?: string;
+    defaultRole?: TroopRole;
+  } | null>(null);
   const [csvText, setCsvText] = useState('');
+  const [importDefaultRole, setImportDefaultRole] = useState<TroopRole>(TroopRole.JUVENIL);
+  const [importPatrol, setImportPatrol] = useState('');
   const [importFeedback, setImportFeedback] = useState<string | null>(null);
   const [confirmAction, setConfirmAction] = useState<ConfirmAction | null>(null);
 
@@ -99,16 +110,17 @@ export const StructureManager: React.FC = () => {
   const handleSaveGroup = async () => {
       const newGroup: ScoutGroup = {
           id: group?.id || Date.now().toString(),
-          name: groupName || 'Novo Grupo',
-          city: groupCity,
+          name: (groupName || '').trim() || 'Meu Grupo Escoteiro',
+          city: (groupCity || '').trim(),
           sections: group?.sections || []
       };
       await saveGroupAsync(newGroup);
+      setGroupName(newGroup.name);
       setEditingGroup(false);
   };
 
   const handleSaveSection = async () => {
-    if (!newSectionName) return;
+    if (!newSectionName.trim()) return;
     const sectionToSave: ScoutSection = {
         id: editingSectionId || Date.now().toString(),
         groupId: group?.id,
@@ -178,18 +190,21 @@ export const StructureManager: React.FC = () => {
   const handleSaveMember = async (e: React.FormEvent) => {
       e.preventDefault();
       if (!editingMember) return;
-      await saveMemberAsync(editingMember);
+      const trimmed = (editingMember.name || '').trim();
+      if (!trimmed) return; // só o nome é obrigatório — primeiro nome basta
+      const toSave = { ...editingMember, name: trimmed };
+      await saveMemberAsync(toSave);
 
       // Auto-Sync login account if it already exists or if checkbox is checked
       const users = await getUsersAsync();
-      const existingUser = users.find(u => u.id === editingMember.id);
+      const existingUser = users.find(u => u.id === toSave.id);
 
-      if ((createLoginAccount || existingUser) && editingMember.role !== TroopRole.JUVENIL) {
+      if ((createLoginAccount || existingUser) && toSave.role !== TroopRole.JUVENIL) {
           await saveUserAsync({
-              id: editingMember.id,
-              name: editingMember.name,
-              role: editingMember.role,
-              sectionId: editingMember.sectionId || 'ADMIN_GLOBAL',
+              id: toSave.id,
+              name: toSave.name,
+              role: toSave.role,
+              sectionId: toSave.sectionId || 'ADMIN_GLOBAL',
               avatar: '👤'
           });
       }
@@ -198,45 +213,58 @@ export const StructureManager: React.FC = () => {
       setCreateLoginAccount(false);
   };
 
-  const handleProcessImport = async () => {
-      if (!importMode || !csvText) return;
-      const lines = csvText.split('\n');
-      let count = 0, skipped = 0;
+  const openQuickList = (sectionId: string, opts?: { patrol?: string; role?: TroopRole }) => {
+      setImportMode({
+        sectionId,
+        patrol: opts?.patrol,
+        defaultRole: opts?.role || (opts?.patrol ? TroopRole.JUVENIL : TroopRole.CHEFE),
+      });
+      setImportPatrol(opts?.patrol || '');
+      setImportDefaultRole(opts?.role || (opts?.patrol ? TroopRole.JUVENIL : TroopRole.CHEFE));
+      setCsvText('');
+      setImportFeedback(null);
+  };
 
+  const handleProcessImport = async () => {
+      if (!importMode || !csvText.trim()) return;
       const section = sections.find(s => s.id === importMode.sectionId);
       if (!section) return;
 
-      // ID estável usando crypto quando disponível
-      const newId = () => (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : `${Date.now()}-${Math.floor(Math.random() * 1e9)}`;
-
-      for (const line of lines) {
-          const parts = line.split(',');
-          if (parts.length >= 1 && parts[0].trim()) {
-              const name = parts[0].trim();
-              const register = parts[1] ? parts[1].trim() : '';
-              const patrol = parts[2] ? parts[2].trim() : '';
-
-              if (members.some(m => m.sectionId === importMode.sectionId && m.name.toLowerCase() === name.toLowerCase())) {
-                  skipped++;
-                  continue;
-              }
-              const newMember: ScoutMember = {
-                  id: newId(),
-                  sectionId: importMode.sectionId,
-                  branch: section.branch,
-                  name,
-                  registerNumber: register,
-                  patrol,
-                  role: TroopRole.JUVENIL,
-                  isArchived: false,
-              };
-              await saveMemberAsync(newMember);
-              count++;
-          }
+      const parsed = parseMemberLines(csvText);
+      if (parsed.length === 0) {
+          setImportFeedback('Nenhum nome válido encontrado.');
+          return;
       }
-      setImportFeedback(`✓ ${count} membro(s) adicionado(s)${skipped > 0 ? ` · ${skipped} ignorado(s) por nome duplicado` : ''}.`);
+
+      let count = 0, skipped = 0;
+      const existing = new Set(
+        members
+          .filter(m => m.sectionId === importMode.sectionId)
+          .map(m => m.name.toLowerCase())
+      );
+
+      for (const row of parsed) {
+          if (existing.has(row.name.toLowerCase())) {
+              skipped++;
+              continue;
+          }
+          const member = buildMinimalMember({
+              name: row.name,
+              sectionId: importMode.sectionId,
+              branch: section.branch,
+              role: row.role || importDefaultRole,
+              patrol: row.patrol || importPatrol.trim() || undefined,
+              registerNumber: row.registerNumber,
+          });
+          await saveMemberAsync(member);
+          existing.add(row.name.toLowerCase());
+          count++;
+      }
+      setImportFeedback(
+        `✓ ${count} cadastrado(s)${skipped > 0 ? ` · ${skipped} duplicado(s) ignorado(s)` : ''}. Complete dados depois na edição.`
+      );
       setCsvText('');
-      setTimeout(() => { setImportMode(null); setImportFeedback(null); }, 3500);
+      setTimeout(() => { setImportMode(null); setImportFeedback(null); }, 4000);
   };
 
   const openNewMemberModal = (sectionId: string, teamName?: string) => {
@@ -296,23 +324,29 @@ export const StructureManager: React.FC = () => {
       });
   };
 
-  const renderMemberRow = (member: ScoutMember) => (
-      <div key={member.id} className={`flex items-center justify-between p-2 pl-4 border-l-2 hover:bg-slate-50 hover:border-slate-400 transition-colors text-sm group ${member.isArchived ? 'bg-slate-100/50 border-slate-300 opacity-60' : 'border-slate-200'}`}>
-          <div className="flex items-center gap-2">
+  const renderMemberRow = (member: ScoutMember) => {
+      const incomplete = !member.isArchived && isMemberProfileIncomplete(member);
+      return (
+      <div key={member.id} className={`flex items-center justify-between p-2 pl-4 border-l-2 hover:bg-slate-50 hover:border-slate-400 transition-colors text-sm group ${member.isArchived ? 'bg-slate-100/50 border-slate-300 opacity-60' : incomplete ? 'border-amber-300 bg-amber-50/40' : 'border-slate-200'}`}>
+          <div className="flex items-center gap-2 min-w-0">
               <span title={member.role}>{member.role === TroopRole.JUVENIL ? '👤' : '👮'}</span>
-              <div className="flex flex-col">
-                  <span className={`font-medium ${member.isArchived ? 'text-slate-500 italic' : 'text-slate-700'}`}>{member.name}</span>
-                  {(member.medicalInfo || member.emergencyContact) && <span className="text-[9px] text-red-400 font-bold">⚠️ Info Médica/Contato</span>}
+              <div className="flex flex-col min-w-0">
+                  <span className={`font-medium truncate ${member.isArchived ? 'text-slate-500 italic' : 'text-slate-700'}`}>{member.name}</span>
+                  <div className="flex gap-1 flex-wrap">
+                    {incomplete && <span className="text-[8px] bg-amber-100 text-amber-800 px-1 rounded font-bold uppercase" title="Complete nascimento e outros dados quando puder">incompleto</span>}
+                    {(member.medicalInfo || member.emergencyContact) && <span className="text-[9px] text-red-400 font-bold">⚠️ Info Médica/Contato</span>}
+                  </div>
               </div>
               {member.isArchived && <span className="text-[8px] bg-slate-200 text-slate-500 px-1 rounded font-bold uppercase tracking-tighter">Arquivado</span>}
           </div>
-          <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-              <button onClick={() => { setEditingMember(member); setIsMemberModalOpen(true); }} className="text-blue-400 hover:text-blue-600 px-1" title="Editar">✏️</button>
+          <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+              <button onClick={() => { setEditingMember(member); setIsMemberModalOpen(true); }} className="text-blue-400 hover:text-blue-600 px-1" title="Editar / completar">✏️</button>
               <button onClick={() => handleArchiveMember(member)} className="text-orange-400 hover:text-orange-600 px-1" title={member.isArchived ? 'Restaurar' : 'Arquivar'}>📦</button>
               {member.isArchived && <button onClick={() => handleDeleteMember(member.id)} className="text-red-300 hover:text-red-500 px-1">×</button>}
           </div>
       </div>
-  );
+      );
+  };
 
   if (!group && !editingGroup) {
       return (
@@ -399,8 +433,8 @@ export const StructureManager: React.FC = () => {
                                 <span className="font-bold text-gray-800">{section.name}</span>
                                 <span className="text-[10px] px-1.5 rounded border bg-white text-gray-500 font-bold uppercase tracking-tighter">{section.progressionSystem === 'POR_2025' || !section.progressionSystem ? 'POR 2025' : 'LEGACY'}</span>
                             </div>
-                            <div className="flex gap-2">
-                                <button onClick={() => setImportMode({ sectionId: section.id })} className="text-xs font-bold text-indigo-600 hover:bg-indigo-50 px-2 py-1 rounded" title="Importar CSV">📥 Importar</button>
+                            <div className="flex gap-2 flex-wrap">
+                                <button onClick={() => openQuickList(section.id, { role: TroopRole.CHEFE })} className="text-xs font-bold text-indigo-600 hover:bg-indigo-50 px-2 py-1 rounded" title="Lista de nomes">⚡ Lista rápida</button>
                                 <button onClick={() => startEditSection(section)} className="text-xs font-bold text-blue-600 hover:bg-blue-50 px-2 py-1 rounded">✏️ Editar</button>
                                 <button onClick={() => setAddingTeamToSectionId(section.id)} className="text-xs font-bold text-green-600 hover:bg-green-50 px-2 py-1 rounded">+ Equipe</button>
                                 <button onClick={() => handleDeleteSection(section.id)} className="text-xs font-bold text-red-400 hover:text-red-600 hover:bg-red-50 px-2 py-1 rounded">Excluir</button>
@@ -409,21 +443,51 @@ export const StructureManager: React.FC = () => {
 
                         {importMode?.sectionId === section.id && (
                             <div className="p-4 bg-indigo-50 border-b border-indigo-100 animate-slide-in">
-                                <h4 className="text-xs font-bold text-indigo-800 mb-2 uppercase">Importação em Massa</h4>
-                                <p className="text-xs text-indigo-600 mb-2">Cole aqui: Nome, Registro (opcional), Patrulha (opcional) - Um por linha</p>
+                                <h4 className="text-xs font-bold text-indigo-800 mb-1 uppercase">Lista rápida — um lance só</h4>
+                                <p className="text-xs text-indigo-700 mb-2">
+                                  Só o primeiro nome basta. Complete nascimento/registro depois. Formatos:
+                                  <span className="font-mono"> João</span> ·
+                                  <span className="font-mono"> Ana | Chefe</span> ·
+                                  <span className="font-mono"> Pedro, 123, Águia</span>
+                                </p>
+                                <div className="grid grid-cols-2 gap-2 mb-2">
+                                  <div>
+                                    <label className="text-[10px] font-bold text-indigo-800 uppercase">Função padrão</label>
+                                    <select
+                                      value={importDefaultRole}
+                                      onChange={e => setImportDefaultRole(e.target.value as TroopRole)}
+                                      className="w-full p-1.5 border rounded text-xs bg-white"
+                                    >
+                                      <option value={TroopRole.JUVENIL}>Juvenil</option>
+                                      <option value={TroopRole.CHEFE}>Chefe</option>
+                                      <option value={TroopRole.ASSISTENTE}>Assistente</option>
+                                    </select>
+                                  </div>
+                                  <div>
+                                    <label className="text-[10px] font-bold text-indigo-800 uppercase">Patrulha/matilha padrão</label>
+                                    <input
+                                      type="text"
+                                      value={importPatrol}
+                                      onChange={e => setImportPatrol(e.target.value)}
+                                      placeholder="Opcional"
+                                      className="w-full p-1.5 border rounded text-xs bg-white"
+                                    />
+                                  </div>
+                                </div>
                                 <textarea 
-                                    className="w-full p-2 border rounded text-xs mb-2 h-24 font-mono"
-                                    placeholder="João Silva, 12345, Águia&#10;Maria Souza, 67890, Falcão"
+                                    className="w-full p-2 border rounded text-xs mb-2 h-28 font-mono"
+                                    placeholder={"João\nMaria\nPedro\nAna | Assistente"}
                                     value={csvText}
                                     onChange={e => setCsvText(e.target.value)}
-                                ></textarea>
-                                <div className="flex gap-2 justify-between items-center">
+                                    autoFocus
+                                />
+                                <div className="flex gap-2 justify-between items-center flex-wrap">
                                     {importFeedback ? (
                                       <span role="status" className="text-xs text-green-700 font-bold">{importFeedback}</span>
-                                    ) : <span></span>}
+                                    ) : <span className="text-[10px] text-indigo-500">Duplicados por nome são ignorados.</span>}
                                     <div className="flex gap-2">
                                       <button onClick={() => { setImportMode(null); setCsvText(''); setImportFeedback(null); }} className="text-xs text-slate-500 px-3 py-1">Cancelar</button>
-                                      <button onClick={handleProcessImport} className="text-xs bg-indigo-600 text-white px-4 py-1 rounded font-bold">Processar Importação</button>
+                                      <button onClick={handleProcessImport} className="text-xs bg-indigo-600 text-white px-4 py-1 rounded font-bold">Cadastrar todos</button>
                                     </div>
                                 </div>
                             </div>
@@ -442,8 +506,14 @@ export const StructureManager: React.FC = () => {
                             )}
                             
                             <div className="space-y-1">
+                                <div className="flex items-center justify-between pl-2 pr-1">
+                                  <span className="text-[10px] font-bold text-slate-400 uppercase">Chefia / sem equipe</span>
+                                  <div className="flex gap-1">
+                                    <button onClick={() => openQuickList(section.id, { role: TroopRole.CHEFE })} className="text-[10px] font-bold text-indigo-600 hover:bg-indigo-50 px-1.5 py-0.5 rounded">⚡ Lista chefia</button>
+                                    <button onClick={() => openNewMemberModal(section.id)} className="text-[10px] text-slate-500 hover:text-slate-700 px-1.5 py-0.5 rounded">+ um</button>
+                                  </div>
+                                </div>
                                 {members.filter(m => m.sectionId === section.id && !m.patrol && !m.isArchived).map(renderMemberRow)}
-                                <button onClick={() => openNewMemberModal(section.id)} className="text-xs text-slate-400 hover:text-slate-600 flex items-center gap-1 pl-2 mt-1">+ Adicionar Chefe/Membro sem equipe</button>
                             </div>
 
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 mt-2">
@@ -452,12 +522,16 @@ export const StructureManager: React.FC = () => {
                                         <div className="flex justify-between items-center p-2 bg-slate-100 border-b border-slate-200">
                                             <span className="font-bold text-xs text-slate-700 uppercase tracking-wide">{team.name}</span>
                                             <div className="flex gap-1">
-                                                <button onClick={() => openNewMemberModal(section.id, team.name)} className="text-green-600 hover:bg-green-100 rounded px-1 text-xs font-bold">+</button>
+                                                <button onClick={() => openQuickList(section.id, { patrol: team.name, role: TroopRole.JUVENIL })} className="text-indigo-600 hover:bg-indigo-100 rounded px-1 text-[10px] font-bold" title="Lista de nomes na patrulha">⚡</button>
+                                                <button onClick={() => openNewMemberModal(section.id, team.name)} className="text-green-600 hover:bg-green-100 rounded px-1 text-xs font-bold" title="Um membro">+</button>
                                                 <button onClick={() => handleDeleteTeam(section.id, team.id)} className="text-red-300 hover:text-red-500 text-xs px-1">×</button>
                                             </div>
                                         </div>
                                         <div className="p-1">
                                             {members.filter(m => m.sectionId === section.id && m.patrol === team.name && !m.isArchived).map(renderMemberRow)}
+                                            {members.filter(m => m.sectionId === section.id && m.patrol === team.name && !m.isArchived).length === 0 && (
+                                              <p className="text-[10px] text-slate-400 italic px-2 py-1">Vazia — use ⚡ para colar a lista de nomes</p>
+                                            )}
                                         </div>
                                     </div>
                                 ))}
@@ -484,11 +558,12 @@ export const StructureManager: React.FC = () => {
         {isMemberModalOpen && editingMember && (
             <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm animate-fade-in">
                 <div className="bg-white rounded-xl shadow-2xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
-                    <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">{editingMember.name ? '✏️ Editar Membro' : '👤 Novo Membro'}</h3>
+                    <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">{editingMember.name ? '✏️ Editar / completar' : '👤 Novo Membro'}</h3>
                     <form onSubmit={handleSaveMember} className="space-y-4">
+                        <p className="text-[11px] text-slate-500 -mt-2">Só o nome é obrigatório (pode ser o primeiro). O resto completa quando der.</p>
                         <div>
-                            <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Nome Completo</label>
-                            <input required type="text" value={editingMember.name} onChange={e => setEditingMember({...editingMember, name: e.target.value})} className="w-full p-2 border rounded" autoFocus />
+                            <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Nome</label>
+                            <input required type="text" value={editingMember.name} onChange={e => setEditingMember({...editingMember, name: e.target.value})} className="w-full p-2 border rounded" autoFocus placeholder="Ex: João" />
                         </div>
                         <div className="grid grid-cols-2 gap-3">
                             <div>

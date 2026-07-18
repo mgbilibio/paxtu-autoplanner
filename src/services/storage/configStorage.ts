@@ -12,15 +12,26 @@ export const normalizePath = (path: string): string => {
   return normalized;
 };
 
+const DEFAULT_OLLAMA_CONTEXT = 262_144;
+const DEFAULT_OLLAMA_OUTPUT = 12_288;
+
 export const getAppConfig = (): AppConfig | null => {
   const raw = localStorage.getItem(CONFIG_KEY);
   if (!raw) return null;
   try {
     const parsed = JSON.parse(raw) as AppConfig;
+    // Migração suave: configs antigas com 32k/12k sobem para o piso cloud-friendly
+    // só quando o valor está ausente ou claramente no default antigo.
+    let ctx = parsed.ollamaGenerationContext;
+    let out = parsed.ollamaGenerationOutput;
+    if (ctx == null || ctx === 32768 || ctx === 4096) ctx = DEFAULT_OLLAMA_CONTEXT;
+    if (out == null || out === 12000) out = DEFAULT_OLLAMA_OUTPUT;
     return {
       ...parsed,
       dataFolder: normalizePath(parsed.dataFolder || ''),
       ollamaBaseUrl: normalizeOllamaBaseUrl(parsed.ollamaBaseUrl) || 'http://localhost:11434',
+      ollamaGenerationContext: ctx,
+      ollamaGenerationOutput: out,
       syncMode: parsed.syncMode === 'sharedFolder' ? 'sharedFolder' : 'local',
     };
   } catch (e) {

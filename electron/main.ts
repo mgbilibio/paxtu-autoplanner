@@ -364,14 +364,15 @@ ipcMain.handle('ollama:request', async (_, method: string, url: string, body?: s
   if (!isAllowedOllamaRequest(method, url)) {
     return { ok: false, status: 0, body: '', error: 'Requisicao Ollama bloqueada.' };
   }
-  if (body && Buffer.byteLength(body, 'utf8') > 2 * 1024 * 1024) {
+  // 4 MB: prompts multi-parte com manuais + objetivos cabem com folga.
+  if (body && Buffer.byteLength(body, 'utf8') > 4 * 1024 * 1024) {
     return { ok: false, status: 0, body: '', error: 'Corpo da requisicao muito grande.' };
   }
-  // Timeout: usa timeoutMs (ms) quando fornecido e finito, com clamp 500..300000;
-  // fallback de 5min quando ausente. O AbortController honra esse teto.
+  // Timeout: usa timeoutMs (ms) quando fornecido e finito, com clamp 500..900000 (15min);
+  // fallback de 10min quando ausente. Cloud Ollama pode demorar em thinking/rede.
   const teto = (typeof timeoutMs === 'number' && Number.isFinite(timeoutMs))
-    ? Math.min(300000, Math.max(500, timeoutMs))
-    : 5 * 60 * 1000;
+    ? Math.min(900000, Math.max(500, timeoutMs))
+    : 10 * 60 * 1000;
   const ctrl = new AbortController();
   activeOllamaControllers.add(ctrl);
   const timer = setTimeout(() => ctrl.abort(), teto);

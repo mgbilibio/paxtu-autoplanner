@@ -9,8 +9,6 @@ import { GeneratorParams, MeetingPlan, LlmProviderId } from '../types';
 import { getAppConfig } from './storageService';
 import * as gemini from './geminiService';
 import * as ollama from './ollamaService';
-import { extractJson } from './llmJson';
-
 export interface LlmProvider {
   id: LlmProviderId;
   listModels: () => Promise<string[]>;
@@ -58,7 +56,7 @@ export const askLlm = async (question: string, context: string, modelId?: string
   return gemini.askGemini(question, context, modelId);
 };
 
-// Geração de ciclo — Gemini tem implementação nativa; Ollama usa askOllama com prompt JSON.
+// Geração de ciclo — Gemini nativo; Ollama em partes (esqueleto + cada reunião).
 export const generateScoutCycleRouted = async (params: {
   branch: string;
   cycleTheme: string;
@@ -71,30 +69,6 @@ export const generateScoutCycleRouted = async (params: {
   if (config?.llmProvider !== 'ollama') {
     return gemini.generateScoutCycle(params);
   }
-  // Ollama: usa askOllama com instruções para retornar JSON do ciclo
-  const prompt = [
-    `Planeje um CICLO DE PROGRAMA para o Ramo ${params.branch}.`,
-    `TEMA: ${params.cycleTheme}`,
-    `QUANTIDADE DE REUNIÕES: ${params.meetingCount}`,
-    `OBJETIVOS A DISTRIBUIR (não repita o mesmo em mais de 2 reuniões):`,
-    params.objectives.map(o => `- ${o}`).join('\n'),
-    params.customInstruction ? `\nINSTRUÇÃO ESPECIAL: ${params.customInstruction}` : '',
-    '',
-    'Cada reunião deve incluir acompanhamento e avaliação dos jovens pelos jovens e pela chefia.',
-    'Inclua requisitos observáveis e critérios de aceite claros, vinculados ao objetivo da reunião.',
-    '',
-    'Retorne SOMENTE JSON válido neste formato (sem markdown, sem texto adicional):',
-    '{"id":"x","theme":"...","rational":"...","meetings":[{"theme":"...","generalNotes":"...","progressionObjective":"COD","acompanhamento":"...","avaliacaoJovens":"...","avaliacaoChefia":"...","requisitosObservaveis":["..."],"criteriosDeAceite":["..."]}]}',
-  ].filter(Boolean).join('\n');
-  // Extrai JSON robustamente (reusa extractJson) com 1 retry, igual ao generateScoutPlan.
-  let text = await ollama.askOllama(prompt, '', params.modelId);
-  let parsed = extractJson<gemini.MeetingCycle>(text);
-  if (!parsed) {
-    const retry = `${prompt}\n\nATENÇÃO: sua resposta anterior NÃO foi um JSON válido. Reenvie SOMENTE o JSON do ciclo, sem markdown nem texto extra.`;
-    text = await ollama.askOllama(retry, '', params.modelId);
-    parsed = extractJson<gemini.MeetingCycle>(text);
-  }
-  if (!parsed) throw new Error('Ollama não retornou JSON válido para o ciclo.');
-  parsed.id = parsed.id || Date.now().toString();
-  return gemini.normalizeMeetingCycle(parsed as gemini.MeetingCycle);
+  const cycle = await ollama.generateScoutCycle(params);
+  return gemini.normalizeMeetingCycle(cycle as gemini.MeetingCycle);
 };

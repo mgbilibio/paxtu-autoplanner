@@ -81,8 +81,8 @@ function App() {
   // R20: Provider de LLM (Gemini cloud OU Ollama local)
   const [providerInput, setProviderInput] = useState<'gemini' | 'ollama'>('gemini');
   const [ollamaUrlInput, setOllamaUrlInput] = useState<string>('http://localhost:11434');
-  const [ollamaContextInput, setOllamaContextInput] = useState<number>(32768);
-  const [ollamaOutputInput, setOllamaOutputInput] = useState<number>(12000);
+  const [ollamaContextInput, setOllamaContextInput] = useState<number>(262144);
+  const [ollamaOutputInput, setOllamaOutputInput] = useState<number>(12288);
   const [syncModeInput, setSyncModeInput] = useState<'local' | 'sharedFolder'>('local');
   const [ollamaStatus, setOllamaStatus] = useState<{ ok: boolean; error?: string } | null>(null);
   const [testingOllama, setTestingOllama] = useState<boolean>(false);
@@ -150,8 +150,8 @@ function App() {
         setFolderInput(config.dataFolder);
         setProviderInput(config.llmProvider || 'gemini');
         setOllamaUrlInput(config.ollamaBaseUrl || 'http://localhost:11434');
-        setOllamaContextInput(config.ollamaGenerationContext || 32768);
-        setOllamaOutputInput(config.ollamaGenerationOutput || 12000);
+        setOllamaContextInput(config.ollamaGenerationContext || 262144);
+        setOllamaOutputInput(config.ollamaGenerationOutput || 12288);
         setSyncModeInput(config.syncMode || 'local');
     }
   }, []);
@@ -364,8 +364,8 @@ function App() {
     setFolderInput(config.dataFolder);
     setProviderInput(config.llmProvider || 'gemini');
     setOllamaUrlInput(config.ollamaBaseUrl || 'http://localhost:11434');
-    setOllamaContextInput(config.ollamaGenerationContext || 32768);
-    setOllamaOutputInput(config.ollamaGenerationOutput || 12000);
+    setOllamaContextInput(config.ollamaGenerationContext || 262144);
+    setOllamaOutputInput(config.ollamaGenerationOutput || 12288);
     setSyncModeInput(config.syncMode || 'local');
     setView('PROFILE_CONFIG');
   };
@@ -463,16 +463,16 @@ function App() {
       llmProvider: providerInput,
       ollamaBaseUrl: normalizeOllamaBaseUrl(ollamaUrlInput) || 'http://localhost:11434',
       ollamaModel: providerInput === 'ollama' ? selectedModel : appConfig.ollamaModel,
-      ollamaGenerationContext: clampSettingNumber(ollamaContextInput, 32768, 4096, 65536),
-      ollamaGenerationOutput: clampSettingNumber(ollamaOutputInput, 12000, 2048, 24000),
+      ollamaGenerationContext: clampSettingNumber(ollamaContextInput, 262144, 32768, 1048576),
+      ollamaGenerationOutput: clampSettingNumber(ollamaOutputInput, 12288, 2048, 65536),
       syncMode: syncModeInput,
     };
     saveAppConfig(newConfig);
     await ensureWorkspaceMetadata(newConfig, currentUser?.name);
     setAppConfig(newConfig);
     setFolderInput(newConfig.dataFolder);
-    setOllamaContextInput(newConfig.ollamaGenerationContext || 32768);
-    setOllamaOutputInput(newConfig.ollamaGenerationOutput || 12000);
+    setOllamaContextInput(newConfig.ollamaGenerationContext || 262144);
+    setOllamaOutputInput(newConfig.ollamaGenerationOutput || 12288);
     setShowSettings(false);
   };
 
@@ -558,7 +558,7 @@ function App() {
     setError(null);
     setLlmStartedAt(Date.now());
     setLlmProgress(activeProvider === 'ollama'
-      ? 'Preparando prompt e chamando Ollama local...'
+      ? 'Ollama: geração em partes (esqueleto → atividades → guias)…'
       : 'Preparando prompt e chamando Gemini...');
     try {
       const context = currentSection ? { sectionName: currentSection.name, groupName: appConfig?.profile?.groupName || "Grupo Escoteiro" } : undefined;
@@ -753,7 +753,7 @@ function App() {
                         </label>
                         <label className="flex items-center gap-2 cursor-pointer">
                             <input type="radio" name="provider" checked={providerInput === 'ollama'} onChange={() => setProviderInput('ollama')} />
-                            <span className="text-sm">Ollama <span className="text-[10px] text-gray-500">(local, sem internet)</span></span>
+                            <span className="text-sm">Ollama <span className="text-[10px] text-gray-500">(local e/ou :cloud)</span></span>
                         </label>
                     </div>
 
@@ -768,7 +768,7 @@ function App() {
                         <div className="space-y-2">
                             <a href="https://ollama.com/download" target="_blank" rel="noreferrer" className="inline-block bg-emerald-700 text-white px-3 py-1 rounded font-bold text-[11px]">Baixar Ollama</a>
                             <p className="text-[11px] text-gray-600">
-                                Após instalar, abra o terminal e rode <code className="bg-gray-100 px-1">ollama pull llama3.1:8b</code> (ou outro modelo).
+                                Prefira modelos <code className="bg-gray-100 px-1">:cloud</code> (ex: <code className="bg-gray-100 px-1">minimax-m3:cloud</code>) — sem baixar GB. Login: <code className="bg-gray-100 px-1">ollama signin</code>.
                             </p>
                             <div className="flex gap-2">
                                 <input type="text" value={ollamaUrlInput} onChange={(e) => setOllamaUrlInput(e.target.value)} className="flex-1 p-2 border rounded text-sm" placeholder="URL do Ollama" />
@@ -783,7 +783,7 @@ function App() {
                             )}
                             {ollamaStatus?.ok && availableModels.length === 0 && (
                                 <p className="text-[11px] text-amber-700">
-                                    Nenhum modelo encontrado. Rode <code className="bg-gray-100 px-1">ollama pull llama3.1:8b</code> e clique Testar de novo.
+                                    Nenhum modelo. Ex.: <code className="bg-gray-100 px-1">ollama pull minimax-m3:cloud</code> e Testar de novo.
                                 </p>
                             )}
                             {availableModels.length > 0 && (
@@ -793,24 +793,24 @@ function App() {
                             )}
                             <div className="grid grid-cols-2 gap-2 pt-2">
                                 <label className="text-[11px] font-bold text-slate-700">
-                                    Contexto
+                                    Contexto (tokens)
                                     <input
                                         type="number"
-                                        min={4096}
-                                        max={65536}
-                                        step={1024}
+                                        min={32768}
+                                        max={1048576}
+                                        step={32768}
                                         value={ollamaContextInput}
                                         onChange={(e) => setOllamaContextInput(Number(e.target.value))}
                                         className="mt-1 w-full p-2 border rounded text-sm"
                                     />
                                 </label>
                                 <label className="text-[11px] font-bold text-slate-700">
-                                    Saída máxima
+                                    Saída por parte
                                     <input
                                         type="number"
                                         min={2048}
-                                        max={24000}
-                                        step={512}
+                                        max={65536}
+                                        step={1024}
                                         value={ollamaOutputInput}
                                         onChange={(e) => setOllamaOutputInput(Number(e.target.value))}
                                         className="mt-1 w-full p-2 border rounded text-sm"
@@ -818,7 +818,7 @@ function App() {
                                 </label>
                             </div>
                             <p className="text-[11px] text-slate-500">
-                                Padrão: 32768 de contexto e 12000 de saída. Valores maiores podem ficar lentos ou falhar em máquinas com pouca memória.
+                                Padrão: 256k de contexto (até 1M) e ~12k de saída por parte. Com modelos <code className="bg-gray-100 px-1">:cloud</code> o app gera o roteiro em fases (esqueleto → atividades → guias) e agrega o JSON. Cloud força mínimo 256k de contexto.
                             </p>
                         </div>
                     )}

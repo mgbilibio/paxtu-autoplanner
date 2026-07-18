@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { AppConfig, DataSyncMode, LlmProviderId } from '../types';
 import { normalizeOllamaBaseUrl } from '../services/ollamaUrlSecurity';
+import { isCloudModel, sortModelsCloudFirst } from '../services/ollamaService';
 
 interface Props {
   onComplete: (config: AppConfig) => void;
@@ -43,11 +44,14 @@ export const SetupWizard: React.FC<Props> = ({ onComplete }) => {
     const url = `${baseUrl}/api/tags`;
 
     // Prefere IPC do Electron (sem CORS); fallback para fetch direto em browser puro.
+    const pickModels = (raw: any[]): string[] =>
+      sortModelsCloudFirst((raw || []).map((m: any) => m.name as string).filter(Boolean));
+
     if (window.fileSystem?.ollamaRequest) {
       const r = await window.fileSystem.ollamaRequest('GET', url);
       if (r.ok) {
         const data = JSON.parse(r.body);
-        const models = (data?.models || []).map((m: any) => m.name).sort();
+        const models = pickModels(data?.models || []);
         status = { ok: true, models };
         if (models.length > 0) setSelectedOllamaModel(models[0]);
       } else {
@@ -61,7 +65,7 @@ export const SetupWizard: React.FC<Props> = ({ onComplete }) => {
         if (!r.ok) status = { ok: false, error: `HTTP ${r.status}` };
         else {
           const data = await r.json();
-          const models = (data?.models || []).map((m: any) => m.name).sort();
+          const models = pickModels(data?.models || []);
           status = { ok: true, models };
           if (models.length > 0) setSelectedOllamaModel(models[0]);
         }
@@ -93,8 +97,8 @@ export const SetupWizard: React.FC<Props> = ({ onComplete }) => {
       llmProvider: provider,
       ollamaBaseUrl: normalizeOllamaBaseUrl(ollamaUrl) || 'http://localhost:11434',
       ollamaModel: provider === 'ollama' ? selectedOllamaModel : undefined,
-      ollamaGenerationContext: 32768,
-      ollamaGenerationOutput: 12000,
+      ollamaGenerationContext: 262144,
+      ollamaGenerationOutput: 12288,
       syncMode,
       profile: { groupName, sectionName, city, defaultLocation, patrols: [] },
     };
@@ -170,14 +174,14 @@ export const SetupWizard: React.FC<Props> = ({ onComplete }) => {
               {provider === 'ollama' && (
                 <>
                   <div className="bg-emerald-50 border border-emerald-100 rounded-lg p-4 mb-4 text-xs text-emerald-900">
-                    <p className="font-bold mb-2">💻 Setup do Ollama:</p>
+                    <p className="font-bold mb-2">💻 Setup do Ollama (recomendado: cloud):</p>
                     <ol className="list-decimal pl-4 space-y-1">
                       <li>
                         Baixe e instale: {' '}
                         <a href="https://ollama.com/download" target="_blank" rel="noreferrer" className="bg-emerald-700 text-white px-2 py-0.5 rounded font-bold">ollama.com/download</a>
                       </li>
-                      <li>Abra um terminal e rode: <code className="bg-white px-1 border rounded">ollama pull llama3.1:8b</code></li>
-                      <li>Aguarde o download (~5 GB)</li>
+                      <li>Login cloud: <code className="bg-white px-1 border rounded">ollama signin</code></li>
+                      <li>Puxe um modelo cloud (sem GB locais): <code className="bg-white px-1 border rounded">ollama pull minimax-m3:cloud</code></li>
                       <li>Volte aqui e clique <strong>Testar</strong></li>
                     </ol>
                   </div>
@@ -208,7 +212,7 @@ export const SetupWizard: React.FC<Props> = ({ onComplete }) => {
                   )}
                   {ollamaTestStatus?.ok && (ollamaTestStatus.models?.length || 0) === 0 && (
                     <p className="text-xs text-amber-700 mb-3">
-                      Nenhum modelo encontrado. No terminal: <code className="bg-gray-100 px-1">ollama pull llama3.1:8b</code> e clique Testar de novo.
+                      Nenhum modelo. Ex.: <code className="bg-gray-100 px-1">ollama pull minimax-m3:cloud</code> e Testar de novo.
                     </p>
                   )}
                   {ollamaTestStatus?.ok && (ollamaTestStatus.models?.length || 0) > 0 && (
@@ -219,12 +223,21 @@ export const SetupWizard: React.FC<Props> = ({ onComplete }) => {
                         onChange={(e) => setSelectedOllamaModel(e.target.value)}
                         className="w-full p-2 border border-gray-300 rounded-lg bg-white text-sm"
                       >
-                        {ollamaTestStatus.models?.map(m => <option key={m} value={m}>{m}</option>)}
+                        {ollamaTestStatus.models?.map(m => (
+                          <option key={m} value={m}>
+                            {isCloudModel(m) ? `☁ ${m}` : m}
+                          </option>
+                        ))}
                       </select>
                       {errors.ollama && <p role="alert" className="text-xs text-red-600 mt-1">{errors.ollama}</p>}
-                      {/^[^:]+:(1|2|3)b$/i.test(selectedOllamaModel) && (
+                      {isCloudModel(selectedOllamaModel) && (
+                        <p className="text-[11px] text-emerald-800 mt-2 bg-emerald-50 border border-emerald-200 rounded p-2">
+                          Modelo cloud: o app gera o roteiro em partes e usa contexto ≥256k. Requer conta Ollama logada.
+                        </p>
+                      )}
+                      {!isCloudModel(selectedOllamaModel) && /^[^:]+:(0\.5|1|1\.7|2|3)b/i.test(selectedOllamaModel) && (
                         <p className="text-[11px] text-amber-700 mt-2 bg-amber-50 border border-amber-200 rounded p-2">
-                          ⚠️ Modelos com ≤3B parâmetros podem produzir planos pobres ou JSON inválido. Para roteiros ricos, recomenda-se ≥7B (ex: <code>qwen2.5:7b</code>, <code>llama3.1:8b</code>, <code>gemma2:9b</code>).
+                          ⚠️ Modelos locais muito pequenos podem falhar no JSON. Prefira <code>:cloud</code> ou local ≥7B.
                         </p>
                       )}
                     </>
@@ -311,30 +324,31 @@ export const SetupWizard: React.FC<Props> = ({ onComplete }) => {
           {step === 3 && (
             <div className="animate-slide-in">
               <h2 className="text-xl font-bold text-gray-800 mb-4">⚜️ Perfil da Unidade</h2>
-              <p className="text-gray-600 text-sm mb-4">Personalize seus documentos com os dados do seu Grupo Escoteiro.</p>
+              <p className="text-gray-600 text-sm mb-2">Tudo opcional agora — complete depois em Configurações / Estrutura.</p>
+              <p className="text-[11px] text-slate-500 mb-4">Pode pular e já usar o app; cadastre seções e efetivo com lista rápida.</p>
               <div className="space-y-3">
                 <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Nome do Grupo Escoteiro</label>
-                  <input type="text" placeholder="Ex: G.E. Dom Pedro II 01/PR" value={groupName} onChange={e => setGroupName(e.target.value)} className="w-full p-2 border rounded bg-gray-50 focus:bg-white outline-none focus:ring-2 focus:ring-green-500" />
+                  <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Nome do Grupo <span className="font-normal normal-case">(opcional)</span></label>
+                  <input type="text" placeholder="Ex: G.E. Unisselva" value={groupName} onChange={e => setGroupName(e.target.value)} className="w-full p-2 border rounded bg-gray-50 focus:bg-white outline-none focus:ring-2 focus:ring-green-500" />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Nome da Tropa/Seção</label>
+                  <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Seção <span className="font-normal normal-case">(opcional)</span></label>
                   <input type="text" placeholder="Ex: Tropa Titan" value={sectionName} onChange={e => setSectionName(e.target.value)} className="w-full p-2 border rounded bg-gray-50 focus:bg-white outline-none focus:ring-2 focus:ring-green-500" />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Cidade / UF</label>
-                    <input type="text" placeholder="Curitiba - PR" value={city} onChange={e => setCity(e.target.value)} className="w-full p-2 border rounded bg-gray-50 focus:bg-white outline-none focus:ring-2 focus:ring-green-500" />
+                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Cidade</label>
+                    <input type="text" placeholder="Cuiabá - MT" value={city} onChange={e => setCity(e.target.value)} className="w-full p-2 border rounded bg-gray-50 focus:bg-white outline-none focus:ring-2 focus:ring-green-500" />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Local Padrão</label>
-                    <input type="text" placeholder="Sede / Parque" value={defaultLocation} onChange={e => setDefaultLocation(e.target.value)} className="w-full p-2 border rounded bg-gray-50 focus:bg-white outline-none focus:ring-2 focus:ring-green-500" />
+                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Local</label>
+                    <input type="text" placeholder="Sede" value={defaultLocation} onChange={e => setDefaultLocation(e.target.value)} className="w-full p-2 border rounded bg-gray-50 focus:bg-white outline-none focus:ring-2 focus:ring-green-500" />
                   </div>
                 </div>
               </div>
               <div className="mt-8 flex gap-3">
                 <button onClick={() => setStep(2)} className="px-4 py-3 text-gray-500 font-medium hover:text-gray-800">Voltar</button>
-                <button onClick={handleFinish} className="flex-1 py-3 bg-green-600 text-white rounded-lg font-bold hover:bg-green-700 transition-all">Concluir Configuração</button>
+                <button onClick={handleFinish} className="flex-1 py-3 bg-green-600 text-white rounded-lg font-bold hover:bg-green-700 transition-all">Concluir e usar</button>
               </div>
             </div>
           )}

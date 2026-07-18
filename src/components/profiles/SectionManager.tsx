@@ -33,38 +33,59 @@ export const SectionManager: React.FC = () => {
   };
 
   const handleSaveGroup = async () => {
+      const name = (groupName || '').trim() || 'Meu Grupo Escoteiro';
       const newGroup: ScoutGroup = {
           id: group?.id || Date.now().toString(),
-          name: groupName,
-          city: groupCity,
+          name,
+          city: (groupCity || '').trim(),
           sections: group?.sections || []
       };
       await saveGroupAsync(newGroup);
       setGroup(newGroup);
-      setFeedback('Grupo salvo com sucesso.');
+      setGroupName(name);
+      setFeedback('Grupo salvo. Você pode completar cidade e seções quando quiser.');
   };
 
   const handleAddSection = async () => {
-    if (!sectionName) return;
-    
-    const newSection: ScoutSection = {
+    const name = sectionName.trim();
+    if (!name) {
+      setFeedback('Informe um nome curto para a seção (ex: Tropa Titan).');
+      return;
+    }
+
+    // Se ainda não há grupo, cria um mínimo automaticamente.
+    let activeGroup = group;
+    if (!activeGroup) {
+      activeGroup = {
         id: Date.now().toString(),
-        groupId: group?.id, // Link to group
-        name: sectionName,
+        name: (groupName || '').trim() || 'Meu Grupo Escoteiro',
+        city: (groupCity || '').trim(),
+        sections: [],
+      };
+      await saveGroupAsync(activeGroup);
+      setGroup(activeGroup);
+      setGroupName(activeGroup.name);
+    }
+
+    const newSection: ScoutSection = {
+        id: Date.now().toString() + Math.random().toString(36).slice(2, 7),
+        groupId: activeGroup.id,
+        name,
         branch,
         progressionSystem: progression
     };
-    
+
     await saveSectionAsync(newSection);
-    
-    // Update group link
-    if (group) {
-        const updatedGroup = { ...group, sections: [...group.sections, newSection.id] };
-        await saveGroupAsync(updatedGroup);
-        setGroup(updatedGroup);
-    }
+
+    const updatedGroup = {
+      ...activeGroup,
+      sections: [...(activeGroup.sections || []), newSection.id],
+    };
+    await saveGroupAsync(updatedGroup);
+    setGroup(updatedGroup);
 
     setSectionName('');
+    setFeedback(`✓ Seção "${name}" criada. Cadastre o efetivo com lista rápida na Estrutura.`);
     load();
   };
 
@@ -139,6 +160,7 @@ export const SectionManager: React.FC = () => {
                         className="flex-1 p-2 border rounded"
                         value={sectionName}
                         onChange={e => setSectionName(e.target.value)}
+                        onKeyDown={e => e.key === 'Enter' && handleAddSection()}
                     />
                     <select 
                         value={branch} 
@@ -148,6 +170,7 @@ export const SectionManager: React.FC = () => {
                         {Object.values(ScoutBranch).map(b => <option key={b} value={b}>{b}</option>)}
                     </select>
                 </div>
+                <p className="text-[11px] text-gray-500">Só o nome + ramo bastam. Depois use lista rápida de jovens/chefia.</p>
                 
                 {getAppConfig()?.showLegacy ? (
                   <div className="flex gap-4">
