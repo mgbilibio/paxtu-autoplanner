@@ -122,7 +122,8 @@ export interface GroupProfile {
   patrols: string[];
 }
 
-export type LlmProviderId = 'gemini' | 'ollama';
+/** gemini | ollama (alias local) | ollama-local | ollama-cloud | xai-oauth (reservado) */
+export type LlmProviderId = 'gemini' | 'ollama' | 'ollama-local' | 'ollama-cloud' | 'xai-oauth';
 export type DataSyncMode = 'local' | 'sharedFolder';
 
 export interface AppConfig {
@@ -131,13 +132,42 @@ export interface AppConfig {
   isConfigured: boolean;
   profile?: GroupProfile;
   showLegacy?: boolean; // Quando true, expõe controles do POR 2020. Padrão: false (apenas POR 2025+).
-  // Configuração do provider de IA. Padrão: gemini.
+  // Configuração do provider de IA. Padrão: gemini (preferencial).
   llmProvider?: LlmProviderId;
   ollamaBaseUrl?: string; // Default: http://localhost:11434
   ollamaModel?: string;   // Selecionado pelo usuário a partir da lista dinâmica do Ollama.
   ollamaGenerationContext?: number;
   ollamaGenerationOutput?: number;
+  /** Chave ollama.com (perfil Ollama Cloud). */
+  ollamaCloudApiKey?: string;
+  ollamaCloudModel?: string;
+  /** Modelo preferido quando provider = xai-oauth (auth ainda planejada). */
+  xaiOAuthModel?: string;
   syncMode?: DataSyncMode; // local: máquina individual; sharedFolder: Google Drive/OneDrive/Dropbox.
+}
+
+/** Lançamento de progressão ligado a um evento da agenda (presença ≠ crédito editável). */
+export interface ProgressLaunchApply {
+  memberId: string;
+  /** Códigos que foram aplicados de fato neste lançamento (novos). */
+  codesApplied: string[];
+  specialtyIdsStarted?: number[];
+}
+
+export interface ProgressLaunch {
+  id: string;
+  eventId: string;
+  sectionId: string;
+  date: string;
+  planId?: string;
+  planTheme?: string;
+  codes: string[];
+  /** Creditados efetivos (após exclusões). */
+  creditedMemberIds: string[];
+  excludedMemberIds: string[];
+  applies: ProgressLaunchApply[];
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface CatalogAnnotation {

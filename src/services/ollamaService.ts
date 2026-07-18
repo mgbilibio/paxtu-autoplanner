@@ -12,6 +12,7 @@ import { normalizeOllamaBaseUrl } from './ollamaUrlSecurity';
 import { extractJson } from './llmJson';
 
 const DEFAULT_BASE_URL = 'http://localhost:11434';
+const OLLAMA_CLOUD_BASE_URL = 'https://ollama.com';
 const DEFAULT_TIMEOUT_MS = 2000;
 
 /** Contexto padrão: 256k (cloud-friendly). Local ainda pode baixar nas configurações. */
@@ -32,10 +33,36 @@ const OLLAMA_KEEP_ALIVE = '20m';
 const LOCAL_CHAT_TIMEOUT_MS = 8 * 60 * 1000;
 const CLOUD_CHAT_TIMEOUT_MS = 15 * 60 * 1000;
 
+/** Normaliza id de provider (ollama legado = local). */
+export const resolveOllamaMode = (): 'local' | 'cloud' => {
+  const p = getAppConfig()?.llmProvider;
+  if (p === 'ollama-cloud') return 'cloud';
+  return 'local';
+};
+
 const getBaseUrl = (): string => {
+  if (resolveOllamaMode() === 'cloud') return OLLAMA_CLOUD_BASE_URL;
   const config = getAppConfig();
   return normalizeOllamaBaseUrl(config?.ollamaBaseUrl) || DEFAULT_BASE_URL;
 };
+
+const getAuthBearer = (): string | undefined => {
+  if (resolveOllamaMode() !== 'cloud') return undefined;
+  const key = (getAppConfig()?.ollamaCloudApiKey || '').trim();
+  if (!key) return undefined;
+  return key.startsWith('Bearer ') ? key : `Bearer ${key}`;
+};
+
+const resolveOllamaModel = (modelId?: string): string => {
+  if (modelId) return modelId;
+  const config = getAppConfig();
+  if (resolveOllamaMode() === 'cloud') {
+    return config?.ollamaCloudModel || config?.ollamaModel || '';
+  }
+  return config?.ollamaModel || '';
+};
+
+
 
 const clampNumber = (value: unknown, fallback: number, min: number, max: number): number => {
   const numeric = Number(value);
@@ -92,8 +119,12 @@ const getGenerationOutputTokens = (model?: string): number => {
   return raw;
 };
 
-const chatTimeoutFor = (model: string): number =>
-  isCloudModel(model) ? CLOUD_CHAT_TIMEOUT_MS : LOCAL_CHAT_TIMEOUT_MS;
+const chatTimeoutFor = (model: string): number => {
+  if (resolveOllamaMode() === 'cloud') return CLOUD_CHAT_TIMEOUT_MS;
+  return isCloudModel(model) ? CLOUD_CHAT_TIMEOUT_MS : LOCAL_CHAT_TIMEOUT_MS;
+};
+
+const chatTimeoutForMode = (model: string): number => chatTimeoutFor(model);
 
 const fetchWithTimeout = async (url: string, options: RequestInit = {}, timeoutMs = DEFAULT_TIMEOUT_MS): Promise<Response> => {
   const ctrl = new AbortController();
@@ -113,12 +144,16 @@ const httpRequest = async (
   timeoutMs?: number
 ): Promise<{ ok: boolean; status: number; body: string; error?: string }> => {
   const bodyStr = body !== undefined ? JSON.stringify(body) : undefined;
+  const auth = getAuthBearer();
   if (window.fileSystem?.ollamaRequest) {
-    return await window.fileSystem.ollamaRequest(method, url, bodyStr, timeoutMs);
+    return await window.fileSystem.ollamaRequest(method, url, bodyStr, timeoutMs, auth);
   }
+  const headers: Record<string, string> = {};
+  if (bodyStr) headers['Content-Type'] = 'application/json';
+  if (auth) headers['Authorization'] = auth;
   const r = await fetchWithTimeout(url, {
     method,
-    headers: bodyStr ? { 'Content-Type': 'application/json' } : undefined,
+    headers: Object.keys(headers).length ? headers : undefined,
     body: bodyStr,
   }, timeoutMs ?? LOCAL_CHAT_TIMEOUT_MS);
   const text = await r.text();
@@ -130,10 +165,22 @@ export interface OllamaTagsResponse {
 }
 
 export const isReachable = async (): Promise<{ ok: boolean; error?: string }> => {
+  if (resolveOllamaMode() === 'cloud' && !getAuthBearer()) {
+    return { ok: false, error: 'Informe a chave da API Ollama Cloud (ollama.com/settings/keys).' };
+  }
   const url = `${getBaseUrl()}/api/tags`;
-  const r = await httpRequest('GET', url, undefined, 2500);
+  const r = await httpRequest('GET', url, undefined, resolveOllamaMode() === 'cloud' ? 8000 : 2500);
   if (r.ok) return { ok: true };
-  if (r.error === 'timeout') return { ok: false, error: `Timeout — Ollama não está rodando em ${getBaseUrl()}?` };
+  if (r.status === 401) return { ok: false, error: 'Chave Ollama Cloud inválida ou sem permissão (HTTP 401).' };
+  if (r.error === 'timeout') {
+    return {
+      ok: false,
+      error:
+        resolveOllamaMode() === 'cloud'
+          ? 'Timeout ao contatar ollama.com.'
+          : `Timeout — Ollama não está rodando em ${getBaseUrl()}?`,
+    };
+  }
   if (r.error) return { ok: false, error: `Não foi possível conectar: ${r.error}` };
   return { ok: false, error: `Ollama respondeu HTTP ${r.status}` };
 };
@@ -335,7 +382,7 @@ const callOllamaChatOnce = async (
   // format:json ajuda, mas alguns cloud models devolvem content vazio com ele.
   if (useJsonFormat) body.format = 'json';
 
-  const r = await httpRequest('POST', url, body, chatTimeoutFor(opts.model));
+  const r = await httpRequest('POST', url, body, chatTimeoutForMode(opts.model));
   if (!r.ok) {
     throw new Error(
       `Ollama HTTP ${r.status}: ${r.error || r.body.slice(0, 400)}`
@@ -402,7 +449,7 @@ const callOllamaChatForJson = async <T,>(
 
 export const askOllama = async (question: string, context: string, modelId?: string): Promise<string> => {
   const config = getAppConfig();
-  const model = modelId || config?.ollamaModel || '';
+  const model = resolveOllamaModel(modelId);
   if (!model) throw new Error('Nenhum modelo Ollama selecionado.');
   const numCtx = isCloudModel(model)
     ? Math.max(getGenerationContextTokens(model), OLLAMA_HELP_CONTEXT_TOKENS)
@@ -425,7 +472,7 @@ export const askOllama = async (question: string, context: string, modelId?: str
       num_predict: OLLAMA_HELP_OUTPUT_TOKENS,
     },
   };
-  const r = await httpRequest('POST', `${getBaseUrl()}/api/chat`, body, chatTimeoutFor(model));
+  const r = await httpRequest('POST', `${getBaseUrl()}/api/chat`, body, chatTimeoutForMode(model));
   if (!r.ok) throw new Error(`Ollama HTTP ${r.status}: ${r.error || r.body}`);
   const data = parseChatBody(r.body);
   return contentOf(data);
@@ -632,7 +679,7 @@ export const generateScoutCycle = async (params: {
   catalogDigest?: string;
 }): Promise<OllamaMeetingCycle> => {
   const config = getAppConfig();
-  const model = params.modelId || config?.ollamaModel || '';
+  const model = resolveOllamaModel(params.modelId);
   if (!model) throw new Error('Nenhum modelo Ollama selecionado.');
 
   const notifyProgress = (message: string) => {
@@ -756,7 +803,7 @@ export const generateScoutPlan = async (
   params: GeneratorParams & { context?: { sectionName: string; groupName: string } }
 ): Promise<MeetingPlan> => {
   const config = getAppConfig();
-  const model = params.modelId || config?.ollamaModel || '';
+  const model = resolveOllamaModel(params.modelId);
   if (!model) throw new Error('Nenhum modelo Ollama selecionado. Configure em Configurações.');
 
   const reachable = await isReachable();

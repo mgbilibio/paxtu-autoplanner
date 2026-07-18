@@ -101,6 +101,15 @@ export const TELA_HELP: Record<string, ScreenHelp> = {
     corpo: 'Seleciona o perfil que vai usar o app agora.',
     dicas: ['Chefia e assistentes vão ao painel.', 'Diretoria e leitura vão aos relatórios.'],
   },
+  CALENDAR: {
+    titulo: 'Agenda',
+    corpo: 'Datas, presença, lançamento de progressão do roteiro e revisão de crédito (excluir quem não atingiu a avaliação).',
+    dicas: [
+      'Salve a atividade antes de lançar progressão.',
+      'Lançar credita os presentes; use “Revisar crédito” para desmarcar quem não cumpriu.',
+      'Excluir do crédito não remove a presença nem a frequência.',
+    ],
+  },
 };
 
 export const FAQ: HelpFaq[] = [

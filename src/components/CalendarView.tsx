@@ -1,10 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { CalendarEvent, MeetingPlan, ScoutMember, ScoutBranch, ScoutSection } from '../types';
-import { getCalendarEventsAsync, saveCalendarEventAsync, deleteCalendarEventAsync, getCatalogAsync, getMembersAsync, getSectionsAsync, DATA_EVENTS } from '../services/storageService';
+import { CalendarEvent, MeetingPlan, ScoutMember, ScoutBranch, ScoutSection, ProgressLaunch } from '../types';
+import {
+  getCalendarEventsAsync,
+  saveCalendarEventAsync,
+  deleteCalendarEventAsync,
+  getCatalogAsync,
+  getMembersAsync,
+  getSectionsAsync,
+  getProgressLaunchByEventId,
+  DATA_EVENTS,
+} from '../services/storageService';
 import { exportCalendarEventHtml } from '../services/calendarHtmlExport';
 import { emitProcessDone, emitProcessProgress } from '../services/processFeedbackService';
 import { ConfirmDialog } from './ConfirmDialog';
-import { applyProgressionCodes, extractProgressionCodes } from '../services/batchProgressionService';
+import {
+  createAndApplyProgressLaunch,
+  extractProgressionCodes,
+  syncProgressLaunchCredits,
+} from '../services/batchProgressionService';
 
 interface Props {
   sectionId?: string;
@@ -50,6 +63,9 @@ export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin }) =>
   const [attendance, setAttendance] = useState<string[]>([]); // List of member IDs present
   const [targetSectionId, setTargetSectionId] = useState('');
   const [batchApplied, setBatchApplied] = useState(false);
+  const [eventLaunch, setEventLaunch] = useState<ProgressLaunch | null>(null);
+  const [reviewCreditOpen, setReviewCreditOpen] = useState(false);
+  const [reviewCreditedIds, setReviewCreditedIds] = useState<string[]>([]);
   const [feedback, setFeedback] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [confirmAction, setConfirmAction] = useState<ConfirmAction | null>(null);
@@ -100,9 +116,18 @@ export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin }) =>
     setEventNotes(existing.notes || '');
     setAttendance(existing.attendance.filter(a => a.present).map(a => a.memberId));
     setTargetSectionId(existing.sectionId || '');
-    setBatchApplied(false); // Reset feedback
+    setBatchApplied(false);
+    setEventLaunch(null);
+    setReviewCreditOpen(false);
     setError(null);
     setFeedback(null);
+    getProgressLaunchByEventId(existing.id).then(launch => {
+      setEventLaunch(launch);
+      if (launch) {
+        setBatchApplied(true);
+        setReviewCreditedIds([...launch.creditedMemberIds]);
+      }
+    });
   };
 
   // Limpa o formulario para criar uma NOVA atividade no dia ja selecionado, sem
@@ -114,6 +139,8 @@ export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin }) =>
     setAttendance([]);
     if (sectionId) setTargetSectionId(sectionId);
     setBatchApplied(false);
+    setEventLaunch(null);
+    setReviewCreditOpen(false);
     setError(null);
     setFeedback(null);
   };
@@ -228,6 +255,18 @@ export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin }) =>
           setError('Marque a presença primeiro.');
           return;
       }
+      // Precisa de evento salvo para amarrar o lançamento
+      let eventId = selectedEventId;
+      if (!eventId) {
+          setError('Salve a atividade na agenda antes de lançar a progressão (para poder revisar o crédito depois).');
+          return;
+      }
+      if (eventLaunch) {
+          setError('Já existe lançamento para esta atividade. Use “Revisar crédito”.');
+          setReviewCreditOpen(true);
+          setReviewCreditedIds([...eventLaunch.creditedMemberIds]);
+          return;
+      }
 
       const codesToApply = new Set<string>();
       plan.activities.forEach(act => {
@@ -241,30 +280,38 @@ export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin }) =>
           return;
       }
 
+      const finalSectionId = isAdmin ? targetSectionId : sectionId;
+      if (!finalSectionId) {
+          setError('Seção não definida.');
+          return;
+      }
+
       setConfirmAction({
           title: 'Lançar progressão',
-          message: `Aplicar ${codesToApply.size} item(s) para ${attendance.length} jovem(ns)?\n\nItens: ${Array.from(codesToApply).join(', ')}\n\nBlocos serão marcados como realizados. Especialidades oficiais serão registradas como iniciadas para avaliação requisito a requisito.`,
-          confirmText: 'Aplicar',
+          message: `Aplicar ${codesToApply.size} item(s) para ${attendance.length} jovem(ns) presentes?\n\nItens: ${Array.from(codesToApply).join(', ')}\n\nDepois você pode REVISAR e excluir quem não atingiu a avaliação — a presença não muda.`,
+          confirmText: 'Aplicar a todos os presentes',
           onConfirm: async () => {
               try {
                 emitProcessProgress(`Lançando progressão para ${attendance.length} jovem(ns)...`);
-                const attendanceMembers = members.filter(member => attendance.includes(member.id));
-                const results = await Promise.all(attendanceMembers.map(member =>
-                  applyProgressionCodes(
-                    member.id,
-                    member.branch,
-                    Array.from(codesToApply),
-                    selectedDate,
-                    plan.theme,
-                  ),
-                ));
-                const blocks = results.reduce((sum, item) => sum + item.blocos, 0);
-                const specialties = results.reduce((sum, item) => sum + item.especialidadesIniciadas, 0);
+                const launch = await createAndApplyProgressLaunch({
+                  eventId: eventId!,
+                  sectionId: finalSectionId,
+                  date: selectedDate,
+                  planId: plan.id,
+                  planTheme: plan.theme,
+                  codes: Array.from(codesToApply),
+                  memberIds: attendance,
+                  members,
+                });
+                const blocks = launch.applies.reduce((s, a) => s + a.codesApplied.filter(c => /^B\d+\./.test(c)).length, 0);
+                const specialties = launch.applies.reduce((s, a) => s + (a.specialtyIdsStarted?.length || 0), 0);
+                setEventLaunch(launch);
+                setReviewCreditedIds([...launch.creditedMemberIds]);
                 setBatchApplied(true);
-                setFeedback(`Progressão lançada: ${blocks} ação(ões) de bloco e ${specialties} especialidade(s) iniciada(s).`);
+                setFeedback(`Progressão lançada: ${blocks} ação(ões) de bloco e ${specialties} especialidade(s) iniciada(s). Use “Revisar crédito” para excluir quem não atingiu.`);
                 setError(null);
                 setConfirmAction(null);
-                emitProcessDone('Progressão lançada para os presentes.');
+                emitProcessDone('Progressão lançada. Revise o crédito se necessário.');
                 window.dispatchEvent(new Event(DATA_EVENTS.MEMBERS_UPDATED));
               } catch {
                 setConfirmAction(null);
@@ -273,6 +320,22 @@ export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin }) =>
               }
           },
       });
+  };
+
+  const handleSaveCreditReview = async () => {
+    if (!eventLaunch) return;
+    try {
+      emitProcessProgress('Atualizando créditos da atividade...');
+      const updated = await syncProgressLaunchCredits(eventLaunch, reviewCreditedIds, members);
+      setEventLaunch(updated);
+      setReviewCreditOpen(false);
+      setFeedback(`Crédito atualizado: ${updated.creditedMemberIds.length} creditado(s), ${updated.excludedMemberIds.length} excluído(s). Presença inalterada.`);
+      emitProcessDone('Créditos da atividade atualizados.');
+      window.dispatchEvent(new Event(DATA_EVENTS.MEMBERS_UPDATED));
+    } catch {
+      setError('Não foi possível atualizar créditos. A seção pode estar em modo consulta.');
+      emitProcessDone('Falha ao atualizar créditos.');
+    }
   };
 
   const getSectionName = (id?: string) => sections.find(s => s.id === id)?.name || '';
@@ -459,20 +522,36 @@ export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin }) =>
                                 <option key={p.id} value={p.id}>[{p.branch}] {p.theme} ({p.totalDuration} min)</option>
                             ))}
                         </select>
-                        {selectedPlanId && !batchApplied && (
+                        {selectedPlanId && !eventLaunch && (
                             <div className="mt-2">
                                 <button 
                                     onClick={handleBatchProgression}
                                     className="w-full bg-indigo-100 hover:bg-indigo-200 text-indigo-800 py-2 rounded-lg text-xs font-bold flex items-center justify-center gap-2 transition-colors border border-indigo-200"
                                 >
-                                    🚀 Lançar Itens do Roteiro para os Presentes
+                                    🚀 Lançar progressão para os presentes
                                 </button>
-                                <p className="text-[10px] text-slate-400 mt-1 text-center">Atualiza a ficha de quem estiver marcado abaixo.</p>
+                                <p className="text-[10px] text-slate-400 mt-1 text-center">Salve a atividade antes. Depois dá para excluir quem não atingiu a avaliação.</p>
                             </div>
                         )}
-                        {batchApplied && (
-                            <div className="mt-2 p-2 bg-green-100 text-green-800 rounded text-xs font-bold text-center border border-green-200">
-                                ✓ Progressão lançada para a tropa!
+                        {eventLaunch && (
+                            <div className="mt-2 space-y-2">
+                                <div className="p-2 bg-green-100 text-green-800 rounded text-xs font-bold text-center border border-green-200">
+                                    ✓ Lançamento: {eventLaunch.creditedMemberIds.length} creditado(s)
+                                    {eventLaunch.excludedMemberIds.length > 0
+                                      ? ` · ${eventLaunch.excludedMemberIds.length} excluído(s) da avaliação`
+                                      : ''}
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                      setReviewCreditedIds([...eventLaunch.creditedMemberIds]);
+                                      setReviewCreditOpen(true);
+                                    }}
+                                    className="w-full bg-amber-100 hover:bg-amber-200 text-amber-900 py-2 rounded-lg text-xs font-bold border border-amber-200"
+                                >
+                                    ✏️ Revisar crédito (excluir quem não atingiu)
+                                </button>
+                                <p className="text-[10px] text-slate-500 text-center">Presença e frequência não mudam ao excluir do crédito.</p>
                             </div>
                         )}
                     </div>
@@ -547,6 +626,49 @@ export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin }) =>
                     </div>
                 </div>
             </div>
+        </div>
+      )}
+
+      {reviewCreditOpen && eventLaunch && (
+        <div className="fixed inset-0 bg-black/50 z-[70] flex items-center justify-center p-4" onClick={() => setReviewCreditOpen(false)}>
+          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full max-h-[85vh] overflow-hidden flex flex-col" onClick={e => e.stopPropagation()}>
+            <div className="p-4 border-b bg-amber-50">
+              <h3 className="font-bold text-slate-800">Revisar crédito da atividade</h3>
+              <p className="text-xs text-slate-600 mt-1">
+                Desmarque quem <strong>não atingiu</strong> os objetivos de avaliação. A presença no evento permanece.
+              </p>
+              <p className="text-[10px] text-slate-500 mt-1">Itens: {eventLaunch.codes.join(', ')}</p>
+            </div>
+            <div className="p-4 overflow-y-auto flex-1 space-y-2">
+              {members
+                .filter(m =>
+                  eventLaunch.creditedMemberIds.includes(m.id) ||
+                  eventLaunch.excludedMemberIds.includes(m.id) ||
+                  eventLaunch.applies.some(a => a.memberId === m.id)
+                )
+                .map(m => (
+                  <label key={m.id} className={`flex items-center gap-2 p-2 rounded border cursor-pointer ${reviewCreditedIds.includes(m.id) ? 'bg-green-50 border-green-200' : 'bg-slate-50 border-slate-200 opacity-80'}`}>
+                    <input
+                      type="checkbox"
+                      checked={reviewCreditedIds.includes(m.id)}
+                      onChange={e => {
+                        if (e.target.checked) setReviewCreditedIds(ids => [...ids, m.id]);
+                        else setReviewCreditedIds(ids => ids.filter(id => id !== m.id));
+                      }}
+                      className="w-4 h-4"
+                    />
+                    <span className="text-sm font-medium">{m.name}</span>
+                    {!reviewCreditedIds.includes(m.id) && (
+                      <span className="text-[10px] text-amber-700 font-bold ml-auto">sem crédito</span>
+                    )}
+                  </label>
+                ))}
+            </div>
+            <div className="p-3 border-t flex justify-end gap-2 bg-gray-50">
+              <button type="button" onClick={() => setReviewCreditOpen(false)} className="px-3 py-2 text-sm text-slate-600 font-bold">Cancelar</button>
+              <button type="button" onClick={handleSaveCreditReview} className="px-4 py-2 text-sm bg-amber-600 text-white rounded-lg font-bold hover:bg-amber-700">Salvar créditos</button>
+            </div>
+          </div>
         </div>
       )}
     </div>

@@ -53,3 +53,4 @@ Atualizado em 2026-07-09. Este índice descreve somente `PaxtuAP`, o app alvo. D
 - `docs/codeinstructions.html`: regras para manutenção.
 - `docs/versions.html`: histórico por data e hora.
 - `docs/data_pipeline.md`: relação entre fontes, derivados e runtime.
+- `docs/mapa_funcionalidades.html`: mapa de módulos, funções, papéis, dados e grafo de correlação (estilo inventário de produto).

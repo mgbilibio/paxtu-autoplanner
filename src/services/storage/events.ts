@@ -5,6 +5,7 @@ export const DATA_EVENTS = {
   MEMBERS_UPDATED: 'paxtu:members_updated',
   CATALOG_UPDATED: 'paxtu:catalog_updated',
   CALENDAR_UPDATED: 'paxtu:calendar_updated',
+  PROGRESS_LAUNCHES_UPDATED: 'paxtu:progress_launches_updated',
 };
 
 export const dispatchDataEvent = (eventName: string): void => {

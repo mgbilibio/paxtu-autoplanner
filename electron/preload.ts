@@ -9,7 +9,8 @@ contextBridge.exposeInMainWorld('fileSystem', {
   deletePath: (folderPath: string, relativePath: string) => ipcRenderer.invoke('fs:deletePath', folderPath, relativePath),
   openPdfAtPage: (relativePath: string, page: number) => ipcRenderer.invoke('pdf:openAtPage', relativePath, page),
   openGuide: () => ipcRenderer.invoke('guide:open'),
-  ollamaRequest: (method: string, url: string, body?: string, timeoutMs?: number) => ipcRenderer.invoke('ollama:request', method, url, body, timeoutMs),
+  ollamaRequest: (method: string, url: string, body?: string, timeoutMs?: number, authBearer?: string) =>
+    ipcRenderer.invoke('ollama:request', method, url, body, timeoutMs, authBearer),
   cancelOllamaRequests: () => ipcRenderer.invoke('ollama:cancelAll'),
   searchLibrary: (query: string, limit?: number) => ipcRenderer.invoke('library:search', query, limit)
 })

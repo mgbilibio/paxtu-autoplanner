@@ -72,6 +72,13 @@ export {
 } from './storage/calendarStorage';
 
 export {
+  deleteProgressLaunchAsync,
+  getProgressLaunchByEventId,
+  getProgressLaunchesAsync,
+  saveProgressLaunchAsync,
+} from './storage/progressLaunchStorage';
+
+export {
   getMemberProgress,
   getMemberProgressIndividual,
   saveMemberProgressIndividual,

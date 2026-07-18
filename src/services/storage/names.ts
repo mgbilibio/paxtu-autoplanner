@@ -7,6 +7,8 @@ export const USERS_KEY = 'PAXTU_AUTOPLANNER_USERS';
 
 export const MEMBERS_FILENAME = 'paxtu_members.json';
 export const CALENDAR_FILENAME = 'paxtu_calendar.json';
+export const PROGRESS_LAUNCHES_FILENAME = 'paxtu_progress_launches.json';
+export const PROGRESS_LAUNCHES_KEY = 'PAXTU_AUTOPLANNER_PROGRESS_LAUNCHES';
 export const SECTIONS_FILENAME = 'paxtu_sections.json';
 export const USERS_FILENAME = 'paxtu_users.json';
 export const CATALOG_FILENAME = 'paxtu_catalog.json';

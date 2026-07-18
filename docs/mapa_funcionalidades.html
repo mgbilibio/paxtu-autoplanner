@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Paxtu AutoPlanner — Mapa de Funcionalidades</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #1e293b;
+      --panel2: #334155;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --accent: #34d399;
+      --accent2: #60a5fa;
+      --warn: #fbbf24;
+      --danger: #f87171;
+      --border: #475569;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.45;
+    }
+    header {
+      padding: 1.5rem 2rem;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+    header h1 { margin: 0 0 0.35rem; font-size: 1.45rem; }
+    header p { margin: 0; color: var(--muted); font-size: 0.92rem; max-width: 70rem; }
+    nav.tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      padding: 0.75rem 2rem;
+      background: var(--panel);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 19;
+    }
+    nav.tabs button {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.4rem 0.75rem;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+    nav.tabs button.active {
+      background: var(--accent);
+      color: #064e3b;
+      border-color: var(--accent);
+      font-weight: 700;
+    }
+    main { padding: 1.25rem 2rem 3rem; max-width: 1200px; margin: 0 auto; }
+    section.panel { display: none; }
+    section.panel.active { display: block; }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem 1.15rem;
+      margin-bottom: 1rem;
+    }
+    .card h2 { margin: 0 0 0.5rem; font-size: 1.1rem; color: var(--accent); }
+    .card h3 { margin: 1rem 0 0.4rem; font-size: 0.98rem; color: var(--accent2); }
+    .muted { color: var(--muted); font-size: 0.88rem; }
+    .tag {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      margin-right: 0.25rem;
+      margin-bottom: 0.2rem;
+    }
+    .t-p0 { background: #7f1d1d; color: #fecaca; }
+    .t-p1 { background: #78350f; color: #fde68a; }
+    .t-p2 { background: #1e3a5f; color: #bfdbfe; }
+    .t-ok { background: #064e3b; color: #a7f3d0; }
+    .t-gap { background: #4c1d95; color: #ddd6fe; }
+    .t-sens { background: #7c2d12; color: #fed7aa; }
+    .t-ia { background: #312e81; color: #c7d2fe; }
+    .t-web { background: #134e4a; color: #99f6e4; }
+    .t-desk { background: #3f3f46; color: #e4e4e7; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      margin: 0.5rem 0 0.75rem;
+    }
+    th, td {
+      border: 1px solid var(--border);
+      padding: 0.4rem 0.5rem;
+      text-align: left;
+      vertical-align: top;
+    }
+    th { background: var(--panel2); color: #cbd5e1; font-size: 0.75rem; text-transform: uppercase; }
+    tr:nth-child(even) td { background: rgba(15, 23, 42, 0.35); }
+    input#filter {
+      width: 100%;
+      max-width: 28rem;
+      padding: 0.55rem 0.75rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      margin-bottom: 1rem;
+    }
+    .mermaid {
+      background: #0b1220;
+      border-radius: 12px;
+      padding: 1rem;
+      overflow-x: auto;
+    }
+    .matrix td.y { background: #064e3b; color: #a7f3d0; text-align: center; font-weight: 700; }
+    .matrix td.n { background: transparent; color: var(--muted); text-align: center; }
+    .matrix td.r { background: #1e3a5f; color: #bfdbfe; text-align: center; }
+    ul.links { padding-left: 1.2rem; }
+    ul.links a { color: var(--accent2); }
+    .feat-block { border-left: 3px solid var(--accent2); padding-left: 0.75rem; margin: 0.75rem 0; }
+    .feat-block h4 { margin: 0 0 0.25rem; font-size: 0.92rem; }
+    .hidden-by-filter { display: none !important; }
+    footer { padding: 1rem 2rem 2rem; color: var(--muted); font-size: 0.8rem; text-align: center; }
+    code { background: #0b1220; padding: 0.1rem 0.3rem; border-radius: 4px; font-size: 0.85em; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Paxtu AutoPlanner — Mapa de Funcionalidades</h1>
+    <p>
+      Inventário detalhado de módulos, funções, papéis, dados e dependências.
+      Baseado no código atual (Electron + pasta local/compartilhada) e nos docs existentes.
+      Atualizado em 2026-07-18. <strong>Não</strong> é ainda um plano de migração web — é o mapa prévio a decisões de arquitetura e ACL.
+    </p>
+  </header>
+
+  <nav class="tabs" id="tabs">
+    <button type="button" data-tab="intro" class="active">Já existia mapa?</button>
+    <button type="button" data-tab="grafo">Grafo de módulos</button>
+    <button type="button" data-tab="modulos">Módulos e funções</button>
+    <button type="button" data-tab="matriz">Matriz de acesso</button>
+    <button type="button" data-tab="jornadas">Jornadas</button>
+    <button type="button" data-tab="dados">Entidades / storage</button>
+    <button type="button" data-tab="web">Pista web (só classificação)</button>
+    <button type="button" data-tab="docs">Docs correlatos</button>
+  </nav>
+
+  <main>
+    <!-- INTRO -->
+    <section id="intro" class="panel active">
+      <div class="card">
+        <h2>Já temos um mapa “tipo Obsidian”?</h2>
+        <p><strong>Parcialmente — mas não um grafo único de funcionalidades.</strong></p>
+        <p class="muted">O repositório tem vários inventários e índices que <em>correlacionam</em> partes do sistema, em texto/markdown/HTML, sem o estilo de vault Obsidian (links bidirecionais + grafo navegável de notas).</p>
+        <table>
+          <thead>
+            <tr><th>Documento</th><th>O que correlaciona</th><th>Estilo</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>docs/indice_estrutura.md</code></td>
+              <td>Pastas/arquivos ativos do app (UI, dados, storage, conhecimento)</td>
+              <td>Índice de estrutura (mais próximo de um “mapa de código”)</td>
+            </tr>
+            <tr>
+              <td><code>docs/data_pipeline.md</code></td>
+              <td>Fontes oficiais → SQLite → gerados TS/JSON → runtime</td>
+              <td>Pipeline de dados</td>
+            </tr>
+            <tr>
+              <td><code>docs/inventario_progressao_especialidades.md</code></td>
+              <td>Progressão × especialidades × arquivos × telas</td>
+              <td>Inventário temático</td>
+            </tr>
+            <tr>
+              <td><code>docs/arquitetura_granular_progressao.md</code></td>
+              <td>Detalhe de blocos/ações/reconhecimentos</td>
+              <td>Arquitetura de domínio</td>
+            </tr>
+            <tr>
+              <td><code>docs/estrutura_sugerida.md</code></td>
+              <td>Proposta antiga de reorganização de pastas</td>
+              <td>Layout de repo (histórico)</td>
+            </tr>
+            <tr>
+              <td><code>docs/codeinstructions.html</code> / <code>usersmanual.html</code></td>
+              <td>Regras de manutenção e uso</td>
+              <td>Manual, não grafo</td>
+            </tr>
+            <tr>
+              <td><code>docs/design/*.md</code> (2026-07-18)</td>
+              <td>LLM multi-perfil, xAI OAuth, progressão presença/edição, roadmap</td>
+              <td>Design recente (plano)</td>
+            </tr>
+            <tr>
+              <td><code>docs/especificacao_sempre_alerta_gestao.html</code></td>
+              <td>Especificação legada de gestão (menciona web/Supabase como outra linha)</td>
+              <td>Spec paralela / histórica</td>
+            </tr>
+          </tbody>
+        </table>
+        <p><strong>Este HTML</strong> é o primeiro artefato que junta: <em>módulos de produto × funções × papéis × dados × dependências × grafo visual</em> — no espírito de um mapa Obsidian, mas como página única versionada no app.</p>
+      </div>
+    </section>
+
+    <!-- GRAFO -->
+    <section id="grafo" class="panel">
+      <div class="card">
+        <h2>Grafo de módulos (correlação)</h2>
+        <p class="muted">Setas = “usa / alimenta / depende”. Não é deploy web — é o sistema desktop atual + peças de plano.</p>
+        <div class="mermaid">
+flowchart LR
+  subgraph Acesso
+    LOGIN[Login perfis]
+    ESTRUTURA[Estrutura grupo/seção/users]
+    CFG[Config pasta / sync / IA]
+  end
+
+  subgraph Planejamento
+    GERAR[Gerar roteiro IA]
+    CICLO[Ciclo de programa]
+    ROTEIROS[Catálogo de roteiros]
+    CAT[Catálogo progressão/ESP]
+  end
+
+  subgraph Operacao
+    AGENDA[Agenda e presença]
+    EFETIVO[Efetivo]
+    BLOCOS[Blocos 2025+]
+    ESP[Especialidades]
+    LOTE[Marcar progresso em lote]
+  end
+
+  subgraph Inteligencia
+    GEM[Gemini key]
+    OLL[Ollama local]
+    OLC[Ollama Cloud planejado]
+    XAI[xAI OAuth planejado]
+  end
+
+  subgraph Dados
+    STOR[(Storage JSON / pasta)]
+    SQLITE[(SQLite conhecimento)]
+    LOCK[Lock de seção]
+  end
+
+  subgraph Saida
+    REL[Relatórios]
+    EXP[Export HTML / ficha]
+    BIB[Biblioteca PDF FTS]
+  end
+
+  LOGIN --> ESTRUTURA
+  LOGIN --> CFG
+  ESTRUTURA --> EFETIVO
+  ESTRUTURA --> LOGIN
+  CFG --> GEM
+  CFG --> OLL
+  CFG --> OLC
+  CFG --> XAI
+  CFG --> STOR
+
+  CAT --> GERAR
+  CAT --> CICLO
+  GEM --> GERAR
+  OLL --> GERAR
+  OLC -.-> GERAR
+  XAI -.-> GERAR
+  GEM --> CICLO
+  OLL --> CICLO
+  GERAR --> ROTEIROS
+  CICLO --> AGENDA
+  ROTEIROS --> AGENDA
+  ROTEIROS --> GERAR
+
+  AGENDA --> STOR
+  AGENDA -->|lança códigos| BLOCOS
+  AGENDA -->|inicia| ESP
+  EFETIVO --> BLOCOS
+  EFETIVO --> ESP
+  LOTE --> BLOCOS
+  BLOCOS --> STOR
+  ESP --> STOR
+  LOCK --> AGENDA
+  LOCK --> GERAR
+  LOCK --> BLOCOS
+
+  SQLITE --> CAT
+  SQLITE --> BIB
+  EFETIVO --> REL
+  BLOCOS --> REL
+  ESP --> REL
+  AGENDA --> REL
+  REL --> EXP
+  ESP --> EXP
+  BLOCOS --> EXP
+
+  classDef planned stroke-dasharray: 5 5
+  class OLC,XAI planned
+        </div>
+        <p class="muted">Linha tracejada = planejado (docs em <code>docs/design/</code>), ainda não no runtime principal.</p>
+      </div>
+    </section>
+
+    <!-- MODULOS -->
+    <section id="modulos" class="panel">
+      <input type="search" id="filter" placeholder="Filtrar funções (ex: presença, IA, especialidade, lock)…" />
+      <div id="modules-root"></div>
+    </section>
+
+    <!-- MATRIZ -->
+    <section id="matriz" class="panel">
+      <div class="card">
+        <h2>Matriz de acesso (papéis × capacidade)</h2>
+        <p class="muted">Derivado de <code>roleService.ts</code>. <span class="tag t-ok">G</span> grava/opera · <span class="tag t-p2">L</span> só leitura · <span class="tag">—</span> não aplica.</p>
+        <table class="matrix">
+          <thead>
+            <tr>
+              <th>Capacidade / tela</th>
+              <th>Chefe seção</th>
+              <th>Assistente</th>
+              <th>Diretoria</th>
+              <th>Leitura/Audit.</th>
+              <th>Admin</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Configurar estrutura / app</td><td class="y">G</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="y">G</td></tr>
+            <tr><td>Planejar (Gerar, Ciclo, Roteiros)</td><td class="y">G</td><td class="y">G</td><td class="n">—</td><td class="n">—</td><td class="y">G</td></tr>
+            <tr><td>Editar efetivo / jovens</td><td class="y">G</td><td class="y">G</td><td class="n">—</td><td class="n">—</td><td class="y">G</td></tr>
+            <tr><td>Registrar avaliação (blocos/ESP)</td><td class="y">G</td><td class="y">G</td><td class="n">—</td><td class="n">—</td><td class="y">G</td></tr>
+            <tr><td>Homologar (chefe/admin)</td><td class="y">G</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="y">G</td></tr>
+            <tr><td>Agenda / presença</td><td class="y">G</td><td class="y">G*</td><td class="r">L*</td><td class="r">L*</td><td class="y">G</td></tr>
+            <tr><td>Relatórios / export</td><td class="y">G</td><td class="y">G</td><td class="y">L/G export</td><td class="y">L/G export</td><td class="y">G</td></tr>
+            <tr><td>Visão global multi-seção</td><td class="n">—</td><td class="n">—</td><td class="y">sim</td><td class="n">—</td><td class="y">sim</td></tr>
+            <tr><td>Modo somente leitura (isReadOnly)</td><td class="n">—</td><td class="n">—</td><td class="y">sim</td><td class="y">sim</td><td class="n">—</td></tr>
+            <tr><td>Lock de seção (edição exclusiva)</td><td class="y">assume/cede</td><td class="y">respeita</td><td class="r">consulta</td><td class="r">consulta</td><td class="y">global</td></tr>
+          </tbody>
+        </table>
+        <p class="muted">* Agenda: UI disponível a quem navega; gravação sujeita a <code>canWriteSection</code> / lock. Diretoria entra tipicamente em Relatórios (<code>isOperationalProfile</code> falso).</p>
+      </div>
+    </section>
+
+    <!-- JORNADAS -->
+    <section id="jornadas" class="panel">
+      <div class="card">
+        <h2>Jornadas operacionais (como as funções se encadeiam)</h2>
+        <h3>J1 — Preparar e realizar reunião</h3>
+        <ol class="muted">
+          <li>Estrutura: grupo/seção/usuários</li>
+          <li>Efetivo: jovens na seção/patrulha</li>
+          <li>Gerar roteiro (IA) ou reutilizar Roteiros salvos</li>
+          <li>Agenda: data + vincular plano + presença</li>
+          <li>Lançar progressão (hoje: todos presentes)</li>
+          <li><em>Planejado:</em> revisar crédito e excluir quem não atingiu avaliação</li>
+          <li>Blocos / Especialidades: completar o que o lote não fecha</li>
+          <li>Relatórios: acompanhar seção</li>
+        </ol>
+        <h3>J2 — Ciclo de programa</h3>
+        <ol class="muted">
+          <li>Ciclo: tema (+ seleção ou auto_link)</li>
+          <li>Editar esqueleto de semanas</li>
+          <li>Agendar reuniões na Agenda</li>
+          <li>Segue J1 por data</li>
+        </ol>
+        <h3>J3 — Especialidade individual</h3>
+        <ol class="muted">
+          <li>Efetivo → ficha do jovem ou menu POR 2025 → Especialidades</li>
+          <li>Requisitos, evidências, avaliação, nível</li>
+          <li>Export/import ficha offline</li>
+        </ol>
+        <h3>J4 — Trabalho em pasta compartilhada</h3>
+        <ol class="muted">
+          <li>Config: syncMode sharedFolder + pasta</li>
+          <li>Assumir lock da seção</li>
+          <li>Editar; outros em modo consulta</li>
+          <li>Ceder lock / renovar</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- DADOS -->
+    <section id="dados" class="panel">
+      <div class="card">
+        <h2>Entidades e storage (visão)</h2>
+        <table>
+          <thead><tr><th>Entidade</th><th>Onde (conceito)</th><th>Usado por</th></tr></thead>
+          <tbody>
+            <tr><td>AppConfig</td><td>localStorage + pasta dados</td><td>Setup, Config, providers IA</td></tr>
+            <tr><td>UserProfile</td><td>storage users</td><td>Login, permissões</td></tr>
+            <tr><td>ScoutGroup / ScoutSection / teams</td><td>storage group/section</td><td>Estrutura, escopo</td></tr>
+            <tr><td>ScoutMember</td><td>storage members</td><td>Efetivo, agenda, progressão</td></tr>
+            <tr><td>MeetingPlan</td><td>storage plans/catalog</td><td>Gerar, Roteiros, Agenda</td></tr>
+            <tr><td>CalendarEvent + attendance</td><td>storage calendar</td><td>Agenda, frequência</td></tr>
+            <tr><td>MemberBlocoState</td><td>blocoProgressStorage</td><td>Blocos, lote, lançamento</td></tr>
+            <tr><td>MemberSpecialtyState</td><td>specialtyStateStorage</td><td>Especialidades</td></tr>
+            <tr><td>MemberProgress (legado)</td><td>legacy progress</td><td>POR 2020, relatórios</td></tr>
+            <tr><td>EditLock</td><td>sectionLockStorage</td><td>Multi-chefe pasta compartilhada</td></tr>
+            <tr><td>ProgressLaunch <em>(planejado)</em></td><td>design progressão</td><td>Revisão de crédito pós-presença</td></tr>
+            <tr><td>Catálogo B# / ESP-GUIA</td><td>data/generated + sqlite</td><td>Gerador, ciclo, trackers</td></tr>
+            <tr><td>Biblioteca FTS</td><td>biblioteca_fts.sqlite + electron</td><td>Busca em manuais PDF</td></tr>
+          </tbody>
+        </table>
+        <p class="muted">Fachada: <code>storageService.ts</code> + módulos em <code>src/services/storage/</code>. Dual backend: local vs pasta compartilhada.</p>
+      </div>
+    </section>
+
+    <!-- WEB -->
+    <section id="web" class="panel">
+      <div class="card">
+        <h2>Classificação preliminar “e se for web?”</h2>
+        <p class="muted">Apenas classificação para futura decisão — <strong>não</strong> está no roadmap de implementação atual como eixo de build.</p>
+        <table>
+          <thead><tr><th>Área</th><th>Web?</th><th>Nota de capacidade de acesso</th></tr></thead>
+          <tbody>
+            <tr><td>Login / perfis / papéis</td><td><span class="tag t-web">essencial</span></td><td>Vira auth real (senha/OAuth IdP) + ACL por seção/grupo</td></tr>
+            <tr><td>Estrutura grupo/seção</td><td><span class="tag t-web">essencial</span></td><td>Multi-tenant leve (grupo → seções)</td></tr>
+            <tr><td>Efetivo</td><td><span class="tag t-web">essencial</span></td><td>Dados de menores → LGPD / região</td></tr>
+            <tr><td>Agenda + presença</td><td><span class="tag t-web">essencial</span></td><td>Conflito de edição (lock ou CRDT/version)</td></tr>
+            <tr><td>Lançar / revisar progressão</td><td><span class="tag t-web">essencial</span></td><td>Homologação auditável; quem pode excluir crédito</td></tr>
+            <tr><td>Blocos / Especialidades</td><td><span class="tag t-web">essencial</span></td><td>Gravação por papel (canHomologate)</td></tr>
+            <tr><td>Gerar / Ciclo IA</td><td><span class="tag t-web">híbrido</span></td><td>Gemini/Ollama Cloud/xAI no server ou browser; Ollama local só na máquina do usuário</td></tr>
+            <tr><td>Ollama local :11434</td><td><span class="tag t-desk">desktop/híbrido</span></td><td>Browser não fala com localhost de terceiros com a mesma facilidade</td></tr>
+            <tr><td>Biblioteca PDF FTS local</td><td><span class="tag t-desk">híbrido</span></td><td>Storage de objetos + busca server-side</td></tr>
+            <tr><td>Pasta compartilhada Drive</td><td><span class="tag t-desk">legado desktop</span></td><td>Web substitui por DB + auth</td></tr>
+            <tr><td>Export HTML / impressão</td><td><span class="tag t-web">fácil</span></td><td>Client-side ok</td></tr>
+          </tbody>
+        </table>
+        <p><strong>Conclusão alinhada à discussão:</strong> web + nuvem + senha exige mapa de funções (este doc) <em>e</em> matriz de acesso por dado — mudança de arquitetura, não só hospedagem do front.</p>
+      </div>
+    </section>
+
+    <!-- DOCS -->
+    <section id="docs" class="panel">
+      <div class="card">
+        <h2>Documentos correlatos no repositório</h2>
+        <ul class="links">
+          <li><a href="./indice_estrutura.md">indice_estrutura.md</a> — mapa de pastas/código</li>
+          <li><a href="./data_pipeline.md">data_pipeline.md</a> — pipeline fontes → runtime</li>
+          <li><a href="./inventario_progressao_especialidades.md">inventario_progressao_especialidades.md</a></li>
+          <li><a href="./arquitetura_granular_progressao.md">arquitetura_granular_progressao.md</a></li>
+          <li><a href="./design/2026-07-18-roadmap-paxtu.md">design/roadmap</a></li>
+          <li><a href="./design/2026-07-18-llm-provider-profiles.md">design/perfis LLM + adapters</a></li>
+          <li><a href="./design/2026-07-18-xai-oauth-provider.md">design/xAI OAuth</a></li>
+          <li><a href="./design/2026-07-18-progressao-presenca-edicao.md">design/progressão presença + edição</a></li>
+          <li><a href="./usersmanual.html">usersmanual.html</a> · <a href="./codeinstructions.html">codeinstructions.html</a></li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Paxtu AutoPlanner · Mapa de funcionalidades · arquivo local <code>docs/mapa_funcionalidades.html</code>
+  </footer>
+
+  <script>
+    mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+
+    const MODULES = [
+      {
+        id: 'acesso',
+        title: 'Acesso, sessão e configuração',
+        files: 'LoginScreen, SetupWizard, App settings, roleService, configStorage',
+        feats: [
+          {
+            name: 'Setup inicial (provedor IA, pasta, sync, perfil grupo)',
+            who: 'Quem instala (depois Admin/Chefe)',
+            data: 'AppConfig, profile',
+            sens: 'média (paths, keys)',
+            offline: 'sim (local)',
+            multi: 'N/A',
+            deps: 'Gemini key / Ollama / (planejado cloud e xAI)',
+            prio: 'P0',
+            status: 'ok',
+            web: 'essencial com auth real',
+          },
+          {
+            name: 'Login por perfil de usuário (sem senha criptográfica)',
+            who: 'Todos os papéis',
+            data: 'UserProfile, sectionId',
+            sens: 'baixa–média',
+            offline: 'sim',
+            multi: 'escolha de perfil na máquina',
+            deps: '—',
+            prio: 'P0',
+            status: 'ok',
+            web: 'substituir por login/senha ou IdP',
+          },
+          {
+            name: 'Permissões por papel',
+            who: 'sistema',
+            data: 'RolePermissions',
+            sens: '—',
+            offline: 'sim',
+            multi: 'define ACL fraca',
+            deps: 'roleService',
+            prio: 'P0',
+            status: 'ok',
+            web: 'base da matriz de acesso',
+          },
+          {
+            name: 'Configurações: pasta, sync, contexto Ollama, backup import/export',
+            who: 'Admin/Chefe',
+            data: 'AppConfig, backups',
+            sens: 'alta se backup completo',
+            offline: 'sim',
+            multi: 'sharedFolder',
+            deps: 'storage dual backend',
+            prio: 'P0',
+            status: 'ok',
+            web: 'vira project settings + secrets vault',
+          },
+        ],
+      },
+      {
+        id: 'estrutura',
+        title: 'Estrutura organizacional',
+        files: 'StructureManager, SectionManager, UserManager, ProfileConfig',
+        feats: [
+          {
+            name: 'CRUD grupo e seções (ramo, POR 2025/legado)',
+            who: 'Admin, Chefe',
+            data: 'ScoutGroup, ScoutSection',
+            sens: 'baixa',
+            offline: 'sim',
+            multi: 'sharedFolder + lock',
+            deps: '—',
+            prio: 'P0',
+            status: 'ok',
+            web: 'essencial multi-tenant',
+          },
+          {
+            name: 'Equipes / patrulhas / matilhas',
+            who: 'Admin, Chefe',
+            data: 'ScoutTeam, member.patrol',
+            sens: 'baixa',
+            offline: 'sim',
+            multi: 'sim',
+            deps: '—',
+            prio: 'P0',
+            status: 'ok',
+            web: 'essencial',
+          },
+          {
+            name: 'Usuários de login (chefia) + lista rápida',
+            who: 'Admin, Chefe',
+            data: 'UserProfile',
+            sens: 'média',
+            offline: 'sim',
+            multi: 'sim',
+            deps: '—',
+            prio: 'P0',
+            status: 'ok',
+            web: 'vincula a contas auth',
+          },
+          {
+            name: 'Cadastro rápido de membros / bulk nomes / badge incompleto',
+            who: 'Admin, Chefe, Assistente',
+            data: 'ScoutMember',
+            sens: 'alta (menores)',
+            offline: 'sim',
+            multi: 'sim',
+            deps: '—',
+            prio: 'P0',
+            status: 'ok',
+            web: 'essencial + LGPD',
+          },
+        ],
+      },
+      {
+        id: 'efetivo',
+        title: 'Efetivo e ficha do jovem',
+        files: 'MembersManager, MemberDashboard, ProgressionMap, BlocoTracker (via ficha)',
+        feats: [
+          {
+            name: 'Listar / editar / mover / arquivar membros',
+            who: 'Chefe, Assistente, Admin',
+            data: 'ScoutMember, enrollments',
+            sens: 'alta',
+            offline: 'sim',
+            multi: 'lock seção',
+            deps: '—',
+            prio: 'P0',
+            status: 'ok',
+            web: 'essencial',
+          },
+          {
+            name: 'Ficha consolidada / histórico / impressão',
+            who: 'operacional + relatórios',
+            data: 'blocos, legado, especialidades',
+            sens: 'alta',
+            offline: 'sim',
+            multi: 'leitura ok',
+            deps: 'reportingService',
+            prio: 'P0',
+            status: 'ok',
+            web: 'essencial',
+          },
+        ],
+      },
+      {
+        id: 'planejamento',
+        title: 'Planejamento de atividades (IA + catálogo)',
+        files: 'App GENERATOR, CyclePlanner, Catalog, PlanDisplay, llmProvider, gemini/ollama',
+        feats: [
+          {
+            name: 'Selecionar ramo e catálogo POR 2025 / legado',
+            who: 'Chefe, Assistente',
+            data: 'catálogo B# / ESP',
+            sens: 'baixa',
+            offline: 'sim (dados embutidos)',
+            multi: '—',
+            deps: 'data/generated, sqlite origem',
+            prio: 'P0',
+            status: 'ok',
+            web: 'essencial',
+          },
+          {
+            name: 'Modo from_selection — objetivos marcados',
+            who: 'Chefe, Assistente',
+            data: 'ObjectiveItem[], MeetingPlan',
+            sens: 'baixa',
+            offline: 'com Ollama local; senão rede',
+            multi: 'lock se gera/grava',
+            deps: 'IA',
+            prio: 'P0',
+            status: 'ok',
+            web: 'híbrido (provider cloud)',
+          },
+          {
+            name: 'Modo auto_link — tema livre + digest catálogo',
+            who: 'Chefe, Assistente',
+            data: 'catalogDigest, MeetingPlan',
+            sens: 'baixa–média (prompt sai)',
+            offline: 'só se LLM local',
+            multi: '—',
+            deps: 'IA + contexto grande',
+            prio: 'P0',
+            status: 'ok',
+            web: 'híbrido',
+          },
+          {
+            name: 'Geração multiphase (esqueleto → atividades → guias)',
+            who: 'sistema',
+            data: 'MeetingPlan',
+            sens: 'média',
+            offline: 'depende provider',
+            multi: '—',
+            deps: 'adapters por provedor (payloads diferentes)',
+            prio: 'P0',
+            status: 'ok',
+            web: 'server ou client + secrets',
+          },
+          {
+            name: 'Ciclo de programa + agendar na agenda',
+            who: 'Chefe, Assistente',
+            data: 'MeetingCycle, CalendarEvent',
+            sens: 'baixa',
+            offline: 'parcial',
+            multi: 'lock',
+            deps: 'IA + calendar storage',
+            prio: 'P0',
+            status: 'ok',
+            web: 'essencial',
+          },
+          {
+            name: 'Catálogo de roteiros salvos / reabrir no gerador',
+            who: 'Chefe, Assistente',
+            data: 'MeetingPlan store',
+            sens: 'baixa',
+            offline: 'sim',
+            multi: 'shared folder',
+            deps: '—',
+            prio: 'P1',
+            status: 'ok',
+            web: 'essencial',
+          },
+          {
+            name: 'Horário operacional (IBOA, intervalos, encerramento)',
+            who: 'Chefe, Assistente',
+            data: 'MeetingPlan activities',
+            sens: 'baixa',
+            offline: 'sim',
+            multi: '—',
+            deps: 'meetingScheduleService',
+            prio: 'P1',
+            status: 'ok',
+            web: 'fácil',
+          },
+          {
+            name: 'Export HTML do plano / agenda / ciclo',
+            who: 'todos com canExport',
+            data: 'HTML file',
+            sens: 'média se nomes',
+            offline: 'sim',
+            multi: '—',
+            deps: '—',
+            prio: 'P1',
+            status: 'ok',
+            web: 'fácil',
+          },
+        ],
+      },
+      {
+        id: 'agenda',
+        title: 'Agenda, presença e lançamento de progressão',
+        files: 'CalendarView, batchProgressionService',
+        feats: [
+          {
+            name: 'CRUD eventos por data, multi-eventos no dia',
+            who: 'operacional',
+            data: 'CalendarEvent',
+            sens: 'média',
+            offline: 'sim',
+            multi: 'lock',
+            deps: '—',
+            prio: 'P0',
+            status: 'ok',
+            web: 'essencial',
+          },
+          {
+            name: 'Presença por jovem no evento',
+            who: 'operacional',
+            data: 'AttendanceRecord',
+            sens: 'alta',
+            offline: 'sim',
+            multi: 'lock',
+            deps: 'membros seção',
+            prio: 'P0',
+            status: 'ok',
+            web: 'essencial',
+          },
+          {
+            name: 'Vincular roteiro e lançar códigos para presentes',
+            who: 'operacional',
+            data: 'blocos + especialidades iniciadas',
+            sens: 'alta',
+            offline: 'sim',
+            multi: 'lock',
+            deps: 'plan.progressionObjective, applyProgressionCodes',
+            prio: 'P0',
+            status: 'ok',
+            web: 'essencial',
+          },
+          {
+            name: 'Revisar crédito / excluir quem não atingiu avaliação',
+            who: 'Chefe (homologa), Assistente?',
+            data: 'ProgressLaunch (planejado)',
+            sens: 'alta',
+            offline: 'sim',
+            multi: 'lock + audit',
+            deps: 'design progressao-presenca-edicao',
+            prio: 'P0',
+            status: 'gap',
+            web: 'essencial (ACL quem pode excluir)',
+          },
+        ],
+      },
+      {
+        id: 'progressao',
+        title: 'Progressão 2025+ e legado',
+        files: 'ProgressaoBlocos2025, BlocoTracker, BatchProgressMarker, awardService legado',
+        feats: [
+          {
+            name: 'Tracker 18 blocos: fixas, variáveis, substituição, conclusão',
+            who: 'Chefe, Assistente; homologação Chefe/Admin',
+            data: 'MemberBlocoState',
+            sens: 'alta',
+            offline: 'sim',
+            multi: 'lock',
+            deps: 'progressao_2025 generated',
+            prio: 'P0',
+            status: 'ok',
+            web: 'essencial',
+          },
+          {
+            name: 'Reconhecimentos de ramo (idade-limite, etc.)',
+            who: 'Chefe, Admin',
+            data: 'reconhecimento state',
+            sens: 'alta',
+            offline: 'sim',
+            multi: '—',
+            deps: 'birthDate opcional mas incompleto',
+            prio: 'P0',
+            status: 'ok',
+            web: 'essencial',
+          },
+          {
+            name: 'Marcar mesma ação para vários membros (lote)',
+            who: 'operacional',
+            data: 'MemberBlocoState',
+            sens: 'alta',
+            offline: 'sim',
+            multi: 'lock',
+            deps: 'BatchProgressMarker',
+            prio: 'P1',
+            status: 'ok',
+            web: 'essencial',
+          },
+          {
+            name: 'Legado POR 2020 (quando showLegacy)',
+            who: 'operacional',
+            data: 'MemberProgress achievements',
+            sens: 'média',
+            offline: 'sim',
+            multi: '—',
+            deps: 'catalog legacy',
+            prio: 'P2',
+            status: 'ok',
+            web: 'opcional',
+          },
+        ],
+      },
+      {
+        id: 'especialidades',
+        title: 'Especialidades',
+        files: 'SpecialtyEncyclopedia, specialtyStateStorage, ficha import/export',
+        feats: [
+          {
+            name: 'Catálogo Guia 18ª ed. + requisitos por nível',
+            who: 'operacional',
+            data: 'ESP-GUIA-*, generated',
+            sens: 'baixa',
+            offline: 'sim',
+            multi: '—',
+            deps: 'sqlite guia',
+            prio: 'P0',
+            status: 'ok',
+            web: 'essencial',
+          },
+          {
+            name: 'Estado por jovem: requisitos, evidências, avaliador',
+            who: 'Chefe, Assistente',
+            data: 'MemberSpecialtyState',
+            sens: 'alta',
+            offline: 'sim',
+            multi: 'lock',
+            deps: '—',
+            prio: 'P0',
+            status: 'ok',
+            web: 'essencial',
+          },
+          {
+            name: 'Export/import ficha offline',
+            who: 'operacional',
+            data: 'JSON ficha',
+            sens: 'alta',
+            offline: 'sim',
+            multi: '—',
+            deps: '—',
+            prio: 'P1',
+            status: 'ok',
+            web: 'útil',
+          },
+        ],
+      },
+      {
+        id: 'relatorios',
+        title: 'Relatórios e visão da seção',
+        files: 'ReportsDashboard, TroopMatrix, TroopStats, IndividualReport/Sheet, SectionProgressOverview',
+        feats: [
+          {
+            name: 'Dashboard executivo (frequência, progresso, alertas)',
+            who: 'todos (Diretoria foca aqui)',
+            data: 'agregados',
+            sens: 'alta',
+            offline: 'sim',
+            multi: 'leitura',
+            deps: 'reportingService',
+            prio: 'P0',
+            status: 'ok',
+            web: 'essencial',
+          },
+          {
+            name: 'Matriz da tropa / ficha individual / stats',
+            who: 'operacional + diretoria',
+            data: 'homologados + presença',
+            sens: 'alta',
+            offline: 'sim',
+            multi: 'leitura',
+            deps: '—',
+            prio: 'P0',
+            status: 'ok',
+            web: 'essencial',
+          },
+          {
+            name: 'Frequência a partir de attendance (não de crédito de progressão)',
+            who: 'sistema',
+            data: 'CalendarEvent.attendance',
+            sens: 'alta',
+            offline: 'sim',
+            multi: '—',
+            deps: '—',
+            prio: 'P0',
+            status: 'ok',
+            web: 'essencial',
+          },
+        ],
+      },
+      {
+        id: 'biblioteca',
+        title: 'Biblioteca e busca',
+        files: 'BibliotecaView, electron FTS, pdfLinkService',
+        feats: [
+          {
+            name: 'Busca full-text em manuais PDF (FTS5)',
+            who: 'operacional',
+            data: 'biblioteca_fts.sqlite',
+            sens: 'baixa',
+            offline: 'sim (Electron)',
+            multi: '—',
+            deps: 'electron main',
+            prio: 'P1',
+            status: 'ok',
+            web: 'storage + search server',
+          },
+          {
+            name: 'Abrir PDF em página',
+            who: 'operacional',
+            data: 'docs/biblioteca',
+            sens: 'baixa',
+            offline: 'sim',
+            multi: '—',
+            deps: 'electron PDF window',
+            prio: 'P1',
+            status: 'ok',
+            web: 'object storage',
+          },
+        ],
+      },
+      {
+        id: 'infra',
+        title: 'Infra de dados e concorrência',
+        files: 'storage/*, dualBackend, writeQueue, sectionLock',
+        feats: [
+          {
+            name: 'Persistência dual: local vs pasta compartilhada',
+            who: 'sistema',
+            data: 'todos JSON de runtime',
+            sens: 'alta',
+            offline: 'local sim; shared depende sync',
+            multi: 'sim',
+            deps: '—',
+            prio: 'P0',
+            status: 'ok',
+            web: 'substituído por DB',
+          },
+          {
+            name: 'Lock de edição de seção (assumir / ceder / renovar)',
+            who: 'operacional',
+            data: 'EditLock',
+            sens: 'média',
+            offline: 'shared folder',
+            multi: 'núcleo',
+            deps: '—',
+            prio: 'P0',
+            status: 'ok',
+            web: 'lock server ou OT',
+          },
+          {
+            name: 'Fila de escrita / eventos DATA_EVENTS',
+            who: 'sistema',
+            data: '—',
+            sens: '—',
+            offline: 'sim',
+            multi: 'coerência UI',
+            deps: '—',
+            prio: 'P1',
+            status: 'ok',
+            web: 'realtime opcional',
+          },
+        ],
+      },
+      {
+        id: 'ia-planejado',
+        title: 'IA — provedores planejados (design)',
+        files: 'docs/design/*llm*, *xai*',
+        feats: [
+          {
+            name: 'Ollama Cloud direto (API key ollama.com)',
+            who: 'config',
+            data: 'prompts / plans',
+            sens: 'média (sai da máquina)',
+            offline: 'não',
+            multi: '—',
+            deps: 'adapter payload Ollama + Bearer',
+            prio: 'P1',
+            status: 'gap',
+            web: 'natural',
+          },
+          {
+            name: 'xAI Grok OAuth (SuperGrok / X Premium+)',
+            who: 'config máquina',
+            data: 'prompts / plans',
+            sens: 'média',
+            offline: 'não',
+            multi: '1 token/máquina',
+            deps: 'adapter xAI (payload próprio)',
+            prio: 'P2',
+            status: 'gap',
+            web: 'natural',
+          },
+          {
+            name: 'LlmTransportAdapter (contratos por provedor)',
+            who: 'engenharia',
+            data: '—',
+            sens: '—',
+            offline: '—',
+            multi: '—',
+            deps: 'evita misturar payloads',
+            prio: 'P0',
+            status: 'gap',
+            web: 'obrigatório',
+          },
+        ],
+      },
+    ];
+
+    function tags(f) {
+      const bits = [];
+      bits.push(`<span class="tag t-${f.prio.toLowerCase()}">${f.prio}</span>`);
+      if (f.status === 'ok') bits.push('<span class="tag t-ok">implementado</span>');
+      if (f.status === 'gap') bits.push('<span class="tag t-gap">gap / plano</span>');
+      if (f.sens && f.sens.includes('alta')) bits.push('<span class="tag t-sens">dados sensíveis</span>');
+      if (f.deps && f.deps.toLowerCase().includes('ia')) bits.push('<span class="tag t-ia">IA</span>');
+      if (f.web && f.web.includes('essencial')) bits.push('<span class="tag t-web">web:essencial</span>');
+      if (f.web && f.web.includes('desktop')) bits.push('<span class="tag t-desk">desktop</span>');
+      return bits.join(' ');
+    }
+
+    function renderModules(filter = '') {
+      const q = filter.trim().toLowerCase();
+      const root = document.getElementById('modules-root');
+      root.innerHTML = MODULES.map(mod => {
+        const feats = mod.feats.filter(f => {
+          if (!q) return true;
+          const blob = [mod.title, mod.files, f.name, f.who, f.data, f.deps, f.web, f.status].join(' ').toLowerCase();
+          return blob.includes(q);
+        });
+        if (!feats.length) return '';
+        return `
+          <div class="card mod-card" data-mod="${mod.id}">
+            <h2>${mod.title}</h2>
+            <p class="muted">Código / peças: <code>${mod.files}</code></p>
+            ${feats.map(f => `
+              <div class="feat-block">
+                <h4>${f.name}</h4>
+                <div>${tags(f)}</div>
+                <table>
+                  <tr><th style="width:9rem">Quem</th><td>${f.who}</td></tr>
+                  <tr><th>Dados</th><td>${f.data}</td></tr>
+                  <tr><th>Sensibilidade</th><td>${f.sens}</td></tr>
+                  <tr><th>Offline</th><td>${f.offline}</td></tr>
+                  <tr><th>Multi-usuário</th><td>${f.multi}</td></tr>
+                  <tr><th>Dependências</th><td>${f.deps}</td></tr>
+                  <tr><th>Pista web</th><td>${f.web}</td></tr>
+                </table>
+              </div>
+            `).join('')}
+          </div>`;
+      }).join('') || '<div class="card"><p class="muted">Nenhuma função bate com o filtro.</p></div>';
+    }
+
+    renderModules();
+    document.getElementById('filter').addEventListener('input', e => renderModules(e.target.value));
+
+    document.getElementById('tabs').addEventListener('click', e => {
+      const btn = e.target.closest('button[data-tab]');
+      if (!btn) return;
+      const id = btn.dataset.tab;
+      document.querySelectorAll('nav.tabs button').forEach(b => b.classList.toggle('active', b === btn));
+      document.querySelectorAll('section.panel').forEach(p => p.classList.toggle('active', p.id === id));
+      if (id === 'grafo') {
+        // re-render mermaid if needed
+        setTimeout(() => {
+          try { mermaid.run({ querySelector: '.mermaid' }); } catch (_) {}
+        }, 50);
+      }
+    });
+  </script>
+</body>
+</html>

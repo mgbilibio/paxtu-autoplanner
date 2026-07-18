@@ -360,7 +360,8 @@ ipcMain.handle('pdf:openAtPage', async (_, relativePath: string, page: number) =
 
 // IPC para Ollama: main process faz a chamada (sem CORS).
 // O renderer (browser context) é bloqueado pelo Ollama por padrão.
-ipcMain.handle('ollama:request', async (_, method: string, url: string, body?: string, timeoutMs?: number) => {
+// authBearer opcional: "Bearer <token>" apenas para ollama.com (cloud).
+ipcMain.handle('ollama:request', async (_, method: string, url: string, body?: string, timeoutMs?: number, authBearer?: string) => {
   if (!isAllowedOllamaRequest(method, url)) {
     return { ok: false, status: 0, body: '', error: 'Requisicao Ollama bloqueada.' };
   }
@@ -379,6 +380,10 @@ ipcMain.handle('ollama:request', async (_, method: string, url: string, body?: s
   try {
     const headers: Record<string, string> = {};
     if (body) headers['Content-Type'] = 'application/json';
+    // Só aceita Bearer em hosts cloud allowlisted (validado em isAllowedOllamaRequest).
+    if (typeof authBearer === 'string' && /^Bearer\s+\S+/.test(authBearer) && url.includes('ollama.com')) {
+      headers['Authorization'] = authBearer;
+    }
     // redirect:'error' impede SSRF residual: um servico no loopback nao pode
     // redirecionar a chamada para um host externo (a validacao so cobre a URL inicial).
     const r = await fetch(url, { method, headers, body, signal: ctrl.signal, redirect: 'error' });

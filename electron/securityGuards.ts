@@ -40,6 +40,8 @@ export const isExternalWebUrl = (rawUrl: string): boolean => {
   }
 }
 
+const OLLAMA_CLOUD_HOSTS = new Set(['ollama.com', 'www.ollama.com'])
+
 export const isAllowedOllamaRequest = (
   method: unknown,
   rawUrl: unknown,
@@ -49,8 +51,17 @@ export const isAllowedOllamaRequest = (
   try {
     const parsed = new URL(rawUrl)
     if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return false
-    if (!LOOPBACK_HOSTS.has(parsed.hostname)) return false
-    return parsed.pathname.startsWith('/api/')
+    const pathOk =
+      parsed.pathname.startsWith('/api/') ||
+      parsed.pathname.startsWith('/v1/')
+    // Local daemon (loopback) or official Ollama Cloud host
+    if (LOOPBACK_HOSTS.has(parsed.hostname)) {
+      return pathOk && (parsed.protocol === 'http:' || parsed.protocol === 'https:')
+    }
+    if (OLLAMA_CLOUD_HOSTS.has(parsed.hostname)) {
+      return parsed.protocol === 'https:' && pathOk
+    }
+    return false
   } catch {
     return false
   }

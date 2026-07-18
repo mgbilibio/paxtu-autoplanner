@@ -10,7 +10,7 @@ interface Window {
     deletePath: (folderPath: string, relativePath: string) => Promise<boolean>
     openPdfAtPage: (relativePath: string, page: number) => Promise<{ ok: boolean; url?: string; error?: string }>
     openGuide?: () => Promise<{ ok: boolean; url?: string; error?: string }>
-    ollamaRequest: (method: string, url: string, body?: string, timeoutMs?: number) => Promise<{ ok: boolean; status: number; body: string; error?: string }>
+    ollamaRequest: (method: string, url: string, body?: string, timeoutMs?: number, authBearer?: string) => Promise<{ ok: boolean; status: number; body: string; error?: string }>
     cancelOllamaRequests?: () => Promise<{ ok: boolean }>
     searchLibrary?: (query: string, limit?: number) => Promise<{
       ok: boolean
