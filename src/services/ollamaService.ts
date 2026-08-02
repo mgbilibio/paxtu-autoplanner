@@ -397,7 +397,8 @@ const callOllamaChatForJson = async <T,>(
   label: string,
   notify?: (msg: string) => void
 ): Promise<T> => {
-  const preferJson = opts.preferJsonFormat !== false;
+  const cloudMode = resolveOllamaMode() === 'cloud' || isCloudModel(opts.model);
+  const preferJson = opts.preferJsonFormat !== false && !cloudMode;
   const attempts: Array<{ jsonFormat: boolean; user: string }> = [
     { jsonFormat: preferJson, user: opts.user },
     { jsonFormat: false, user: opts.user },

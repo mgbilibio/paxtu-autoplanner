@@ -151,7 +151,13 @@ export interface ProgressLaunchApply {
   memberId: string;
   /** Códigos que foram aplicados de fato neste lançamento (novos). */
   codesApplied: string[];
+  /** Códigos creditados pelo lançamento, mesmo quando já estavam no estado. */
+  codesCredited?: string[];
+  /** Códigos fisicamente revertidos por exclusão de crédito. */
+  reversedCodes?: string[];
   specialtyIdsStarted?: number[];
+  specialtyIdsCredited?: number[];
+  specialtyIdsReversed?: number[];
 }
 
 export interface ProgressLaunch {

@@ -99,7 +99,7 @@
     "@types/better-sqlite3": "^7.6.13",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
-    "@vitejs/plugin-react": "^4.2.1",
+    "@vitejs/plugin-react": "^6.0.5",
     "autoprefixer": "^10.4.19",
     "electron": "^39.8.5",
     "electron-builder": "^26.0.12",
@@ -107,8 +107,8 @@
     "rimraf": "^6.1.2",
     "tailwindcss": "^3.4.3",
     "typescript": "^5.2.2",
-    "vite": "^5.2.0",
-    "vite-plugin-electron": "^0.29.0",
-    "vite-plugin-electron-renderer": "^0.14.6"
+    "vite": "^8.2.0",
+    "vite-plugin-electron": "^1.1.0",
+    "vite-plugin-electron-renderer": "^1.0.0"
   }
 }

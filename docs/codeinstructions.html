@@ -11,7 +11,7 @@
 <body>
 <main>
   <h1>Instrucoes de Codigo</h1>
-  <p>Atualizado em <strong>20260709-1904</strong>. Aplicam-se ao app alvo em <code>PaxtuAP/</code>.</p>
+  <p>Atualizado em <strong>20260801-revisao-segura</strong>. Aplicam-se ao app alvo em <code>PaxtuAP/</code>.</p>
   <h2>Arquitetura atual</h2>
   <ul>
     <li><code>src/</code>: interface React e regras de apresentação.</li>
@@ -32,15 +32,24 @@
     <li>Ações de bloco usam <code>MemberBlocoState</code>.</li>
     <li>Especialidades usam <code>MemberSpecialtyState</code>, por requisito, com evidência, status e avaliador.</li>
     <li>O lançamento pela agenda marca ações de bloco e inicia especialidades. Nunca deve concluir automaticamente os requisitos de uma especialidade.</li>
+    <li><code>ProgressLaunchApply.codesApplied</code> registra o que o lançamento aplicou fisicamente; <code>codesCredited</code> registra o que foi creditado mesmo quando já existia. Reversões devem consultar outros lançamentos ativos antes de remover estado do jovem.</li>
+    <li>Excluir evento de agenda com lançamento vinculado deve passar por <code>deleteProgressLaunchAndReverse</code>, evitando lançamento órfão e preservando créditos sustentados por outra atividade.</li>
     <li>Preservar os registros legados <code>SP-*</code> e <code>PAXTU_PROG_*</code>; não os misturar com o fluxo POR 2025+.</li>
+  </ul>
+  <h2>Segurança de IA e backup</h2>
+  <ul>
+    <li>Backups locais devem limpar todos os segredos da configuração, incluindo <code>apiKey</code> e <code>ollamaCloudApiKey</code>, também na importação.</li>
+    <li>O IPC <code>ollama:request</code> só deve anexar <code>Authorization</code> após validação por URL parseada e host cloud allowlisted.</li>
+    <li>Ollama Cloud não deve iniciar chamadas JSON com <code>format=json</code>; use prompt estruturado e parser/fallback do app.</li>
   </ul>
   <h2>Validação e release</h2>
   <ol>
     <li><code>npm run build</code>.</li>
+    <li><code>npm audit --audit-level=moderate</code>.</li>
     <li><code>python conhecimento/tools/audit_dados_operacionais.py</code>.</li>
     <li><code>python conhecimento/tools/run_release_check.py --dist</code>.</li>
   </ol>
-  <p>O release deve produzir instalador, executável portátil e ZIP em <code>release/20260709-1904/</code>. Os filtros de especialidade devem usar <code>isSpecialtyCode</code>, jamais o texto visível da categoria. Atualize este documento, <code>usersmanual.html</code> e <code>versions.html</code> em qualquer alteração de comportamento, dados ou distribuição.</p>
+  <p>O build usa Vite 8; em <code>vite.config.ts</code>, use <code>import.meta.dirname</code> no lugar de <code>__dirname</code>. O release deve produzir instalador, executável portátil e ZIP em <code>release/20260709-1904/</code>. Os filtros de especialidade devem usar <code>isSpecialtyCode</code>, jamais o texto visível da categoria. Atualize este documento, <code>usersmanual.html</code> e <code>versions.html</code> em qualquer alteração de comportamento, dados ou distribuição.</p>
 </main>
 </body>
 </html>

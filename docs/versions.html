@@ -15,6 +15,15 @@
 <body>
 <main>
   <h1>Historico de Versoes</h1>
+  <h2>20260801-revisao-segura</h2>
+  <p>Revisao segura apos sincronizacao com o repositorio privado.</p>
+  <ul>
+    <li><strong>Backups sem chaves de IA:</strong> exportacao e importacao do backup local limpam tanto <code>apiKey</code> quanto <code>ollamaCloudApiKey</code>.</li>
+    <li><strong>Agenda e progressao:</strong> exclusao de atividade remove o lancamento vinculado e reverte creditos sem apagar itens ainda sustentados por outro lancamento ativo.</li>
+    <li><strong>Revisao de credito:</strong> lancamentos passam a registrar codigos creditados e codigos realmente aplicados, mantendo compatibilidade com registros antigos.</li>
+    <li><strong>Ollama Cloud:</strong> o token Bearer so e enviado para host cloud permitido e chamadas cloud deixam de tentar <code>format=json</code> primeiro.</li>
+    <li><strong>Dependencias:</strong> cadeia Vite/Electron atualizada para remover vulnerabilidades conhecidas em ambiente de build, com <code>npm audit</code> zerado.</li>
+  </ul>
   <h2>20260709-1904</h2>
   <p>Revisão de coerência entre conteúdo oficial, telas e distribuição.</p>
   <ul>

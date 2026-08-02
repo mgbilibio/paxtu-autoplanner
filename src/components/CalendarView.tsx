@@ -15,6 +15,7 @@ import { emitProcessDone, emitProcessProgress } from '../services/processFeedbac
 import { ConfirmDialog } from './ConfirmDialog';
 import {
   createAndApplyProgressLaunch,
+  deleteProgressLaunchAndReverse,
   extractProgressionCodes,
   syncProgressLaunchCredits,
 } from '../services/batchProgressionService';
@@ -235,6 +236,8 @@ export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin }) =>
         onConfirm: async () => {
             try {
               emitProcessProgress('Removendo atividade da agenda...');
+              const launch = eventLaunch || await getProgressLaunchByEventId(existing.id);
+              if (launch) await deleteProgressLaunchAndReverse(launch);
               await deleteCalendarEventAsync(existing.id);
               emitProcessDone('Atividade removida da agenda.');
               setConfirmAction(null);

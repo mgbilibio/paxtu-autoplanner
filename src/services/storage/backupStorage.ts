@@ -138,7 +138,11 @@ const backupValueWithoutSecrets = (key: string, value: string): string => {
   if (key !== CONFIG_KEY) return value;
   try {
     const config = JSON.parse(value);
-    return JSON.stringify({ ...config, apiKey: '' });
+    return JSON.stringify({
+      ...config,
+      apiKey: '',
+      ollamaCloudApiKey: '',
+    });
   } catch {
     return value;
   }

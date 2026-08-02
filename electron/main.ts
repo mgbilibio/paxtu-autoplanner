@@ -7,6 +7,7 @@ import {
   clampLimit,
   isAllowedOllamaRequest,
   isExternalWebUrl,
+  isOllamaCloudUrl,
   normalizeSearchQuery,
   resolveDataFile,
   resolveFolder,
@@ -381,7 +382,7 @@ ipcMain.handle('ollama:request', async (_, method: string, url: string, body?: s
     const headers: Record<string, string> = {};
     if (body) headers['Content-Type'] = 'application/json';
     // Só aceita Bearer em hosts cloud allowlisted (validado em isAllowedOllamaRequest).
-    if (typeof authBearer === 'string' && /^Bearer\s+\S+/.test(authBearer) && url.includes('ollama.com')) {
+    if (typeof authBearer === 'string' && /^Bearer\s+\S+/.test(authBearer) && isOllamaCloudUrl(url)) {
       headers['Authorization'] = authBearer;
     }
     // redirect:'error' impede SSRF residual: um servico no loopback nao pode

@@ -3,6 +3,8 @@ import path from 'node:path'
 import react from '@vitejs/plugin-react'
 import electron from 'vite-plugin-electron/simple'
 
+const configDir = import.meta.dirname
+
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
@@ -22,14 +24,14 @@ export default defineConfig({
       },
       preload: {
         // Shortcut of `build.rollupOptions.input`.
-        input: path.join(__dirname, 'electron/preload.ts'),
+        input: path.join(configDir, 'electron/preload.ts'),
       },
       renderer: {},
     }),
   ],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
+      '@': path.resolve(configDir, './src'),
     },
   },
   base: './',
@@ -37,7 +39,7 @@ export default defineConfig({
     chunkSizeWarningLimit: 600,
     rollupOptions: {
       input: {
-        main: path.resolve(__dirname, 'index.html'),
+        main: path.resolve(configDir, 'index.html'),
       },
       // Exclude everything else from being treated as an entry point
       external: [

@@ -42,6 +42,16 @@ export const isExternalWebUrl = (rawUrl: string): boolean => {
 
 const OLLAMA_CLOUD_HOSTS = new Set(['ollama.com', 'www.ollama.com'])
 
+export const isOllamaCloudUrl = (rawUrl: unknown): boolean => {
+  if (typeof rawUrl !== 'string') return false
+  try {
+    const parsed = new URL(rawUrl)
+    return parsed.protocol === 'https:' && OLLAMA_CLOUD_HOSTS.has(parsed.hostname)
+  } catch {
+    return false
+  }
+}
+
 export const isAllowedOllamaRequest = (
   method: unknown,
   rawUrl: unknown,
