@@ -292,7 +292,7 @@ ipcMain.handle('guide:open', async () => {
   // Guia de uso empacotado (extraResources) em producao; docs/ em dev.
   const candidatos = [
     path.join(process.resourcesPath || '', 'Guia_de_Uso_Paxtu.html'),
-    path.join(__dirname, '..', 'docs', 'GUIA_DE_USO_v2.12.html'),
+    path.join(__dirname, '..', 'docs', 'usersmanual.html'),
   ];
   let resolved: string | null = null;
   for (const c of candidatos) {

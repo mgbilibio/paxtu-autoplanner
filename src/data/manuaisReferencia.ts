@@ -46,7 +46,7 @@ export const MANUAIS_REFERENCIA: ManualReferencia[] = [
     titulo: 'Guia de Especialidades 18ª Ed. 2024-1',
     ramo: 'todos',
     tipo: 'guia',
-    descricao: '274 especialidades organizadas em 5 ramos do conhecimento (C&T, Cultura, Desportos, Serviços, Habilidades Escoteiras). Cada uma com 3 níveis cumulativos.',
+    descricao: 'Catálogo implementado no app: 274 especialidades organizadas em 5 ramos do conhecimento (C&T, Cultura, Desportos, Serviços, Habilidades Escoteiras), com 3 níveis cumulativos.',
     topicos: [
       'Ciência e Tecnologia',
       'Cultura',
@@ -83,7 +83,7 @@ export const MANUAIS_REFERENCIA: ManualReferencia[] = [
     titulo: 'POR — Princípios, Organização e Regras',
     ramo: 'todos',
     tipo: 'manual',
-    descricao: 'Documento normativo oficial da UEB. Versão 2025+ é a vigente.',
+    descricao: 'Documento normativo oficial da UEB. Use a versão vigente mais recente para decisões formais.',
   },
 ];
 

@@ -13,14 +13,14 @@ const BOOKS: BookEntry[] = [
   {
     fonte: 'manual_lobinho_2025',
     title: 'Manual do Escotista — Lobinho',
-    subtitle: 'POR 2025 — Ramo Lobinho (6.5 a 10 anos)',
+    subtitle: 'POR 2025+ — Ramo Lobinho (6,5 a 10,5 anos)',
     icon: '🐺',
     category: 'fundamental',
   },
   {
     fonte: 'manual_escoteiro_2025',
     title: 'Manual do Escotista — Escoteiro',
-    subtitle: 'POR 2025 — Ramo Escoteiro (11 a 14 anos)',
+    subtitle: 'POR 2025+ — Ramo Escoteiro (10 a 14 anos)',
     icon: '⚜️',
     category: 'fundamental',
   },
@@ -34,7 +34,7 @@ const BOOKS: BookEntry[] = [
   {
     fonte: 'guia_especialidades_2024',
     title: 'Guia de Especialidades — 18ª Edição',
-    subtitle: '274 especialidades catalogadas (2024-1)',
+    subtitle: 'Catálogo implementado: 274 especialidades (2024-1)',
     icon: '📘',
     category: 'especialidades',
   },

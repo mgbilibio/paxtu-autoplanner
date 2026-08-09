@@ -4,14 +4,14 @@ export const BRANCHES = [
   {
     id: ScoutBranch.LOBINHO,
     label: "Ramo Lobinho",
-    age: "6,5 a 10 anos",
+    age: "6,5 a 10,5 anos",
     desc: "Fantasia, socialização e descobertas (Mowgli e a Jângal).",
     color: "bg-blue-500"
   },
   {
     id: ScoutBranch.ESCOTEIRO,
     label: "Ramo Escoteiro",
-    age: "11 a 14 anos",
+    age: "10 a 14 anos",
     desc: "Aventura, autonomia e sistema de patrulhas.",
     color: "bg-green-600"
   },

@@ -147,8 +147,8 @@ def slugify(text: str) -> str:
 # ---------------------------------------------------------------------------
 
 RAMOS = [
-    {"id": 1, "nome": "Lobinho", "slug": "lobinho", "faixa_etaria": "6,5-10 anos", "grupo_secao": "Alcateia"},
-    {"id": 2, "nome": "Escoteiro", "slug": "escoteiro", "faixa_etaria": "11-14 anos", "grupo_secao": "Tropa"},
+    {"id": 1, "nome": "Lobinho", "slug": "lobinho", "faixa_etaria": "6,5-10,5 anos", "grupo_secao": "Alcateia"},
+    {"id": 2, "nome": "Escoteiro", "slug": "escoteiro", "faixa_etaria": "10-14 anos", "grupo_secao": "Tropa"},
 ]
 
 # ---------------------------------------------------------------------------

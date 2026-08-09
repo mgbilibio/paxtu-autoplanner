@@ -14,8 +14,8 @@ export interface ReconhecimentoRamo { id: number; ramoId: number; nome: string; 
 export interface ReconhecimentoRequisito { reconhecimentoId: number; tipo: string; descricao: string; ordem: number; }
 
 export const RAMOS_2025 = [
-  {"id": 1, "nome": "Lobinho", "slug": "lobinho", "faixaEtaria": "6,5-10 anos", "grupoSecao": "Alcateia"},
-  {"id": 2, "nome": "Escoteiro", "slug": "escoteiro", "faixaEtaria": "11-14 anos", "grupoSecao": "Tropa"},
+  {"id": 1, "nome": "Lobinho", "slug": "lobinho", "faixaEtaria": "6,5-10,5 anos", "grupoSecao": "Alcateia"},
+  {"id": 2, "nome": "Escoteiro", "slug": "escoteiro", "faixaEtaria": "10-14 anos", "grupoSecao": "Tropa"},
 ] as const;
 
 export const EIXOS_2025 = [
