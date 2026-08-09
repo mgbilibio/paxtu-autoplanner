@@ -562,11 +562,12 @@ class ValidadorProgressao:
 
     def validacao_15_camada_json(self) -> Tuple[List[str], str]:
         """
-        Validação 15 (M18): confere se o catálogo POR 2025+ usa o Guia oficial.
+        Validação 15 (M18): confere se as fichas de especialidades 2024-1
+        continuam reconciliadas entre SQLite, JSON gerado e adaptador.
 
-        A coleção specs_*.json permanece como compatibilidade do POR 2020. O
-        planejador atual deve consumir officialSpecialtyCatalog, derivado do
-        mesmo JSON gerado a partir de especialidades_guia.sqlite.
+        A coleção specs_*.json permanece como compatibilidade do POR 2020. As
+        fichas ESP-GUIA-* permanecem para consulta/transição; não representam
+        importação integral dos Guias de Especialidades e Insígnias 2025.
         """
         problemas: List[str] = []
         data_dir = self.progressao_db.parents[2] / "src" / "data"
@@ -578,13 +579,13 @@ class ValidadorProgressao:
         conn.close()
         if not all(path.exists() for path in [catalog_index, adapter, generated]):
             problemas.append(
-                "Arquivos do adaptador oficial não encontrados para validar o catálogo POR 2025+."
+                "Arquivos do adaptador de especialidades 2024-1 não encontrados."
             )
             return problemas, "aviso"
 
         index_text = catalog_index.read_text(encoding="utf-8")
         if "getOfficialSpecialtyCatalog" not in index_text:
-            problemas.append("catalog/index.ts não referencia getOfficialSpecialtyCatalog no POR 2025+.")
+            problemas.append("catalog/index.ts não referencia getOfficialSpecialtyCatalog.")
 
         dados = json.loads(generated.read_text(encoding="utf-8"))
         total_gerado = len(dados.get("especialidades", []))
@@ -609,7 +610,7 @@ class ValidadorProgressao:
             (9, "Especialidade sem requisitos", self.validacao_9_especialidade_sem_requisitos),
             (10, "Cumulativos de níveis incoerentes", self.validacao_10_cumulativos_incoerentes),
             (11, "Insígnias em bloco_especialidades (deve ser bloco_insignias)", self.validacao_11_insignias_em_bloco_especialidades),
-            (15, "Divergência camada JSON (planejador) x guia (M18)", self.validacao_15_camada_json),
+            (15, "Divergência camada JSON x fichas de especialidades 2024-1 (M18)", self.validacao_15_camada_json),
         ]
 
         for num, titulo, funcao_validacao in validacoes:

@@ -1,6 +1,6 @@
 # Arquitetura de Progressão e Especialidades
 
-Atualizado em 2026-07-09. A granularidade é aplicada nos bancos e estados individuais, evitando duplicar regras oficiais em arquivos manuais.
+Atualizado em 2026-08-09. A granularidade é aplicada nos bancos e estados individuais, evitando duplicar regras oficiais em arquivos manuais.
 
 ```text
 PDF e Markdown oficiais
@@ -26,10 +26,11 @@ MemberBlocoState / MemberSpecialtyState / MemberReconhecimentoState
 
 ## Especialidades
 
-- Cada ficha tem um `especialidadeId` do Guia e requisitos por posição.
-- O catálogo usa `ESP-GUIA-<id>` apenas como referência estável de planejamento.
+- Cada ficha atualmente importada tem um `especialidadeId` do Guia 18ª Ed. 2024-1 e requisitos por posição.
+- O catálogo usa `ESP-GUIA-<id>` apenas como referência estável de planejamento, consulta e transição.
+- A página oficial da UEB em 2026-08-09 separa as especialidades do Programa Educativo Atualizado em quatro eixos novos. Portanto, a base 2024-1 não deve ser tratada como importação integral dos Guias de Especialidades e Insígnias 2025.
 - `MemberSpecialtyState` registra cada requisito, status, evidência e avaliador.
-- O nível é calculado pelos limites oficiais da própria especialidade; uma atividade no calendário apenas pode iniciar a ficha.
+- O nível é calculado pelos limites da ficha 2024-1 importada; uma atividade no calendário apenas pode iniciar a ficha.
 
 ## Manutenção
 

@@ -6,6 +6,7 @@ import {
 } from './generated/especialidades_guia';
 
 export const OFFICIAL_SPECIALTY_PREFIX = 'ESP-GUIA-';
+const TRANSITION_LABEL = 'programa anterior / transição';
 
 const requirementsFor = (especialidadeId: number): string[] =>
   REQUISITOS_GUIA
@@ -60,5 +61,5 @@ export const getOfficialSpecialtyCatalog = (): CatalogCategory[] =>
         officialSpecialtyId: item.id,
         specialtyBranch: branch.nome,
       }));
-    return { name: `Especialidades: ${branch.nome}`, items };
+    return { name: `Especialidades (${TRANSITION_LABEL}): ${branch.nome}`, items };
   });

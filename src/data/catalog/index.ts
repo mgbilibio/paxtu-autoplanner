@@ -26,8 +26,11 @@ import specsHabilidades from './specs_habilidades.json';
 import globalSpecialties from './specialties.json';
 import modalidades from './modalidades.json';
 
-// O POR 2025+ usa o Guia de Especialidades oficial (274 fichas e requisitos
-// granulares). A colecao SP-* anterior e mantida somente para secoes 2020.
+// O POR 2025+ usa progressao_2025.sqlite para blocos de Lobinho/Escoteiro.
+// As especialidades ESP-GUIA-* ainda refletem o Guia 18a Ed. 2024-1,
+// que a UEB classifica no site atual como Programa Educativo Anterior.
+// Elas permanecem no catalogo para consulta, transicao e preservacao
+// de fichas, mas nao substituem a importacao dos Guias 2025 por ramos.
 export const getUnifiedCatalog = (branch: ScoutBranch, system: string, role?: TroopRole): CatalogCategory[] => {
     if (role && role !== TroopRole.JUVENIL) return adultos as CatalogCategory[];
 

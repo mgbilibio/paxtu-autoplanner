@@ -8,11 +8,11 @@ que toque progressão, especialidades ou catálogo.
 | Caminho | O que contém |
 |---------|--------------|
 | `conhecimento/por/**/*.md` | POR 2025 (Lobinho + Escoteiro) — texto canônico |
-| `conhecimento/especialidades/**/*.md` | Guia 18ª Edição (274 especialidades) |
+| `conhecimento/especialidades/**/*.md` | Guia 18ª Edição 2024-1 (274 especialidades; programa anterior/transição) |
 | `conhecimento/docs/**/*.md` | Material de apoio e backups históricos |
 | `src/data/catalog/branch_senior.json`, `branch_pioneiro.json` | POR 2025 dos ramos ainda sem MD |
-| `conhecimento/bd/especialidades_guia.sqlite` | Fonte operacional do Guia 18ª edição: 274 especialidades e 2.741 requisitos |
-| `src/data/officialSpecialtyCatalog.ts` | Adaptador do Guia para o catálogo POR 2025+ (`ESP-GUIA-<id>`) |
+| `conhecimento/bd/especialidades_guia.sqlite` | Fonte operacional do Guia 18ª edição 2024-1: 274 especialidades e 2.741 requisitos, mantida para consulta/transição |
+| `src/data/officialSpecialtyCatalog.ts` | Adaptador das fichas 2024-1 para catálogo estável (`ESP-GUIA-<id>`); não representa os Guias de Especialidades e Insígnias 2025 |
 | `src/data/catalog/specs_*.json` | Catálogo histórico do POR 2020 (`SP-*`); não usar no POR 2025+ |
 | `src/data/catalog/{lobinho,escoteiro}_2020.json` | POR 2020 (modo legado) |
 | `src/data/catalog/adultos.json`, `modalidades.json`, `specialties.json` | Conteúdo adulto + insígnias |
@@ -55,7 +55,7 @@ export_*.py
 TS/JSON gerado (src/data/generated/)
        │
        ▼
-src/data/officialSpecialtyCatalog.ts + catalog/index.ts (catalogService consome)
+src/data/officialSpecialtyCatalog.ts + catalog/index.ts (catalogService consome com aviso de transição)
        │
        ▼
 App em runtime

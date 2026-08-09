@@ -80,8 +80,12 @@ export const TELA_HELP: Record<string, ScreenHelp> = {
   },
   ENCYCLOPEDIA: {
     titulo: 'Especialidades',
-    corpo: 'Catálogo das especialidades com requisitos, avaliação, evidências e nível.',
-    dicas: ['Use status por requisito.', 'Registre avaliador e evidência.'],
+    corpo: 'Catálogo estruturado das especialidades do Guia 18ª Ed. 2024-1, mantido para consulta, transição, avaliação por requisito e preservação histórica.',
+    dicas: [
+      'Use status por requisito.',
+      'Registre avaliador e evidência.',
+      'Para o Programa Educativo Atualizado, confira o Guia de Especialidades e Insígnias 2025 antes de homologar no Paxtu oficial.',
+    ],
   },
   BLOCOS_2025: {
     titulo: 'Progressão 2025+',

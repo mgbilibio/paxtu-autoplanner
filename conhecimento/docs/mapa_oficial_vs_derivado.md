@@ -29,4 +29,4 @@
 
 - Lobinho 2025: revisar nomes de blocos e itens.
 - Escoteiro 2025: revisar nomes de blocos, itens e sequencia do sistema de progressao.
-- Especialidades 2025: validar nome, ramo de conhecimento e descricoes.
+- Especialidades 2024-1/transição: validar nome, ramo de conhecimento e descricoes; importar separadamente os Guias de Especialidades e Insígnias 2025 antes de tratar como Programa Educativo Atualizado.

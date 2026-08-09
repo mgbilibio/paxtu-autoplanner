@@ -1,10 +1,16 @@
-# Especialidades 2025
+# Especialidades - base 2024-1 em transição
 
-## Fonte canonica (desde 2026-04-27)
+## Fonte implementada (desde 2026-04-27)
 
 Banco: `conhecimento/bd/especialidades_guia.sqlite`
 Gerado por: `conhecimento/tools/build_especialidades_db.py`
 Origem: `docs/biblioteca/libpaxtubasico2/Guia de Especialidades 18a Edição - 2024-1/markdown.md`
+
+Nota 2026-08-09: a página oficial atual de Especialidades da UEB separa o
+Programa Educativo Anterior dos eixos do Programa Educativo Atualizado.
+Esta base 2024-1 permanece útil para consulta, transição e preservação de
+fichas, mas não deve ser tratada como importação integral dos Guias de
+Especialidades e Insígnias 2025.
 
 ## Contagens confirmadas (banco do guia)
 
@@ -47,7 +53,7 @@ Acesso: `SELECT * FROM especialidade_alias WHERE manual_nome LIKE '%...%'`
 
 ## Regra de precedencia
 
-1. `especialidades_guia.sqlite` (gerado do Guia 18a Edicao 2024-1) — fonte canonica.
+1. `especialidades_guia.sqlite` (gerado do Guia 18a Edicao 2024-1) — fonte implementada para consulta/transição.
 2. PDF original do guia (prevalece sobre OCR em caso de duvida).
 3. OCR `.md` em `libpaxtubasico2/Guia de Especialidades 18a Edição - 2024-1/markdown.md`.
 4. Mapeamentos `especialidade_alias` para resolver divergencias Manual × Guia.

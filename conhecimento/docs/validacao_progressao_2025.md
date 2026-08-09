@@ -1,6 +1,6 @@
 # Validação de Integridade: progressao_2025.sqlite
 
-**Data/Hora:** 2026-07-09T19:08:09.009689
+**Data/Hora:** 2026-08-09T10:11:00.711120
 
 **Resumo Executivo:**
 - Erros encontrados: 0
@@ -57,7 +57,7 @@
 
 [OK]
 
-## Validacao 15: Divergência camada JSON (planejador) x guia (M18)
+## Validacao 15: Divergência camada JSON x fichas de especialidades 2024-1 (M18)
 
 [OK]
 

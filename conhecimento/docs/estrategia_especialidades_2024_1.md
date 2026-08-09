@@ -25,7 +25,8 @@ Reconstruir a base de especialidades do projeto a partir do guia novo de 2024-1,
 ## Regra de transicao
 
 - Nada de misturar o cadastro antigo de `Servicos` com o novo guia sem marcar origem.
-- Se o titulo, numero de passos ou requisito divergir, o guia 2024-1 vence.
+- Se o titulo, numero de passos ou requisito divergir dentro da base 2024-1, o PDF original do guia 2024-1 vence.
+- Para o Programa Educativo Atualizado, nao usar esta regra contra os Guias de Especialidades e Insígnias 2025; eles precisam de importação propria.
 - Quando a OCR for duvidosa, consultar o PDF original antes de registrar a ficha.
 
 ## Saida esperada

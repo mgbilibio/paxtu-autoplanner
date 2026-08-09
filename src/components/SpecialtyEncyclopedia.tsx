@@ -388,7 +388,7 @@ export const SpecialtyEncyclopedia: React.FC<Props> = ({ onClose, member }) => {
           <div>
             <h2 className="text-xl font-bold tracking-tight">📘 Enciclopédia de Especialidades</h2>
             <p className="text-xs text-gray-400">
-              {ESPECIALIDADES_GUIA.length} especialidades · {REQUISITOS_GUIA.length} requisitos · catálogo implementado do Guia 18ª Ed. 2024-1
+              {ESPECIALIDADES_GUIA.length} especialidades · {REQUISITOS_GUIA.length} requisitos · Guia 18ª Ed. 2024-1 · programa anterior / transição
               {member ? ` · ficha de ${member.name}` : ''}
             </p>
           </div>

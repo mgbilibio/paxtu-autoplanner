@@ -24,6 +24,6 @@
 
 ## Regra operacional
 
-1. O guia 2024-1 vence a base historica.
+1. O guia 2024-1 vence a base historica apenas dentro do escopo de consulta/transição.
 2. `Vitrines` deve entrar como especialidade valida.
 3. `Maquiagem` deve ser normalizada na leitura, sem criar duplicidade.

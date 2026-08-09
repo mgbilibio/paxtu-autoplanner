@@ -7,7 +7,7 @@
 - Lobinho 2025: 1 indice, 18 etapas, 46 itens
 - Escoteiro 2025: 1 indice, 7 etapas, 27 itens
 - Escoteiro 2025 planilha: 1 indice, 25 etapas, 515 itens
-- Especialidades 2025: 104 fichas canônicas, 1083 passos, 1083 observações, 104 revisões
+- Especialidades 2024-1/transição: 104 fichas implementadas, 1083 passos, 1083 observações, 104 revisões
 
 ## Banco
 
@@ -26,7 +26,8 @@
 ## Separacao de fontes
 
 - Fonte anterior: `src/data/catalog/*2020*`, `conhecimento/por/2020/*`, extracoes legadas e consolidados historicos
-- Fonte nova: `docs/biblioteca/libpaxtubasico/`, `src/data/catalog/*2025*`, `conhecimento/por/2025/*`, `conhecimento/especialidades/2025/*`
+- Fonte nova de progressão: `docs/biblioteca/libpaxtubasico/`, `src/data/catalog/*2025*`, `conhecimento/por/2025/*`
+- Fonte implementada de especialidades 2024-1/transição: `conhecimento/especialidades/2025/*`
 - Regra: nao mesclar nomes, etapas ou requisitos de uma fonte com a outra sem marcar a origem
 
 ## Proximos passos

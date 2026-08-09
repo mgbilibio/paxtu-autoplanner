@@ -34,7 +34,7 @@ const BOOKS: BookEntry[] = [
   {
     fonte: 'guia_especialidades_2024',
     title: 'Guia de Especialidades — 18ª Edição',
-    subtitle: 'Catálogo implementado: 274 especialidades (2024-1)',
+    subtitle: 'Programa anterior / transição: 274 especialidades (2024-1)',
     icon: '📘',
     category: 'especialidades',
   },

@@ -1,6 +1,6 @@
 # Índice da Estrutura Ativa
 
-Atualizado em 2026-07-09. Este índice descreve somente `PaxtuAP`, o app alvo. Diretórios vizinhos e backups da raiz do workspace são históricos e não fazem parte do build.
+Atualizado em 2026-08-09. Este índice descreve somente `PaxtuAP`, o app alvo. Diretórios vizinhos e backups da raiz do workspace são históricos e não fazem parte do build.
 
 ## Entrada e distribuição
 
@@ -25,8 +25,8 @@ Atualizado em 2026-07-09. Este índice descreve somente `PaxtuAP`, o app alvo. D
 - `src/data/generated/progressao_2025.ts`: derivado do banco de progressão. Não editar manualmente.
 - `src/data/generated/especialidades_guia.ts` e `.json`: derivados do Guia. Não editar manualmente.
 - `src/data/generated/progressao_2025_catalog.ts`: converte os blocos em itens de catálogo `B#.F#` e `B#.V#`.
-- `src/data/officialSpecialtyCatalog.ts`: converte o Guia em especialidades `ESP-GUIA-<id>` para o POR 2025+.
-- `src/data/catalog/index.ts`: seleciona o catálogo correto por sistema. `specs_*.json` só atendem o legado 2020.
+- `src/data/officialSpecialtyCatalog.ts`: converte o Guia 18ª Ed. 2024-1 em fichas `ESP-GUIA-<id>` mantidas para consulta/transição.
+- `src/data/catalog/index.ts`: seleciona o catálogo correto por sistema. `specs_*.json` atendem o legado 2020; `ESP-GUIA-*` ainda não representa a importação integral dos Guias de Especialidades e Insígnias 2025.
 - `src/data/awardsRules.ts` e `src/services/awardService.ts`: regras históricas isoladas; não são usadas para reconhecimento POR 2025+.
 
 ## Persistência e integração
@@ -41,7 +41,7 @@ Atualizado em 2026-07-09. Este índice descreve somente `PaxtuAP`, o app alvo. D
 ## Base de conhecimento
 
 - `conhecimento/bd/progressao_2025.sqlite`: progressão oficial atual.
-- `conhecimento/bd/especialidades_guia.sqlite`: Guia de Especialidades estruturado.
+- `conhecimento/bd/especialidades_guia.sqlite`: Guia de Especialidades 18ª Ed. 2024-1 estruturado para consulta/transição.
 - `conhecimento/bd/biblioteca_fts.sqlite`: busca nos documentos de referência.
 - `conhecimento/tools/`: geração, auditoria e release check.
 - `docs/biblioteca/`: PDFs e extrações para auditoria de fonte.
