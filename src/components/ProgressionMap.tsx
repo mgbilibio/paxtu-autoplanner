@@ -20,8 +20,8 @@ import { IndividualSheet } from './reports/IndividualSheet';
 import { BlocoTracker } from './BlocoTracker';
 import { isSpecialtyCode } from '../utils/specialtyCodes';
 import {
-  ESPECIALIDADES_GUIA,
-} from '../data/generated/especialidades_guia';
+  UPDATED_ESPECIALIDADES_GUIA,
+} from '../data/updatedSpecialtyCatalog';
 import {
   getOfficialSpecialtyId,
   getOfficialSpecialtyLevel,
@@ -59,7 +59,7 @@ export const ProgressionMap: React.FC<Props> = ({ member, section, onClose, onPr
   const loadHistory = async () => {
     const [memberData, states] = await Promise.all([
       getMemberProgressIndividual(member.id),
-      getMemberSpecialtyStates(member.id, ESPECIALIDADES_GUIA.map(item => item.id)),
+      getMemberSpecialtyStates(member.id, UPDATED_ESPECIALIDADES_GUIA.map(item => item.id)),
     ]);
     setAchievements(memberData ? memberData.achievements : []);
     setSpecialtyStates(states);

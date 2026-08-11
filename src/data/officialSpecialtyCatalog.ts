@@ -4,6 +4,11 @@ import {
   RAMOS_ESPECIALIDADES,
   REQUISITOS_GUIA,
 } from './generated/especialidades_guia';
+import {
+  getUpdatedSpecialtyId,
+  getUpdatedSpecialtyLevel,
+  getUpdatedSpecialtyTarget,
+} from './updatedSpecialtyCatalog';
 
 export const OFFICIAL_SPECIALTY_PREFIX = 'ESP-GUIA-';
 const TRANSITION_LABEL = 'programa anterior / transição';
@@ -24,6 +29,8 @@ const levelGuidance = (item: typeof ESPECIALIDADES_GUIA[number]): string => {
 };
 
 export const getOfficialSpecialtyId = (code: string): number | null => {
+  const updatedId = getUpdatedSpecialtyId(code);
+  if (updatedId !== null) return updatedId;
   const match = code.match(/^ESP-GUIA-(\d+)(?:-N[1-3])?$/);
   return match ? Number(match[1]) : null;
 };
@@ -32,8 +39,11 @@ export const getOfficialSpecialtyLevel = (
   especialidadeId: number,
   completedRequirements: number,
 ): 0 | 1 | 2 | 3 => {
+  const updatedLevel = getUpdatedSpecialtyLevel(especialidadeId, completedRequirements);
+  if (updatedLevel) return updatedLevel;
   const specialty = ESPECIALIDADES_GUIA.find(item => item.id === especialidadeId);
   if (!specialty) return 0;
+  if (completedRequirements <= 0) return 0;
   if (completedRequirements >= specialty.nivel3) return 3;
   if (completedRequirements >= specialty.nivel2) return 2;
   if (completedRequirements >= specialty.nivel1) return 1;
@@ -44,6 +54,8 @@ export const getOfficialSpecialtyTarget = (
   especialidadeId: number,
   level: number,
 ): number => {
+  const updatedTarget = getUpdatedSpecialtyTarget(especialidadeId, level);
+  if (updatedTarget) return updatedTarget;
   const specialty = ESPECIALIDADES_GUIA.find(item => item.id === especialidadeId);
   if (!specialty) return 0;
   return [specialty.nivel1, specialty.nivel2, specialty.nivel3][level - 1] || 0;

@@ -6,7 +6,8 @@ Aplicação desktop local para planejamento de atividades, acompanhamento da pro
 
 - Prioridade: Lobinho e Escoteiro no POR 2025+.
 - Progressão: 18 blocos, 80 ações fixas, 230 ações variáveis e reconhecimentos de ramo.
-- Especialidades: Guia de Especialidades, 18ª edição (2024-1), com 274 especialidades e 2.741 requisitos.
+- Especialidades POR 2025+: base pública UEB 2026, com 208 especialidades e 1.385 requisitos.
+- Especialidades 2024-1: preservadas para histórico/transição, separadas do fluxo atualizado.
 - POR 2020: compatibilidade histórica, separada do fluxo atual.
 - Dados: armazenamento local ou pasta compartilhada, segregada por seção e pessoa.
 
@@ -74,3 +75,4 @@ PaxtuAP/
 ## Licença
 
 Uso, cópia, modificação, redistribuição e comercialização livres, sem restrições. Consulte `LICENSE.md` quando presente no pacote.
+

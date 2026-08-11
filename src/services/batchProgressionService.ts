@@ -37,6 +37,7 @@ const ramoIdForBranch = (branch: ScoutBranch): number | null => {
 export const extractProgressionCodes = (text: string): string[] => {
   const patterns = [
     /\bB\d+\.(?:F|V)\d+\b/g,
+    /\bESP-UEB26-\d+(?:-N[1-3])?\b/g,
     /\bESP-GUIA-\d+(?:-N[1-3])?\b/g,
     /\bSP-[A-Z]{2}-[A-Z0-9-]+\b/g,
     /\b[A-Z]{1,3}-[A-Z]{2,8}-[A-Z0-9-]{2,10}\b/g,

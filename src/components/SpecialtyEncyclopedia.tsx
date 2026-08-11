@@ -1,12 +1,11 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import {
-  RAMOS_ESPECIALIDADES,
-  ESPECIALIDADES_GUIA,
-  REQUISITOS_GUIA,
-  EspecialidadeGuia,
-} from '../data/generated/especialidades_guia';
-import { openPdfAtPage } from '../services/pdfLinkService';
-import { pdfPageForEspecialidade } from '../data/generated/especialidade_pages';
+  UPDATED_RAMOS_ESPECIALIDADES as RAMOS_ESPECIALIDADES,
+  UPDATED_ESPECIALIDADES_GUIA as ESPECIALIDADES_GUIA,
+  UPDATED_REQUISITOS_GUIA as REQUISITOS_GUIA,
+  EspecialidadeAtualizadaGuia as EspecialidadeGuia,
+  getUpdatedSpecialtySourceUrl,
+} from '../data/updatedSpecialtyCatalog';
 import {
   MemberSpecialtyState,
   ScoutMember,
@@ -32,6 +31,14 @@ const RAMO_COLOR: Record<string, string> = {
   'desportos': 'bg-red-500',
   'servicos': 'bg-yellow-400',
   'habilidades-escoteiras': 'bg-green-600',
+  'le-habilidades-para-a-vida': 'bg-sky-500',
+  'le-meio-ambiente': 'bg-emerald-600',
+  'le-paz-e-desenvolvimento': 'bg-violet-600',
+  'le-saude-e-bem-estar': 'bg-rose-500',
+  'sp-habilidades-para-a-vida': 'bg-sky-700',
+  'sp-meio-ambiente': 'bg-emerald-800',
+  'sp-paz-e-desenvolvimento': 'bg-violet-800',
+  'sp-saude-e-bem-estar': 'bg-rose-700',
 };
 
 const RAMO_BADGE: Record<string, string> = {
@@ -40,6 +47,14 @@ const RAMO_BADGE: Record<string, string> = {
   'desportos': 'Desportos',
   'servicos': 'Serviços',
   'habilidades-escoteiras': 'Hab. Escoteiras',
+  'le-habilidades-para-a-vida': 'Hab. Vida · L/E',
+  'le-meio-ambiente': 'Meio Amb. · L/E',
+  'le-paz-e-desenvolvimento': 'Paz/Des. · L/E',
+  'le-saude-e-bem-estar': 'Saúde · L/E',
+  'sp-habilidades-para-a-vida': 'Hab. Vida · S/P',
+  'sp-meio-ambiente': 'Meio Amb. · S/P',
+  'sp-paz-e-desenvolvimento': 'Paz/Des. · S/P',
+  'sp-saude-e-bem-estar': 'Saúde · S/P',
 };
 
 const calcularNivel = (
@@ -388,7 +403,7 @@ export const SpecialtyEncyclopedia: React.FC<Props> = ({ onClose, member }) => {
           <div>
             <h2 className="text-xl font-bold tracking-tight">📘 Enciclopédia de Especialidades</h2>
             <p className="text-xs text-gray-400">
-              {ESPECIALIDADES_GUIA.length} especialidades · {REQUISITOS_GUIA.length} requisitos · Guia 18ª Ed. 2024-1 · programa anterior / transição
+              {ESPECIALIDADES_GUIA.length} especialidades · {REQUISITOS_GUIA.length} requisitos · UEB 2026 · Programa Educativo Atualizado
               {member ? ` · ficha de ${member.name}` : ''}
             </p>
           </div>
@@ -685,13 +700,15 @@ export const SpecialtyEncyclopedia: React.FC<Props> = ({ onClose, member }) => {
                   <p className="font-bold">Requisitos não cadastrados.</p>
                 </div>
               )}
-              <button
-                onClick={() => openPdfAtPage('guia_especialidades_2024', pdfPageForEspecialidade(viewing.id) || 1)}
+              <a
+                href={getUpdatedSpecialtySourceUrl(viewing.id) || 'https://www.escoteiros.org.br/especialidades/'}
+                target="_blank"
+                rel="noreferrer"
                 className="text-[11px] text-blue-600 hover:underline mt-4 italic block"
-                title={`Abrir Guia de Especialidades 18ª Ed. 2024-1${pdfPageForEspecialidade(viewing.id) ? ` na página ${pdfPageForEspecialidade(viewing.id)}` : ''}`}
+                title="Abrir página pública da UEB"
               >
-                📄 Fonte: {viewing.fonte}{pdfPageForEspecialidade(viewing.id) ? ` (pág. ${pdfPageForEspecialidade(viewing.id)})` : ''}
-              </button>
+                🌐 Fonte: {viewing.fonte} · página pública da UEB
+              </a>
             </div>
             <div className="p-4 bg-gray-50 border-t border-gray-100 flex justify-center">
               <button onClick={() => setViewing(null)} className="text-slate-500 text-xs font-bold hover:text-slate-800">

@@ -8,7 +8,10 @@ import {
 } from "./storageService";
 import { getCatalogForSection } from "./catalogService";
 import { escapeHtml, safeFileName } from "./htmlExportCommon";
-import { ESPECIALIDADES_GUIA } from '../data/generated/especialidades_guia';
+import {
+  UPDATED_ESPECIALIDADES_GUIA,
+  UPDATED_SPECIALTY_PREFIX,
+} from '../data/updatedSpecialtyCatalog';
 import { getOfficialSpecialtyLevel } from '../data/officialSpecialtyCatalog';
 
 export interface ProgressionHit {
@@ -94,7 +97,7 @@ export const getTroopProgressData = async (branchFilter?: ScoutBranch, sectionId
     }));
     const specialtyStates = await getMemberSpecialtyStates(
       member.id,
-      ESPECIALIDADES_GUIA.map(item => item.id),
+      UPDATED_ESPECIALIDADES_GUIA.map(item => item.id),
     );
     specialtyStates.forEach(state => {
       const level = state.nivelAtual || getOfficialSpecialtyLevel(
@@ -103,7 +106,7 @@ export const getTroopProgressData = async (branchFilter?: ScoutBranch, sectionId
       );
       if (level > 0) {
         completedHits.push({
-          code: `ESP-GUIA-${state.especialidadeId}`,
+          code: `${UPDATED_SPECIALTY_PREFIX}${state.especialidadeId}`,
           date: state.dataConclusao || state.lastUpdate,
           activityTitle: `Especialidade nível ${level}`,
           planTheme: state.notas || '',

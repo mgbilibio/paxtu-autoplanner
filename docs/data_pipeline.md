@@ -8,11 +8,13 @@ que toque progressão, especialidades ou catálogo.
 | Caminho | O que contém |
 |---------|--------------|
 | `conhecimento/por/**/*.md` | POR 2025 (Lobinho + Escoteiro) — texto canônico |
+| `conhecimento/especialidades/2026_ueb_atualizado/especialidades_ueb_2026.json` | Base pública UEB 2026 estruturada (208 especialidades; 1.385 requisitos) |
 | `conhecimento/especialidades/**/*.md` | Guia 18ª Edição 2024-1 (274 especialidades; programa anterior/transição) |
 | `conhecimento/docs/**/*.md` | Material de apoio e backups históricos |
 | `src/data/catalog/branch_senior.json`, `branch_pioneiro.json` | POR 2025 dos ramos ainda sem MD |
 | `conhecimento/bd/especialidades_guia.sqlite` | Fonte operacional do Guia 18ª edição 2024-1: 274 especialidades e 2.741 requisitos, mantida para consulta/transição |
-| `src/data/officialSpecialtyCatalog.ts` | Adaptador das fichas 2024-1 para catálogo estável (`ESP-GUIA-<id>`); não representa os Guias de Especialidades e Insígnias 2025 |
+| `src/data/updatedSpecialtyCatalog.ts` | Adaptador das fichas UEB 2026 para catálogo estável (`ESP-UEB26-<id>`) |
+| `src/data/officialSpecialtyCatalog.ts` | Compatibilidade das fichas 2024-1 (`ESP-GUIA-<id>`) e funções antigas |
 | `src/data/catalog/specs_*.json` | Catálogo histórico do POR 2020 (`SP-*`); não usar no POR 2025+ |
 | `src/data/catalog/{lobinho,escoteiro}_2020.json` | POR 2020 (modo legado) |
 | `src/data/catalog/adultos.json`, `modalidades.json`, `specialties.json` | Conteúdo adulto + insígnias |
@@ -27,6 +29,7 @@ que toque progressão, especialidades ou catálogo.
 | `conhecimento/bd/biblioteca_fts.sqlite` | `python conhecimento/tools/build_markdown_fts.py` |
 | `conhecimento/bd/dashboard_progressao.json` | `python conhecimento/tools/export_dashboard_2025.py` ou `export_dashboard_data.py` |
 | `src/data/generated/progressao_2025.ts` | `python conhecimento/tools/export_progressao_to_ts.py` |
+| `src/data/generated/especialidades_ueb_2026.ts` | `python conhecimento/tools/scrape_ueb_especialidades_2026.py` |
 | `src/data/generated/especialidades_guia.{ts,json}` | `python conhecimento/tools/export_especialidades_to_ts.py` |
 
 ## Runtime (estado do usuário — preservar sempre)
@@ -40,7 +43,7 @@ que toque progressão, especialidades ou catálogo.
 ## Diagrama do fluxo
 
 ```
-MD fonte (conhecimento/por, /especialidades)
+MD/JSON fonte (conhecimento/por, /especialidades)
        │
        ▼
 build_*.py
@@ -55,7 +58,7 @@ export_*.py
 TS/JSON gerado (src/data/generated/)
        │
        ▼
-src/data/officialSpecialtyCatalog.ts + catalog/index.ts (catalogService consome com aviso de transição)
+src/data/updatedSpecialtyCatalog.ts + catalog/index.ts
        │
        ▼
 App em runtime
@@ -103,3 +106,4 @@ Copy-Item -Recurse -Force `
   "_data\results\snapshots\<ts>_<label>\meusarquivospaxtu" `
   "."
 ```
+

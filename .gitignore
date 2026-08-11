@@ -52,3 +52,6 @@ docs/biblioteca/*
 
 # Snapshots historicos grandes (decidir caso a caso)
 _data/results/snapshots/
+
+# Cache HTML baixado das páginas públicas da UEB; regenerável pelo scraper.
+conhecimento/especialidades/2026_ueb_atualizado/raw_html/

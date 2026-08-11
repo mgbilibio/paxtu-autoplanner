@@ -1,6 +1,6 @@
 import { CatalogCategory, ScoutBranch, TroopRole } from '../../types';
 import { getProgressao2025Catalog } from '../generated/progressao_2025_catalog';
-import { getOfficialSpecialtyCatalog } from '../officialSpecialtyCatalog';
+import { getUpdatedSpecialtyCatalog } from '../updatedSpecialtyCatalog';
 
 // New Unified Data (POR 2025+) — Lobinho/Escoteiro vêm do adapter (progressao_2025.sqlite).
 // Os JSONs antigos só são usados para Sênior/Pioneiro (ainda sem dataset 2025+ pronto).
@@ -26,11 +26,10 @@ import specsHabilidades from './specs_habilidades.json';
 import globalSpecialties from './specialties.json';
 import modalidades from './modalidades.json';
 
-// O POR 2025+ usa progressao_2025.sqlite para blocos de Lobinho/Escoteiro.
-// As especialidades ESP-GUIA-* ainda refletem o Guia 18a Ed. 2024-1,
-// que a UEB classifica no site atual como Programa Educativo Anterior.
-// Elas permanecem no catalogo para consulta, transicao e preservacao
-// de fichas, mas nao substituem a importacao dos Guias 2025 por ramos.
+// O POR 2025+ usa progressao_2025.sqlite para blocos de Lobinho/Escoteiro
+// e a base pública UEB 2026 para especialidades ESP-UEB26-*.
+// A base ESP-GUIA-* de 2024-1 permanece no repositório para transição,
+// histórico e compatibilidade de fichas antigas.
 export const getUnifiedCatalog = (branch: ScoutBranch, system: string, role?: TroopRole): CatalogCategory[] => {
     if (role && role !== TroopRole.JUVENIL) return adultos as CatalogCategory[];
 
@@ -74,7 +73,7 @@ export const getUnifiedCatalog = (branch: ScoutBranch, system: string, role?: Tr
     ];
 
     const allSpecialties = system === 'POR_2025'
-        ? getOfficialSpecialtyCatalog()
+        ? getUpdatedSpecialtyCatalog(branch)
         : legacySpecialties;
 
     return [...baseCatalog, ...modalidadeData, ...allSpecialties] as CatalogCategory[];

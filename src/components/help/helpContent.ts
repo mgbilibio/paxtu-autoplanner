@@ -80,11 +80,11 @@ export const TELA_HELP: Record<string, ScreenHelp> = {
   },
   ENCYCLOPEDIA: {
     titulo: 'Especialidades',
-    corpo: 'Catálogo estruturado das especialidades do Guia 18ª Ed. 2024-1, mantido para consulta, transição, avaliação por requisito e preservação histórica.',
+    corpo: 'Catálogo estruturado das especialidades públicas UEB 2026, com avaliação por requisito, evidência e preservação histórica.',
     dicas: [
       'Use status por requisito.',
       'Registre avaliador e evidência.',
-      'Para o Programa Educativo Atualizado, confira o Guia de Especialidades e Insígnias 2025 antes de homologar no Paxtu oficial.',
+      'Use o link de fonte da ficha para conferir a página pública da UEB antes de homologar no Paxtu oficial.',
     ],
   },
   BLOCOS_2025: {

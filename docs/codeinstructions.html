@@ -11,7 +11,7 @@
 <body>
 <main>
   <h1>Instrucoes de Codigo</h1>
-  <p>Atualizado em <strong>20260809-frescor-ueb</strong>. Aplicam-se ao app alvo em <code>PaxtuAP/</code>.</p>
+  <p>Atualizado em <strong>20260811-especialidades-ueb26</strong>. Aplicam-se ao app alvo em <code>PaxtuAP/</code>.</p>
   <h2>Arquitetura atual</h2>
   <ul>
     <li><code>src/</code>: interface React e regras de apresentação.</li>
@@ -23,10 +23,12 @@
   <h2>Fonte normativa e catálogo</h2>
   <ul>
     <li><code>progressao_2025.sqlite</code> contém 18 blocos, 80 ações fixas, 230 variáveis e os reconhecimentos oficiais de Lobinho e Escoteiro. Metadados de ramo revisados em 2026-08-09: Lobinho <code>6,5-10,5 anos</code>; Escoteiro <code>10-14 anos</code>.</li>
-    <li><code>especialidades_guia.sqlite</code> contém 274 especialidades e 2.741 requisitos do catálogo implementado a partir do Guia 18ª edição 2024-1, hoje tratado como programa anterior/transição.</li>
-    <li><code>src/data/officialSpecialtyCatalog.ts</code> adapta as fichas 2024-1 para códigos estáveis <code>ESP-GUIA-&lt;id&gt;</code>. Não trate essa camada como importação integral dos Guias de Especialidades e Insígnias 2025.</li>
+    <li><code>conhecimento/especialidades/2026_ueb_atualizado/especialidades_ueb_2026.json</code> contém 208 especialidades e 1.385 requisitos capturados da página pública UEB em 2026-08-11.</li>
+    <li><code>src/data/updatedSpecialtyCatalog.ts</code> adapta a base UEB 2026 para códigos estáveis <code>ESP-UEB26-&lt;id&gt;</code>, usados pelo catálogo POR 2025+, enciclopédia, fichas e agenda.</li>
+    <li><code>especialidades_guia.sqlite</code> contém 274 especialidades e 2.741 requisitos do catálogo 2024-1, hoje preservado como programa anterior/transição.</li>
+    <li><code>src/data/officialSpecialtyCatalog.ts</code> mantém compatibilidade com fichas 2024-1 <code>ESP-GUIA-&lt;id&gt;</code> e também reconhece <code>ESP-UEB26-&lt;id&gt;</code> em fluxos legados que chamam essa função.</li>
     <li><code>specs_*.json</code> e as regras de premiação antigas são compatibilidade do POR 2020, não fonte de verdade do POR 2025+.</li>
-    <li>Antes de alterar requisitos, blocos, insignias ou reconhecimentos, conferir fonte oficial atual. Em 2026-08-09 foram identificados novos Guias de Especialidades e Insígnias 2025 na Loja Escoteira; não importar conteúdo sem fonte integral auditável no projeto.</li>
+    <li>Antes de alterar requisitos, blocos, insignias ou reconhecimentos, conferir fonte oficial atual. Para especialidades UEB 2026, regenere a base com <code>python conhecimento/tools/scrape_ueb_especialidades_2026.py</code> e valide requisitos vazios antes de integrar.</li>
     <li>Resoluções CAN 05/2025 e CAN 09/2025: transição do Programa Educativo atualizado até 30/06/2027; obrigatoriedade geral em 01/07/2027; Paxtu/mAPPa/cONdecora atualizados a partir de 01/02/2026.</li>
   </ul>
   <h2>Regras de persistência</h2>
@@ -51,7 +53,8 @@
     <li><code>python conhecimento/tools/audit_dados_operacionais.py</code>.</li>
     <li><code>python conhecimento/tools/run_release_check.py --dist</code>.</li>
   </ol>
-  <p>O build usa Vite 8; em <code>vite.config.ts</code>, use <code>import.meta.dirname</code> no lugar de <code>__dirname</code>. O release deve produzir instalador, executável portátil e ZIP em <code>release/20260709-1904/</code>. Os filtros de especialidade devem usar <code>isSpecialtyCode</code>, jamais o texto visível da categoria. Atualize este documento, <code>usersmanual.html</code> e <code>versions.html</code> em qualquer alteração de comportamento, dados ou distribuição.</p>
+  <p>O build usa Vite 8; em <code>vite.config.ts</code>, use <code>import.meta.dirname</code> no lugar de <code>__dirname</code>. O release deve produzir instalador, executável portátil e ZIP em <code>release/20260709-1904/</code>. Os filtros de especialidade devem usar <code>isSpecialtyCode</code>, jamais o texto visível da categoria. Atualize este documento, <code>usersmanual.html</code> e <code>versions.html</code> em qualquer alteração de comportamento, dados ou distribuição. O cache <code>raw_html/</code> da UEB é local, grande e regenerável; não versionar.</p>
 </main>
 </body>
 </html>
+

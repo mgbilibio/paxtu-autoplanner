@@ -1,9 +1,9 @@
 import {
-  EspecialidadeGuia,
-  ESPECIALIDADES_GUIA,
-  RAMOS_ESPECIALIDADES,
-  REQUISITOS_GUIA,
-} from '../data/generated/especialidades_guia';
+  EspecialidadeAtualizadaGuia as EspecialidadeGuia,
+  UPDATED_ESPECIALIDADES_GUIA as ESPECIALIDADES_GUIA,
+  UPDATED_RAMOS_ESPECIALIDADES as RAMOS_ESPECIALIDADES,
+  UPDATED_REQUISITOS_GUIA as REQUISITOS_GUIA,
+} from '../data/updatedSpecialtyCatalog';
 import { MemberSpecialtyState } from '../types';
 import { escapeHtml, safeFileName } from './htmlExportCommon';
 import { LOGO_GRUPO_DATA_URI } from '../data/generated/logo_grupo';

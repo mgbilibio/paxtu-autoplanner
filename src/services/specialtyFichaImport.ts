@@ -1,4 +1,7 @@
-import { ESPECIALIDADES_GUIA, EspecialidadeGuia } from '../data/generated/especialidades_guia';
+import {
+  EspecialidadeAtualizadaGuia as EspecialidadeGuia,
+  UPDATED_ESPECIALIDADES_GUIA as ESPECIALIDADES_GUIA,
+} from '../data/updatedSpecialtyCatalog';
 import {
   MemberSpecialtyState,
   SpecialtyEvidence,

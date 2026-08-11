@@ -1,0 +1,6112 @@
+// Auto-gerado por conhecimento/tools/scrape_ueb_especialidades_2026.py
+// Fonte pública: https://www.escoteiros.org.br/especialidades/
+
+export const ESPECIALIDADES_UEB_2026 = {
+  "capturadoEm": "2026-08-11T12:37:54+00:00",
+  "fonte": "https://www.escoteiros.org.br/especialidades/",
+  "especialidades": [
+    {
+      "id": 260001,
+      "post_slug": "administracao-atualizado",
+      "titulo": "Administração",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/administracao-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/04/Especialidades_Lobinho_e_Escoteiro_Administracao_N1-1.png",
+      "requisitos": [
+        "1. Identificar os tipos de organizações (públicas, privadas, sem fins lucrativos e cooperativas) e citar exemplos que existem na sua cidade ou bairro, explicando com suas palavras o que cada uma faz.",
+        "2. Identificar quatro áreas em que pessoas administradoras podem trabalhar , como finanças, recursos humanos, marketing e planejamento, explicando com suas palavras o que cada área faz no dia a dia.",
+        "3. Conversar com uma pessoa que trabalha com administração , como um comerciante, gestor, coordenador de escola ou dirigente do seu grupo escoteiro, e contar para sua seção o que aprendeu sobre o trabalho dela.",
+        "4. Usar uma ferramenta simples de administração , como uma lista de tarefas, um quadro de organização (kanban), uma tabela de custos ou um cronograma, para apoiar a realização de algum tipo de atividade.",
+        "5. Montar, sozinho ou em equipe, um pequeno plano de ação para uma atividade à sua escolha (lanche coletivo, atividade comunitária, excursão, entre outras.) definindo um objetivo, ações, responsáveis e prazos — e depois avaliar juntos os resultados (pode usar uma tabela, quadro ou cartaz).",
+        "6. Relacionar um dos Objetivos de Desenvolvimento Sustentável (ODS) com o tema da boa administração , explicando como planejar e organizar bem pode ajudar pessoas e o planeta."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [
+        "Exemplos de áreas: marketing, financeiro, compras, estoque, recursos humanos, logística, vendas/comercial, gestão estratégica, TI, inovação, entre outras.",
+        "Possíveis ferramentas: 5W2H, matriz SWOT/FOFA, brainstorming, diagrama de Ishikawa (espinha de peixe), entre outras."
+      ],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260002,
+      "post_slug": "aeronautica-atualizado",
+      "titulo": "Aeronáutica",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/aeronautica-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/04/Especialidades_Lobinho_e_Escoteiro_Aeronautica_N1.png",
+      "requisitos": [
+        "1. Explicar o princípio de sustentação do voo , demonstrando o efeito do ar sobre as asas com um experimento simples baseado no princípio de Bernoulli.",
+        "2. Identificar as principais partes de uma aeronave (fuselagem, asas, trem de pouso, leme, ailerons e flaps) em um modelo físico ou digital, explicando a função de cada uma.",
+        "3. Em um aeródromo identificar os principais tipos de aeronaves e helicópteros em operação , classificando-os como civis, comerciais, militares, e explicando suas diferenças.",
+        "4. Explicar como funciona o motor a pistão e o motor a jato , mostrando suas diferenças e o impacto de cada um na velocidade e no consumo de combustível.",
+        "5. Demonstrar como o vento interfere no voo e na navegação aérea , simulando, por meio de experimento ou maquete, os efeitos de vento de proa, cauda e través.",
+        "6. Explicar o que significam os números nas pistas de pouso e decolagem , relacionando-os à direção do vento e aos sistemas de iluminação e segurança das pistas.",
+        "7. Organizar um registro de observação aérea , anotando por pelo menos uma semana informações sobre aeronaves vistas em voo (dia, hora, tipo, direção e características observáveis).",
+        "8. Apresentar, com ilustrações ou maquete, os três eixos de movimento de um avião (longitudinal, lateral e vertical), explicando como os comandos da cabine os controlam."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260003,
+      "post_slug": "arquitetura-e-urbanismo-atualizado",
+      "titulo": "Arquitetura e Urbanismo",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/arquitetura-e-urbanismo-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/04/Especialidades_Lobinho_e_Escoteiro_Arquitetura_e_Urbanismo_N1.png",
+      "requisitos": [
+        "1. Descobrir o que é arquitetura e urbanismo , observando construções antigas e modernas de sua cidade e explicando o que muda entre elas.",
+        "2. Conversar com uma pessoa que trabalha com arquitetura ou urbanismo (como um arquiteto, engenheiro, técnico de edificações ou servidor público da área) e contar para sua seção o que aprendeu sobre o trabalho dessa profissão.",
+        "3. Desenhar dois estilos diferentes de construções , mostrando elementos simples como portas, janelas, colunas ou telhados, e explicando o que diferencia um do outro.",
+        "4. Montar uma maquete simples de um cômodo , mostrando paredes, janelas, portas e móveis, usando materiais recicláveis ou de baixo custo (papel, papelão, palitos, etc.).",
+        "5. Apresentar para sua seção uma construção importante da sua cidade , contando sua história, para que serve e por que é importante para a comunidade.",
+        "6. Comparar dois locais da sua cidade ou bairro , observando o que é bem planejado (como praças, calçadas, ruas, ciclovias, iluminação) e sugerindo pequenas melhorias para deixá-los mais agradáveis e seguros."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260004,
+      "post_slug": "arte-digital-atualizado",
+      "titulo": "Arte Digital",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/arte-digital-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/04/Especialidades_Lobinho_e_Escoteiro_Arte_Digital_N1.png",
+      "requisitos": [
+        "1. Explorar o que é arte digital , conhecendo diferentes formas de produzi-la (como desenho, pintura, animação e colagem digital), identificando quais ferramentas ou aplicativos podem ser usados.",
+        "2. Criar um desenho digital simples , escolhendo o tema e explicando por que selecionou as cores e os elementos utilizados.",
+        "3. Criar um desenho digital usando diferentes camadas (layers) e mostrar as vantagens dessa ferramenta na organização da imagem.",
+        "4. Fazer um desenho digital com efeitos de luz e sombra , explicando como esses recursos dão profundidade e realismo à arte.",
+        "5. Produzir um desenho digital utilizando uma paleta específica de cores (análogas, complementares, monocromáticas ou triádicas), apresentando o resultado e o motivo da escolha.",
+        "6. Criar uma arte digital para divulgar uma atividade, evento ou campanha da sua seção ou do seu grupo escoteiro , adaptando-a para uso nas redes sociais.",
+        "7. Organizar uma pequena exposição ou mostra virtual com pelo menos cinco das suas criações digitais, explicando o processo e o que aprendeu.",
+        "8. Produzir uma animação simples ou vídeo curto , mostrando seu processo de criação e explicando as principais ferramentas usadas."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260005,
+      "post_slug": "artes-visuais-atualizado",
+      "titulo": "Artes Visuais",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/artes-visuais-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/04/Especialidades_Lobinho_e_Escoteiro_Artes_Visuais_N1.png",
+      "requisitos": [
+        "1. Descobrir a história da expressão artística que escolheu , fazendo uma linha do tempo simples com suas principais transformações e artistas importantes.",
+        "2. Apresentar os materiais e ferramentas usados na sua arte (tintas, pincéis, argila, papel, câmeras, etc.), explicando para que serve cada um.",
+        "3. Conversar com um artista visual (profissional, estudante ou artesão) para entender como é o processo criativo e contar à seção o que aprendeu sobre o trabalho dele.",
+        "4. Criar ao menos cinco obras usando a técnica escolhida (ou dez, se desejar o Nível 2), experimentando cores, formas e materiais diferentes.",
+        "5. Comparar obras de três artistas que usam a mesma técnica, incluindo pelo menos um artista brasileiro, identificando semelhanças e diferenças.",
+        "6. Relacionar uma de suas obras com a de outro artista , explicando o tema, os materiais usados ou o que inspirou sua criação.Relacionar uma de suas obras com a de outro artista, explicando o tema, os materiais usados ou o que inspirou sua criação.",
+        "7. Participar ou organizar uma exposição (presencial ou virtual) com suas criações, apresentando suas obras para o grupo ou comunidade.",
+        "8. Ensinar outra pessoa a criar uma obra usando a técnica que você aprendeu, compartilhando o passo a passo e incentivando a criatividade."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260006,
+      "post_slug": "artesanato-atualizado",
+      "titulo": "Artesanato",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/artesanato-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/04/Especialidades_Lobinho_e_Escoteiro_Artesanato_N1.png",
+      "requisitos": [
+        "1. Escolher um tipo de artesanato (como cerâmica, bordado, cestaria, macramê, tricô, madeira, entre outros) e apresentar os materiais e ferramentas usados, explicando a função de cada um.",
+        "2. Pesquisar artesanatos típicos de cinco regiões do Brasil , mostrando seus materiais e para que servem (ex.: cerâmica do Nordeste, renda do Sul, cestaria indígena da Amazônia).",
+        "3. Visitar uma feira ou exposição de artesanato , observando as técnicas, os estilos e as pessoas que produzem, e contar para a seção o que aprendeu.",
+        "4. Confeccionar ao menos dois trabalhos artesanais , utilizando o tipo de artesanato ou material escolhido.",
+        "5. Criar novas peças com o mesmo tipo de artesanato , experimentando variações de cor, forma ou técnica.",
+        "6. Calcular o preço de uma das peças que produziu , considerando o custo dos materiais, o tempo gasto e o valor cultural agregado.",
+        "7. Explicar à sua seção a importância do artesanato , mostrando como ele ajuda na economia, na preservação da cultura e na valorização das tradições locais.",
+        "8. Ensinar outra pessoa a fazer um trabalho artesanal , explicando o passo a passo e estimulando a criatividade e o reaproveitamento de materiais."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260007,
+      "post_slug": "astronomia-atualizado",
+      "titulo": "Astronomia",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/astronomia-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/04/Especialidades_Lobinho_e_Escoteiro_Astronomia_N1.png",
+      "requisitos": [
+        "1. Compreender os fenômenos celestes básicos , utilizando materiais simples (como esferas, lanternas e bolas) para explicar dia e noite, estações do ano, fases da Lua e eclipses.",
+        "2. Apontar no céu noturno , com ajuda de mapas ou aplicativos, três constelações , o polo celeste , os pontos cardeais e o movimento aparente do céu .",
+        "3. Explicar onde está o Sistema Solar na Via Láctea , descrevendo brevemente o que são galáxias, exoplanetas e o que sabemos sobre a origem do universo (Big Bang).",
+        "4. Construir e apresentar um relógio de Sol , explicando como ele funciona e como indica as horas conforme a posição do Sol.",
+        "5. Construir uma luneta simples ou outro instrumento de observação, utilizando materiais acessíveis, e explicar como ela ajuda a observar o céu.",
+        "6. Visitar um planetário ou observatório , ou utilizar um simulador digital do céu, registrando o que aprendeu sobre estrelas, planetas e constelações.",
+        "7. Elaborar um painel ilustrado ou apresentação multimídia sobre cinco missões espaciais importantes, incluindo seus objetivos, destinos e descobertas.",
+        "8. Apresentar a biografia de um astrônomo ou astrônoma , contando quem foi, o que descobriu e por que é importante para a ciência."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260008,
+      "post_slug": "biblioteconomia-atualizado",
+      "titulo": "Biblioteconomia",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/biblioteconomia-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/04/Especialidades_Lobinho_e_Escoteiro_Biblioteconomia_N1.png",
+      "requisitos": [
+        "1. Explicar como funciona uma biblioteca , observando como os livros são organizados, emprestados e devolvidos.",
+        "2. Descrever as partes de um livro , identificando capa, lombada, sumário, índice, capítulos e ficha catalográfica.",
+        "3. Descobrir onde é possível adquirir livros novos e usados , como sebos, feiras, bibliotecas comunitárias, trocas ou doações.",
+        "4. Organizar os livros que possui em casa, na escola ou no grupo escoteiro , criando uma forma simples de classificação (por tema, autor, cor ou tamanho).",
+        "5. Demonstrar como cuidar e conservar livros , explicando como evitar rasgos, umidade, sujeira e exposição ao sol.",
+        "6. Pesquisar e explicar quais insetos podem danificar o papel , mostrando maneiras de proteger os livros contra eles.",
+        "7. Entrevistar um(a) bibliotecário(a) e contar à seção o que aprendeu sobre o trabalho dessa profissão e a importância das bibliotecas na comunidade.",
+        "8. Montar uma lista com oito livros recomendados para crianças e adolescentes , justificando brevemente as razões da escolha (história inspiradora, aprendizado, aventura, curiosidade, etc.)."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260009,
+      "post_slug": "cartografia-atualizado",
+      "titulo": "Cartografia",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/cartografia-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/04/Especialidades_Lobinho_e_Escoteiro_Cartografia_N1.png",
+      "requisitos": [
+        "1. Explicar o que é um mapa e para que ele serve. Mostrar diferentes tipos de mapas (como políticos, físicos ou temáticos) e identificar os símbolos usados neles.",
+        "2. Mostrar como as escalas funcionam e calcular a distância entre dois pontos em um mapa simples.",
+        "3. Demonstrar como encontrar os pontos cardeais e orientar um mapa usando a bússola .",
+        "4. Fazer um pequeno percurso de até 4 km , anotando no caderno os principais pontos observados e criando um mapa desse trajeto.",
+        "5. Explicar e demonstrar o uso de pelo menos um instrumento de medição de mapas (como escalímetro, transferidor, rosa-dos- ventos ou cordão).",
+        "6. Conversar com alguém que trabalha com mapas (como geógrafos, topógrafos ou engenheiros) e contar o que aprendeu.",
+        "7. Usar um aplicativo ou GPS para localizar um ponto no mapa e marcar esse local em um mapa impresso.",
+        "8. Ensinar para a seção ou patrulha como usar uma bússola e orientar um mapa."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260011,
+      "post_slug": "comunicacoes-atualizado",
+      "titulo": "Comunicações",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/comunicacoes-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/04/Especialidades_Lobinho_e_Escoteiro_Comunicacao_N1.png",
+      "requisitos": [
+        "1. Explicar como a comunicação mudou com o tempo , comparando jornais, rádio, TV e internet.",
+        "2. Observar e comparar cinco capas de jornais ou sites e explicar como as cores, letras e imagens ajudam na leitura.",
+        "3. Mostrar como usar com responsabilidade o telefone , as mensagens e os e-mails, mantendo suas informações protegidas.",
+        "4. Explicar, de forma simples, como funcionam o celular, o Wi-Fi e os dados móveis . Mostrar também como usar um rádio HT ou VHF.",
+        "5. Escrever uma pequena reportagem, artigo ou editorial sobre um tema de interesse da sua seção ou comunidade.",
+        "6. Produzir uma propaganda em vídeo ou um spot de rádio , com uma mensagem positiva sobre o Escotismo.",
+        "7. Conversar ou entrevistar alguém que trabalha com comunicação (como jornalista, radialista ou fotógrafo) e contar o que aprendeu.",
+        "8. Planejar e aplicar, um sistema de comunicação simples para uma atividade escoteira."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260010,
+      "post_slug": "comedia-atualizado",
+      "titulo": "Comédia",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/comedia-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/04/Especialidades_Lobinho_e_Escoteiro_Comedia_N1.png",
+      "requisitos": [
+        "1. Pesquisar sobre os diferentes tipos de comédia (como piada, paródia, improviso e esquete) e contar uma piada de cada tipo.",
+        "2. Contar cinco piadas , sendo pelo menos três típicas da sua região ou cultura local.",
+        "3. Contar ou dramatizar uma situação engraçada que você viveu.",
+        "4. Escrever e apresentar um esquete de comédia com a sua matilha ou patrulha em um Fogo de Conselho, Flor Vermelha ou outro evento.",
+        "5. Fazer uma pequena apresentação de improviso com temas sugeridos pelo público.",
+        "6. Criar uma paródia de uma música conhecida com tema ligado ao Escotismo.",
+        "7. Criar uma piada ou esquete curta sobre Baden-Powell ou a história do Escotismo.",
+        "8. Gravar um vídeo curto de comédia sobre o Escotismo ou seu Grupo Escoteiro e apresentar para sua seção."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260012,
+      "post_slug": "confeitaria-atualizado",
+      "titulo": "Confeitaria",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/confeitaria-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/04/Especialidades_Lobinho_e_Escoteiro_Confeitaria_N1.png",
+      "requisitos": [
+        "1. Escolher e preparar uma receita de bolo, torta ou doce simples , ajustando as quantidades para servir seis pessoas.",
+        "2. Explicar e demonstrar o passo a passo de uma receita , destacando o uso correto dos utensílios, o tempo de forno e os cuidados com a higiene.",
+        "3. Criar uma sobremesa leve e saborosa , usando frutas ou ingredientes naturais com pouco açúcar.",
+        "4. Preparar uma receita tradicional da sua região , como cocada, arroz-doce ou quindim, valorizando seus ingredientes e modo de preparo.",
+        "5. Inventar uma sobremesa nova com ingredientes regionais, dando um toque pessoal à receita.",
+        "6. Fazer um mousse, pudim ou flan , garantindo a textura e a consistência ideais."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260013,
+      "post_slug": "construcao-civil-atualizado",
+      "titulo": "Construção Civil",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/construcao-civil-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/04/Especialidades_Lobinho_e_Escoteiro_Construcao_Civil_N1.png",
+      "requisitos": [
+        "1. Identificar e explicar o uso de cinco ferramentas utilizadas por pedreiros, mostrando como cuidar e conservar cada uma delas.",
+        "2. Diferenciar alvenaria de vedação e alvenaria estrutural , explicando onde são usadas nas construções.",
+        "3. Fazer um conserto simples em piso cimentado ou parede , utilizando a mistura correta de argamassa.",
+        "4. Reconhecer os principais elementos de uma obra (como fundação, pilares, vigas e lajes) e explicar suas funções.",
+        "5. Explicar o que são juntas e rejuntes , onde são usados e por que são importantes para a durabilidade das construções.",
+        "6. Apontar os principais cuidados que devem ser tomados para garantir a segurança em um canteiro de obras."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260014,
+      "post_slug": "costura-e-estilismo-atualizado",
+      "titulo": "Costura e Estilismo",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/costura-e-estilismo-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/04/Especialidades_Lobinho_e_Escoteiro_Costura_e_Estilo_N1.png",
+      "requisitos": [
+        "1. Criar uma linha do tempo ilustrada mostrando a evolução da moda e os estilos que marcaram diferentes épocas.",
+        "2. Identificar e diferenciar tipos de linhas e agulhas e explicar para que servem em três tipos de tecidos.",
+        "3. Montar dois looks completos — um casual e um de festa — explicando as escolhas de roupas e acessórios.",
+        "4. Customizar uma peça de roupa ou acessório , contando o processo criativo, os materiais usados e o resultado final.",
+        "5. Costurar ou remendar um tecido rasgado , pregar dois tipos de botões e um par de colchetes corretamente.",
+        "6. Preparar e usar uma máquina de costura doméstica para fazer uma bainha ou barra simples."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260015,
+      "post_slug": "criptografia-atualizado",
+      "titulo": "Criptografia",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/criptografia-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/04/Especialidades_Lobinho_e_Escoteiro_Criptografia_N1.png",
+      "requisitos": [
+        "1. Explicar o que é criptografia e para que serve.",
+        "2. Contar com suas palavras quem foi Alan Turing e por que ele é importante para a história dos códigos.",
+        "3. Mostrar o que significam os termos encriptação e decriptação , com um exemplo simples.",
+        "4. Explicar como funciona a cifra de César e criar uma mensagem curta usando esse tipo de código.",
+        "5. Demonstrar por que a frequência das letras ajuda a decifrar mensagens secretas.",
+        "6. Explicar três tipos diferentes de cifras ou códigos usados para esconder mensagens.",
+        "7. Criar uma cifra própria e preparar uma atividade divertida para a seção usando esse código.",
+        "8. Explicar o que é sigilo perfeito e dar exemplos de como ele pode ser usado na vida real."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260016,
+      "post_slug": "culinaria-atualizado",
+      "titulo": "Culinária",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/culinaria-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/04/Especialidades_Lobinho_e_Escoteiro_Culinaria_N1.png",
+      "requisitos": [
+        "1. Explicar diferentes formas de conservar alimentos sem usar geladeira, explicando como funcionam e quanto tempo os alimentos duram em cada caso.",
+        "2. Identificar os principais utensílios de cozinha e mostrar para que servem, utilizando-os em uma receita simples.",
+        "3. Demonstrar como higienizar corretamente frutas, legumes e verduras antes do preparo.",
+        "4. Planejar um cardápio saudável e equilibrado para um acampamento, calculando as quantidades e considerando restrições alimentares.",
+        "5. Ser o cozinheiro ou cozinheira da patrulha durante um acampamento , organizando o cardápio, organizando os ingredientes e mostrando boas práticas de higiene e segurança.",
+        "6. Montar uma cozinha de acampamento , explicando como garantir segurança e evitar incêndios.",
+        "7. Explicar o que é alimentação sustentável e como ela ajuda a cuidar das pessoas e do meio ambiente.",
+        "8. Conversar com um profissional da culinária e contar o que aprendeu sobre sua rotina e cuidados com os alimentos."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [
+        "Entende-se por “utensílios” tudo o que for necessário para preparar o prato, que não sejam os seus ingredientes."
+      ],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260017,
+      "post_slug": "design-de-interiores-atualizado",
+      "titulo": "Design de Interiores",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/design-de-interiores-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/04/Especialidades_Lobinho_e_Escoteiro_Design_de_Interiores_N1.png",
+      "requisitos": [
+        "1. Decorar uma estante, mesa ou aparador , equilibrando cores, formas e texturas de maneira harmoniosa.",
+        "2. Criar e apresentar uma pequena exposição de objetos decorativos feitos por você, explicando o material, o custo e a utilidade de cada peça.",
+        "3. Modificar um móvel pequeno, como uma cadeira ou caixa , melhorando sua aparência e funcionalidade, e registrar as etapas da transformação.",
+        "4. Fazer uma maquete (física ou virtual) de um cômodo decorado , mostrando a disposição dos móveis e objetos.",
+        "5. Visitar uma loja de decoração, móveis ou tecidos e contar, com suas palavras, o que aprendeu sobre combinações e estilos.",
+        "6. Conversar com um arquiteto, designer de interiores ou decorador e explicar a diferença entre essas profissões."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260018,
+      "post_slug": "e-sports-atualizado",
+      "titulo": "E-Sports",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/e-sports-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/04/Especialidades_Lobinho_e_Escoteiro_E-Sports_N1.png",
+      "requisitos": [
+        "1. Escolher dois jogos eletrônicos de sua preferência, completar um deles e apresentar o outro , explicando o tipo de jogo, a história, a jogabilidade e o fabricante.",
+        "2. Criar um mapa mental com os principais jogos de e-sports e seus campeonatos mais conhecidos.",
+        "3. Apresentar as regras e noções básicas de segurança para jogar e participar de uma partida de e-sport.",
+        "4. Promover ou participar de um debate sobre a importância dos e-sports e seu crescimento no mundo atual.",
+        "5. Escolher um jogo e montar uma dinâmica ao ar livre que simule suas regras , explicando como funcionam os rankings e divisões entre jogadores.",
+        "6. Organizar ou participar de um pequeno campeonato de e-sports , aplicando regras, estratégias e trabalho em equipe."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [
+        "Completar o jogo significa chegar ao seu final, encerrando com sucesso o que o jogo propõe. Em termos mais específicos, podemos dizer “zerar o jogo”, “finalizar o jogo” ou “acabar o jogo”."
+      ],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260019,
+      "post_slug": "educacao-financeira-atualizado",
+      "titulo": "Educação Financeira",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/educacao-financeira-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/04/Especialidades_Lobinho_e_Escoteiro_Educacao_Financeira_N1.png",
+      "requisitos": [
+        "1. Fazer uma apresentação simples mostrando a diferença entre necessidades e desejos , e como isso ajuda a evitar compras por impulso.",
+        "2. Planejar os custos para comprar um objeto de interesse da seção ou patrulha e contar o que aprendeu sobre orçamento e planejamento.",
+        "3. Produzir um cartaz, texto ou vídeo explicando o que é consumismo e como ele afeta as pessoas e o meio ambiente.",
+        "4. C omparar as vantagens e desvantagens do uso do crédito , explicando por que é importante gastar apenas o que se pode pagar.",
+        "5. Identificar as causas e consequências do endividamento e sugerir ideias para evitar ou resolver essa situação.",
+        "6. Explicar, com exemplos, a diferença entre poupar para comprar e comprar a prazo .",
+        "8. Pesquisar três tipos de produtos financeiros (como poupança, ações ou fundos de investimento) e explicar, de forma simples, seus riscos e benefícios."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260020,
+      "post_slug": "empreendedorismo-atualizado",
+      "titulo": "Empreendedorismo",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/empreendedorismo-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/04/Especialidades_Lobinho_e_Escoteiro_Empreendedorismo_N1.png",
+      "requisitos": [
+        "1. Explicar com suas palavras o que é ser empreendedor e dar exemplos de pessoas, projetos ou negócios que inspiram você.",
+        "2. Identificar um problema real na sua comunidade, escola ou Grupo Escoteiro e pensar em formas criativas de resolvê-lo.",
+        "3. Trabalhar em equipe para criar uma solução simples , como um produto, serviço ou ação, que ajude a resolver o problema identificado.",
+        "4. Fazer um protótipo ou uma simulação da sua ideia , mostrando como ela funcionaria.",
+        "5. Conversar com pelo menos três pessoas para saber o que acham da sua ideia e anotar sugestões de melhoria.",
+        "6. Criar um plano simples que explique: o nome da ideia, o problema que ela resolve, quem usaria, como seria feita e quanto poderia custar.",
+        "7. Apresentar sua ideia para um pequeno público (como a patrulha, seção ou escola), anotar o que foi comentado e fazer ao menos uma melhoria a partir dessas sugestões.",
+        "8. Colocar sua ideia em prática de forma experimental (como vender, testar ou aplicar o serviço) e contar o que aprendeu com a experiência."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [
+        "Pode ser um desenho, uma maquete, um vídeo, uma apresentação, uma encenação, etc."
+      ],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260021,
+      "post_slug": "encadernacao-atualizado",
+      "titulo": "Encadernação",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/encadernacao-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Encadernacao_N1.png",
+      "requisitos": [
+        "1. Definir as partes de um livro (como capa, contracapa, lombada e miolo) e identificar as ferramentas e materiais usados na encadernação .",
+        "2. Confeccionar e colocar uma capa em um livro ou caderno , preferencialmente de uso da seção ou patrulha (como o Livro de Caça ou o Livro de Patrulha).",
+        "3. Reparar páginas soltas ou rasgadas em dois tipos diferentes de encadernação.",
+        "4. Encadernar um livro ou caderno completo , utilizando uma técnica simples de costura ou colagem.",
+        "5. Improvisar uma prensa artesanal para ajudar no processo de encadernação.",
+        "6. Trocar ou restaurar a lombada de um livro danificado.",
+        "7. Demonstrar três tipos diferentes de encadernação (como brochura, canoa, espiral ou lombada quadrada).",
+        "8. Visitar uma oficina, ateliê ou gráfica de encadernação artesanal e contar o que aprendeu sobre o processo e as ferramentas usadas."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 2
+        },
+        {
+          "nome": "Nível II",
+          "itens": 4
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260022,
+      "post_slug": "etiqueta-atualizado",
+      "titulo": "Etiqueta",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/etiqueta-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Etiqueta_N1.png",
+      "requisitos": [
+        "1. Demonstrar boas maneiras à mesa , apresentando o uso correto dos talheres e o momento certo de começar a refeição, e listar cinco regras de etiqueta úteis para o dia a dia.",
+        "2. Produzir um material simples (cartaz, texto ou vídeo) com dicas sobre etiqueta digital , mostrando como agir com respeito nas redes sociais, mensagens e reuniões on-line.",
+        "3. Visitar um espaço cultural (como teatro, museu ou cinema) e escrever um breve relato sobre a experiência, observando comportamentos adequados nesses ambientes.",
+        "4. Criar e apresentar uma esquete mostrando como se comportar em uma cerimônia, reunião ou evento formal.",
+        "5. Pesquisar como as regras de etiqueta variam em diferentes culturas e apresentar três curiosidades interessantes sobre essas diferenças.",
+        "6. Simular uma conversa com uma autoridade (como um diretor, chefe ou convidado especial), praticando expressões formais e postura adequada."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260023,
+      "post_slug": "fiscalizacao-de-patio-de-aerodromo-atualizado",
+      "titulo": "Fiscalização de Pátio de Aeródromo",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/fiscalizacao-de-patio-de-aerodromo-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Fiscalizacao_de_Patio_de_Aerodromo_N1.png",
+      "requisitos": [
+        "1. Explicar o que faz um fiscal de pátio e descrever as principais atividades realizadas nessa área do aeródromo.",
+        "2. Demonstrar oito sinais de balizamento , encenando uma simulação de aproximação e parada com a ajuda de outra pessoa que represente a aeronave.",
+        "3. Explicar o que é F.O.D. (Foreign Object Debris) , como é feita a vistoria de pista e por que esse trabalho é importante para a segurança.",
+        "4. Citar cinco equipamentos usados na área de estacionamento de aeronaves e explicar para que servem.",
+        "5. Explicar o que é atividade ilícita em aeródromo , descrevendo quais os principais protocolos de segurança.",
+        "6. Identificar as áreas de risco ao redor das aeronaves e demonstrar os procedimentos corretos de segurança ao se aproximar delas.",
+        "7. Fazer um desenho ou maquete simples mostrando as principais partes de um aeródromo , destacando áreas de segurança, restritas e de livre circulação.",
+        "8. Demonstrar que sabe utilizar o alfabeto fonético internacional , na identificação de uma aeronave."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260024,
+      "post_slug": "fotografia-atualizado",
+      "titulo": "Fotografia",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/fotografia-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Fotografia_N1.png",
+      "requisitos": [
+        "1. Criar uma linha do tempo mostrando a história da fotografia, desde sua criação até os dias atuais.",
+        "2. Fazer cinco fotos usando diferentes tipos de composição , como regra dos terços, simetria, linhas diagonais ou formas circulares.",
+        "3. Tirar seis fotos — três com luz natural e três com luz artificial — e comparar os resultados, observando as diferenças na iluminação.",
+        "4. Fotografar seis cenas, sendo três com objetos ou pessoas em movimento e três paradas , usando diferentes velocidades de obturador, e explicar as diferenças obtidas.",
+        "5. Fazer três fotos no mesmo lugar , mudando apenas uma configuração por vez (abertura, velocidade ou ISO) e explicar como isso alterou a imagem.",
+        "6. Escolher três fotos suas e editá-las em um aplicativo , ajustando luz, contraste e enquadramento. Mostrar o antes e depois e explicar suas escolhas.",
+        "7. Fazer a cobertura fotográfica de um evento escoteiro , registrando os melhores momentos e apresentando o resultado à seção.",
+        "8. Apresentar as obras de três fotógrafos importantes , incluindo pelo menos um brasileiro, e contar o que mais chamou sua atenção em cada um."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260025,
+      "post_slug": "gps-atualizado",
+      "titulo": "GPS",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/gps-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_GPS_N1.png",
+      "requisitos": [
+        "1. Explicar o que são coordenadas geográficas, paralelos e meridianos , mostrando como eles ajudam a localizar lugares no mapa.",
+        "2. Explicar como funciona o GPS ( Global Positioning System ) e citar alguns exemplos de como ele é usado no dia a dia.",
+        "3. Mostrar o que é um datum no GPS , localizá-lo em um mapa e demonstrar como alterá-lo em um aparelho ou aplicativo.",
+        "4. Apresentar os principais fatores que podem afetar a precisão do GPS e explicar o que fazer para melhorar o sinal.",
+        "5. Citar outros sistemas de navegação, como Glonass, Galileo e Compass , explicando em que se diferenciam do GPS.",
+        "6. Realizar um percurso de pelo menos 3 km , marcando pontos de interesse e criando um pequeno mapa com as localizações encontradas."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260026,
+      "post_slug": "grafite-atualizado",
+      "titulo": "Grafite",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/grafite-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Grafite_N1.png",
+      "requisitos": [
+        "1. Explicar o que é grafite , contar sua origem e evolução, e citar três artistas reconhecidos, nacionais ou internacionais, destacando seus estilos e obras.",
+        "2. Diferenciar grafite de pichação , explicando o significado de cada um e a importância de obter autorização antes de realizar uma intervenção artística.",
+        "3. Apresentar os principais materiais usados no grafite (como tintas, sprays e stencil) e demonstrar conhecimento sobre duas técnicas diferentes.",
+        "4. Reconhecer , por meio de imagens ou exemplos, as principais modalidades de grafite e suas diferenças de estilo.",
+        "5. Criar e apresentar um grafite de tema livre , usando materiais adequados e respeitando os cuidados de segurança e organização do espaço.",
+        "6. Desenvolver uma arte com o tema Movimento Escoteiro em mural fixo ou móvel, em local previamente autorizado, apresentando o planejamento da obra antes da execução."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [
+        "Exemplos de materiais e equipamentos: sprays, máscaras, bicos, luvas, entre outros.",
+        "Exemplos de modalidades: throw-up, wildstyle, stencil art, entre outras.",
+        "O projeto da arte deve ser previamente apresentado ao examinador, demonstrando o planejamento da execução.",
+        "A venda de tintas spray e solventes é proibida por lei federal para menores de 18 anos. Caso necessite destes materiais, solicite o apoio de seus responsáveis."
+      ],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260027,
+      "post_slug": "hq-atualizado",
+      "titulo": "HQ",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/hq-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_HQ_N1.png",
+      "requisitos": [
+        "1. Apresentar um personagem de histórias em quadrinhos , contando sua origem, criador, poderes, desafios e principais curiosidades.",
+        "2. Citar cinco editoras conhecidas de HQs e indicar um personagem famoso de cada uma delas.",
+        "3. Organizar uma pequena exposição com dez personagens de HQs de sua preferência , incluindo pelo menos dois brasileiros, com suas principais características e criadores.",
+        "4. Apresentar três autores ou artistas importantes de HQs — sendo ao menos um brasileiro — e comentar suas obras mais conhecidas.",
+        "5. Ler três HQs (sendo uma nacional) e gravar ou apresentar um resumo sobre o título, ano, país, gênero e o que mais gostou em cada uma.",
+        "6. Produzir um material (vídeo, cartaz ou apresentação) sobre três grandes festivais de quadrinhos do mundo , incluindo um realizado no Brasil.",
+        "7. Organizar ou participar de uma sessão de vídeo para assistir a um filme baseado em um personagem de HQ e conversar sobre a adaptação.",
+        "8. Criar um personagem próprio — herói, vilão ou pessoa comum — e apresentar sua história, características e visual, explicando como o imaginou e quais valores ele representa."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260028,
+      "post_slug": "informatica-atualizado",
+      "titulo": "Informática",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/informatica-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Informatica_N1.png",
+      "requisitos": [
+        "1. Criar uma linha do tempo simples mostrando como os computadores evoluíram , desde as primeiras máquinas até os dias de hoje.",
+        "2. Identificar e explicar as funções dos principais componentes internos e externos de um computador.",
+        "3. Explicar os diferentes tipos de armazenamento de dados (como HD, SSD e nuvem) e suas principais diferenças.",
+        "4. Explicar o que são vírus, malwares e outras ameaças virtuais e apresentar formas de proteger o computador, como antivírus e autenticação em duas etapas.",
+        "5. Usar um programa digital (planilha, editor de texto ou apresentação) para criar um material útil para a seção , como o orçamento ou a divulgação de um acampamento.",
+        "6. Explicar o que são inteligência artificial, computação em nuvem e automação , dando exemplos de como aparecem no dia a dia.",
+        "7. Citar dez profissões que utilizam a informática e explicar como a tecnologia é importante para o trabalho em cada uma delas.",
+        "8. Utilizar um programa dentre as opções abaixo:"
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260029,
+      "post_slug": "jornalismo-atualizado",
+      "titulo": "Jornalismo",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/jornalismo-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Jornalismo_N1.png",
+      "requisitos": [
+        "1. Criar uma linha do tempo mostrando a evolução da imprensa escrita e falada até os dias atuais, destacando o papel do jornalista em cada época.",
+        "2. Produzir uma reportagem em vídeo sobre um evento escoteiro , apresentando entrevistas e imagens do acontecimento.",
+        "3. Montar um jornal mural para sua patrulha ou seção , atualizando-o durante um acampamento ou atividade.",
+        "4. Fazer uma cobertura fotográfica de um evento escoteiro , registrando os principais momentos e compartilhando com o grupo.",
+        "5. Explicar o que são fake news e discutir por que a ética é fundamental no trabalho jornalístico.",
+        "6. Criar uma reportagem com texto e fotos , diagramada em um programa ou aplicativo, e apresentar o resultado final à seção.",
+        "7. Entrevistar uma pessoa ligada ao Movimento Escoteiro e escrever um resumo com as principais informações da conversa.",
+        "8. Reunir e apresentar duas matérias sobre o Escotismo publicadas em jornais, revistas, TV ou mídias digitais , explicando como elas ajudam a divulgar o movimento."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 9
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260030,
+      "post_slug": "manicure-atualizado",
+      "titulo": "Manicure",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/manicure-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Manicure_N1.png",
+      "requisitos": [
+        "1. Produzir um material simples (cartaz, texto ou vídeo) explicando como deve ser a aparência de unhas saudáveis e o que elas podem indicar sobre a saúde.",
+        "2. Cortar e lixar as próprias unhas corretamente e ensinar outra pessoa a fazer, explicando quais tipos de lixa usar em cada caso.",
+        "3. Montar um pequeno kit de manicure e demonstrar como utilizar os materiais com segurança e higiene.",
+        "4. Fazer um vídeo curto sobre a importância da higiene na manicure , mostrando como evitar riscos à saúde.",
+        "5. Entrevistar um profissional da área ou visitar um salão de beleza e contar o que aprendeu sobre o trabalho e os cuidados do dia a dia.",
+        "6. Criar um design original de unhas , utilizando cores e técnicas à sua escolha, mostrando sua criatividade e estilo pessoal."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 9
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260031,
+      "post_slug": "manutencao-eletrica-atualizado",
+      "titulo": "Manutenção Elétrica",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/manutencao-eletrica-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Manutencao_Eletrica_N1.png",
+      "requisitos": [
+        "1. Montar um eletroímã simples e demonstrar como funcionam as forças de atração e repulsão.",
+        "2. Explicar a diferença entre corrente contínua e corrente alternada e dar exemplos de onde cada uma é utilizada.",
+        "3. Explicar os principais termos e unidades de medida elétrica , como volt, watt e ampère.",
+        "4. Realizar um pequeno reparo , como trocar uma lâmpada, substituir a resistência de um chuveiro ou montar uma extensão elétrica.",
+        "5. Analisar a iluminação de um ambiente e calcular quantas lâmpadas seriam ideais, levando em conta potência e consumo de energia.",
+        "6. Montar uma lista com os itens básicos de uma caixa de ferramentas para pequenos reparos elétricos.",
+        "7. Demonstrar como usar instrumentos de medição elétrica , como voltímetro e amperímetro, explicando para que servem.",
+        "8. Apresentar as medidas de segurança ao lidar com eletricidade e o que fazer em casos de choque elétrico, incluindo os primeiros socorros."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 9
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260032,
+      "post_slug": "maquete-atualizado",
+      "titulo": "Maquete",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/maquete-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Maquete_N1.png",
+      "requisitos": [
+        "1. Realizar uma atividade ou jogo na seção que mostre a importância das maquetes para representar espaços e compreender proporções.",
+        "2. Construir uma maquete simples , informando a escala usada, os materiais escolhidos e os cuidados de segurança durante o trabalho.",
+        "3. Fazer uma maquete de uma praça, monumento ou outro espaço público , explicando as principais dificuldades encontradas no processo.",
+        "4. Ler e interpretar um desenho técnico simples (como planta baixa, planta de situação ou desenho explodido).",
+        "5. Construir uma maquete de uma edificação com pelo menos dois pavimentos, respeitando proporções e estabilidade.",
+        "6. Calcular o custo aproximado dos materiais utilizados na construção de uma maquete, apresentando o orçamento final."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260033,
+      "post_slug": "marcenaria-atualizado",
+      "titulo": "Marcenaria",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/marcenaria-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Marcenaria_N1.png",
+      "requisitos": [
+        "1. Diferenciar madeira maciça, compensado e MDF , explicando as principais características e o uso mais indicado de cada tipo.",
+        "2. Demonstrar o uso correto dos Equipamentos de Proteção Individual (EPIs) necessários para o trabalho em marcenaria.",
+        "3. Nomear e identificar cinco ferramentas manuais utilizadas na marcenaria , explicando para que servem e os cuidados ao manuseá-las.",
+        "4. Fazer duas uniões simples entre peças de madeira , sendo uma com pregos e outra com cola.",
+        "5. Criar e executar um pequeno projeto de marcenaria , cortando, lixando, unindo as peças e aplicando acabamento (verniz ou cera).",
+        "6. Nomear e identificar três ferramentas elétricas usadas na marcenaria , explicando seus usos e cuidados de segurança.",
+        "7. Confeccionar uma caixa com tampa e instalar corretamente a dobradiça .",
+        "8. Criar e montar um projeto de marcenaria que utilize ao menos três tipos de união (como prego, parafuso, cola ou cavilha)."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 9
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260034,
+      "post_slug": "marinharia-atualizado",
+      "titulo": "Marinharia",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/marinharia-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Marinharia_N1.png",
+      "requisitos": [
+        "1. Reconhecer oito tipos de embarcações usadas na sua região, explicando suas principais características e usos.",
+        "2. Identificar as partes e nomenclaturas da embarcação usada nas atividades (como escaler, baleeira ou veleiro) e desempenhar as funções de proeiro, remador e operador de bomba d’água.",
+        "3. Demonstrar como arrumar corretamente o material e a tripulação a bordo , equilibrando o peso e garantindo segurança.",
+        "4. Praticar o apoio às embarcações em terra e na água , incluindo atracação, colocação de defensas, abastecimento e acolhida de navegadores.",
+        "5. Explicar o que são correntes e marés , interpretar uma Tábua de Marés e mostrar como essas informações afetam a navegação.",
+        "6. Montar e desmontar uma embarcação com autonomia , organizando os materiais, distribuindo funções e garantindo segurança no embarque e desembarque.",
+        "7. Manobrar uma pequena embarcação a remo, realizando ações como atracar, fundear, abicar na praia e transportar materiais.",
+        "8. Utilizar instrumentos náuticos básicos, como bússola e rosa-dos-ventos , e simular a navegação com apoio de uma carta náutica ou aplicativo de navegação."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260035,
+      "post_slug": "matematica-atualizado",
+      "titulo": "Matemática",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/matematica-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Matematica_N1.png",
+      "requisitos": [
+        "1. Criar três gráficos simples (de barras, setores ou linha, por exemplo) com um conjunto de dados do cotidiano , como a frequência dos jovens nas atividades, tipos de lanches preferidos ou clima da semana, apresentando as diferenças entre os tipos de gráfico na sua utilização e interpretação.",
+        "2. Construir uma estrutura com palitos de sorvete , de bambu ou LEGO, realizando medições e diferenciando grandezas (como área e comprimento) e elementos das figuras geométricas (como lados, arestas, vértices, faces, etc.).",
+        "3. Resolver problemas matemáticos do dia-a-dia durante uma semana , registrando problemas como calcular trocos, estimar tempos, dividir quantidades ou medir distâncias, e apresentar os cálculos ao final do período, diferenciando as operações básicas.",
+        "4. Comparar o resultado da medição de diferentes objetos ou distâncias usando estimativas como passos, cordas, palmos, etc., e medidas padronizadas, como réguas e trenas. Apresente o resultado desta comparação, citando possíveis fontes de erro, o que é proporção e como essas estimativas podem ser úteis em diferentes situações.",
+        "5. Elaborar um planejamento de economia pessoal para um mês , baseado em um orçamento fictício fixado pelo examinador, planejando gastos essenciais e opcionais, como alimentação, lazer, transporte e reserva financeira.",
+        "6. Criar uma sequência de cinco desafios inspirados em provas de Olimpíadas de Matemática , resolvendo cada um e explicando os métodos utilizados e relacionando com os conteúdos escolares.",
+        "7. Construir uma Torre de Hanói com materiais recicláveis e jogar com os membros de sua seção ou patrulha, explicando como utilizar recursão para calcular o número mínimo de movimentos necessários.",
+        "8. Criar desenhos ou mosaicos que utilizem simetria e padrões geométricos , apresentando transformações como translação, rotação, reflexão e homotetia."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260036,
+      "post_slug": "mecanica-de-automoveis-atualizado",
+      "titulo": "Mecânica de Automóveis",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/mecanica-de-automoveis-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Mecanica_de_Automoveis_N1.png",
+      "requisitos": [
+        "1. Criar um cartaz ilustrado sobre o motor de combustão interna , mostrando seus principais componentes e explicando a diferença entre os motores Ciclo Otto e Ciclo Diesel.",
+        "2. Explicar a importância do óleo e do sistema de arrefecimento para o bom funcionamento e a durabilidade do motor.",
+        "3. Realizar, com supervisão de um adulto, uma verificação simples em um veículo (como nível de óleo, água, calibragem dos pneus e funcionamento das luzes) e registrar o que observou.",
+        "4. Listar as principais ferramentas e Equipamentos de Proteção Individual (EPIs) usados em manutenções automotivas, explicando para que servem.",
+        "5. Analisar imagens de pneus desgastados , identificar possíveis causas e explicar a importância de calibragem, alinhamento e rodízio.",
+        "6. Fazer um desenho simples do sistema de freios , identificando suas partes e explicando como verificar se está em boas condições.",
+        "7. Localizar os fusíveis e a bateria em um veículo (real com a supervisão de um adulto ou em diagrama), explicando sua função e cuidados básicos com o sistema elétrico.",
+        "8. Pesquisar e apresentar novas tecnologias e combustíveis alternativos usados em veículos , mostrando como ajudam a reduzir a poluição e tornar o transporte mais sustentável."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260037,
+      "post_slug": "oratoria-atualizado",
+      "titulo": "Oratória",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/oratoria-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Oratoria_N1.png",
+      "requisitos": [
+        "1. Apresentar as principais técnicas de expressão em público , como postura, tom de voz, gestos e contato visual, demonstrando cada uma delas.",
+        "2. Criar e apresentar um pequeno discurso de até três minutos sobre um tema de sua escolha, aplicando as técnicas de oratória.",
+        "3. Ler em voz alta um texto de sua autoria ou escolhido por você , treinando ritmo, entonação e clareza na fala.",
+        "4. Criar um roteiro simples para uma apresentação , com introdução, desenvolvimento e conclusão, e praticá-lo diante de colegas.",
+        "5. Participar de um debate sobre um tema de interesse , organizando seus argumentos e respeitando a fala dos outros participantes.",
+        "6. Avaliar a própria apresentação , apontando pontos fortes e o que pode ser melhorado para futuras falas em público."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260038,
+      "post_slug": "pintura-atualizado",
+      "titulo": "Pintura",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/pintura-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Pintura_N1.png",
+      "requisitos": [
+        "1. Identificar os principais materiais usados em pintura (pincéis, rolos, bandejas, lixas, fitas adesivas) e explicar a função de cada um.",
+        "2. Demonstrar como preparar uma superfície para pintura , realizando etapas como limpeza, lixamento e aplicação de fundo ou primer.",
+        "3. Conhecer diferentes tipos de tinta (acrílica, óleo, látex, esmalte) e explicar em quais superfícies cada uma deve ser usada.",
+        "4. Pintar uma porta ou peça de madeira , aplicando corretamente todas as etapas de preparação, pintura e acabamento.",
+        "5. Executar a pintura de uma parede de alvenaria , utilizando as técnicas apropriadas e cuidando do acabamento.",
+        "6. Realizar a pintura de uma estrutura metálica (como portão ou cerca), mostrando como evitar corrosão e aplicar tintas específicas para metal.",
+        "7. Demonstrar três técnicas de pintura decorativa (como pinceladas, esponjado e estêncil) e criar um pequeno projeto artístico usando-as.",
+        "8. Explicar e demonstrar cuidados de segurança ao lidar com tintas e solventes , além de mostrar como limpar corretamente os materiais após o uso."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260039,
+      "post_slug": "planador-atualizado",
+      "titulo": "Planador",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/planador-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Planador_N1.png",
+      "requisitos": [
+        "1. Realizar uma inspeção pré-voo em um planador , descrevendo os principais pontos que devem ser verificados.",
+        "2. Posicionar corretamente um planador antes e depois do lançamento , explicando o motivo de cada posição.",
+        "3. Demonstrar os sinais usados durante o lançamento de um planador e explicar sua importância para a segurança do voo.",
+        "4. Explicar o que são correntes termais, como se formam e de que maneira ajudam o planador a permanecer no ar.",
+        "5. Pesquisar e apresentar as principais características e limites de operação de um modelo de planador à sua escolha.",
+        "6. Participar de um lançamento real de planador , observando os procedimentos de segurança e relatando a experiência."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260040,
+      "post_slug": "plastimodelismo-atualizado",
+      "titulo": "Plastimodelismo",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/plastimodelismo-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Plastiomodelismo_N1.png",
+      "requisitos": [
+        "1. Montar um plastimodelo à sua escolha (como avião, carro, barco, figura ou modelo de ficção), seguindo as instruções e aplicandoc técnicas básicas de montagem.",
+        "2. Posicionar corretamente um planador antes e depois do lançamento , explicando o motivo de cada posição.",
+        "3. Demonstrar os sinais usados durante o lançamento de um planador e explicar sua importância para a segurança do voo.",
+        "4. Explicar o que são correntes termais, como se formam e de que maneira ajudam o planador a permanecer no ar.",
+        "5. Pesquisar e apresentar as principais características e limites de operação de um modelo de planador à sua escolha.",
+        "6. Participar de um lançamento real de planador , observando os procedimentos de segurança e relatando a experiência."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260041,
+      "post_slug": "prevencao-de-incendio-atualizado",
+      "titulo": "Prevenção de Incêndio",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/prevencao-de-incendio-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Prevencao_de_Incendio_N1.png",
+      "requisitos": [
+        "1. Explicar o que é o fogo e identificar os três elementos necessários para a combustão. Acender uma pequena fogueira com segurança, sob supervisão de um adulto.",
+        "2. Explicar os principais métodos de extinção de incêndios (resfriamento, abafamento e remoção do combustível) e demonstrar um deles apagando uma fogueira, com supervisão de um adulto.",
+        "3. Ensinar os procedimentos de segurança e as formas corretas de evacuação em caso de incêndio. Realizar um simulado com a seção, indicando saídas e pontos de encontro.",
+        "4. Identificar o corpo de bombeiros ou posto mais próximo , saber como acionar o serviço e apresentar o número de emergência.",
+        "5. Fazer uma lista de produtos inflamáveis encontrados em casa e explicar como devem ser armazenados corretamente.",
+        "6. Explicar os diferentes tipos de extintores (água, espuma, CO2 e pó químico) e indicar em quais situações cada um deve ser utilizado."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260042,
+      "post_slug": "producao-grafica-atualizado",
+      "titulo": "Produção Gráfica",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/producao-grafica-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Producao_Grafica_N1.png",
+      "requisitos": [
+        "1. Apresentar, física ou digitalmente, cinco tipos diferentes de papéis e gramaturas , explicando suas principais diferenças e aplicações.",
+        "2. Visitar uma gráfica (pública, comercial ou escolar) e relatar como funciona o processo de impressão e acabamento.",
+        "3. Criar um arquivo digital e convertê-lo em três formatos diferentes (como PDF, PNG e JPG), explicando qual é mais indicado para impressão e por quê.",
+        "4. Produzir um cartaz explicando as diferenças entre três tipos de impressão (como digital, offset e serigrafia).",
+        "5. Produzir um pequeno livreto apresentando os tipos de fontes (serifadas, não serifadas, caligráficas, decorativas) e explicar como cada uma influencia na leitura.",
+        "6. Criar um folder de divulgação para sua Unidade Escoteira Local , explicando as decisões sobre cores, fontes, imagens e layout."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260043,
+      "post_slug": "programacao-atualizado",
+      "titulo": "Programação",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/programacao-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Programacao_N1.png",
+      "requisitos": [
+        "1. Criar um algoritmo para uma tarefa simples (como uma receita ou um jogo rápido), escrito em pseudocódigo ou em fluxograma.",
+        "2. Desenvolver um programa curto com interação no terminal , usando ao menos um comando condicional (SE/IF) e um de repetição (ENQUANTO/WHILE).",
+        "3. Apresentar três linguagens de programação (por exemplo: Scratch, Python e JavaScript), dizendo onde são usadas e mostrar um exemplo simples que resolva o mesmo problema nas três.",
+        "4. Explicar, com palavras simples, o que é controle de versão (como Git) e mostrar um fluxo básico : criar repositório, salvar mudanças (commit) e comentar o que foi alterado.",
+        "5. Encontrar e corrigir um erro (bug) em um programa curto , explicando como descobriu o problema e como o resolveu.",
+        "6. Criar uma API bem simples de “agenda de contatos” (pode ser simulada), mostrando como adicionar e listar contatos, e explicar para que serve uma API.",
+        "7. Usar a programação para ajudar sua seção , patrulha ou matilha: apresentar um pequeno aplicativo, planilha com script ou automação que resolva um problema real (ex.: lista de presença, sorteio de equipes).",
+        "8. E screver um passo a passo (README) explicando como usar um dos seus programas : o que ele faz, como executar e exemplos de uso."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260044,
+      "post_slug": "propaganda-e-marketing-atualizado",
+      "titulo": "Propaganda e Marketing",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/propaganda-e-marketing-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Propaganda_e_Marketing_N1.png",
+      "requisitos": [
+        "1. Criar uma propaganda para o seu Grupo Escoteiro ou Seção Escoteira Autônoma, usando o meio de sua escolha (como cartaz, vídeo, arte digital ou música).",
+        "2. Inventar um produto fictício e elaborar uma propaganda para apresentá-lo à seção , explicando quais estratégias de comunicação foram usadas.",
+        "3. Criar uma empresa fictícia e desenvolver sua marca , logotipo e slogan, explicando o significado das escolhas feitas.",
+        "4. Escolher um produto da Loja Escoteira e produzir um vídeo curto divulgando-o de forma criativa.",
+        "5. Criar uma campanha publicitária promovendo uma ação social ou ambiental e apresentar para a seção.",
+        "6. Produzir uma foto publicitária de um produto à sua escolha , explicando a escolha do ângulo, das cores e da composição da imagem.",
+        "7. Explicar, de forma simples, as principais etapas do planejamento de uma campanha publicitária e o que é público-alvo ( target ).",
+        "8. Criar um vídeo ou peça publicitária sobre o Movimento Escoteiro , destacando seus valores e convidando outras pessoas a participarem."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 9
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260045,
+      "post_slug": "quimica-atualizado",
+      "titulo": "Química",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/quimica-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Quimica_N1.png",
+      "requisitos": [
+        "1. Listar cinco situações do cotidiano que envolvem fenômenos químicos (como cozinhar, enferrujar ou limpar) e explicar brevemente o que acontece em cada uma.",
+        "2. Observar e classificar cinco fenômenos do dia a dia como físicos ou químicos , explicando a diferença entre eles.",
+        "3. Criar um cartaz com as principais regras de segurança em laboratório , mostrando os Equipamentos de Proteção Individual (EPIs) e os materiais básicos usados em experimentos.",
+        "4. Elaborar uma linha do tempo com os principais modelos atômicos — de Dalton ao modelo atual — e mostrar como a Tabela Periódica é utilizada hoje.",
+        "5. Montar modelos simples de moléculas (como água, etanol e sal de cozinha) com materiais recicláveis ou de montagem, respeitando cores e tamanhos dos átomos.",
+        "6. Realizar um experimento com comprimidos efervescentes em diferentes condições (como água quente e fria) e explicar por que a reação muda de velocidade.",
+        "7. Misturar água, óleo e detergente, observar o que acontece e explicar por que o detergente ajuda na mistura dos líquidos.",
+        "8. Produzir um cartaz ou apresentação sobre Química Verde , mostrando como ela busca reduzir impactos ambientais e comparando produtos sustentáveis e tradicionais."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260046,
+      "post_slug": "radioamadorismo-atualizado",
+      "titulo": "Radioamadorismo",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/radioamadorismo-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Radioamadorismo_N1.png",
+      "requisitos": [
+        "1. Descobrir para que serve o radioamadorismo e explicar algumas regras básicas de uso responsável do rádio.",
+        "2. Identificar transmissores, receptores e antenas , explicando como cada um ajuda na comunicação.",
+        "3. Explorar diferentes tipos de antenas e reconhecer pelo menos três modelos, observando suas diferenças visuais e para que servem.",
+        "4. Demonstrar, com orientação, como fazer o aterramento e a proteção contra raios de uma estação de rádio.",
+        "5. Acompanhar um radioamador durante pelo menos uma hora de transmissão, observando como chamar, ouvir e encerrar a comunicação de maneira correta. Após, demonstrar o que foi aprendido.",
+        "6. Produzir um vídeo curto explicando o que são repetidoras e como elas ajudam na comunicação entre radioamadores.",
+        "7. Apresentar para sua seção como o radioamadorismo é usado em situações de emergência e ajuda humanitária.",
+        "8. Criar seu próprio cartão QSL (cartão de confirmação de contato entre radioamadores), incluindo o símbolo do Radioescotismo."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260047,
+      "post_slug": "radioescuta-atualizado",
+      "titulo": "Radioescuta",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/radioescuta-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Radioescuta_N1.png",
+      "requisitos": [
+        "1. Visitar, sozinho ou em equipe, duas estações de radioamador ou uma estação comercial de rádio ou TV e contar o que aprendeu sobre como funcionam as transmissões.",
+        "2. Pesquisar e listar cinco estações de rádio que transmitam em ondas curtas em português e cinco em língua estrangeira, informando os horários, frequências e conteúdos.",
+        "3. Identificar e demonstrar o uso básico dos principais comandos e controles de um rádio receptor.",
+        "4. Montar uma pequena exposição com até vinte cartões QSL (de confirmação de contato via rádio), incluindo pelo menos três de estações escoteiras.",
+        "5. Reconhecer cinco expressões do Código Q , cinco letras do Código Fonético Internacional e cinco letras do Código Morse, ouvidas em transmissões reais ou simuladas.",
+        "6. Identificar seis indicativos de chamada de países diferentes , explicando a origem de cada um e o que representam nas transmissões."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260048,
+      "post_slug": "redes-de-computadores-atualizado",
+      "titulo": "Redes de Computadores",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/redes-de-computadores-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Rede_de_Computadores_N1.png",
+      "requisitos": [
+        "1. Apresentar a história e evolução da internet , explicando como as redes de computadores tornaram possível a comunicação global.",
+        "2. Configurar uma rede local simples (LAN) para três dispositivos , utilizando roteadores e/ou switches, garantindo acesso à internet.",
+        "3. Criar uma tabela comparando diferentes tipos de conexão (fibra óptica, rede móvel e satélite), destacando vantagens, desvantagens e diferenças entre 3G, 4G e 5G.",
+        "4. Simular ou representar, por meio de jogo ou esquete, como funcionam três protocolos de comunicação (como TCP, HTTP e DNS) e sua importância na troca de dados.",
+        "5. Configurar um roteador wi-fi , definindo nome da rede, senha e parâmetros básicos de segurança.",
+        "6. Apresentar as principais ameaças às redes (como phishing e ataques DDoS) e explicar boas práticas de segurança para proteger dispositivos e dados.",
+        "7. Utilizar ferramentas de diagnóstico de rede (como ping, tracert ou speedtest) para testar e comparar a qualidade da conexão.",
+        "8. Explicar, com exemplos, o que são Internet das Coisas (IoT) e computação em nuvem , mostrando como essas tecnologias estão presentes no dia a dia."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260049,
+      "post_slug": "reparos-domesticos-atualizado",
+      "titulo": "Reparos Domésticos",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/reparos-domesticos-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Reparos_Domesticos_N1.png",
+      "requisitos": [
+        "1. Apresentar as principais regras de segurança para realizar reparos elétricos em casa.",
+        "2. Fazer um pequeno reparo elétrico, como trocar uma lâmpada, tomada ou interruptor , explicando o que foi feito e os cuidados tomados.",
+        "3. Trocar uma torneira, registro ou gaxeta , garantindo o fechamento correto e sem vazamentos.",
+        "4. Ajustar ou regular uma descarga , explicando como funciona o mecanismo interno.",
+        "5. Reparar uma parede com pequenos danos , aplicando gesso ou massa e preparando a superfície para pintura.",
+        "6. Preparar uma parede para receber pintura , realizando limpeza, lixamento e aplicação de selador, se necessário.",
+        "7. Montar uma caixa de ferramentas básicas , explicando o uso e os cuidados com cada item.",
+        "8. Demonstrar que sabe usar corretamente ferramentas manuais como martelo, chave de fenda, alicate e trena, com segurança e precisão.",
+        "9. Consertar um brinquedo simples (como trocar rodinhas, montar um boneco ou costurar uma pelúcia) e explicar o processo escolhido.",
+        "10. Trocar um botijão de gás com segurança e demonstrar como verificar se há vazamentos. Explicar o que fazer em casos de rompimento de canos ou vazamento de gás."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 5
+        },
+        {
+          "nome": "Nível II",
+          "itens": 10
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260050,
+      "post_slug": "robotica-atualizado",
+      "titulo": "Robótica",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/robotica-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Robotica_N1.png",
+      "requisitos": [
+        "1. Realizar uma dinâmica explicando o que pode ou não ser considerado um robô e apresentar os principais tipos, características e diferenças entre eles.",
+        "2. Montar e programar um modelo simples com peças móveis que tenha pelo menos um componente eletrônico de controle.",
+        "3. Montar um modelo com três ou mais partes móveis (como engrenagens, polias ou correntes) que possa ser controlado por rádio ou conexão sem fio.",
+        "4. Criar e programar um protótipo de robô que resolva um problema prático na UEL ou comunidade.",
+        "5. Programar um robô que use ao menos dois sensores e inclua uma estrutura condicional (if) e de repetição (loop) para executar suas ações.",
+        "6. Montar e programar um robô capaz de se comunicar via wi-fi ou bluetooth com outro robô semelhante, trocando informações simples.",
+        "7. Explicar o funcionamento de duas funções em um programa para Arduino (ou plataforma similar), demonstrando seu uso na prática.",
+        "8. Programar uma mudança de cor no botão de um HUB (ou componente equivalente) e apresentar uma pesquisa sobre competições de robótica, como a FIRST, destacando seus principais valores e objetivos."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260051,
+      "post_slug": "seguranca-no-transito-atualizado",
+      "titulo": "Segurança no Trânsito",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/seguranca-no-transito-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Seguranca_no_Transito_N1.png",
+      "requisitos": [
+        "1. Promover um debate ou roda de conversa sobre segurança no trânsito , explicando por que é importante respeitar as regras para pedestres, ciclistas, motoristas e passageiros.",
+        "2. Identificar o significado das cores do semáforo e de cinco placas de trânsito diferentes , explicando sua função e onde costumam ser encontradas.",
+        "3. Realizar uma caminhada pela sua cidade ou bairro e registrar (com fotos ou anotações) exemplos de locais seguros e inseguros para pedestres e ciclistas.",
+        "4. Participar de uma atividade ou palestra sobre as causas dos acidentes de trânsito e apresentar ideias de como evitá-los.",
+        "5. Descobrir quais órgãos cuidam da segurança no trânsito na sua cidade e escrever uma mensagem ou carta sugerindo uma melhoria para o bairro.",
+        "6. Criar uma atividade educativa (como jogo, gincana ou cartaz) que explique os seis pilares do Pnatrans — o Plano Nacional de Redução de Mortes e Lesões no Trânsito.",
+        "7. Produzir um material criativo (vídeo, desenho, HQ ou cartaz) com dicas de segurança no trânsito e apresentar à seção, escola ou comunidade.",
+        "8. Pesquisar dados sobre acidentes de trânsito em sua cidade ou região e apresentar os resultados em um gráfico, mapa ou outro formato visual."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260052,
+      "post_slug": "simulacao-aerea-atualizado",
+      "titulo": "Simulação Aérea",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/simulacao-aerea-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Simulacao_Aerea_N1.png",
+      "requisitos": [
+        "1. Fazer uma apresentação sobre como os simuladores de voo funcionam , contando sua história e importância para o treinamento de pilotos.",
+        "2. Realizar, em um simulador de voo, as manobras básicas de guinada, arfagem e rolagem , seguindo as instruções de um orientador.",
+        "3. Ensinar outro jovem a utilizar um simulador de voo , explicando os principais controles e comandos.",
+        "4. Decolar, executar um circuito de tráfego padrão e realizar o pouso de uma aeronave em um simulador de voo.",
+        "5. Construir uma estrutura (como uma pioneiria) que simule os três eixos de rotação de uma aeronave , permitindo ao piloto sentir os movimentos.",
+        "6. Executar, no simulador, as manobras de ultrapassagem, cruzamento e evasão de colisão , explicando cada procedimento de segurança.",
+        "7. Seguindo uma carta de aproximação, realizar um circuito de espera e um procedimento de toque e arremetida em um simulador.",
+        "8. Realizar com precisão ao menos duas acrobacias aéreas (como Looping, Tonneaux, Immelman ou Oito Cubano) em um simulador de voo."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260053,
+      "post_slug": "sinalizacao-atualizado",
+      "titulo": "Sinalização",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/sinalizacao-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Sinalizacao_N1.png",
+      "requisitos": [
+        "1. Confeccionar um par de bandeiras de semáfora (aproximadamente 50cm x 50cm) e utilizá-las para transmitir uma mensagem de, no mínimo, quinze palavras entre dois pontos distantes cerca de 100 metros.",
+        "2. Construir um aparelho para transmitir mensagens em Código Morse por meio de sinais luminosos e utilizá-lo à noite para enviar uma mensagem de quinze palavras a uma distância mínima de 10 metros.",
+        "3. Apresentar o alfabeto dos códigos de Semáfora, Morse e Internacional de Bandeiras , explicando suas origens e onde são usados.",
+        "4. Demonstrar, em Semáfora e Código Morse, o sinal internacional de socorro (SOS) e explicar seu significado.",
+        "5. Receber e decodificar uma mensagem de pelo menos quinze palavras enviada em Semáfora e em Código Morse por outro jovem.",
+        "6. Pesquisar e explicar os principais sinais luminosos e sonoros usados na navegação e aviação , e sua importância para a segurança.",
+        "7. Confeccionar um conjunto de galhardetes alfabéticos e numéricos em papel ou tecido, seguindo as cores e formas corretas.",
+        "8. Enviar uma mensagem utilizando galhardetes , demonstrando a combinação correta das bandeiras."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 6
+        },
+        {
+          "nome": "Nível II",
+          "itens": 12
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260054,
+      "post_slug": "vendas-atualizado",
+      "titulo": "Vendas",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/vendas-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Vendas_N1.png",
+      "requisitos": [
+        "1. Explicar as principais características de um bom vendedor (como empatia, comunicação, organização e ética) e comentar como elas ajudam a conquistar e manter clientes.",
+        "2. Ensinar a outros jovens o significado de cinco termos usados em vendas (como meta, comissão, cliente, negociação e fidelização).",
+        "3. Escolher um produto de sua preferência e criar uma estratégia de vendas , com foco em marketing digital e divulgação em redes sociais.",
+        "4. Participar de uma campanha de arrecadação de fundos que envolva a venda de produtos ou serviços, ajudando no planejamento, divulgação e atendimento ao público.",
+        "5. Apresentar uma nota fiscal de venda , explicando as informações que aparecem nela — como impostos, descontos e valor total.",
+        "6. Calcular juros simples e compostos , mostrando como o parcelamento ou uso do cartão de crédito influencia no preço final.",
+        "7. Explicar, de forma simples, como a legislação tributária afeta as vendas de produtos físicos e digitais no comércio eletrônico.",
+        "8. Apresentar três ferramentas digitais (como aplicativos ou plataformas) que ajudem a vender, organizar pedidos ou divulgar produtos de forma eficiente."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260055,
+      "post_slug": "videomaker-atualizado",
+      "titulo": "Videomaker",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/videomaker-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Videomaker_N1.png",
+      "requisitos": [
+        "1. Demonstrar como operar uma câmera ou celular para filmagem , ligando e desligando o equipamento, ajustando o foco e utilizando os principais botões ou comandos de gravação.",
+        "2. Escrever dois roteiros curtos com início, meio e fim , criando histórias simples e envolventes, prontas para serem gravadas.",
+        "3. Gravar um pequeno portfólio com quatro tipos de planos diferentes: plano aberto, plano fechado, ângulo alto e ângulo baixo , explicando como cada enquadramento muda a percepção da cena.",
+        "4. Montar um esquema básico de iluminação (natural ou artificial) e mostrar como a luz afeta a estética e a qualidade da imagem.",
+        "5. Editar um vídeo curto usando um programa acessível , aplicando cortes, transições e trilha sonora para dar ritmo e fluidez à história.",
+        "6. Produzir uma edição mais elaborada (como um clipe ou vídeo criativo), usando sobreposições, efeitos simples e ajustes de som.",
+        "7. Captar e editar um vídeo que registre um momento importante de uma atividade escoteira , aplicando o que aprendeu sobre gravação e edição.",
+        "8. Produzir um mini documentário ou curta-metragem de até 5 minutos , passando por todas as etapas: roteiro, gravação, edição e exibição para um pequeno público."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260056,
+      "post_slug": "web-design-atualizado",
+      "titulo": "Web Design",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/web-design-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Web_Design_N1.png",
+      "requisitos": [
+        "1. Planejar como os usuários vão navegar por um site ou página ( landing page ), criando um sitemap simples que mostre o caminho entre as telas.",
+        "2. Criar um protótipo de baixa fidelidade , usando esboços ou ferramentas digitais, para representar a estrutura básica do site e testar a organização das informações.",
+        "3. Criar wireframes (desenho intermediário do site) em uma ferramenta de sua escolha (como Figma, Adobe XD ou Miro) e coletar opiniões de colegas sobre a facilidade de uso e o visual.",
+        "4. Desenvolver um protótipo de alta fidelidade , definindo cores, tipografia, contraste e organização visual, garantindo harmonia e boa usabilidade.",
+        "5. Testar a acessibilidade de um site , utilizando ferramentas simples (como leitores de tela ou validadores de contraste), e apresentar sugestões de melhorias para torná-lo mais inclusivo.",
+        "6. Produzir um cartaz ilustrativo explicando as principais funções do web design (como UX, UI e desenvolvedor front-end), mostrando como cada papel contribui para a criação de um site eficiente."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260057,
+      "post_slug": "acampamento-atualizado",
+      "titulo": "Acampamento",
+      "eixo": "Meio Ambiente",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/acampamento-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Acampamento_N1.png",
+      "requisitos": [
+        "1. Montar e desmontar e pernoitar em uma barraca , escolhendo um local seguro e sem causar danos à natureza.",
+        "2. Organizar seu material pessoal e coletivo para um acampamento, incluindo abrigo, alimentação e equipamentos básicos.",
+        "3. Montar um canto de patrulha ou campo da alcateia , mantendo tudo limpo, seguro e organizado.",
+        "4. Planejar e ajudar a preparar um cardápio simples para o acampamento, pensando no reaproveitamento de alimentos e na redução de lixo.",
+        "5. Construir uma fogueira segura e de baixo impacto , usando material apropriado e apagando completamente após o uso.",
+        "6. Demonstrar o uso de pelo menos dez nós e amarras úteis em acampamentos, explicando para que servem.",
+        "7. Explicar como cuidar do lixo e dos dejetos , mantendo o acampamento limpo e o ambiente protegido.",
+        "8. Participar de ao menos seis acampamentos com sua patrulha ou alcateia , aplicando boas práticas de segurança, trabalho em equipe e mínimo impacto ambiental."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260058,
+      "post_slug": "agricultura-atualizado",
+      "titulo": "Agricultura",
+      "eixo": "Meio Ambiente",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/agricultura-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Agricultura_N1.png",
+      "requisitos": [
+        "1. Observar e registrar as plantas e pequenos animais encontrados em uma área próxima , como um quintal, horta ou jardim.",
+        "2. Explorar o solo, observando sua cor, textura e umidade , e explicar por que ele é importante para o crescimento das plantas.",
+        "3. Identificar diferentes tipos de cultivo (como horta, pomar, floresta plantada, hidroponia ou permacultura) e dar exemplos práticos de cada um.",
+        "4. Plantar e cuidar de uma semente ou muda , observando seu crescimento por algumas semanas e registrando as mudanças em anotações, fotos ou desenhos.",
+        "5. Preparar um inseticida natural simples com plantas da região (como alho, pimenta ou sabão) e testar como ele ajuda a proteger as folhas.",
+        "6. Visitar uma horta, sítio ou fazenda e contar o que aprendeu sobre os cuidados, as ferramentas e as etapas do cultivo de alimentos.",
+        "7. Identificar práticas que prejudicam o solo e o meio ambiente , como o desmatamento, o uso excessivo de agrotóxicos ou queimadas, e sugerir alternativas sustentáveis.",
+        "8. Compartilhar com a seção o que aprendeu sobre o cultivo e os cuidados com o solo , mostrando fotos, desenhos ou um pequeno relato da experiência."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260059,
+      "post_slug": "animais-peconhentos-e-venenosos-atualizado",
+      "titulo": "Animais peçonhentos e venenosos",
+      "eixo": "Meio Ambiente",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/animais-peconhentos-e-venenosos-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Animais_Venenosos_e_Peconhentos_N1.png",
+      "requisitos": [
+        "1. Explicar, com desenhos, fotos ou vídeos, a diferença entre animais venenosos e peçonhentos , mostrando exemplos de cada tipo.",
+        "2. Apresentar cinco espécies brasileiras , contando seu nome comum, onde vivem, o que comem e como se defendem.",
+        "3. Contar por que o veneno ou a peçonha ajuda esses animais a sobreviver , com exemplos simples de três espécies.",
+        "4. Explicar como esses animais ajudam os seres humanos , como na produção de remédios, cosméticos ou no controle de pragas.",
+        "5. Fazer um cartaz, folheto ou apresentação com dicas de prevenção e primeiros socorros em casos de acidentes com esses animais.",
+        "6. Visitar um centro de pesquisa, museu, zoológico ou assistir a um documentário sobre o tema e contar o que aprendeu na seção."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260060,
+      "post_slug": "aquarismo-atualizado",
+      "titulo": "Aquarismo",
+      "eixo": "Meio Ambiente",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/aquarismo-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Aquarismo_N1.png",
+      "requisitos": [
+        "1. Explicar o que é preciso para montar um aquário adequado a um peixe escolhido, incluindo o tamanho do aquário e os cuidados básicos.",
+        "2. Pesquisar e montar uma ficha simples sobre cinco espécies de peixes , de água doce ou salgada, com informações como nome, origem, tamanho e tipo de reprodução.",
+        "3. Reconhecer cinco espécies de plantas aquáticas ou pequenos invertebrados marinhos , usando fotos, vídeos ou observação direta.",
+        "4. Explicar a diferença entre usar plantas naturais e artificiais em um aquário e como isso afeta os peixes.",
+        "5. Identificar três doenças comuns em peixes de aquário e como preveni-las com cuidados simples.",
+        "6. Manter um pequeno aquário em bom funcionamento por pelo menos um mês , registrando os cuidados e mudanças observadas."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260061,
+      "post_slug": "aquicultura-atualizado",
+      "titulo": "Aquicultura",
+      "eixo": "Meio Ambiente",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/aquicultura-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Aquicultura_N1.png",
+      "requisitos": [
+        "1. Explicar o que é aquicultura, sua relação com o meio ambiente e citar as principais espécies cultivadas, destacando sua importância para a alimentação e a economia local.",
+        "2. Escolher uma espécie aquática e apresentar os cuidados necessários com temperatura, pH, oxigênio e alimentação, explicando como escolher o melhor tipo de ambiente (tanques, viveiros, aquários, etc.).",
+        "3. Comparar dois tipos de sistema de cultivo (como abertos e fechados), destacando vantagens, desvantagens e formas de reduzir os impactos ambientais.",
+        "4. Montar e acompanhar um projeto simples de criação aquática , registrando o crescimento e os cuidados com as espécies (peixes, moluscos ou plantas aquáticas).",
+        "5. Identificar os principais tipos de alimentos usados na aquicultura e explicar como ocorre a reprodução das espécies, incluindo métodos naturais ou estimulados.",
+        "6. Visitar uma unidade de aquicultura , fazenda de peixes ou aquário de pesquisa e contar o que aprendeu sobre as técnicas e os equipamentos usados.",
+        "7. Pesquisar as principais leis e normas que regulam a aquicultura no Brasil, explicando por que elas são importantes para proteger o meio ambiente e a saúde pública.",
+        "8. Identificar doenças comuns em espécies aquáticas e explicar como preveni-las , mostrando a importância da qualidade da água e da limpeza dos tanques."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260062,
+      "post_slug": "biologia-atualizado",
+      "titulo": "Biologia",
+      "eixo": "Meio Ambiente",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/biologia-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Biologia_N1.png",
+      "requisitos": [
+        "1. Contar quem foram Charles Darwin e Gregor Mendel e representar, por meio de um cartaz ou história ilustrada, o que eles descobriram sobre evolução e herança genética.",
+        "2. Fazer uma atividade prática com grupos sanguíneos , usando fichas coloridas ou cartões para simular como o sangue é herdado entre pais e filhos.",
+        "3. Escolher um sistema do corpo humano (como o digestório, nervoso ou respiratório) e montar um modelo ou desenho explicando suas principais partes e funções.",
+        "4. Explicar o que é seleção natural e criar um jogo , desenho ou dramatização mostrando três exemplos de adaptação de animais ou plantas ao ambiente.",
+        "5. Observar e classificar cinco seres vivos encontrados na sua região, dizendo o nome comum e científico (quando possível) e a que grupo pertencem.",
+        "6. Fazer um experimento simples para mostrar como as células se multiplicam , como observar células de cebola no microscópio (ou imagem ampliada) e identificar núcleo e membrana.",
+        "7. Representar, por meio de um esquema ou maquete, como ocorre a divisão celular (mitose e meiose), explicando o que acontece em cada processo.",
+        "8. Conversar com a seção sobre o que é bioética , citando exemplos em que o respeito à vida e à ciência foi seguido ou desrespeitado, e como podemos agir de forma ética nas descobertas científicas."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260063,
+      "post_slug": "botanica-atualizado",
+      "titulo": "Botânica",
+      "eixo": "Meio Ambiente",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/botanica-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Botanica_N1.png",
+      "requisitos": [
+        "1. Explicar o ciclo de vida de uma planta , mostrando as etapas de germinação, crescimento, floração, frutificação e dispersão das sementes.",
+        "2. Apresentar uma planta ameaçada de extinção da sua região , contando seu nome comum e científico, onde vive e por que está em risco.",
+        "3. Observar e registrar as plantas de uma área próxima , identificando quais são nativas e quais vieram de outros lugares.",
+        "4. Fazer um álbum com fotos ou desenhos de oito espécies de plantas , registrando o nome comum, o nome científico e o tipo de ambiente em que vivem.",
+        "5. Montar um esquema simples com os principais tipos de vegetação da sua região , como mata, cerrado ou manguezal, e citar exemplos de plantas de cada um.",
+        "6. Explicar como ações humanas, como o desmatamento ou as queimadas , prejudicam as plantas e propor ideias para proteger e recuperar a vegetação local."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260064,
+      "post_slug": "corrida-de-orientacao-atualizado",
+      "titulo": "Corrida de Orientação",
+      "eixo": "Meio Ambiente",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/corrida-de-orientacao-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Corrida_de_Orientacao_N1.png",
+      "requisitos": [
+        "1. Explicar como surgiu a corrida de orientação no mundo e no Brasil.",
+        "2. Explicar o que é uma bússola e demonstrar como usá-la , mostrando como orientar o mapa com o terreno.",
+        "3. Reconhecer os principais símbolos usados nos mapas e identificar a escala de um mapa topográfico.",
+        "4. Praticar a aferição do passo duplo em 100 metros , caminhando e correndo, para medir distâncias com o próprio passo.",
+        "5. Explicar as principais regras da corrida de orientação , incluindo o cuidado com a natureza e o respeito às áreas por onde o percurso passa.",
+        "6. Apresentar o uniforme e o material usados nas competições , como mapa, bússola, prismas e cartão de controle.",
+        "7. Participar de uma corrida de orientação , individualmente ou em equipe, e contar como foi a experiência.",
+        "8. Montar uma pequena pista de orientação e aplicar uma atividade junto a sua seção."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260065,
+      "post_slug": "cuidados-com-animais-de-estimacao-atualizado",
+      "titulo": "Cuidados com Animais de Estimação",
+      "eixo": "Meio Ambiente",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/cuidados-com-animais-de-estimacao-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Cuidados_com_Animais_de_Estimacao_N1.png",
+      "requisitos": [
+        "1. Cuidar de um animal de estimação por, no mínimo, dois meses , garantindo boa alimentação, limpeza e conforto.",
+        "2. Reconhecer situações de maus-tratos contra animais , explicar o que diz a lei e saber a quem pedir ajuda nesses casos.",
+        "3. Demonstrar como dar remédio pela boca a um animal , com segurança e calma, sem causar estresse ou ferimentos.",
+        "4. Mostrar como segurar um animal com cuidado , para realizar ações simples como cortar unhas, limpar as orelhas, escovar o pelo ou os dentes.",
+        "5. Explicar por que as vacinas são importantes , citando três doenças que podem ser evitadas — incluindo uma que também atinge os humanos.",
+        "6. Conversar com um profissional da área (como um veterinário ou cuidador) sobre os cuidados de saúde e bem-estar dos animais.",
+        "7. Visitar um abrigo ou ONG de proteção animal , observando como os animais são cuidados e contar o que aprendeu.",
+        "8. Produzir uma pequena campanha de conscientização (cartaz, vídeo ou apresentação) sobre o cuidado e o respeito aos animais."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260066,
+      "post_slug": "culinaria-mateira-atualizado",
+      "titulo": "Culinária Mateira",
+      "eixo": "Meio Ambiente",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/culinaria-mateira-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Culinaria_Mateira_N1.png",
+      "requisitos": [
+        "1. Aplicar técnicas simples de conservação de alimentos , como secagem ao sol e defumação, dizendo quando e por que são úteis em acampamentos.",
+        "2. Montar e acender diferentes tipos de fogueiras para cozinhar , explicando o uso de cada uma e como apagá-las com segurança.",
+        "3. Preparar um prato simples usando a técnica da caieira (cozimento enterrado), contando como o alimento é cozido e quais cuidados devem ser tomados.",
+        "4. Fazer três sobremesas ou lanches com técnicas da culinária mateira , usando apenas fogueira, brasa ou fogão improvisado.",
+        "5. Explicar como manter a higiene e o cuidado no preparo de alimentos , especialmente ao limpar aves, peixes ou vegetais.",
+        "6. Cozinhar diferentes receitas , usando um forno de barro ou outro método tradicional."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 9
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260067,
+      "post_slug": "culinaria-mateira-2",
+      "titulo": "Culinária Mateira",
+      "eixo": "Meio Ambiente",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/culinaria-mateira-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Culinaria_Mateira_N1.png",
+      "requisitos": [
+        "Aplicar técnicas simples de conservação de alimentos, como secagem ao sol e defumação, dizendo quando e por que são úteis em acampamentos.",
+        "Montar e acender diferentes tipos de fogueiras para cozinhar, explicando o uso de cada uma e como apagá-las com segurança.",
+        "Preparar um prato simples usando a técnica da caieira (cozimento enterrado), contando como o alimento é cozido e quais cuidados devem ser tomados.",
+        "Fazer três sobremesas ou lanches com técnicas da culinária mateira, usando apenas fogueira, brasa ou fogão improvisado.",
+        "Explicar como manter a higiene e o cuidado no preparo de alimentos, especialmente ao limpar aves, peixes ou vegetais.",
+        "Cozinhar diferentes receitas, usando um forno de barro ou outro método tradicional."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260068,
+      "post_slug": "energia-2",
+      "titulo": "Energia",
+      "eixo": "Meio Ambiente",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/energia-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Energia_N1.png",
+      "requisitos": [
+        "Identificar os principais tipos de fontes de energia, explicando de onde vêm e como funcionam (solar, eólica, hidráulica, biomassa, nuclear e térmica).",
+        "Contar o que aprendeu sobre uma fonte de energia escolhida, mostrando como ela é usada no Brasil e no mundo.",
+        "Exp licar, com um desenho ou maquete simples, como funciona uma usina hidrelétrica, mostrando o caminho da água até a geração de energia.",
+        "Construir um pequeno protótipo que mostre o uso da energia renovável, explicando seu funcionamento.",
+        "Propor ideias para economizar energia em casa, na escola ou na Unidade Escoteira Local, observando hábitos do dia a dia.",
+        "Pesquisar os impactos ambientais causados pela produção de energia, explicando quais fontes poluem menos e por quê.",
+        "Comparar duas formas de geração de energia, destacando vantagens e desvantagens de cada uma.",
+        "Fazer uma apresentação para sua patrulha ou seção explicando por que é importante economizar energia e cuidar do planeta."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260069,
+      "post_slug": "energia-atualizado",
+      "titulo": "Energia",
+      "eixo": "Meio Ambiente",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/energia-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Energia_N1.png",
+      "requisitos": [
+        "1. Identificar os principais tipos de fontes de energia , explicando de onde vêm e como funcionam (solar, eólica, hidráulica, biomassa, nuclear e térmica).",
+        "2. Contar o que aprendeu sobre uma fonte de energia escolhida , mostrando como ela é usada no Brasil e no mundo.",
+        "3. Explicar, com um desenho ou maquete simples, como funciona uma usina hidrelétrica , mostrando o caminho da água até a geração de energia.",
+        "4. Construir um pequeno protótipo que mostre o uso da energia renovável, explicando seu funcionamento.",
+        "5. Propor ideias para economizar energia em casa, na escola ou na Unidade Escoteira Local , observando hábitos do dia a dia.",
+        "6. Pesquisar os impactos ambientais causados pela produção de energia , explicando quais fontes poluem menos e por quê.",
+        "7. Comparar duas formas de geração de energia , destacando vantagens e desvantagens de cada uma.",
+        "8. Fazer uma apresentação para sua patrulha ou seção explicando por que é importante economizar energia e cuidar do planeta."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260070,
+      "post_slug": "entomologia-atualizado",
+      "titulo": "Entomologia",
+      "eixo": "Meio Ambiente",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/entomologia-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Entomologia_N1.png",
+      "requisitos": [
+        "1. Identificar as principais características que diferenciam os insetos de outros animais.",
+        "2. Explicar, com desenhos ou imagens, as partes do corpo e os tipos de pernas e bocas dos insetos , relacionando com o que comem e onde vivem.",
+        "3. Fazer uma escultura ou modelo de um inseto , mostrando suas partes principais (cabeça, tórax, abdômen, antenas e asas).",
+        "4. Ensinar a alguém como classificar cinco insetos de grupos diferentes , como borboletas, abelhas, besouros, formigas e gafanhotos.",
+        "5. Demonstrar o que deve ser feito em caso de picadas ou queimaduras causadas por insetos , mostrando medidas simples de primeiros socorros.",
+        "6. Fazer um vídeo, cartaz ou apresentação sobre insetos benéficos e nocivos , explicando sua importância para o meio ambiente.",
+        "7. Montar um pequeno inventário com fotos ou desenhos dos insetos da sua região , registrando onde foram encontrados e o que fazem na natureza.",
+        "8. Explicar quatro doenças transmitidas por insetos , mostrando quais são os transmissores, os sintomas e como se prevenir."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260071,
+      "post_slug": "escalada-atualizado",
+      "titulo": "Escalada",
+      "eixo": "Meio Ambiente",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/escalada-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Escalada_N1.png",
+      "requisitos": [
+        "1. Conhecer os principais tipos de escalada , como a clássica, esportiva, boulder e de muro, explicando a diferença entre escalada livre e escalada artificial.",
+        "2. Identificar e demonstrar o uso dos principais equipamentos , como cadeirinha, capacete, sapatilha, tipos de mosquetões, tipos de cordas, aparelhos de segurança e equipamentos móveis.",
+        "3. Fazer cinco nós usados na escalada , como o oito duplo, fiel e nó de fita, explicando quando são utilizados.",
+        "4. Explicar a diferença entre corda dinâmica e estática , dizendo quando cada uma é usada e por que é importante cuidar delas.",
+        "5. Escalar uma parede natural (rocha) e artificial (muro de escalada) , demonstrando o seguinte: encordamento, como fazer segurança para o guia, ancoragem e descida.",
+        "6. Descer de rappel de uma parede , autoblocado, com a supervisão de um adulto.",
+        "7. Explicar os principais cuidados e riscos em uma escalada , como chuva, pedras soltas e presença de animais, mostrando como agir com segurança em cada caso.",
+        "8. Citar três formas de impacto ambiental causadas pela escalada e propor atitudes para evitar ou reduzir esses danos à natureza."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 9
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260072,
+      "post_slug": "espeleoturismo-atualizado",
+      "titulo": "Espeleoturismo",
+      "eixo": "Meio Ambiente",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/espeleoturismo-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Espeleoturismo_N1.png",
+      "requisitos": [
+        "1. Explicar como as cavernas se formam e identificar suas principais formações rochosas, como estalactites e estalagmites.",
+        "2. Listar os equipamentos essenciais para o espeleoturismo e explicar como prevenir riscos comuns, como quedas ou falta de iluminação.",
+        "3. Identificar os principais obstáculos encontrados nas cavernas (trechos escorregadios, fendas, lagos, etc.) e apresentar formas seguras de superá-los.",
+        "4. Explicar como reduzir os impactos ambientais durante a visita , cuidando para não danificar formações nem deixar resíduos.",
+        "5. Fazer uma apresentação sobre a importância ecológica das cavernas e os animais que vivem nelas, destacando por que devem ser protegidos.",
+        "6. Realizar uma visita guiada a uma caverna e apresentar o trabalho de um grupo ou associação brasileira que estude ou preserve cavernas."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260073,
+      "post_slug": "excursoes-atualizado",
+      "titulo": "Excursões",
+      "eixo": "Meio Ambiente",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/excursoes-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Excursoes_N1.png",
+      "requisitos": [
+        "1. Apresentar o material individual necessário para diferentes tipos de excursões (a pé, embarcado, de bicicleta, outros) , mostrando como organizar tudo dentro da mochila.",
+        "2. Demonstrar cuidados básicos de primeiros socorros, mostrando o que deve conter uma caixa de primeiros socorros e como agir em caso de emergência.",
+        "3. Apresentar quais são os principais cuidados ao organizar uma excursão , como escolher o local, planejar o percurso e garantir a segurança dos participantes.",
+        "4. Participar de pelo menos três excursões em locais distintos ajudando a preparar o material e utilizando diferentes meios de transporte.",
+        "5. Montar um esquema simples de segurança , levando em conta o número de pessoas, o tipo de terreno e o local da atividade.",
+        "6. Ajudar a organizar uma excursão para sua patrulha ou alcateia , escolhendo o local, definindo o transporte."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 9
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260074,
+      "post_slug": "ferramentas-de-corte-atualizado",
+      "titulo": "Ferramentas de Corte",
+      "eixo": "Meio Ambiente",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/ferramentas-de-corte-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Ferramentas_de_Corte_N1.png",
+      "requisitos": [
+        "1. Identificar seis tipos de ferramentas de corte , explicando para que servem, em quais situações devem ser usadas e apresentar as principais regras de segurança quanto ao seu uso.",
+        "2. Durante um acampamento, montar um canto do lenhador e demonstrar o uso correto de pelo menos quatro ferramentas de corte, incluindo canivete, facão, machadinha e serrote.",
+        "3. Mostrar como carregar e transportar corretamente facas, facões, canivetes, machadinhas e machados durante atividades ao ar livre.",
+        "4. Afiar e conservar duas ferramentas de corte , explicando os cuidados para mantê-las em boas condições.",
+        "5. Demonstrar como rachar lenha ou cortar varas com segurança , usando a ferramenta adequada e respeitando o meio ambiente.",
+        "6. Organizar uma pequena oficina ou demonstração para ensinar outros jovens a usar ferramentas de corte com cuidado e responsabilidade."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260075,
+      "post_slug": "geologia-atualizado",
+      "titulo": "Geologia",
+      "eixo": "Meio Ambiente",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/geologia-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Geologia_N1.png",
+      "requisitos": [
+        "1. Explicar o que é geologia e citar cinco áreas de estudo, como o estudo das rochas, dos minerais, dos fósseis, dos solos e das placas tectônicas.",
+        "2. Apresentar, com desenhos ou maquete simples, a estrutura interna da Terra , mostrando o núcleo, o manto e a crosta.",
+        "3. Explicar o que é o ciclo das rochas , mostrando como elas se formam e se transformam em ígneas, sedimentares e metamórficas.",
+        "4. Exemplificar, com suas palavras, o que são as placas tectônicas , explicando como elas se movem e o que causam (terremotos, vulcões e montanhas).",
+        "5. Montar uma pequena coleção de diferentes rochas e minerais , identificando sua cor, textura, brilho e classificando-as quanto à sua origem (ígnea, sedimentar ou metamórfica).",
+        "6. Visitar um museu, parque, mina, pedreira ou centro de estudos geológicos , observando diferentes tipos de rochas e contando o que aprendeu sobre a formação da Terra."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260076,
+      "post_slug": "horticultura-atualizado",
+      "titulo": "Horticultura",
+      "eixo": "Meio Ambiente",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/horticultura-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Horticultura_N1.png",
+      "requisitos": [
+        "1. Construir uma composteira simples , explicando como o adubo natural é formado e para que serve.",
+        "2. Plantar e cuidar de uma pequena horta , em casa, na escola ou na Unidade Escoteira Local, registrando as etapas do plantio e do crescimento das plantas e cuidar de sua manutenção por no mínimo três meses.",
+        "3. Usar métodos naturais para proteger as plantas de pragas e doenças , como repelentes vegetais ou plantio combinado de espécies.",
+        "4. Explicar os diferentes tipos de horta , como a vertical, hidropônica, de permacultura ou aquapônica, dizendo as vantagens e os desafios de cada uma.",
+        "5. Montar um calendário de plantio , mostrando as melhores épocas para cada tipo de hortaliça e como fazer a rotação das culturas.",
+        "6. Plantar sementes e mudas , observando as diferenças no preparo da terra, no uso das ferramentas e nos cuidados necessários para cada tipo de plantio."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260077,
+      "post_slug": "jardinagem-e-paisagismo-atualizado",
+      "titulo": "Jardinagem e Paisagismo",
+      "eixo": "Meio Ambiente",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/jardinagem-e-paisagismo-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Jardinagem_e_Paisagismo_N1.png",
+      "requisitos": [
+        "1. Explicar o que é jardinagem e paisagismo , ilustrando com desenhos ou fotos plantas ornamentais como árvores, arbustos, palmeiras e flores.",
+        "2. Apresentar os principais objetos decorativos e ferramentas de um jardim , explicando suas funções e como cuidar delas.",
+        "3. Demonstrar como plantar uma muda e transplantar outra , identificando os tipos de adubo e corretivos usados no solo.",
+        "4. Ajudar na construção ou manutenção de um jardim comunitário , escola ou praça, cuidando das plantas por pelo menos três meses.",
+        "5. Visitar um horto, viveiro ou acompanhar o trabalho de um jardineiro , observando o plantio de sementes e registrando o que aprendeu sobre o cultivo.",
+        "6. Criar um pequeno jardim de plantas medicinais ou aromáticas , colocando plaquinhas com nome popular, nome científico e uso de cada planta."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 9
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260078,
+      "post_slug": "meliponicultura-atualizado",
+      "titulo": "Meliponicultura",
+      "eixo": "Meio Ambiente",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/meliponicultura-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Meliponicultura_N1.png",
+      "requisitos": [
+        "1. Explicar o que é a meliponicultura e o que são as abelhas sem ferrão , dizendo onde vivem, por que são importantes e como podemos protegê-las.",
+        "2. Visitar um meliponário (local onde vivem abelhas sem ferrão) e conversar com um meliponicultor sobre seu trabalho e os cuidados com as colônias.",
+        "3. Registrar em foto, vídeo ou desenho três espécies de abelhas sem ferrão da sua região , explicando o que ajuda e o que prejudica suas colônias.",
+        "4. Plantar uma planta melífera nativa — aquelas que fornecem néctar ou pólen — e registrar o plantio.",
+        "5. Explicar o papel do mel, da própolis e do pólen dentro de uma colmeia , dizendo como cada um contribui para a vida das abelhas.",
+        "6. Observar e acompanhar a alimentação de uma colônia , aprendendo a identificar quando ela precisa de reforço e registrando a experiência.",
+        "7. Pesquisar duas plantas que as abelhas visitam em cada estação do ano , observando como a natureza muda ao longo do tempo.",
+        "8. Organizar uma pequena degustação de mel de abelhas nativas, compartilhando curiosidades e diferenças entre os sabores com sua seção."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260079,
+      "post_slug": "meteorologia-atualizado",
+      "titulo": "Meteorologia",
+      "eixo": "Meio Ambiente",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/meteorologia-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Meteorologia_N1.png",
+      "requisitos": [
+        "1. Identificar e desenhar os principais tipos de nuvens , explicando o que cada uma indica sobre o tempo e quando pode chover.",
+        "2. Construir dois ou mais instrumentos simples , como um pluviômetro (chuva), barômetro (pressão) e anemômetro (vento), e explicar para que servem.",
+        "3. Montar uma pequena estação meteorológica caseira e registrar, por pelo menos uma semana, informações sobre temperatura, vento, nuvens e chuva.",
+        "4. Fazer uma previsão simples para o dia seguinte , com base nas observações do céu e dos dados coletados.",
+        "5. Usar um sistema de previsão meteorológica disponível na internet ou aplicativo , interpretando as informações para prever o tempo em um acampamento.",
+        "6. Visitar ou conversar com profissionais de meteorologia , em um centro de pesquisa, universidade ou estação local, e contar o que aprendeu sobre como eles trabalham."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260080,
+      "post_slug": "microbiologia-atualizado",
+      "titulo": "Microbiologia",
+      "eixo": "Meio Ambiente",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/microbiologia-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Microbiologia_N1.png",
+      "requisitos": [
+        "1. Observar e comparar diferentes microrganismos (vírus, bactérias e fungos) usando imagens, modelos ou lupa, mostrando exemplos de doenças que causam e como preveni-las.",
+        "2. Explicar como são feitas e como funcionam as vacinas , mostrando por que são importantes para a saúde.",
+        "3. Preparar um alimento ou bebida fermentada (como pão, pizza, iogurte, kefir ou kombucha) para demonstrar o processo de fermentação biológica por leveduras e bactérias, explicando o que acontece durante esse processo.",
+        "4. Representar, com desenhos, massinhas ou maquetes , como ocorre a reprodução de um vírus, bactéria, fungo e protozoário.",
+        "5. Observar exemplos de simbiose na natureza e representar, com desenhos ou dinâmicas, como os microrganismos vivem em parceria com outros seres vivos.",
+        "6. Montar uma pequena degustação de alimentos produzidos por bactérias e fungos , explicando como esses microrganismos agem no processo."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260081,
+      "post_slug": "montanhismo-atualizado",
+      "titulo": "Montanhismo",
+      "eixo": "Meio Ambiente",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/montanhismo-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Montanhismo_N1.png",
+      "requisitos": [
+        "1. Explicar o que é montanhismo e suas modalidades , identificando no mapa três grandes montanhas localizadas na América.",
+        "2. Listar os equipamentos necessários para diferentes atividades de montanha , como escaladas, travessias e rapel, explicando para que serve cada um.",
+        "3. Apresentar as principais regras de segurança e utilizar corretamente os equipamentos obrigatórios para a prática do montanhismo.",
+        "4. Explicar, com exemplos, como funcionam os rádios intercomunicadores (HT) e por que são importantes na comunicação em montanhas.",
+        "5. Participar de duas caminhadas ou subidas a cumes com altura mínima de 500 metros , observando o terreno e as condições climáticas.",
+        "6. Elaborar um plano simples para uma subida em montanha , indicando o local, os equipamentos, o transporte, a alimentação e os cuidados com o meio ambiente."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260082,
+      "post_slug": "mountain-bike-atualizado",
+      "titulo": "Mountain Bike",
+      "eixo": "Meio Ambiente",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/mountain-bike-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Mountain_Bike_N1.png",
+      "requisitos": [
+        "1. Demonstrar o controle da bicicleta em diferentes tipos de terreno , como subidas, descidas, curvas e trilhas com obstáculos naturais.",
+        "2. Identificar e usar corretamente os equipamentos de segurança , como capacete, luvas, óculos e cotoveleiras, explicando sua importância.",
+        "3. Explicar os benefícios do mountain bike , mostrando como ele ajuda na saúde, no condicionamento físico e no contato com o meio ambiente.",
+        "4. Montar um pequeno percurso de treino , com sinalização e regras básicas, para praticar equilíbrio, frenagem e controle de velocidade.",
+        "5. Participar de pelo menos dois passeios ou trilhas com a seção , respeitando o ritmo dos colegas, as regras de trânsito e o cuidado com a natureza.",
+        "6. Identificar partes e funções da bicicleta , explicando como funciona a suspensão, os freios a disco e os pneus de cravo e fazer a manutenção básica da bicicleta , limpando, lubrificando e ajustando freios, pneus e marchas."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260083,
+      "post_slug": "oceanologia-atualizado",
+      "titulo": "Oceanologia",
+      "eixo": "Meio Ambiente",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/oceanologia-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Oceanologia_N1.png",
+      "requisitos": [
+        "1. Participar de uma ação prática de cuidado com o ambiente aquático , como a limpeza de praia, rio ou lago, registrando o que foi encontrado e refletindo sobre os impactos do lixo nos oceanos.",
+        "2. Apresentar, com desenhos ou maquetes, como respiram diferentes animais marinhos , mostrando as diferenças entre peixes, mamíferos, moluscos e outros seres do mar.",
+        "3. Construir um pequeno experimento ou cartaz para explicar fenômenos dos oceanos , como as correntes marítimas, a salinidade da água ou a influência do mar no clima da Terra.",
+        "4. Organizar uma exposição ou painel com imagens, fotos ou ilustrações de plantas e animais marinhos , destacando curiosidades e sua importância para o equilíbrio dos ecossistemas.",
+        "5. Visitar um aquário, museu, laboratório ou projeto de pesquisa sobre o mar , registrando por meio de anotações, fotos ou desenhos o que aprendeu sobre a vida marinha e o trabalho dos cientistas.",
+        "6. Entrevistar um profissional que trabalhe com o mar , como biólogo marinho, oceanógrafo, mergulhador ou marinheiro, e apresentar o que descobriu sobre sua profissão e como ela contribui para a conservação dos oceanos."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260084,
+      "post_slug": "pesca-atualizado",
+      "titulo": "Pesca",
+      "eixo": "Meio Ambiente",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/pesca-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Pesca_N1.png",
+      "requisitos": [
+        "1. Participar de uma pescaria prática , aplicando as regras ambientais e respeitando o tamanho mínimo permitido para as espécies capturadas.",
+        "2. Identificar, em campo ou por observação direta, pelo menos cinco espécies de peixes da sua região , descrevendo suas principais características e o ambiente em que vivem.",
+        "3. Montar e utilizar um equipamento de pesca de arremesso , aprendendo a regular a linha, o anzol, o chumbo e o molinete ou carretilha, e demonstrar como fazer o arremesso com segurança.",
+        "4. Testar diferentes tipos de iscas, naturais e artificiais , explicando quais espécies atraem e como a escolha da isca interfere no sucesso da pescaria.",
+        "5. Explicar o que são o período de pesca e o período de defeso , indicando três espécies da sua região e mostrando como o respeito a essas regras ajuda a preservar o ecossistema aquático.",
+        "6. Entrevistar um pescador ou profissional ligado à pesca esportiva , registrando o que aprendeu sobre as boas práticas, os desafios da atividade e o equilíbrio entre lazer e conservação da natureza."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260085,
+      "post_slug": "pioneiria-atualizado",
+      "titulo": "Pioneiria",
+      "eixo": "Meio Ambiente",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/pioneiria-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Pioneiria_N1.png",
+      "requisitos": [
+        "1. Montar um quadro com até dez nós e amarras diferentes , devidamente identificados, explicando para que serve cada um.",
+        "2. Construir uma engenhoca simples (como uma lixeira com pedal ou um portão com catraca), utilizando pelo menos quatro tipos diferentes de amarras.",
+        "3. Organizar uma oficina de nós e amarras em sua seção ensinando outros jovens sobre como fazê-los e sua utilidade.",
+        "4. Planejar e ajudar na construção de uma pioneiria de médio porte , como uma torre, ponte ou mesa comunitária, em equipe.",
+        "5. Desenhar um croqui de acampamento , mostrando os modelos de pioneiria que podem ser construídos e quais amarras são usadas em cada um.",
+        "6. Demonstrar como usar cordas e nós para levantar ou mover objetos pesados com segurança.",
+        "7. Construir uma estrutura útil para o acampamento , como um pórtico, um canto do lenhador ou uma latrina de campo.",
+        "8. Fazer uma construção funcional para a cozinha de acampamento , como uma mesa, um fogão suspenso ou um suporte de panelas."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 9
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260086,
+      "post_slug": "rastreamento-atualizado",
+      "titulo": "Rastreamento",
+      "eixo": "Meio Ambiente",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/rastreamento-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Rastreamento_N1.png",
+      "requisitos": [
+        "1. Observar e identificar cinco tipos diferentes de pegadas humanas , distinguindo entre quem corre, caminha, anda de ré, manca ou carrega peso.",
+        "2. Seguir uma pista em ambiente natural de até 1 Km contendo ao menos quarenta sinais de pista, identificando corretamente pelo menos trinta deles.",
+        "3. Criar e aplicar para outros jovens uma pista no campo , com até 800 metros, utilizando sinais de pista adequados.",
+        "4. Identificar rastros de pelo menos cinco espécies animais da sua região , registrando pegadas, penas, pelos, excrementos, ninhos ou tocas, comparando com referências de guias ou especialistas.",
+        "5. Planejar e conduzir uma trilha de observação de até 3 km , registrando tipos de solo, impactos ambientais e vestígios naturais, apresentando um relato com o percurso e as principais descobertas.",
+        "6. Realizar um jogo do kim (olfativo, auditivo e do tato) reconhecendo até doze itens."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260087,
+      "post_slug": "sobrevivencia-atualizado",
+      "titulo": "Sobrevivência",
+      "eixo": "Meio Ambiente",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/sobrevivencia-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Sobrevivencia_N1.png",
+      "requisitos": [
+        "1. Demonstrar como agir nas primeiras horas de uma situação de emergência , priorizando a segurança, a comunicação e o uso racional dos recursos disponíveis.",
+        "2. Mostrar dois métodos de orientação em campo , como o uso da bússola, do sol, das estrelas ou de referências naturais, explicando quando cada um é mais indicado.",
+        "3. Apresentar três formas de obter água potável e demonstrar uma delas na prática.",
+        "4. Identificar plantas comestíveis e medicinais da sua região , explicando seus usos e restrições, e demonstrar como preparar um alimento ou remédio natural seguro.",
+        "5. Demonstrar como agir em situações de risco , como picadas de cobras, insetos e aracnídeos, insolação e transporte de feridos, aplicando os primeiros socorros básicos.",
+        "6. Construir e pernoitar em um abrigo simples e fazer fogo com segurança , utilizando recursos naturais do ambiente, explicando como manter o local protegido de vento e chuva."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260088,
+      "post_slug": "zoologia-atualizado",
+      "titulo": "Zoologia",
+      "eixo": "Meio Ambiente",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/zoologia-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Zoologia_N1.png",
+      "requisitos": [
+        "1. Explorar um ambiente natural e identificar quatro grupos de animais (aves, peixes, répteis ou anfíbios e insetos) , observando como cada um se adapta à terra, à água ou ao ar.",
+        "2. Construir e instalar um instrumento de observação da fauna , como um comedouro para aves, abrigo para insetos ou armadilha fotográfica simples, registrando as visitas e comportamentos por pelo menos 30 dias.",
+        "3. Comparar partes do corpo de diferentes animais encontrados , como bicos, asas, patas, escamas e nadadeiras, explicando como essas características ajudam na locomoção, alimentação ou defesa.",
+        "4. Visitar ou participar de uma atividade em um local que estude ou cuide de animais , como zoológico, aquário, centro de conservação ou projeto ambiental, relatando o que aprendeu sobre manejo, reabilitação e proteção da fauna.",
+        "5. Identificar espécies ameaçadas em sua região e realizar uma ação prática de conscientização , como produzir placas educativas, construir abrigos, ou registrar ocorrências em plataformas de ciência cidadã.",
+        "6. Participar de uma atividade prática de observação ou cuidado de animais , aprendendo como agir de forma respeitosa, sem interferir no comportamento natural da espécie."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260089,
+      "post_slug": "anime-atualizado",
+      "titulo": "Anime",
+      "eixo": "Paz e Desenvolvimento",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/anime-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Anime_N1.png",
+      "requisitos": [
+        "1. Apresentar cinco animes que você assistiu , incluindo o título original e, se houver, o nome nacional, o gênero, o país e o ano de produção, além de uma breve sinopse. Escolha um deles para apresentar em mais detalhes, contando sobre a trama, os personagens e os criadores.",
+        "2. Explicar a origem dos animes e como eles evoluíram ao longo do tempo , destacando fatos marcantes sobre sua história e chegada ao Brasil.",
+        "3. Organizar uma exposição ilustrada com personagens de animes — ou criar uma fanart inspirada em um personagem, cenário ou cena marcante — apresentando suas características e a obra de origem.",
+        "4. Organizar uma sessão para assistir a um filme ou episódio de anime com a sua seção ou patrulha , preparando o ambiente, apresentando o contexto da obra e promovendo uma conversa sobre o que foi assistido.",
+        "5. Explicar, com exemplos, as principais etapas e tecnologias usadas na produção de animes , como roteirização, animação digital, dublagem, trilha sonora e edição.",
+        "6. Visitar (presencial ou virtualmente) um festival de anime, feira ou evento da cultura japonesa , registrando o que observou — ou pesquisar sobre um festival famoso no Brasil e no mundo, contando o que acontece nesses encontros e o que mais chamou sua atenção."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260090,
+      "post_slug": "arqueologia-atualizado",
+      "titulo": "Arqueologia",
+      "eixo": "Paz e Desenvolvimento",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/arqueologia-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Arqueologia_N1.png",
+      "requisitos": [
+        "1. Explicar o que é arqueologia e por que ela é importante , criando um material simples, como um cartaz, vídeo ou apresentação.",
+        "2. Construir uma maquete ou ilustração de um sítio arqueológico brasileiro , mostrando as principais áreas e o que se pode encontrar nelas.",
+        "3. Elaborar um mapa com as teorias do povoamento das Américas , destacando as rotas e os povos que chegaram aoncontinente.",
+        "4. Criar uma história em quadrinhos sobre a descoberta de Luzia , explicando por que ela é importante para a história do Brasil e das Américas.",
+        "5. Montar um mini sítio arqueológico , enterrando objetos em camadas e mostrando como são feitas as escavações e registros.",
+        "6. Apresentar um painel com moedas ou objetos antigos , explicando o que eles contam sobre os povos que os usaram."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 9
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260091,
+      "post_slug": "arte-da-marinharia-atualizado",
+      "titulo": "Arte da Marinharia",
+      "eixo": "Paz e Desenvolvimento",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/arte-da-marinharia-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Arte_da_Marinharia_N1.png",
+      "requisitos": [
+        "1. Contar, com base no livro Arte Naval ou em outras fontes confiáveis, a história da marinharia e sua importância desde as embarcações antigas até os dias atuais.",
+        "2. Fazer oito nós diferentes , explicando para que serve cada um e mostrando como aplicá-los na prática escoteira ou marítima.",
+        "3. Elaborar um quadro de nós , identificando corretamente cada tipo e apresentando um acabamento limpo e criativo.",
+        "4. Confeccionar três falcaças bem-acabadas nos chicotes dos cabos, com firmeza e funcionalidade.",
+        "5. Explicar o significado de termos básicos da marinharia , como chicote, seio, nó, volta, cabo solteiro e alma, demonstrando seu uso na prática.",
+        "6. Fazer um trabalho prático com cabos ou redes , aplicando técnicas tradicionais da marinharia, como coxins, capachos ou gaxetas, e apresentar o resultado à seção."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260092,
+      "post_slug": "artes-cenicas-atualizado",
+      "titulo": "Artes Cênicas",
+      "eixo": "Paz e Desenvolvimento",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/artes-cenicas-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Artes_Cenicas_N1.png",
+      "requisitos": [
+        "1. Contar a origem do teatro e como ele evoluiu até os dias de hoje.",
+        "2. Visitar um teatro e explicar, com suas palavras, o que aprendeu sobre o palco, o cenário, a iluminação e outros elementos usados nas apresentações.",
+        "3. Assistir a uma peça teatral e fazer uma análise simples sobre o roteiro, os artistas, a direção e os elementos visuais, como cenário e figurino.",
+        "4. Atuar em uma apresentação teatral , podendo ser em uma comédia, drama, musical ou monólogo curto, demonstrando expressão e interpretação.",
+        "5. Escolher uma função técnica e colocá-la em prática , como fazer a maquiagem de um personagem, montar o cenário, cuidar da iluminação ou ajudar como contrarregra.",
+        "6. Planejar e participar da criação de uma peça de teatro de até 40 minutos , ajudando em todas as etapas: roteiro, ensaio, figurino e apresentação."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260093,
+      "post_slug": "brasilidades-atualizado",
+      "titulo": "Brasilidades",
+      "eixo": "Paz e Desenvolvimento",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/brasilidades-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Brasilidades_N1.png",
+      "requisitos": [
+        "1. Participar de uma vivência cultural da sua região , como festa popular, feira, roda de samba, grupo folclórico ou oficina artesanal, registrando o que aprendeu sobre sua origem e importância.",
+        "2. Reproduzir uma prática tradicional brasileira , como preparar uma receita típica, confeccionar um adereço, aprender uma dança ou tocar um ritmo regional, explicando sua relação com a cultura local.",
+        "3. Explorar diferentes expressões musicais brasileiras , como samba, forró, piseiro, maracatu, frevo, funk, bumba meu boi, carimbó e sertanejo, reconhecendo suas origens e apresentando uma performance ou batucada inspirada nelas.",
+        "4. Investigar como povos originários, africanos e imigrantes contribuíram para a cultura brasileira , identificando exemplos na culinária, na música, na linguagem ou nas festas populares.",
+        "5. Montar um mapa ou exposição cultural do Brasil , destacando manifestações típicas de diferentes estados, com curiosidades sobre suas danças, comidas e costumes.",
+        "6. Organizar ou participar de uma apresentação cultural no grupo escoteiro ou comunidade , com músicas, trajes, danças ou lendas brasileiras, valorizando o respeito e a diversidade."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260094,
+      "post_slug": "capoeira-atualizado",
+      "titulo": "Capoeira",
+      "eixo": "Paz e Desenvolvimento",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/capoeira-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Capoeira_N1.png",
+      "requisitos": [
+        "1. Explicar os estilos de capoeira Angola e Regional , destacando suas diferenças, origens e alguns de seus mestres mais conhecidos.",
+        "2. Apresentar a história da capoeira , contando como ela surgiu, se desenvolveu e foi reconhecida como patrimônio cultural brasileiro.",
+        "3. Identificar os instrumentos usados na roda de capoeira , explicando sua função, demonstrando habilidade em tocar pelo menos dois deles (como berimbau, atabaque e pandeiro).",
+        "4. Cantar e conduzir três músicas tradicionais de capoeira , explicando o significado de suas letras e o ritmo de cada uma.",
+        "5. Demonstrar os principais movimentos da capoeira , como ginga, meia-lua, benção, armada e negativa, executando-os com cuidado e coordenação.",
+        "6. Organizar uma roda de capoeira em sua seção , permitindo que outros jovens participem e aprendam sobre essa expressão cultural."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260095,
+      "post_slug": "civilizacoes-da-antiguidade-atualizado",
+      "titulo": "Civilizações da Antiguidade",
+      "eixo": "Paz e Desenvolvimento",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/civilizacoes-da-antiguidade-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Civilizacoes_da_Antiguidade_N1.png",
+      "requisitos": [
+        "1. Fazer um mapa simples mostrando onde essa civilização vivia e criar um resumo com informações sobre governo, sociedade, religião e cultura e outras que considerar importantes.",
+        "2. Encenar uma cena curta ou história sobre um acontecimento importante dessa civilização, como uma invenção, batalha ou mito.",
+        "3. Apresentar três personagens ou líderes marcantes , explicando quem foram e o que fizeram.",
+        "4. Criar uma obra inspirada na arte da civilização , como uma escultura, pintura, pirâmide, templo ou símbolo, utilizando materiais simples.",
+        "5. Mostrar como era a escrita desse povo , desenhando seus símbolos, letras ou pictogramas, e explicar o que representavam.",
+        "6. Explicar o que essa civilização deixou como contribuição para o mundo atual , como ideias, invenções, formas de arte ou construções famosas."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260096,
+      "post_slug": "cosplay-atualizado",
+      "titulo": "Cosplay",
+      "eixo": "Paz e Desenvolvimento",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/cosplay-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Cosplay_N1.png",
+      "requisitos": [
+        "1. Contar a história do cosplay , explicando sua origem, evolução e como ele chegou ao Brasil, apresentando essas informações de forma criativa para sua seção.",
+        "2. Escolher um personagem e montar seu cosplay , preparando figurino, acessórios e maquiagem inspirados nele, e contar um pouco sobre sua origem e história.",
+        "3. Participar de um evento, encontro ou apresentação de cosplay , registrando a experiência com fotos, vídeos ou relato.",
+        "4. Entrevistar um cosplayer , usando um roteiro de perguntas criado por você, e compartilhar com a seção o que aprendeu sobre essa prática.",
+        "5. Fazer um cartaz ou apresentação com cinco palavras comuns do universo do cosplay (como “cosmaker”, “props”, “crossover”, “skit” ou outras) e explicar o que cada uma significa.",
+        "6. Organizar um campeonato ou desfile de cosplay em sua seção ou grupo escoteiro, incentivando a criatividade e a valorização da cultura pop."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260097,
+      "post_slug": "culinaria-tipica-atualizado",
+      "titulo": "Culinária Típica",
+      "eixo": "Paz e Desenvolvimento",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/culinaria-tipica-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Culinaria_Tipica_N1.png",
+      "requisitos": [
+        "1. Identificar os principais ingredientes e pratos típicos da culinária escolhida, explicando sua origem e importância cultural.",
+        "2. Preparar duas receitas tradicionais simples , respeitando as técnicas e modos de fazer característicos dessa região.",
+        "3. Contar histórias, curiosidades e tradições ligadas aos pratos , mostrando como a culinária ajuda a preservar a cultura e os costumes locais.",
+        "4. Criar uma receita original ou uma releitura de prato tradicional , misturando ingredientes da sua região com técnicas da culinária escolhida.",
+        "5. Adaptar uma receita tradicional para atender a restrições alimentares (como vegetariana, sem glúten ou sem lactose), mantendo o sabor e o significado cultural.",
+        "6. Organizar um almoço, jantar ou lanche temático , apresentando pratos típicos e contando curiosidades sobre a culinária estudada."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260098,
+      "post_slug": "dancas-folcloricas-atualizado",
+      "titulo": "Danças Folclóricas",
+      "eixo": "Paz e Desenvolvimento",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/dancas-folcloricas-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Dancas_Folcloricas_N1.png",
+      "requisitos": [
+        "1. Explicar o que são danças folclóricas e apresentar uma dança típica da sua região, contando sua origem, significado e principais características.",
+        "2. Apresentar danças folclóricas de diferentes lugares , incluindo pelo menos duas de outros países, destacando curiosidades sobre cada uma.",
+        "3. Aprender e demonstrar os passos de duas danças típica s, explicando o significado dos movimentos e o ritmo de cada uma.",
+        "4. Montar uma apresentação de dança folclóric a, cuidando de detalhes como figurino, maquiagem, música e ambientação.",
+        "5. Ensinar uma dança folclórica a outras pessoas , ajudando-os a entender sua importância cultural.",
+        "6. Organizar uma pequena mostra cultural ou evento temático , com apresentações, trajes e curiosidades sobre danças folclóricas brasileiras e internacionais."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260099,
+      "post_slug": "defesa-civil-atualizado",
+      "titulo": "Defesa Civil",
+      "eixo": "Paz e Desenvolvimento",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/defesa-civil-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Defesa_Civil_N1.png",
+      "requisitos": [
+        "1. Explicar o que é a Defesa Civil , como ela funciona e o que faz um NUPDEC (Núcleo Comunitário de Proteção e Defesa Civil). Identificar a unidade mais próxima do Corpo de Bombeiros e da Defesa Civil e saber como acioná-los em caso de emergência.",
+        "2. Apresentar as cinco fases da Proteção e Defesa Civil (prevenção, preparação, resposta, recuperação e reconstrução) com exemplos simples de cada uma.",
+        "3. Explicar os principais tipos de desastres naturais e acidentes que podem ocorrer na sua comunidade (como enchentes, deslizamentos ou incêndios) e explicar como preveni-los ou reduzir seus danos.",
+        "4. Criar um plano preventivo de segurança para a sua residência, mostrando o que fazer em caso de emergência e como cada pessoa pode ajudar.",
+        "5. Organizar um exercício simulado de evacuação , praticando como agir de forma calma e segura em uma situação de risco.",
+        "6. Visitar uma unidade da Defesa Civil ou do Corpo de Bombeiros , registrando o que aprendeu sobre o funcionamento das operações e os equipamentos utilizados nas emergências."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260100,
+      "post_slug": "escotismo-mundial-atualizado",
+      "titulo": "Escotismo Mundial",
+      "eixo": "Paz e Desenvolvimento",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/escotismo-mundial-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Escotismo_Mundial_N1.png",
+      "requisitos": [
+        "1. Apresentar o que é a Organização Mundial do Movimento Escoteiro (OMME) , mostrando onde fica o Escritório Mundial e explicando como são organizadas suas regiões e escritórios.",
+        "2. Pesquisar e apresentar três centros escoteiros mundiais , explicando onde ficam, o que oferecem, quais atividades realizam e se aceitam voluntários escoteiros.",
+        "3. Trocar mensagens ou participar de atividades online com escoteiros de outro país, aprendendo sobre o Escotismo e a cultura local.",
+        "4. Comparar a Lei e a Promessa Escoteira de três países, identificando semelhanças, diferenças e o que todas têm em comum.",
+        "5. Apresentar figuras históricas ou atuais que foram escoteiros , contando suas principais contribuições para a sociedade e como o Escotismo influenciou suas vidas.",
+        "6. Participar de uma atividade internacional , como JOTA-JOTI, acampamento, videoconferência ou projeto global, promovendo a fraternidade escoteira mundial."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260101,
+      "post_slug": "fogo-de-conselho-atualizado",
+      "titulo": "Fogo de Conselho",
+      "eixo": "Paz e Desenvolvimento",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/fogo-de-conselho-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Fogo_de_Conselho_N1.png",
+      "requisitos": [
+        "1. Contar a origem e o significado do Fogo de Conselho , explicando seus objetivos e o que o torna diferente de outras atividades escoteiras.",
+        "2. Montar e identificar três tipos de fogueiras , explicando as vantagens, desvantagens para o Fogo de Conselho e os cuidados de segurança necessários para cada uma.",
+        "3. Apresentar um esquete, canção ou história durante um Fogo de Conselho.",
+        "4. Atuar como animador , conduzindo canções, brincadeiras ou transições de forma alegre e participativa.",
+        "5. Confeccionar um manto de Fogo de Conselho personalizado , explicando seu significado pessoal e o que ele representa na sua vivência escoteira.",
+        "6. Planejar e coordenar um Fogo de Conselho completo , escolhendo o local, organizando a programação, cuidando da segurança e encerrando com um momento de reflexão sobre os aprendizados vividos."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 9
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260102,
+      "post_slug": "genealogia-atualizado",
+      "titulo": "Genealogia",
+      "eixo": "Paz e Desenvolvimento",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/genealogia-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Genealogia_N1.png",
+      "requisitos": [
+        "1. Explicar o que é genealogia e por que é importante conhecer a história e as origens da própria família.",
+        "2. Pesquisar e apresentar a origem de sua família e de um dos seus sobrenomes , contando curiosidades ou fatos interessantes.",
+        "3. Elaborar sua própria árvore genealógica , com o apoio de sua família.",
+        "4. Entrevistar um familiar mais velho , registrando histórias, tradições e lembranças que ajudem a compreender melhor a trajetória familiar.",
+        "5. Apresentar ou criar um símbolo que represente sua família , como um brasão, logotipo, objeto ou desenho, explicando o significado de seus elementos.",
+        "6. Escolher outro país ou cultura e contar como eles valorizam a genealogia e a ancestralidade , explicando o que mais chamou sua atenção."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260103,
+      "post_slug": "geografia-atualizado",
+      "titulo": "Geografia",
+      "eixo": "Paz e Desenvolvimento",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/geografia-atualizado/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/05/Especialidades_Lobinho_e_Escoteiro_Geografia_N1.png",
+      "requisitos": [
+        "1. Explicar o que é Geografia e apresentar de forma simples os conceitos de lugar, paisagem, território e espaço geográfico, com exemplos do seu dia a dia.",
+        "2. Construir uma maquete representando pelo menos três tipos de acidentes geográficos (como montanhas, planícies, rios ou vales) e explicar suas características.",
+        "3. Fazer um mapa simples do seu bairro ou cidade , mostrando elementos naturais (rios, morros, vegetação) e artificiais (casas, ruas, escolas, praças, comércios).",
+        "4. Investigar um tema atual da Geografia humana , como urbanização, agricultura, desmatamento, desigualdade social, globalização ou migrações, e apresentar suas descobertas de forma criativa.",
+        "5. Identificar e comparar modos de vida em diferentes regiões do Brasil ou do mundo, destacando diferenças de clima, alimentação, moradia, transporte e cultura.",
+        "6. Analisar exemplos do impacto do ser humano na natureza , como o uso da água, o desmatamento, a produção de energia ou a ocupação de áreas de risco, propondo atitudes que contribuam para melhorar essa convivência."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260104,
+      "post_slug": "historia-aeroespacial-2",
+      "titulo": "História Aeroespacial",
+      "eixo": "Paz e Desenvolvimento",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/historia-aeroespacial-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Historia_Aeroespacial_N1.png",
+      "requisitos": [
+        "Construir uma linha do tempo mostrando os principais acontecimentos da corrida espacial, desde os primeiros testes de foguetes até a chegada do ser humano à Lua.",
+        "Pesquisar e apresentar um pioneiro da engenharia ou da exploração espacial , contando quem foi, o que fez e por que suas descobertas foram importantes.",
+        "Montar uma exposição ou maquete com fotos, vídeos, cartazes ou modelos (como satélites, foguetes ou sondas), apresentando um evento marcante da história aeroespacial.",
+        "Contar a história do Programa Espacial Brasileiro , destacando seus principais avanços, idealizadores e a importância da Base de Alcântara.",
+        "Visitar, presencialmente ou de forma virtual, um museu aeroespacial, registrando o que mais chamou sua atenção e o que aprendeu com a visita.",
+        "Recriar de forma criativa (com um esquete, dramatização ou vídeo curto) um momento importante da história aeroespacial, mostrando como ele ajudou a transformar o conhecimento humano."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260105,
+      "post_slug": "historia-brasileira-2",
+      "titulo": "História Brasileira",
+      "eixo": "Paz e Desenvolvimento",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/historia-brasileira-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Historia_Brasileira_N1.png",
+      "requisitos": [
+        "Representar artisticamente (com desenho, música, teatro, maquete ou outra forma criativa) uma cena importante da vida de um herói ou heroína do Brasil, explicando por que escolheu essa pessoa.",
+        "Montar uma linha do tempo com os principais fatos da história brasileira, desde a chegada dos portugueses até a Proclamação da República, destacando momentos que mudaram o país.",
+        "Apresentar uma etnia brasileira , como guarani, yanomami ou tupi, mostrando como viviam antes da chegada dos europeus e o que podemos aprender com sua cultura.",
+        "Contar a história da população afro-brasileira , desde a chegada dos primeiros africanos escravizados até hoje, mostrando suas contribuições culturais, sociais e econômicas para o Brasil.",
+        "Explicar o que foi a resistência ao regime militar (1964– 1985), destacando pessoas e grupos que lutaram pela liberdade e pela democracia, como Marighella, Frei Tito e os movimentos estudantis.",
+        "Analisar a relação entre o desenvolvimento do Brasil e o meio ambiente, mostrando como a exploração de recursos (como o pau-brasil, o ouro e as florestas) influenciou a história e deixou consequências para a natureza."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260109,
+      "post_slug": "historia-local-2",
+      "titulo": "História Local",
+      "eixo": "Paz e Desenvolvimento",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/historia-local-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Historia_Local_N1.png",
+      "requisitos": [
+        "Visitar e representar artisticamente um monumento, praça ou ponto histórico da sua cidade , por meio de desenho, pintura, foto, vídeo ou maquete, explicando por que esse lugar é importante para a comunidade.",
+        "Entrevistar um familiar, vizinho ou morador antigo, registrando como era a cidade no passado e o que mudou com o tempo.",
+        "Reproduzir o brasão ou a bandeira da sua cidade e explicar o significado dos símbolos e das cores.",
+        "Criar uma exposição de fotos antigas da cidade , reunindo imagens de lugares, pessoas ou eventos marcantes, e apresentar curiosidades sobre cada registro.",
+        "Pesquisar a origem dos nomes das principais ruas, avenidas e praças da sua cidade ou bairro, identificando homenagens, fatos históricos ou tradições ligadas a esses nomes.",
+        "Visitar um prédio histórico, monumento ou espaço público em risco e propor uma ação ou campanha simples de conscientização sobre a importância de sua preservação."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260110,
+      "post_slug": "historia-maritima-2",
+      "titulo": "História Marítima",
+      "eixo": "Paz e Desenvolvimento",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/historia-maritima-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Historia_Maritima_N1.png",
+      "requisitos": [
+        "Contar a história da navegação no mundo , mostrando como os barcos evoluíram das primeiras embarcações até os navios modernos e o que mudou com o tempo.",
+        "Explicar o que é a Amazônia Azul e contar curiosidades sobre a Base Brasileira na Antártida.",
+        "Pesquisar a história da Marinha Mercante do Brasil, destacando a importância dessa atividade para o comércio, o transporte e o desenvolvimento do país.",
+        "Apresentar um mapa do Brasil mostrando o mar territorial, os principais Distritos Navais, bases e escolas da Marinha, além de localizar as sedes dos Grupos Escoteiros do Mar e clubes náuticos do seu estado.",
+        "Escolher e contar a história de uma pessoa importante da história marítima brasileira, explicando suas contribuições para a navegação, defesa ou pesquisa científica.",
+        "Visitar um museu, porto, base naval, estaleiro ou feira náutica, observando o que aprendeu sobre embarcações, profissões ligadas ao mar e o papel do Brasil nas atividades marítimas."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260111,
+      "post_slug": "historia-mundial-2",
+      "titulo": "História Mundial",
+      "eixo": "Paz e Desenvolvimento",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/historia-mundial-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Historia_Mundial_N1.png",
+      "requisitos": [
+        "Identificar diferentes tipos de fontes históricas (como objetos, textos, imagens, monumentos e mapas) e explicar por que é importante usar fontes confiáveis para contar a história.",
+        "Construir uma maquete ou desenho de uma das Sete Maravilhas do Mundo Antigo , apresentando curiosidades sobre o povo e o período em que ela foi construída.",
+        "Produzir um vídeo, cartaz, quadrinho ou apresentação mostrando como era a vida das pessoas durante a Idade Média, destacando o papel das mulheres, dos cavaleiros ou dos camponeses.",
+        "Fazer uma apresentação sobre a cidade de Constantinopla, mostrando sua importância como ponto de encontro entre a Europa e a Ásia e sua influência nas Grandes Navegações.",
+        "Apresentar para sua seção os principais acontecimentos das duas Guerras Mundiais, destacando invenções, líderes e consequências importantes.",
+        "Criar uma exposição com imagens, quadrinhos ou propagandas da época da Guerra Fria , explicando, de forma simples, o que foi essa disputa e o que ela representava para o mundo."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260106,
+      "post_slug": "historia-da-arte-2",
+      "titulo": "História da Arte",
+      "eixo": "Paz e Desenvolvimento",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/historia-da-arte-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Historia_da_Arte_N1.png",
+      "requisitos": [
+        "Criar uma linha do tempo com os principais períodos da história da arte, da Pré-história ao século XX, incluindo exemplos de estilos, artistas e obras marcantes.",
+        "E scolher um movimento artístico (como Renascimento, Impressionismo, Modernismo ou outro) e montar um mapa mental com informações sobre o período, o contexto social e econômico, os principais artistas e o que ele trouxe de novo para a cultura.",
+        "Elaborar um jogo de memória ou adivinhação com obras de artistas brasileiros, explicando a escolha das obras e sua importância para a arte nacional.",
+        "Apresentar a história e as obras de três artistas mulheres, destacando suas contribuições e desafios enfrentados no mundo da arte.",
+        "Realizar uma visita presencial a um museu, galeria ou espetáculo artístico (teatro, dança, música ou exposição), registrando em texto, desenho, vídeo ou áudio o que aprendeu com a experiência.",
+        "Apresentar artistas de diferentes continentes, escolhendo um da América Latina, um da Ásia e um da África, mostrando como a cultura local influenciou suas criações."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260107,
+      "post_slug": "historia-da-aviacao",
+      "titulo": "História da Aviação",
+      "eixo": "Paz e Desenvolvimento",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/historia-da-aviacao/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Historia_da_Aviacao_N1.png",
+      "requisitos": [
+        "Contar a história da aviação , desde os primeiros experimentos de voo até as invenções de Alberto Santos Dumont, destacando as pessoas que contribuíram para esses avanços.",
+        "Apresentar duas mulheres pioneiras da aviação brasileira, explicando quem foram, o que conquistaram e por que suas histórias são importantes.",
+        "Comparar duas aeronaves de épocas diferentes , preferencialmente brasileiras, mostrando suas funções (como transporte, carga ou uso militar) e diferenças técnicas, com imagens, vídeos ou maquetes.",
+        "Assistir a um filme ou documentário sobre a história da aviação , e conversar com sua seção ou examinador sobre o que aprendeu e o que mais chamou sua atenção.",
+        "Recriar um episódio marcante da aviação , apresentando-o por meio de um esquete, teatro de sombras, dramatização ou vídeo curto.",
+        "Entrevistar uma pessoa que trabalhe ou tenha experiência com aviação, como piloto, mecânico, controlador de voo ou educador, e compartilhar o que aprendeu sobre sua trajetória e paixão por voar."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260108,
+      "post_slug": "historia-do-escotismo-2",
+      "titulo": "História do Escotismo",
+      "eixo": "Paz e Desenvolvimento",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/historia-do-escotismo-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Historia_do_Escotismo_N1.png",
+      "requisitos": [
+        "Contar a história de Robert Baden-Powell, destacando momentos importantes de sua vida e como ele criou o Escotismo.",
+        "Representar artisticamente a história de como começou o Movimento Escoteiro, incluindo o acampamento de Brownsea e o lançamento do livro Escotismo para Rapazes, usando recursos criativos como cartazes, vídeos ou dramatizações.",
+        "Contar como o Escotismo chegou ao Brasil, explicando a criação dos primeiros grupos e a fundação da União dos Escoteiros do Brasil.",
+        "Apresentar a origem dos Ramos Filhotes, Lobinho, Escoteiro, Sênior e Pioneiro , demonstrando suas principais características ao longo do tempo.",
+        "Escolher dois símbolos escoteiros importantes (como o lenço, o chapéu, o aperto de mão, o lema do ramo ou o distintivo mundial) e explicar seu significado e origem.",
+        "Criar uma exposição que conta a história do seu grupo escoteiro ou seção escoteira autônoma, mostrando sua fundação, cores do lenço, figuras marcantes e o que o torna especial."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260112,
+      "post_slug": "inclusao-2",
+      "titulo": "Inclusão",
+      "eixo": "Paz e Desenvolvimento",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/inclusao-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Inclusao_N1.png",
+      "requisitos": [
+        "Apresentar a Promessa Escoteira em Libras (Língua Brasileira de Sinais) e ensinar os principais sinais para seus colegas de seção.",
+        "Explicar o que é o sistema Braille e mostrar, com exemplos práticos, quatro lugares onde ele poderia ser usado no dia a dia, mas ainda não é comum.",
+        "Participar ou organizar três atividades sobre inclusão, mostrando como adaptar jogos, atividades ou tarefas para que todos possam participar com autonomia e segurança.",
+        "Conversar ou escrever um pequeno texto sobre o tema: “O que eu posso fazer para ajudar na inclusão das pessoas com deficiência?”",
+        "Listar três formas como o Escotismo pode ajudar pessoas com deficiência e três aprendizados que o convívio com elas traz para todos nós.",
+        "Criar ou participar de uma ação ou campanha de inclusão na sua seção, escola ou comunidade, incentivando atitudes de respeito e empatia."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260113,
+      "post_slug": "informacoes-turisticas-2",
+      "titulo": "Informações Turísticas",
+      "eixo": "Paz e Desenvolvimento",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/informacoes-turisticas-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Informacoes_Turisticas_N1.png",
+      "requisitos": [
+        "Criar um cartaz ilustrado (com desenhos, fotos ou colagens) contando a história e a importância de um ponto turístico da sua cidade, como uma praça, museu, monumento ou parque.",
+        "Fazer um guia ilustrado com até três lugares da sua cidade que você recomendaria para outras crianças ou jovens visitarem, contando curiosidades sobre cada um.",
+        "Desenhar um mapa simples mostrando os principais pontos turísticos próximos de onde você mora, indicando como chegar até eles a pé, de bicicleta ou de transporte público.",
+        "Criar um roteiro turístico para um final de semana, incluindo atividades culturais (como feiras, museus ou apresentações) e visitas a locais históricos ou naturais, explicando o valor cultural de cada um.",
+        "Desenvolver um material que ajude turistas a conhecer sua cidade, como um mini guia, página digital, mapa ilustrado ou vídeo com dicas sobre atrações, transporte e lugares para comer.",
+        "Conduzir um pequeno tour guiado com amigos, familiares ou colegas da seção, apresentando até cinco pontos turísticos e contando curiosidades sobre cada lugar."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260114,
+      "post_slug": "libras-2",
+      "titulo": "Libras",
+      "eixo": "Paz e Desenvolvimento",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/libras-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Libras_N1.png",
+      "requisitos": [
+        "Apresentar o alfabeto manual da Libras , mostrando como representar cada letra com as mãos.",
+        "Visitar (presencialmente ou virtualmente) uma associação ou escola de surdos e contar, com suas palavras, o que aprendeu sobre a comunicação e o dia a dia das pessoas surdas.",
+        "Ensinar o lema do seu ramo em Libras e apresentá-lo para sua patrulha, matilha, tropa ou escotistas.",
+        "Apresentar a Promessa Escoteira em Libras , utilizando cartazes, vídeo ou janela de Libras, explicando o significado dos sinais.",
+        "Conhecer e explicar o que é a cultura surda, mostrando diferenças entre as línguas de sinais do Brasil e de outros países.",
+        "Ensinar uma canção escoteira em Libras para outras pessoas da sua seção ou escola, ajudando-as a aprender os sinais.",
+        "Realizar uma conversa simples em Libras , de até 10 minutos, com uma pessoa surda ou alguém que saiba Libras.",
+        "Participar ou criar uma ação de inclusão para pessoas surdas na sua seção, como legendagem de vídeos, uso de janelas de Libras ou apoio em atividades acessíveis"
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260116,
+      "post_slug": "literatura-2",
+      "titulo": "Literatura",
+      "eixo": "Paz e Desenvolvimento",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/literatura-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Literatura_N1.png",
+      "requisitos": [
+        "Escrever um conto simples sobre um tema à sua escolha, com começo, meio e fim bem definidos.",
+        "Pesquisar e apresentar a vida e a obra de um escritor brasileiro , mostrando por que ele é importante e qual mensagem suas histórias trazem.",
+        "Escrever um poema, cordel ou repente de até oito versos, sobre um tema livre.",
+        "Ler três livros de gêneros diferentes (como aventura, poesia, mistério, biografia ou fantasia) e explicar o que muda entre os estilos e as formas de contar a história.",
+        "Apresentar seu livro ou coleção favorita , contando por que gosta dela e convidando seus colegas a conhecerem também.",
+        "P articipar ou organizar uma roda de leitura na seção, na escola ou em casa, para trocar ideias sobre os livros lidos."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260115,
+      "post_slug": "linguas-2",
+      "titulo": "Línguas",
+      "eixo": "Paz e Desenvolvimento",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/linguas-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Linguas_N1.png",
+      "requisitos": [
+        "Escolher um idioma estrangeiro (como inglês, espanhol, francês, japonês, italiano, alemão, entre outros) para realizar os itens da especialidade.",
+        "Montar uma árvore linguística mostrando de onde vem o idioma que você escolheu e como ele se relaciona com a língua portuguesa.",
+        "Localizar no mapa os países onde esse idioma é falado e identificar uma embaixada, consulado ou centro cultural desse país no Brasil, explicando o que eles fazem.",
+        "Criar um pequeno glossário com até 15 palavras ou expressões escoteiras no idioma escolhido e contar como é o Escotismo em um país que fala essa língua.",
+        "Trocar pelo menos três mensagens escritas (por carta, e-mail ou aplicativo) com uma pessoa que fale o idioma escolhido, compartilhando experiências escoteiras.",
+        "Ler um texto curto no idioma escolhido, como uma notícia, postagem ou história, e contar, com suas palavras, o que entendeu.",
+        "Escrever um pequeno texto ou carta ( de cerca de 150 a 200 palavras) no idioma escolhido, apresentando-se e contando algo sobre seu grupo escoteiro.",
+        "Fazer uma apresentação oral simples no idioma escolhido, sobre um tema de sua escolha (como seu país, sua cidade, o Escotismo ou um hobby).",
+        "Conversar por alguns minutos com uma pessoa que fale o idioma, mostrando que você consegue entender e responder de forma básica."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260117,
+      "post_slug": "mitologias",
+      "titulo": "Mitologias",
+      "eixo": "Paz e Desenvolvimento",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/mitologias/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Mitologias_N1.png",
+      "requisitos": [
+        "Escolher uma linha mitológica (como grega, nórdica, egípcia, indígena brasileira, japonesa, africana ou outra) e utilizá-la como base para os itens da especialidade.",
+        "Explicar o que é mitologia e como os povos antigos usavam histórias com deuses, heróis e símbolos para compreender o mundo.",
+        "Apresentar a linha mitológica escolhida , mostrando seus principais deuses, heróis, símbolos e crenças.",
+        "Comparar dois personagens ou deuses da linha mitológica escolhida com figuras semelhantes de outra mitologia, mostrando suas diferenças e semelhanças.",
+        "Ler ou assistir duas obras (livros, filmes, HQs ou animações) que tratem da mitologia escolhida e contar, com suas palavras, o que aprendeu.",
+        "E ncenar uma história mitológica ou uma passagem famosa da mitologia escolhida.",
+        "Construir um objeto ou símbolo artesanal que represente a linha mitológica estudada (como um escudo, amuleto, martelo, máscara ou outro símbolo)."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260118,
+      "post_slug": "museologia-2",
+      "titulo": "Museologia",
+      "eixo": "Paz e Desenvolvimento",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/museologia-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Museologia_N1.png",
+      "requisitos": [
+        "Explicar o que é museologia e por que os museus são importantes para a preservação da história e da cultura. Falar também sobre o trabalho do museólogo e citar exemplos de profissionais dessa área.",
+        "Visitar pelo menos dois museus da sua cidade ou região, contando quando surgiram, o que guardam e por que são importantes.",
+        "Aprender e demonstrar as técnicas básicas de cuidado e preservação de objetos antigos, explicando como protegê-los da luz, umidade e poeira.",
+        "Montar uma pequena exposição sobre sua trajetória escoteira, com pelo menos cinco objetos (como distintivos, lenços, fotos ou lembranças), cuidando e garantindo sua conservação.",
+        "Entrevistar um museólogo ou funcionário de um museu e contar, com suas palavras, o que aprendeu sobre o trabalho com memória e preservação.",
+        "Escolher cinco museus brasileiros que você considera importantes e explicar por que eles são relevantes para a história e a cultura do país."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260119,
+      "post_slug": "origami",
+      "titulo": "Origami",
+      "eixo": "Paz e Desenvolvimento",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/origami/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Origami_N1.png",
+      "requisitos": [
+        "Pesquisar e apresentar a história do origami, incluindo a origem do papel, o significado do nome e como essa arte se desenvolveu ao longo do tempo.",
+        "Explicar os símbolos básicos usados nas dobraduras, como linhas de vale, montanha, dobras internas e externas, achatamento e plissagem, montando um esquema ilustrado.",
+        "Fazer dez dobraduras simples, com até 30 dobras cada, incluindo animais, flores ou objetos tradicionais.",
+        "Confeccionar três tipos diferentes de caixas usando técnicas de origami, explicando suas formas e utilidades.",
+        "Criar cinco dobraduras mais complexas, com mais de 40 dobras, mostrando cuidado e precisão nas formas.",
+        "Usar o origami para decorar um evento, festa ou reunião escoteira, mostrando como a arte pode transformar o ambiente.",
+        "Montar dois modelos de kusudama (esferas feitas com peças modulares de papel), explorando cores e combinações criativas.",
+        "E nsinar três tipos diferentes de origami a outras pessoas, ajudando-as a aprender e se encantar com essa arte."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260120,
+      "post_slug": "paleontologia",
+      "titulo": "Paleontologia",
+      "eixo": "Paz e Desenvolvimento",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/paleontologia/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Paleontologia_N1.png",
+      "requisitos": [
+        "Explicar o que é Paleontologia , quando surgiu essa ciência e por que ela é importante para entender a evolução da vida na Terra.",
+        "Localizar no mapa-múndi três sítios paleontológicos famosos e explicar por que são importantes para a ciência.",
+        "Apresentar três espécies de dinossauros que viveram no Brasil e três que viveram em outros países, contando onde viviam, como se alimentavam e em qual período existiram (Triássico, Jurássico ou Cretáceo).",
+        "Criar um jogo de cartas com animais pré-históricos, destacando suas principais características.",
+        "Fazer um estudo ilustrado de cinco espécies pré-históricas, mostrando suas formas, hábitos e o ambiente em que viviam.",
+        "Contar, com suas palavras, como os cientistas estudam fósseis, explicando as técnicas usadas para descobrir, escavar e analisar os achados."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260121,
+      "post_slug": "paz-e-justica",
+      "titulo": "Paz e Justiça",
+      "eixo": "Paz e Desenvolvimento",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/paz-e-justica/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Paz_e_Justica_N1.png",
+      "requisitos": [
+        "Conversar sobre o que é ser justo e dar exemplos de atitudes justas e injustas que podem acontecer na escola, em casa ou no grupo escoteiro.",
+        "Criar, com sua seção, um “acordo de convivência” , com regras que ajudem todos a se respeitarem e a resolverem conflitos de forma pacífica.",
+        "Fazer uma dramatização ou esquete mostrando uma situação de injustiça e como ela pode ser resolvida com diálogo, perdão ou cooperação.",
+        "Entrevistar uma pessoa que trabalha com a paz ou a segurança da comunidade, como um guarda, policial, bombeiro, conselheiro tutelar ou professor, e contar o que aprendeu.",
+        "Montar um painel ou mural com exemplos de direitos e deveres das crianças e jovens, em linguagem simples e ilustrada.",
+        "Organizar uma pequena campanha ou ação na seção ou na escola sobre respeito às diferenças, combate ao bullying ou convivência pacífica.",
+        "Assistir a um filme ou animação sobre justiça, cooperação ou empatia e conversar com a seção sobre a mensagem do filme.",
+        "Criar um “código da paz” com frases curtas ou símbolos que representem atitudes de bondade, respeito e responsabilidade, e apresentá-lo à sua seção."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260122,
+      "post_slug": "poesia-2",
+      "titulo": "Poesia",
+      "eixo": "Paz e Desenvolvimento",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/poesia-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Poesia_N1.png",
+      "requisitos": [
+        "Contar, com suas palavras, como surgiu a poesia e apresentar um cartaz, linha do tempo ou vídeo com alguns estilos poéticos (como soneto, cordel, haicai, versos livres ou slam).",
+        "Apresentar para sua seção poemas de três poetas brasileiros e um estrangeiro, explicando o que você mais gostou em cada um.",
+        "Escrever e recitar um poema de sua autoria, sobre um tema que seja importante para você (amizade, natureza, sonhos, coragem, etc.).",
+        "Ilustrar um poema com desenhos, colagens ou fotografia, mostrando o que ele faz você sentir.",
+        "Participar ou organizar uma roda de poesia, sarau ou Fogo de Conselho poético, recitando poemas próprios ou de outros autores.",
+        "Visitar ou pesquisar um grupo ou espaço cultural da sua cidade que valorize a poesia (como bibliotecas, coletivos de arte ou academias literárias) e contar o que aprendeu."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260123,
+      "post_slug": "prevencao-de-fake-news",
+      "titulo": "Prevenção de Fake News",
+      "eixo": "Paz e Desenvolvimento",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/prevencao-de-fake-news/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Prevencao_de_Fake_News_N1.png",
+      "requisitos": [
+        "Explicar o que são fake news e mostrar como elas podem ser criadas, inclusive com o uso de inteligência artificial (como textos, imagens ou vídeos falsos).",
+        "Analisar três exemplos de conteúdos falsos (notícia, foto ou vídeo) encontrados na internet, explicando como percebeu que eram falsos e quais sinais chamaram sua atenção.",
+        "Demonstrar três maneiras simples de verificar uma informação, como pesquisar em fontes confiáveis, checar a data e comparar com outras notícias.",
+        "Explorar, com segurança e orientação de um adulto, uma ferramenta de IA generativa (como criador de imagem ou texto) para observar como o conteúdo é produzido e discutir seus limites e responsabilidades.",
+        "Criar uma campanha de conscientização sobre os riscos de compartilhar informações falsas, explicando o que fazer antes de repassar uma mensagem, imagem ou notícia.",
+        "Escrever uma reflexão curta ou fazer uma roda de conversa sobre por que é importante pensar antes de compartilhar algo nas redes."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260124,
+      "post_slug": "tradicoes-dos-povos-originarios",
+      "titulo": "Tradições dos Povos Originários",
+      "eixo": "Paz e Desenvolvimento",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/tradicoes-dos-povos-originarios/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Tradicoes_dos_Povos_Originarios_N1.png",
+      "requisitos": [
+        "P esquisar dez povos originários do Brasil, representando pelo menos um de cada região do país. Criar um mapa ilustrado mostrando onde esses povos vivem ou viveram e uma curiosidade sobre cada um.",
+        "Visitar um museu, reserva ou exposição sobre cultura originária (presencial ou virtual) e comentar sobre o que aprendeu.",
+        "Construir uma maquete simples de uma casa (oca, maloca, palafita, etc.), usando materiais naturais ou recicláveis, e explicar como ela foi feita e por que se adapta ao ambiente.",
+        "Aprender dois jogos tradicionais dos povos originários (como peteca ou kapu) e organizar uma partida com a sua seção, explicando suas regras e significados.",
+        "Preparar dois pratos típicos da culinária , como tapioca, beiju, pamonha ou peixe assado, e conversar sobre como os alimentos estão ligados à natureza e à cultura dos povos.",
+        "Apresentar cinco costumes, palavras ou práticas do nosso dia a dia que vieram dos povos originários , mostrando sua origem e como continuam presentes hoje.",
+        "E scolher uma lenda e apresentá-la em forma de teatro, contação de histórias ou vídeo, explicando o que ela ensina e sua importância para o povo de origem.",
+        "Pesquisar sobre trajes tradicionais e reproduzir um de forma simples e respeitosa , usando elementos naturais ou recicláveis, explicando seu significado e quando é usado."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 2
+        },
+        {
+          "nome": "Nível II",
+          "itens": 4
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260125,
+      "post_slug": "aeromodelismo-2",
+      "titulo": "Aeromodelismo",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/aeromodelismo-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Aeromodelismo_N1.png",
+      "requisitos": [
+        "Construir um avião de papel ou planador que voe por, pelo menos, 5 segundos.",
+        "Montar um modelo simples de avião usando materiais como palitos, bambu, papelão ou isopor.",
+        "Explicar com suas palavras como o ar ajuda as asas a levantar o avião e mantê-lo no ar.",
+        "Demonstrar o lançamento e o pouso do seu modelo com segurança, cuidando do espaço ao redor.",
+        "Usar um simulador de voo (de computador ou celular) para compreender como funcionam os comandos de um avião, com a ajuda de um adulto ou aeromodelista experiente.",
+        "Conhecer um tipo de aeronave importante da história da aviação e construir uma pequena réplica dela.",
+        "Participar de um desafio ou torneio de aviões de papel, ajudando a definir regras de segurança e organização.",
+        "Apresentar seu modelo ou réplica para sua seção ou grupo escoteiro, explicando como foi construído e o que aprendeu durante a atividade."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260126,
+      "post_slug": "anatomia-humana-2",
+      "titulo": "Anatomia Humana",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/anatomia-humana-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Anatomia_Humana_N1.png",
+      "requisitos": [
+        "Demonstrar a posição anatômica do corpo humano e usar um colega ou boneco para indicar corretamente frente, trás, direita, esquerda, cima e baixo.",
+        "Simular o processo de digestão com materiais simples , como garrafas, tubos e esponjas, para mostrar o caminho dos alimentos pelo sistema digestório.",
+        "Montar um modelo do sistema urinário com materiais recicláveis, mostrando o percurso da urina desde os rins até a eliminação, explicando o papel de cada órgão.",
+        "Localizar e nomear no próprio corpo os principais ossos e músculos, observando como se movimentam durante uma corrida, flexão ou salto.",
+        "Fazer um experimento simples sobre o sistema circulatório, mostrando como o sangue circula e por que o coração bate mais rápido após uma atividade física leve.",
+        "Demonstrar, com bexigas ou garrafas plásticas, como os pulmões enchem e esvaziam de ar, explicando como trabalham junto com o coração para levar oxigênio ao corpo.",
+        "Testar os reflexos do corpo em situações seguras, como medir o tempo de reação a um estímulo visual ou tátil, observando como o sistema nervoso atua.",
+        "Usar modelos, vídeos educativos ou maquetes simples para compreender o desenvolvimento de um bebê, identificando as principais fases da gestação e o crescimento dos órgãos.."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260127,
+      "post_slug": "artes-marciais-2",
+      "titulo": "Artes Marciais",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/artes-marciais-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Artes_Marciais_N1.png",
+      "requisitos": [
+        "Contar a história da arte marcial que você pratica, explicando onde e como ela surgiu.",
+        "Apresentar a filosofia ou os valores dessa arte marcial, falando sobre o respeito, a disciplina e o autocontrole.",
+        "Demonstrar os movimentos básicos da modalidade que pratica , como golpes, defesas ou formas (katas, poomse, etc.).",
+        "Explicar as principais regras de uma competição da sua arte marcial e mostrar como o respeito entre os lutadores é importante.",
+        "Assistir a uma competição e contar o que observou sobre as técnicas e o comportamento dos praticantes.",
+        "Identificar os benefícios físicos e mentais que a prática trouxe para você.",
+        "Planejar com seu instrutor ou escotista uma aula curta para ensinar alguns movimentos básicos aos colegas interessados.",
+        "Apresentar para a seção o que aprendeu sobre sua arte marcia l e explicar como ela ajuda a viver melhor e com mais equilíbrio."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260128,
+      "post_slug": "baba-2",
+      "titulo": "Babá",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/baba-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Baba_N1.png",
+      "requisitos": [
+        "Listar os principais telefones de emergência da sua cidade (bombeiros, hospital, polícia e outros).",
+        "Demonstrar como preparar uma mamadeira, trocar uma fralda e colocar um bebê para dormir, explicando os cuidados de higiene em cada etapa.",
+        "Identificar os principais riscos domésticos (tomadas, escadas, produtos de limpeza) e explicar como evitá-los.",
+        "Mostrar como agir em situações simples de primeiros socorros , como pequenos ferimentos ou engasgos em bebês e crianças.",
+        "Elaborar um cartaz ou desenho com os principais marcos do desenvolvimento infantil, como sentar, engatinhar e andar.",
+        "Apresentar as doenças infantis mais comuns e montar um calendário de vacinação, com ajuda de um adulto.",
+        "Criar seis brincadeiras educativas, sendo três para bebês e três para crianças, explicando o que cada uma estimula (coordenação, fala, criatividade, etc.).",
+        "Cuidar de um bebê ou criança por cerca de três horas, com a supervisão de um adulto, e depois contar o que aprendeu com essa experiência."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260129,
+      "post_slug": "canoagem-2",
+      "titulo": "Canoagem",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/canoagem-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Canoagem_N1.png",
+      "requisitos": [
+        "Apresentar os principais tipos de canoas, tradicionais e modernas, indicando seus materiais e usos mais comuns.",
+        "Contar a história da canoagem, explicando como as canoas surgiram e evoluíram ao longo do tempo.",
+        "Conduzir uma canoa por pelo menos 20 minutos, em local seguro e acompanhado por um adulto responsável.",
+        "Explicar o uso correto dos equipamentos de segurança, como colete salva-vidas, remo e capacete.",
+        "Ensinar a outros jovens os fundamentos básicos da canoagem, como segurar o remo, equilibrar a canoa e manter a postura correta.",
+        "Demonstrar um estilo de canoagem esportiva ou recreativa, explicando suas regras e principais movimentos.",
+        "Organizar uma atividade ou competição amistosa de canoagem, planejando junto à sua seção o local, as regras e os cuidados necessários.",
+        "Assistir a uma prova ou demonstração de canoagem e relatar o que observou sobre o desempenho e o espírito desportivo."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260130,
+      "post_slug": "canto-2",
+      "titulo": "Canto",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/canto-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Canto_N1.png",
+      "requisitos": [
+        "Apresentar as principais classificações vocai s (voz aguda, média e grave) e identificar a que mais se aproxima da sua.",
+        "Explicar os benefícios do canto para a saúde da voz e indicar alguns cuidados importantes para não forçá-la.",
+        "Executar pelo menos três exercícios de aquecimento vocal e três de vocalize, explicando para que serve cada um.",
+        "Reconhecer a diferença entre aquecimento vocal e vocalize, mostrando como cada prática ajuda a cantar melhor.",
+        "Cantar trechos curtos de três estilos musicais diferentes (como pop, samba e MPB), para uma plateia ou grupo de até 20 pessoas.",
+        "Assistir a uma apresentação de canto (ao vivo ou em vídeo) e comentar o que observou sobre o ritmo, afinação e emoção do cantor.",
+        "Praticar o uso de três técnicas vocais simples (como vibrato, mudança de tom ou respiração controlada) e explicar como cada uma ajuda na performance.",
+        "Apresentar uma música completa, aplicando o que aprendeu sobre respiração, expressão e afinação, e depois refletir sobre o que pode melhorar."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260131,
+      "post_slug": "ciclismo-2",
+      "titulo": "Ciclismo",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/ciclismo-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Ciclismo_N1.png",
+      "requisitos": [
+        "Identificar as partes principais da bicicleta e verificar se está tudo em ordem antes de pedalar (freios, pneus, correntes e selim).",
+        "Explicar as regras de segurança e o Código de Trânsito para ciclistas, demonstrando o uso correto do capacete e os sinais manuais básicos.",
+        "R ealizar pequenos reparos e ajustes na bicicleta, como encher pneus, ajustar freios e trocar a câmara de ar.",
+        "Mapear ruas, ciclovias ou trilhas seguras da sua cidade, avaliando sinalização, trânsito e condições do caminho.",
+        "Participar de um passeio ou evento ciclístico, em asfalto ou trilha, com percurso de pelo menos 10 quilômetros, e relatar sua experiência.",
+        "Usar a bicicleta como meio de transporte por uma semana e depois comparar esse uso com outros meios (tempo, distância, custo e impacto ambiental)."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260132,
+      "post_slug": "colecoes-2",
+      "titulo": "Coleções",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/colecoes-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Colecoes_N1.png",
+      "requisitos": [
+        "Expor sua coleção em um local onde outras pessoas possam ver, como na sede do grupo escoteiro, na escola ou em um evento.",
+        "Contar por que começou sua coleção e o que a torna especial para você.",
+        "Explicar a origem dos itens que coleciona e o que eles representam.",
+        "Mostrar como conservar e manusear seus itens, mantendo-os limpos e bem guardados.",
+        "Descrever como adquire novos objetos para sua coleção, respeitando regras de troca, compra ou doação.",
+        "Participar ou ajudar a organizar um encontro de colecionadores, contribuindo para o planejamento e divulgação."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260133,
+      "post_slug": "corrida-de-rua-2",
+      "titulo": "Corrida de Rua",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/corrida-de-rua-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Corrida_de_Rua_N1.png",
+      "requisitos": [
+        "Contar a história da corrida de rua, citando atletas importantes e a trajetória do etíope Abebe Bikila.",
+        "Explicar os tipos de pisada (pronada, supinada e neutra), mostrar o seu tipo e ajudar outras pessoas a descobrirem o delas.",
+        "Apresentar os principais cuidados com o corpo: aquecimento, alongamento, alimentação, hidratação e descanso, indicando como evitar lesões e mal-estar.",
+        "Diferenciar os tipos de corrida: curta distância, média distância e longa distância, dando exemplos de provas conhecidas.",
+        "Participar de uma corrida de rua , descrevendo o percurso e as habilidades usadas durante a prova.",
+        "Reconhecer o equipamento e as roupas adequadas para correr, explicando por que são importantes para a segurança e o conforto.",
+        "Experimentar diferentes tipos de treino (como intervalado, subidas, ritmo leve ou regenerativo) e contar como cada um ajuda a melhorar o desempenho.",
+        "Organizar uma corrida recreativa ou amistosa, planejando os cuidados antes, durante e depois do evento, com apoio de adultos e participação de colegas."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260134,
+      "post_slug": "cubo-magico-2",
+      "titulo": "Cubo Mágico",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/cubo-magico-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Cubo_Magico_N1.png",
+      "requisitos": [
+        "Resolver o cubo mágico tradicional (3x3x3) sem limite de tempo, mostrando compreensão dos movimentos básicos.",
+        "Contar a história da criação do cubo mágico, citando seu criador e como o brinquedo evoluiu ao longo do tempo.",
+        "Desmontar um cubo mágico, limpar, lubrificar e remontar as peças corretamente, garantindo seu bom funcionamento.",
+        "Resolver o cubo tradicional em até 2 minutos, após prática e treino supervisionado.",
+        "Participar de um campeonato amador ou organizar uma competição entre a seção ou amigos e explicar de forma simples as regras dos campeonatos oficiais e o papel da WCA (World Cube Association).",
+        "Ensinar outra pessoa a resolver um cubo mágico, compartilhando o que aprendeu e ajudando-a a superar o desafio."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260135,
+      "post_slug": "cuidados-bucais-2",
+      "titulo": "Cuidados Bucais",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/cuidados-bucais-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Cuidados_Bucais_N1.png",
+      "requisitos": [
+        "Demonstrar o uso correto da escova de dentes e do fio dental, explicando quando e como devem ser usados.",
+        "Montar um jogo educativo sobre as partes da boca, os tipos de dentes e suas funções e aplicá-lo na sua seção.",
+        "Explicar como a saliva protege os dentes e como a placa bacteriana pode causar gengivite, tártaro e outras doenças.",
+        "Construir um modelo simples (com massinha, papel ou material reciclado) mostrando como a cárie se desenvolve.",
+        "Descrever o que é um consumo inteligente de açúcar e relacionar esse cuidado com a saúde bucal.",
+        "Apresentar de forma criativa os efeitos do tabagismo e sua ligação com o câncer de boca.",
+        "Realizar uma entrevista ou conversa com um dentista ou profissional da saúde bucal, anotando as principais orientações recebidas.",
+        "Em sua seção, aplicar uma atividade educativa sobre saúde bucal."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260136,
+      "post_slug": "cuidados-com-idosos-2",
+      "titulo": "Cuidados com Idosos",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/cuidados-com-idosos-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Cuidados_com_Idosos_N1.png",
+      "requisitos": [
+        "Apresentar três doenças comuns na terceira idade (como hipertensão, diabetes e artrite) e explicar como podem ser prevenidas.",
+        "Demonstrar, com o uso de um boneco adulto ou simulação, como ajudar um idoso a sentar-se com segurança, trocar roupas de cama e auxiliar na alimentação.",
+        "Criar e aplicar um jogo educativo sobre o Estatuto do Idoso e os Princípios das Nações Unidas para Pessoas Idosas, ajudando outras pessoas a conhecer seus direitos.",
+        "Analisar uma reportagem ou notícia sobre maus-tratos a idosos e comentar o que poderia ser feito para evitar essas situações.",
+        "Organizar com sua seção ou patrulha uma visita a um lar de idosos, preparando atividades simples e alegres para compartilhar com os residentes.",
+        "Produzir um registro pessoal, em forma de relato, diário ilustrado ou vídeo, sobre uma experiência de convivência ou apoio a um idoso por pelo menos cinco dias, destacando o que aprendeu e como se sentiu."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260137,
+      "post_slug": "culinaria-vegetariana-2",
+      "titulo": "Culinária Vegetariana",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/culinaria-vegetariana-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Culinaria_Vegetariana_N1.png",
+      "requisitos": [
+        "Explicar as diferenças entre uma alimentação com carne e uma alimentação vegetariana ou vegana, apontando alguns motivos que levam as pessoas a fazer essa escolha.",
+        "Produzir leite vegetal e preparar uma bebida contando quais nutrientes esse leite oferece.",
+        "Cozinhar um prato simples com proteína vegetal (como feijão, lentilha ou grão-de-bico) e explicar a importância dos ingredientes usados.",
+        "Elaborar um cardápio vegetariano ou vegano para um dia de acampamento, garantindo que tenha todos os nutrientes necessários.",
+        "Organizar um almoço ou lanche vegetariano completo, preparando e servindo os alimentos para colegas, amigos ou familiares, explicando suas escolhas.",
+        "Entrevistar pessoas que seguem a alimentação vegetariana ou vegana e apresentar o que aprendeu sobre seus hábitos e motivações."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260138,
+      "post_slug": "danca-2",
+      "titulo": "Dança",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/danca-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Danca_N1.png",
+      "requisitos": [
+        "Aprender e dançar três estilos diferentes , utilizando roupas ou acessórios adequados para cada um deles.",
+        "Criar e apresentar uma coreografia com duração de uma música, expressando uma ideia ou emoção.",
+        "Apresentar a vida e a obra de três artistas da dança, sendo pelo menos um brasileiro ou latino-americano, destacando sua importância para essa arte.",
+        "Ensinar a outra pessoa uma sequência de passos simples de qualquer estilo de dança, demonstrando paciência e clareza.",
+        "Assistir a uma apresentação de dança comentando sobre o figurino, a música, os movimentos e a expressão dos dançarinos.",
+        "Organizar uma mostra de dança para a seção , definindo o tema, o local e os participantes, ajudando na preparação do evento."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260139,
+      "post_slug": "desportos-inclusivos-2",
+      "titulo": "Desportos Inclusivos",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/desportos-inclusivos-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Desportos_Inclusivos_N1.png",
+      "requisitos": [
+        "Contar a história dos Jogos Paralímpicos, citando como surgiram, como evoluíram e mencionando alguns atletas ou países que se destacaram.",
+        "Escolher e praticar uma modalidade paralímpica adaptada (como goalball, bocha ou vôlei sentado), explicando suas regras e cuidados necessários.",
+        "Assistir a uma partida de esporte paralímpico, ao vivo ou em vídeo, e depois comentar o que aprendeu sobre suas regras, funções e marcações.",
+        "Entrevistar um atleta ou educador envolvido com esporte inclusivo, descobrindo como o esporte pode transformar vidas e compartilhando o que aprendeu com a seção.",
+        "Criar uma atividade ou jogo adaptado , mostrando como todos podem participar, independentemente de suas habilidades físicas.",
+        "Organizar com sua seção uma palestra ou roda de conversa sobre esportes inclusivos, convidando pessoas ou entidades que trabalhem com o tema."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260140,
+      "post_slug": "esportes-de-quadra",
+      "titulo": "Esportes de Quadra",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/esportes-de-quadra/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Esportes_de_Quadra_N1.png",
+      "requisitos": [
+        "Contar a história e origem do esporte escolhido, citando onde e como surgiu.",
+        "Explicar as regras principais do esporte, demonstrando como elas garantem o jogo limpo e seguro.",
+        "Apresentar os esquemas e táticas básicas usados nas partidas e explicar a função de cada jogador.",
+        "Assistir a uma partida e identificar as posições dos jogadores em campo ou quadra.",
+        "Comentar as decisões dos técnicos durante uma partida, observando substituições, jogadas e estratégias.",
+        "Observar as decisões da arbitragem e explicar como o árbitro mantém o controle e a justiça do jogo.",
+        "Participar de uma partida como jogador, demonstrando espírito esportivo e respeito pelas regras.",
+        "Organizar um torneio amistoso com pelo menos quatro times formados por membros do grupo escoteiro, escola ou comunidade, ajudando na preparação e condução das partidas."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260141,
+      "post_slug": "expressao-musical",
+      "titulo": "Expressão Musical",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/expressao-musical/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Expressao_Musical_N1.png",
+      "requisitos": [
+        "Escolher um instrumento musical e apresentar sua história, cuidados, afinação e principais técnicas de uso.",
+        "Tocar ou cantar duas músicas , com duração total de pelo menos 6 minutos, realizando ao menos uma apresentação para colegas ou público.",
+        "Explicar os elementos da música — altura, duração, intensidade e timbre e exemplificar com o instrumento que pratica.",
+        "Ler e demonstrar conhecimento básico de leitura musical, executando pequenos solfejos melódicos e rítmicos com até quatro compassos.",
+        "Escolher um gênero musical, construir uma linha do tempo sobre sua história e citar três artistas que o representem.",
+        "Apresentar músicas de três estilos diferentes, mostrando as diferenças de ritmo, melodia e instrumentos usados.",
+        "Criar um conteúdo musical autoral, como uma canção, vídeo, ilustração ou material educativo, divulgando em sua seção ou grupo escoteiro.",
+        "Apresentar um gênero musical característico de cada região do Brasil para sua seção , explicando o que o torna especial e como ele representa a cultura local."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260142,
+      "post_slug": "futebol-2",
+      "titulo": "Futebol",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/futebol-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Futebol_N1.png",
+      "requisitos": [
+        "Contar a história do futebol, destacando sua origem, evolução e importância no Brasil e no mundo.",
+        "Apresentar as principais regras do futebol, explicando os fundamentos, sistemas de pontuação e citando atletas que marcaram a história do esporte.",
+        "Assistir a um jogo ao vivo e outro televisionado e comparar as diferenças entre as experiências.",
+        "Participar de uma partida recreativa, atuando em uma posição e demonstrando domínio dos fundamentos básicos.",
+        "Apresentar as diferenças entre futebol e futsal, comparando regras, espaços de jogo, número de jogadores e principais fundamentos.",
+        "Listar e explicar os equipamentos usados por jogadores durante o treino e a partida, destacando sua função e importância para a segurança."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260143,
+      "post_slug": "ginasticas",
+      "titulo": "Ginásticas",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/ginasticas/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Ginasticas_N1.png",
+      "requisitos": [
+        "Elaborar uma linha do tempo sobre a história da ginástica escolhida, destacando sua origem e principais transformações.",
+        "Apresentar os instrumentos ou aparelhos utilizados na modalidade escolhida, explicando a função de cada um.",
+        "Explicar as diferenças entre ginástica competitiva e não competitiva, mostrando o que elas têm em comum.",
+        "Organizar uma oficina prática sobre a ginástica escolhida, convidando colegas e ensinando movimentos básicos.",
+        "Identificar os cuidados e medidas de segurança necessários para a prática da ginástica, citando os procedimentos de segurança e prevenção a acidentes mais importantes.",
+        "Assistir a uma competição de ginástica e comentar as estratégias e decisões dos atletas e árbitros.",
+        "Criar e executar um programa de exercícios simples relacionado à ginástica escolhida, respeitando idade e limitações pessoais.",
+        "Organizar uma pequena atividade para sua seção, ensinando um movimento básico da modalidade escolhida e propondo uma adaptação para que todos possam participar"
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260144,
+      "post_slug": "hipismo-2",
+      "titulo": "Hipismo",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/hipismo-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Hipismo_N1.png",
+      "requisitos": [
+        "Realizar os cuidados básicos com um cavalo, incluindo escovação, limpeza dos cascos, alimentação e observação de sinais de saúde e bem-estar.",
+        "Identificar e utilizar corretamente o equipamento de montaria, como sela, estribos, freio, rédeas e cabresto, explicando a função de cada parte e verificando o ajuste no animal.",
+        "Praticar montaria nos três andamentos básicos (passo, trote e galope), demonstrando controle, equilíbrio e respeito ao ritmo do cavalo.",
+        "Participar de um percurso simples com obstáculos ou de uma prova rural, como tambores ou balizas, mostrando técnica e segurança.",
+        "Acompanhar uma sessão de ferração ou atendimento veterinário, observando o procedimento, conhecendo a anatomia básica do cavalo e os cuidados com os cascos.",
+        "Reconhecer e registrar as características de duas raças de cavalos, sendo uma voltada ao hipismo rural, descrevendo origem, porte, temperamento e usos principais.",
+        "Observar ou conversar com um treinador, cavaleiro ou tratador, aprendendo sobre rotina, manejo e os princípios de uma relação saudável com o cavalo.",
+        "Apresentar formas de prevenção e primeiros cuidados para três doenças ou problemas comuns em cavalos, com base em informações observadas em campo ou orientadas por profissional."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260145,
+      "post_slug": "ioio-2",
+      "titulo": "Ioiô",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/ioio-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Ioio_N1.png",
+      "requisitos": [
+        "Demonstrar os movimentos básicos do ioiô, incluindo como enrolar corretamente, lançá-lo para baixo e fazê-lo retornar à mão e dorminhoco.",
+        "Executar e explicar manobras clássicas, como como “Cachorrinho Passeando”, “Cachorrinho Pulando a Cerca” e “Meia Volta”, mostrando controle e coordenação.",
+        "Praticar manobras intermediárias, como “Balancinho” e “Torre”, observando equilíbrio e fluidez nos movimentos.",
+        "Construir um ioiô com materiais simples, testando seu funcionamento e ajustando o peso, o eixo e o comprimento do fio.",
+        "Apresentar os principais tipos e modalidades do ioiô, como 1A, 2A, 3A, 4A e 5A, explicando suas diferenças e curiosidades.",
+        "Organizar uma demonstração ou oficina de ioiô, ensinando os movimentos básicos para outros jovens e criando uma pequena sequência pessoal de manobras."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260146,
+      "post_slug": "jogos-de-cartas-colecionaveis-2",
+      "titulo": "Jogos de Cartas Colecionáveis",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/jogos-de-cartas-colecionaveis-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Jogos_de_Cartas_Colecionaveis_N1.png",
+      "requisitos": [
+        "Apresentar a origem e a evolução dos jogos de cartas colecionáveis, citando exemplos conhecidos e explicando como surgiram e se popularizaram.",
+        "Comparar as principais características de três jogos de cartas colecionáveis, destacando diferenças de regras, objetivos, formas de vitória e maneiras de adquirir cartas.",
+        "Montar um baralho completo e funcional de um jogo à sua escolha, explicando as regras básicas, os tipos de cartas e a estratégia usada na construção do deck.",
+        "Participar de partidas e aplicar corretamente as regras, demonstrando espírito esportivo e respeito ao adversário.",
+        "Ensinar outro jovem a jogar, explicando passo a passo as regras e ajudando-o a montar um pequeno baralho para uma partida prática.",
+        "Organizar e arbitrar um mini torneio entre colegas ou membros da seção, aplicando as regras oficiais e garantindo um ambiente justo e divertido."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260147,
+      "post_slug": "jogos-de-tabuleiro-2",
+      "titulo": "Jogos de Tabuleiro",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/jogos-de-tabuleiro-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Jogos_de_Tabuleiro_N1.png",
+      "requisitos": [
+        "Identificar e explicar os principais componentes de um jogo de tabuleiro, como peças, dados, cartas e tabuleiros, mostrando sua função dentro das regras.",
+        "Experimentar e participar de pelo menos três jogos com mecânicas diferentes, explicando como funcionam e o que cada um ensina sobre estratégia, sorte e cooperação.",
+        "Ensinar as regras de um jogo com duração mínima de 20 minutos e conduzir uma partida, auxiliando os participantes e promovendo um ambiente justo e divertido.",
+        "Organizar uma sessão ou mini torneio de jogos de tabuleiro , escolhendo os jogos conforme o perfil dos participantes e garantindo acessibilidade e inclusão.",
+        "Comparar três jogos diferentes, destacando temas, mecânicas e estilos, e indicar quais habilidades eles ajudam a desenvolver (como tomada de decisão, planejamento ou trabalho em equipe).",
+        "Participar de um evento, clube ou comunidade de jogos de tabuleiro, presencial ou online, e relatar o que aprendeu sobre o papel dos jogos na convivência e na aprendizagem."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260149,
+      "post_slug": "maquiagem-2",
+      "titulo": "Maquiagem",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/maquiagem-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Maquiagem_N1.png",
+      "requisitos": [
+        "Demonstrar sua rotina de cuidados com a pele, mostrando como limpar, hidratar e proteger, explicando sobre cada passo.",
+        "Realizar uma sessão prática de automaquiagem , explicando as etapas e os produtos usados, e compartilhar o resultado com seu examinador.",
+        "Criar uma maquiagem artística temática, inspirada em um personagem, época ou elemento da natureza, explicando o conceito e os materiais utilizados.",
+        "Organizar uma pequena aula ou demonstração sobre a remoção correta da maquiagem, mostrando os cuidados necessários para manter a pele saudável.",
+        "Apresentar a evolução da maquiagem ao longo da história, construindo uma linha do tempo com referências visuais e explicando como a estética e os estilos mudaram em cada período.",
+        "Explorar como a maquiagem expressa identidade cultural e individual, apresentando exemplos de diferentes regiões do mundo e discutindo como ela pode fortalecer a autoestima e o respeito à diversidade."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260150,
+      "post_slug": "mergulho-2",
+      "titulo": "Mergulho",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/mergulho-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Mergulho_N1.png",
+      "requisitos": [
+        "Apresentar a história e a evolução do mergulho, explicando como surgiram os primeiros equipamentos e quais princípios físicos e fisiológicos estão envolvidos na atividade.",
+        "Identificar e diferenciar os principais tipos de mergulho, como livre, autônomo e técnico, descrevendo em quais situações são usados e suas finalidades esportivas, recreativas ou profissionais.",
+        "Explicar os principais riscos e cuidados de segurança no mergulho, como descompressão, afogamento e barotrauma, mostrando como preveni-los e agir em emergências.",
+        "Realizar uma prática de mergulho supervisionada, demonstrando técnicas básicas de respiração, compensação, equilíbrio e flutuação, sempre acompanhado por instrutor credenciado.",
+        "Conhecer a legislação brasileira e as certificações exigidas para mergulho, diferenciando mergulhadores amadores e profissionais e apresentando entidades formadoras reconhecidas.",
+        "Produzir um registro visual ou apresentação sobre a biodiversidade observada durante o mergulho, destacando a importância da preservação dos ecossistemas aquáticos e o impacto humano sobre esses ambientes."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260148,
+      "post_slug": "magica-e-ilusionismo-2",
+      "titulo": "Mágica e Ilusionismo",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/magica-e-ilusionismo-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Magica_e_Ilusionismo_N1.png",
+      "requisitos": [
+        "Apresentar as principais categorias de mágica, como close-up, salão, mentalismo, escapismo e grandes ilusões, explicando suas diferenças e realizando uma demonstração prática de duas delas.",
+        "Montar e apresentar uma rotina de mágicas close-up, com pelo menos três truques diferentes, mostrando domínio de técnica e presença de palco.",
+        "Montar e apresentar uma rotina de mágicas de salão , utilizando elementos maiores e interação com o público.",
+        "Criar um truque ou gimmick próprio, explicando como foi feita sua construção e demonstrando o efeito final apenas ao examinador.",
+        "Apresentar a biografia de um mágico brasileiro de destaque e explicar a importância de Harry Houdini para a história mundial do ilusionismo.",
+        "Realizar um pequeno show de mágica para sua seção, apresentando pelo menos cinco truques diferentes."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260151,
+      "post_slug": "natacao-2",
+      "titulo": "Natação",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/natacao-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Natacao_N1.png",
+      "requisitos": [
+        "Apresentar a história e evolução da natação, explicando suas regras básicas, fundamentos, estilos e principais medidas de segurança em piscinas e competições.",
+        "Executar um mergulho correto da borda ou do bloco de partida, mantendo o corpo alinhado, entrando na água com segurança e técnica adequada.",
+        "Demonstrar flutuação estática (boiar sem bater pés ou mãos) e remover parte do vestuário enquanto permanece na superfície, sem tocar o fundo da piscina.",
+        "Atravessar uma piscina submerso por pelo menos 6 metros, controlando a respiração e o tempo de permanência na água.",
+        "Nadar pelo menos 50 metros sem parar e recuperar um objeto submerso a 3 metros de profundidade, mostrando domínio do corpo e controle da respiração.",
+        "Nadar 100 metros em cada um dos quatro estilos — crawl, costas, peito e borboleta — , aplicando corretamente as técnicas e o ritmo de cada modalidade.",
+        "Demonstrar técnicas práticas de resgate e salvamento aquático, incluindo aproximação segura, transporte da vítima e cuidados básicos após o resgate.",
+        "Participar de um treino ou atividade de resistência aquática, medindo tempo e distância percorrida, para avaliar sua evolução física e técnica."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260152,
+      "post_slug": "nutricao-2",
+      "titulo": "Nutrição",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/nutricao-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Nutricao_N1.png",
+      "requisitos": [
+        "Separar alimentos em três grupos — naturais, processados e ultraprocessados, usando embalagens ou figuras, e conversar sobre quais fazem bem para o corpo e quais devem ser consumidos com moderação.",
+        "Montar um prato colorido e equilibrado, com alimentos de diferentes grupos, explicando a importância de cada um para o crescimento e a energia.",
+        "Observar frutas, verduras e legumes da estação, montar uma pequena feira com os alimentos da sua região e descobrir quais são mais fáceis de encontrar em cada época do ano.",
+        "Demonstrar como deixar a água própria para o consumo, usando métodos simples e seguros, e explicar por que é importante beber água durante o dia.",
+        "Criar e aplicar um jogo, brincadeira ou dinâmica sobre alimentação saudável, ajudando sua seção a aprender de forma divertida como escolher melhor os alimentos.",
+        "Planejar as refeições de um acampamento ou dia de atividades, pensando em opções saudáveis, fáceis de preparar e que todos possam aproveitar."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260153,
+      "post_slug": "patinacao-2",
+      "titulo": "Patinação",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/patinacao-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Patins_N1.png",
+      "requisitos": [
+        "Apresentar a história da patinação e sua evolução, citando modalidades como artística, recreativa e hóquei sobre patins, além de explicar a importância dos equipamentos de segurança.",
+        "Identificar as partes dos patins e comparar diferentes tipos, como patins tradicionais, in-line e de gelo, indicando qual é o mais adequado para cada modalidade.",
+        "Demonstrar o aquecimento e alongamento corretos antes de patinar, explicando por que eles são importantes e como agir em caso de queda ou acidente.",
+        "Patinar em área segura e livre, utilizando equipamentos de proteção, demonstrando domínio básico de equilíbrio, frenagem e curvas.",
+        "Executar e ensinar pelo menos quatro manobras básicas de patinação, como deslizar, girar, frear, trocar de direção ou andar de costas, aplicando os cuidados de segurança necessários.",
+        "Organizar uma atividade ou oficina de patinação, ensinando regras básicas do esporte, convidando novos participantes e incentivando o uso seguro dos equipamentos."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260154,
+      "post_slug": "pipas-2",
+      "titulo": "Pipas",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/pipas-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Pipas_N1.png",
+      "requisitos": [
+        "Contar a origem das pipas e como elas chegaram ao Brasil, apresentando nomes regionais (como papagaio, arraia ou pandorga) e explicar os riscos do uso em áreas urbanas e próximas à rede elétrica.",
+        "Apresentar os materiais e ferramentas usados para fazer pipas, mostrando as diferenças entre papel, varetas e linhas, e explicando quais são mais seguros e sustentáveis.",
+        "Construir pelo menos dois modelos diferentes de pipa, aplicando técnicas de emenda de folha e decoração criativa, garantindo boa estrutura e equilíbrio de voo.",
+        "Empinar os modelos construídos por pelo menos três minutos cada, observando o vento, ajustando a linha e realizando o voo de forma segura e responsável.",
+        "Ensinar outros a construir uma pipa, explicando passo a passo o processo e promovendo o uso de linhas seguras (sem cerol ou produtos cortantes).",
+        "Organizar ou participar de um festival ou campeonato de pipas , com categorias criativas (como beleza, altura, voo mais estável ou pipa temática), garantindo que todas as regras de segurança sejam seguidas."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260155,
+      "post_slug": "plantas-medicinais-2",
+      "titulo": "Plantas Medicinais",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/plantas-medicinais-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Plantas_Medicinais_N1.png",
+      "requisitos": [
+        "Criar uma apresentação simples e interativa explicando o que são plantas medicinais, seus principais usos e os riscos do uso sem orientação adequada.",
+        "Apresentar três plantas medicinais, duas da sua região e uma de uso comum em todo o Brasil, mostrando suas folhas, flores ou mudas, e explicando seus benefícios, preparo e possíveis cuidados.",
+        "Prep arar um chá natural com uma ou mais plantas medicinais, registrando a receita, o modo de preparo e os cuidados necessários no consumo.",
+        "Produzir pelo menos três preparações à base de plantas medicinais, como pomada, extrato, unguento ou lambedouro, explicando o modo de uso e as precauções necessárias.",
+        "Cultivar uma planta medicinal, acompanhando seu crescimento e registrando o processo com fotos ou desenhos, e explicar como ela pode ser usada e cuidada de forma sustentável.",
+        "Pesquisar uma tradição cultural que utilize plantas medicinais, como parteiras, benzedeiras ou povos indígenas, e apresentar como esse conhecimento é passado entre gerações e o que ele ensina sobre respeito à natureza."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260156,
+      "post_slug": "prevencao-ao-bullying-2",
+      "titulo": "Prevenção ao Bullying",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/prevencao-ao-bullying-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Prevencao_ao_Bullying_N1.png",
+      "requisitos": [
+        "Explicar o que são bullying e cyberbullying, apresentando suas formas mais comuns e as consequências para quem sofre, pratica ou presencia essas situações.",
+        "Identificar sinais que indicam que alguém está sendo vítima de bullying, e conversar sobre como oferecer ajuda de maneira respeitosa e segura.",
+        "Apresentar para sua seção, por meio de dramatização ou encenação, duas situações em que o bullying possa ocorrer, discutindo depois atitudes corretas para evitar e combater esse comportamento.",
+        "Conversar com um educador, psicólogo ou escotista sobre as causas que levam alguém a praticar bullying e as formas de promover empatia e respeito nas relações.",
+        "Planejar e aplicar uma atividade prática de prevenção ao bullying, como uma dinâmica, roda de conversa ou exibição de vídeo, estimulando a amizade, a cooperação e a solidariedade na seção.",
+        "Organizar uma campanha ou ação antibullying em sua escola, grupo escoteiro ou comunidade, incentivando atitudes positivas e o compromisso com o respeito às diferenças."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260157,
+      "post_slug": "prevencao-aos-vicios",
+      "titulo": "Prevenção aos Vícios",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/prevencao-aos-vicios/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Prevencao_aos_Vicios_N1.png",
+      "requisitos": [
+        "Explicar com suas palavras o que são vícios e dependência, citando exemplos de substâncias (como álcool, cigarro e drogas) e de comportamentos que podem causar dependência, como o uso excessivo de telas, jogos ou apostas.",
+        "Participar de uma dinâmica, jogo ou atividade educativa sobre os riscos do uso de substâncias e vícios comportamentais, debatendo os efeitos sobre o corpo, a mente e as relações sociais.",
+        "Dramatizar, com sua patrulha ou seção, uma situação em que alguém ofereça algo que possa causar dependência, mostrando maneiras seguras e respeitosas de recusar.",
+        "Desenvolver uma campanha de prevenção aos vícios, valorizando atitudes saudáveis, esportes, convivência e lazer como alternativas positivas.",
+        "Assistir uma palestra com um profissional da saúde, educador ou agente comunitário, aprendendo sobre sinais de dependência, formas de prevenção e onde buscar ajuda.",
+        "Refletir sobre o uso equilibrado da tecnologia, criando junto com sua seção um plano de “tempo saudável de tela” para o dia a dia, priorizando a convivência e o bem-estar."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260158,
+      "post_slug": "prevencao-em-saude-2",
+      "titulo": "Prevenção em Saúde",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/prevencao-em-saude-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Prevencao_em_Saude_N1-67.png",
+      "requisitos": [
+        "Apresentar o calendário vacinal da sua região, explicando por que é importante manter a carteira de vacinação atualizada e como as vacinas protegem a comunidade.",
+        "Participar de uma atividade ou campanha de prevenção em saúde, como ação de vacinação, higiene, alimentação saudável, doação de sangue ou combate ao mosquito da dengue, registrando o que aprendeu.",
+        "C riar um jogo, cartaz ou quiz sobre três doenças preveníveis por vacinação, apresentando seus sintomas, agentes causadores e formas de prevenção.",
+        "Fazer uma apresentação prática sobre hábitos saudáveis, como alimentação equilibrada, sono, higiene pessoal e prática regular de atividades físicas, explicando como ajudam a prevenir doenças.",
+        "Conversar com um profissional de saúde ou participar de palestra sobre prevenção de doenças, aprendendo sobre temas como aleitamento materno, saúde bucal, doenças sexualmente transmissíveis ou cuidados com a mente e o corpo.",
+        "Planejar e desenvolver, com sua seção ou patrulha, uma campanha de conscientização sobre prevenção em saúde, voltada à escola, grupo escoteiro ou comunidade, incentivando atitudes que promovam bem-estar e qualidade de vida."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260159,
+      "post_slug": "primeiros-socorros-2",
+      "titulo": "Primeiros Socorros",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/primeiros-socorros-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Primeiros_Socorros_N1.png",
+      "requisitos": [
+        "Demonstrar como limpar e proteger ferimentos leves, aplicando curativos simples e ataduras básicas, sempre com higiene e materiais adequados.",
+        "Demonstrar a aplicação da abordagem primária e secundária à vítima de trauma conforme o protocolo vigente. Demonstrar como aplicar o uso da tábua rígida para o transporte da vítima de trauma.",
+        "Demonstrar a imobilização de fraturas, aplicação de talas em braços e pernas. Fazer uma tipoia simples para braço ou ombro, utilizando lenço triangular ou pano improvisado, garantindo a correta imobilização.",
+        "Reconhecer sinais de engasgo e demonstrar a conduta correta segundo o protocolo para leigos, incentivar a tosse, pedir ajuda, acionar um adulto e, se treinado, aplicar a manobra de desobstrução com segurança (em manequins ou simulação supervisionada). Demonstrar em diferentes cenários adultos, crianças e bebês.",
+        "Simular o atendimento em casos de desmaio, crises convulsivas, hipotensão, hipoglicemias, crises de ansiedade. Bem como o sinais de piora para acionamento do 192 SAMU.",
+        "Demonstrar os procedimentos iniciais de hemorragias externas e internas , tipos de curativo para sangramentos arterial, venoso e capilar, protegendo a vítima, mantendo a calma e acionando socorro (SAMU 192 ou SIATE 193), utilizando os protocolos do PHTLS 2024.",
+        "Participar de uma oficina ou curso prático de primeiros socorros, com duração mínima de 2 horas, ministrado por instrutores habilitados (bombeiros, enfermeiros, médicos, socorristas ou Cruz Vermelha, entre outros), e relatar o que aprendeu.",
+        "Identificar uma parada cardiorrespiratória e demonstrar a sequência de ação correta para leigos, conforme diretrizes atualizadas.",
+        "Todos os procedimentos devem seguir protocolos para leigos, com foco em reconhecer, proteger, acionar e agir com segurança.",
+        "As manobras de RCP e desobstrução de vias aéreas devem ser ensinadas apenas sob supervisão de adultos capacitados, utilizando bonecos ou simulações, nunca em pessoas reais.",
+        "É recomendado o uso de materiais oficiais da Cruz Vermelha Brasileira e do SAMU 192, disponíveis gratuitamente online, para apoio didático nas oficinas. Ou outras como: AHA, PHTLS, PALS, BLS."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260160,
+      "post_slug": "quebra-cabecas",
+      "titulo": "Quebra-cabeças",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/quebra-cabecas/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Quebra_Cabecas_N1.png",
+      "requisitos": [
+        "Apresentar a história do quebra-cabeça, incluindo sua origem, evolução ao longo do tempo e os principais tipos existentes.",
+        "Apresentar e explicar o funcionamento de três aplicativos que possibilitem a prática do quebra-cabeça, variando entre opções como quebra-cabeças 2D, 3D ou educativos.",
+        "Criar um quebra-cabeça com pelo menos trinta peças, utilizando materiais reciclados ou alternativos, explicando o processo de criação, escolha da imagem e corte das peças.",
+        "Montar um quebra-cabeça 3D de no mínimo cem peças, podendo ser de modelos arquitetônicos, animais, veículos ou mecânicos.",
+        "Organizar uma exposição com oito quebra-cabeças de diferentes tipos, como 2D, 3D, digitais ou mecânicos, explicando as características e desafios de cada um.",
+        "Montar doze formas distintas utilizando um tangram real ou em aplicativo, registrando o processo com fotos ou vídeos (ver nota técnica 1)."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260162,
+      "post_slug": "rpg",
+      "titulo": "RPG",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/rpg/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_RPG_N1.png",
+      "requisitos": [
+        "Explicar o que é um RPG e como ele funciona, apresentando seus principais tipos — de mesa, narrativo, digital, live-action e livros-jogos — e destacando o papel de jogadores e narradores.",
+        "Apresentar dois tipos de RPG, explicando o que mais gosta em cada um",
+        "Criar um personagem original para uma aventura, elaborando ficha com aparência, história, personalidade e habilidades, e apresentando-o ao grupo.",
+        "Narrar ou participar de uma aventura curta, com introdução, conflito e desfecho, garantindo que todos os participantes tenham oportunidade de agir e decidir durante a história.",
+        "Produzir materiais de apoio para o jogo, como mapas, fichas personalizadas, miniaturas ou marcadores, e utilizá-los em uma sessão prática de RPG.",
+        "Refletir sobre como o RPG pode ensinar valores humanos e escoteiros, relacionando situações do jogo com dilemas reais de convivência, empatia, justiça e trabalho em equipe."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260161,
+      "post_slug": "remo-2",
+      "titulo": "Remo",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/remo-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Remo_N1.png",
+      "requisitos": [
+        "Apresentar um quadro ilustrado com pelo menos cinco tipos de embarcações a remo, incluindo uma embarcação olímpica, descrevendo suas principais características e usos.",
+        "Remar sozinho um bote ou embarcação miúda, utilizando dois remos ou um único pela popa, realizando manobras simples como embarque, desembarque e transporte de material.",
+        "Participar de uma guarnição a remo, compondo a equipe em pelo menos três atividades embarcadas (como regata, rafting, travessia ou procissão náutica), somando no mínimo 7 horas embarcadas.",
+        "Reconhecer e demonstrar as principais vozes de comando de uma guarnição, aplicando-as em manobras de largada, mudança de direção, parada e atracação.",
+        "Demonstrar a movimentação correta do corpo na remada, observando ritmo, postura e sincronia, e explicar o que fazer em situações de vento forte, correnteza ou maré contra.",
+        "Observar e descrever os papéis desempenhados pelos remadores em diferentes posições, identificando funções e responsabilidades dentro da guarnição.",
+        "Demonstrar os cuidados e a manutenção básica da palamenta (remos, toletes, bancos, forquetas e demais partes da embarcação), explicando como garantir sua conservação.",
+        "Apresentar as principais normas de segurança em atividades a remo, como uso obrigatório de colete salva-vidas, checagem de condições meteorológicas e conduta em caso de queda na água."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260163,
+      "post_slug": "salvamento-2",
+      "titulo": "Salvamento",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/salvamento-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Salvamento_N1.png",
+      "requisitos": [
+        "Identificar e explicar os principais riscos em rios, lagos, piscinas e no mar, interpretando placas de sinalização e demonstrando como acionar corretamente o socorro emergencial (SAMU 192 ou Corpo de Bombeiros 193).",
+        "Atirar um cabo com bóia de salvamento ou objeto flutuante a uma vítima a 10 metros de distância, garantindo a correta comunicação com a pessoa em perigo.",
+        "Demonstrar como abordar uma pessoa em pânico dentro da água, utilizando técnicas seguras de aproximação lateral ou por trás, mantendo a distância até que o nadador esteja estabilizado, nunca colocando-se em risco direto.",
+        "Realizar o reboque de uma vítima até a margem, aplicando o tipo de nado compatível com o meio (crawl modificado, costas ou peito de salvamento), conforme orientações da SOBRASA , e priorizando sempre o controle da vítima e a própria flutuabilidade.",
+        "Demonstrar, em simulação supervisionada, a avaliação inicial e a ressuscitação cardiopulmonar (RCP) em caso de afogamento, seguindo o protocolo para leigos atualizado:",
+        "Criar e aplicar uma atividade educativa ou jogo sobre segurança aquática , destacando boas práticas em rios, lagos e praias, o uso correto de coletes salva-vidas e atitudes seguras para prevenir acidentes."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260164,
+      "post_slug": "seguranca-2",
+      "titulo": "Segurança",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/seguranca-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Seguranca_N1.png",
+      "requisitos": [
+        "Identificar riscos domésticos e apresentar como preveni-los, incluindo vazamento de gás, produtos químicos, remédios, eletricidade e objetos cortantes. Fazer uma demonstração prática de como agir em caso de vazamento de gás ou incêndio doméstico (sem uso de fogo real).",
+        "Montar um painel ou jogo educativo sobre segurança no dia a dia, abordando temas como trânsito, pedestres, uso do cinto de segurança, travessia de ruas e transporte escolar.",
+        "Listar e explicar os números de emergência da sua região (SAMU 192, Bombeiros 193, Polícia 190, Defesa Civil 199), descrevendo quando e como acioná-los corretamente.",
+        "Organizar, com sua patrulha ou seção, uma campanha sobre segurança na comunidade, como vigilância solidária, segurança em casa ou prevenção de acidentes com crianças.",
+        "Explicar e demonstrar atitudes seguras ao sair de casa, como cuidados ao caminhar à noite, evitar distrações com celulares e reconhecer locais de risco.",
+        "Elaborar um folheto, cartaz ou vídeo educativo sobre segurança doméstica, escolar ou comunitária, mostrando como atitudes simples podem evitar acidentes."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260165,
+      "post_slug": "seguranca-e-emergencia-nautica",
+      "titulo": "Segurança e Emergência Náutica",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/seguranca-e-emergencia-nautica/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Seguranca_e_Emergencia_Nautica_N1.png",
+      "requisitos": [
+        "Explicar os procedimentos iniciais de segurança ao enfrentar uma emergência no mar, incluindo o uso do colete salva-vidas, o preenchimento do aviso de saída e a leitura básica da tábua de marés.",
+        "Observar o tempo e prever mudanças meteorológicas, interpretando nuvens e ventos, sabendo como utilizar instrumentos simples como barômetro, termômetro e anemômetro.",
+        "Identificar os principais riscos à saúde no mar, como insolação, hipotermia, desidratação, enjoo, queimaduras solares e ferimentos por animais marinhos, demonstrando os primeiros cuidados para cada caso.",
+        "Conhecer e aplicar sinais internacionais de emergência para náufragos, como acenos, espelhos, bandeiras, luzes, fumaça e sons, e citar os principais canais de socorro marítimo (rádio VHF canal 16 e telefone 185 – Marinha do Brasil).",
+        "Demonst rar como agir em caso de queda ao mar (“homem ao mar”), simulando o lançamento de boia, marcação visual, comunicação com a guarnição e reboque seguro da vítima.",
+        "Apresentar os tipos de embarcações de salvamento, como botes, jangadas infláveis e balsas, explicando suas funções e os equipamentos básicos de emergência (kit de sobrevivência, EPIRB, água, sinalizadores).",
+        "Simular um cenário de naufrágio em grupo, aplicando técnicas seguras de resgate, flutuação, abrigo e sinalização, com supervisão de um adulto habilitado.",
+        "Demonstrar duas técnicas simples de obtenção de água potável no mar, como a condensação solar ou coleta de chuva, explicando seus limites e cuidados."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260166,
+      "post_slug": "skateboard-2",
+      "titulo": "Skateboard",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/skateboard-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Skateboard_N1.png",
+      "requisitos": [
+        "Apresentar a história e a evolução do skate, desde suas origens até se tornar um esporte olímpico, destacando as modalidades street e park e o papel do skate na cultura urbana.",
+        "Demonstrar como subir corretamente no skate, identificar sua base natural (regular ou goofy) e explicar as partes do equipamento e suas funções (shape, trucks, rolamentos, lixa, rodas, parafusos, etc.).",
+        "Executar três manobras básicas, como ollie, manual, shove-it ou 180º, demonstrando controle e equilíbrio.",
+        "Executar três manobras intermediárias — entre flip, varial, dropar em quarter, slide ou rockslide — demonstrando domínio técnico e segurança.",
+        "Realizar a manutenção básica do skate, ajustando rodas, trucks e rolamentos, e explicando como conservar o equipamento em bom estado.",
+        "Demonstrar o uso correto dos equipamentos de proteção (capacete, joelheira, cotoveleira e munhequeira), explicando sua importância para prevenir lesões e treinar com segurança.",
+        "Construir um obstáculo simples, como uma rampa ou box, com orientação de um adulto, e apresentar uma sequência de manobras nesse obstáculo, priorizando criatividade e técnica.",
+        "Apresentar três skatistas de destaque, nacionais ou internacionais, explicando suas principais conquistas e como inspiram a prática do esporte com respeito e perseverança."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260167,
+      "post_slug": "slackline-2",
+      "titulo": "Slackline",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/slackline-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Slackline_N1.png",
+      "requisitos": [
+        "Apresentar a origem e a evolução do slackline, desde suas raízes entre escaladores até as modalidades atuais (trickline, yogaline, longline, highline e waterline), explicando suas principais diferenças.",
+        "Identificar as partes do equipamento (fita, catraca, protetor de árvore, backup, mosquetão e ancoragem), demonstrando como realizar sua manutenção e verificar o estado de conservação antes do uso.",
+        "Instalar corretamente o slackline, com supervisão de um adulto, usando protetores de árvore e sistema de segurança, e explicar os cuidados de montagem conforme as orientações da CBSL.",
+        "Realizar alongamentos específicos para a prática , demonstrando posturas e movimentos que previnem torções e quedas, e explicar os primeiros cuidados em caso de entorse, contusão ou queda leve.",
+        "Caminhar sobre a fita por pelo menos 15 metros, mantendo o equilíbrio e demonstrando controle corporal.",
+        "Organizar uma sessão prática de slackline, ensinando os fundamentos básicos para iniciantes, como subir, manter o equilíbrio e dar os primeiros passos na fita."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260171,
+      "post_slug": "tiro-com-arco",
+      "titulo": "Tiro com Arco",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/tiro-com-arco/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Tiro_com_Arco_N1.png",
+      "requisitos": [
+        "Apresentar a origem e a evolução do arco e flecha, desde seu uso histórico em caça e guerra até se tornar um esporte olímpico moderno, destacando curiosidades sobre sua prática no Brasil.",
+        "Identificar três tipos de arco (recurvo, composto e longo), dois tipos de flecha e dois tipos de ponta , descrevendo materiais, flexibilidade, precisão e usos.",
+        "Explicar e demonstrar as regras básicas de segurança, como direção do disparo, posição do arqueiro, controle da área de tiro e cuidados com o transporte e armazenamento do equipamento.",
+        "Demonstrar conhecimento sobre postura, empunhadura e ancoragem, explicando os principais termos técnicos e a importância da concentração e respiração no momento do disparo.",
+        "Confeccionar um arco artesanal e flechas sem ponta, utilizando materiais simples (como bambu, PVC ou madeira), garantindo resistência e segurança. A flecha deverá alcançar ao menos 3 metros de distância ao ser disparada.",
+        "Acertar ao menos três flechas em um alvo de até 80 cm de diâmetro, a uma distância mínima de 8 metros, dentro de uma série de cinco disparos consecutivos.",
+        "Acertar e estourar uma bexiga com uma flecha a 10 metros de distância, em até quinze tentativas, mantendo a postura e o controle do arco.",
+        "Organizar ou participar de uma competição amistosa de tiro com arco, aplicando as regras de segurança, pontuação e tempo."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260172,
+      "post_slug": "triatlo-2",
+      "titulo": "Triatlo",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/triatlo-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Triatlo_N1.png",
+      "requisitos": [
+        "Apresentar a história e a evolução do triatlo, destacando sua origem, entrada nos Jogos Olímpicos e a expansão do esporte no Brasil.",
+        "Explicar as regras e distâncias oficiais do triatlo, descrevendo suas variações principais (super sprint, sprint, olímpico, meio Ironman e Ironman).",
+        "Apresentar as categorias e modalidades relacionadas, como o duatlo (corrida e ciclismo), o aquatlo (natação e corrida) e o paratriatlo, explicando suas características e diferenças.",
+        "Planejar e realizar uma sequência prática de triatlo adaptado, com distâncias proporcionais à faixa etária e ao condicionamento físico, respeitando os princípios de segurança e hidratação.",
+        "Demonstrar as principais medidas de segurança em cada modalidade, incluindo cuidados com o corpo, o ambiente e os equipamentos, como inspeção da bicicleta, uso de capacete e respeito às sinalizações.",
+        "Promover ou participar de uma competição recreativa de triatlo, duatlo ou aquatlo, com pelo menos cinco participantes, cuidando da organização, segurança, primeiros socorros e incentivo ao espírito esportivo."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260168,
+      "post_slug": "tecnicas-verticais-2",
+      "titulo": "Técnicas Verticais",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/tecnicas-verticais-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Tecnicas_Verticais_N1.png",
+      "requisitos": [
+        "Executar corretamente os seguintes nós e citar suas aplicações: nó de fita, oito duplo, pescador duplo, prussik, UIAA, nó sete e borboleta alpina.",
+        "Identificar e explicar o uso dos principais equipamentos de técnicas verticais, como cadeirinha, freio, mosquetão, capacete, fitas e cordas, descrevendo suas funções e cuidados básicos de inspeção e armazenamento.",
+        "Apresentar um quadro comparativo entre cordas estáticas, dinâmicas e semi-estáticas, destacando diferenças de resistência, elasticidade, composição, uso e vida útil.",
+        "Montar uma ancoragem dupla (principal e reserva) e explicar os critérios e vantagens de segurança do sistema.",
+        "Realizar um rapel auto-bloqueável, com altura entre 3 e 5 metros, utilizando aparelho de descida não automático (freio oito, ATC, piranha ou similar) e sistema de backup com prussik.",
+        "Demonstrar uma técnica segura de subida por corda, utilizando nós de progressão ou bloqueadores mecânicos, em altura entre 5 e 10 metros.",
+        "Simular a transposição de cordas em altura de até 5 metros, mantendo os três pontos de segurança (dois de fixação e um de progressão) e demonstrando domínio técnico e calma.",
+        "Apresentar uma exposição sobre gestão de riscos em atividades verticais, explicando os conceitos de ancoragem segura, checagem de equipamentos (check duplo) e forças atuantes no sistema."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260169,
+      "post_slug": "tenis-2",
+      "titulo": "Tênis",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/tenis-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Tenis_N1.png",
+      "requisitos": [
+        "Apresentar a história e a evolução do tênis, explicando suas regras básicas, táticas de jogo, fundamentos (saque, forehand, backhand, voleio). tenistas famosos e os principais códigos de conduta do esporte.",
+        "Identificar e demonstrar os materiais utilizados no tênis, como raquete, bola, calçado e rede, explicando sua função e cuidados para manutenção adequada.",
+        "Apresentar o sistema de pontuação do tênis e realizar uma simulação de contagem de pontos durante uma partida recreativa.",
+        "Participar de uma partida amistosa ou treino recreativo, demonstrando domínio dos fundamentos e respeito às regras e ao adversário.",
+        "Comparar o tênis e o tênis de mesa, apontando semelhanças e diferenças nas regras, equipamentos e dinâmica de jogo.",
+        "Organizar uma atividade educativa ou oficina de tênis, adaptando o esporte para iniciantes."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260170,
+      "post_slug": "tenis-de-mesa-2",
+      "titulo": "Tênis de Mesa",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/tenis-de-mesa-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Tenis_de_Mesa_N1.png",
+      "requisitos": [
+        "Apresentar a história e a evolução do tênis de mesa, explicando suas regras básicas, táticas de jogo, a diferença do pingue-pongue, sistema de pontuação e principais termos usados no esporte.",
+        "Identificar os materiais utilizados no tênis de mesa, como mesa, rede, bola e raquete, explicando seus cuidados e as medidas de segurança para evitar acidentes durante o jogo.",
+        "Demonstrar os diferentes tipos de empunhadura da raquete , como caneta e clássica, explicando as vantagens e situações em que cada uma é mais eficiente.",
+        "Executar os fundamentos básicos do esporte , como saque, forehand, backhand e bloqueio, demonstrando domínio e controle de bola.",
+        "Organizar uma oficina ou sessão prática para ensinar iniciantes, explicando as regras e fundamentos básicos de forma lúdica e acessível.",
+        "Planejar e conduzir uma partida ou mini campeonato, cuidando da organização, cronograma, arbitragem e divulgação, promovendo o fair play e o trabalho em equipe."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260173,
+      "post_slug": "vela-2",
+      "titulo": "Vela",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/vela-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Vela_N1.png",
+      "requisitos": [
+        "Identificar e apresentar diferentes tipos de embarcações à vela, como dingues, catamarãs e monocascos, explicando suas características, usos e onde são mais comuns no Brasil.",
+        "Diferenciar e nomear as partes principais de uma embarcação à vela, como casco, leme, mastro, vela mestra, buja e quilha, descrevendo a função de cada uma.",
+        "Navegar em um barco à vela sob supervisão de um instrutor ou adulto habilitado, aplicando fundamentos de direção, ajuste de velas e equilíbrio da embarcação. Explicar também as regras básicas de segurança e conduta (RIPEAM) e os cuidados na manutenção dos equipamentos.",
+        "Apresentar a origem e a evolução da vela esportiva, destacando grandes nomes e conquistas históricas, além de modalidades olímpicas e eventos tradicionais, como a Semana de Vela de Ilhabela.",
+        "Demonstrar conhecimento sobre as regras de regata da World Sailing (ISF), interpretando os sinais de atenção, preparação, largada e chegada, e explicando as regras de conduta entre embarcações.",
+        "Demonstrar, em prática supervisionada, como lançar um cabo de reboque, realizar o procedimento de reboque entre embarcações e utilizar corretamente a âncora, calculando o comprimento ideal da amarra.",
+        "Explicar e demonstrar a correta distribuição de peso na embarcação, mostrando como ela influencia a estabilidade, a velocidade e a direção durante a navegação.",
+        "Organizar uma oficina prática de iniciação à vela, combinando explicação teórica sobre ventos e segurança com uma vivência simples em terra ou água, incentivando novos praticantes do esporte."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260174,
+      "post_slug": "vigilancia-epidemiologica-2",
+      "titulo": "Vigilância Epidemiológica",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/vigilancia-epidemiologica-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Vigilancia_Epidemiologica_N1.png",
+      "requisitos": [
+        "Explicar a diferença entre epidemia, pandemia e endemia, apresentando exemplos atuais ou recentes da sua região, destacando como esses eventos afetam a população.",
+        "Demonstrar medidas de proteção individual e coletiva contra doenças infecciosas, como higienização das mãos, etiqueta respiratória e uso adequado de máscaras, diferenciando três tipos de contágio (aéreo, por contato e por água/alimento).",
+        "Realizar uma apresentação ilustrada sobre uma pandemia da antiguidade ou da idade média, como peste bubônica, varíola ou cólera, descrevendo sintomas, impacto social e como a ciência atual previne o retorno dessas doenças.",
+        "A presentar e colocar em prática cinco medidas de prevenção de doenças transmissíveis, que podem ser aplicadas em casa ou na comunidade, como a eliminação de criadouros de mosquitos, armazenamento seguro de alimentos e atualização vacinal.",
+        "Participar de uma campanha de prevenção ou conscientização sobre doenças infectocontagiosas, atuando como multiplicador de boas práticas em sua escola, grupo escoteiro ou comunidade.",
+        "Explicar o que é uma doença de notificação compulsória, citar três exemplos (como dengue, tuberculose e COVID-19) e descrever por que a notificação é importante para o controle e resposta rápida das autoridades de saúde."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 3
+        },
+        {
+          "nome": "Nível II",
+          "itens": 6
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260175,
+      "post_slug": "xadrez-2",
+      "titulo": "Xadrez",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/xadrez-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Xadrez_N1.png",
+      "requisitos": [
+        "Ensinar para um colega o nome, a posição inicial e o movimento de cada peça do xadrez, apresentando o tabuleiro e o uso da notação algébrica (exemplo: e4, e5, d4, d5 — casas centrais).",
+        "Diferenciar, por meio de uma demonstração, o xeque e o xeque-mate, incluindo também as formas mais comuns de empate (afogamento, repetição e insuficiência de material).",
+        "Demonstrar as formas de se defender de um xeque, explicando o roque maior e o roque menor, e quando cada um pode ser usado com segurança.",
+        "Reconhece r e aplicar os principais tipos de ataque e xeque, como garfo, raio-x, descoberto e duplo, além de mostrar como evitá-los.",
+        "Explicar o valor relativo das peças nas trocas e demonstrar a promoção do peão, destacando como essa jogada pode mudar o rumo da partida.",
+        "Demonstrar o famoso “Mate do Pastor”, explicando as jogadas envolvidas e o motivo de ele ser eficaz apenas contra os iniciantes.",
+        "Explicar o uso do relógio de xadrez e o controle de tempo, mostrando como administrar o ritmo da partida e evitar penalidades.",
+        "Participar de um torneio de xadrez, preferencialmente promovido por uma entidade reconhecida (confederação, federação, liga, escola, prefeitura ou grupo escoteiro)."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260176,
+      "post_slug": "yoga-2",
+      "titulo": "Yoga",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Lobinho/Escoteiro",
+      "url": "https://www.escoteiros.org.br/especialidades/yoga-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Lobinho_e_Escoteiro_Yoga_N1.png",
+      "requisitos": [
+        "Apresentar, por meio de um esquete ou encenação, a origem do yoga , seu significado e principais objetivos.",
+        "Promover uma roda de conversa sobre quem foi Patanjali e o nome do sistema de yoga por ele estruturado, relacionando-o com os princípios atuais da prática.",
+        "Demonstrar corretamente cinco posturas físicas (asanas), explicando o nome, o significado e os benefícios de cada uma para o corpo e para a mente.",
+        "Explicar o que são os pranayamas (técnicas respiratórias) e demonstrar ao menos um tipo de respiração consciente , destacando seus efeitos no relaxamento e na concentração.",
+        "Ensinar três mantras simples, explicando seu significado simbólico e o propósito do som e da vibração durante a prática.",
+        "Praticar a respiração abdominal e explicar seus benefícios para a saúde física e emocional, como melhora da circulação e redução do estresse.",
+        "Explicar o princípio de ahimsa (não-violência) e apresentar exemplos de como viver esse valor no cotidiano — em atitudes, palavras e pensamentos.",
+        "Durante uma atividade com sua seção, conduzir uma breve prática meditativa guiada, explicando os benefícios da meditação para o bem-estar e equilíbrio emocional."
+      ],
+      "niveis": [
+        {
+          "nome": "Nível I",
+          "itens": 4
+        },
+        {
+          "nome": "Nível II",
+          "itens": 8
+        }
+      ],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260177,
+      "post_slug": "comunicacoes-2",
+      "titulo": "Comunicações",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Sênior/Pioneiro",
+      "url": "https://www.escoteiros.org.br/especialidades/comunicacoes-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Senior_e_Pioneiro_Comunicacoes.png",
+      "requisitos": [
+        "Participar de oficinas, cursos, mentorias ou formações relacionadas à comunicação, oratória, mídias digitais ou outras.",
+        "Pesquisar e sintetizar técnicas, métodos e ferramentas utilizadas em processos comunicacionais na área escolhida.",
+        "Analisar campanhas, peças publicitárias, discursos, reportagens, filmes ou conteúdos digitais, identificando estratégias de comunicação e impactos sociais.",
+        "Entrevistar profissionais da área (jornalistas, comunicadores, designers, artistas, criadores, radialistas, roteiristas).",
+        "Elaborar uma reflexão crítica sobre seu próprio estilo de comunicação, pontos fortes e aspectos a desenvolver, tanto presencial quanto digital.",
+        "Validar aprendizagens anteriores por meio de experiências como: rádio escolar, blog, jornal estudantil, criação de vídeos, podcasts ou outros.",
+        "Conduzir uma apresentação pública, roda de conversa, debate, painel temático ou mediação de diálogo.",
+        "Criar e publicar um podcast, vídeo, jornal, blog, zine, boletim, canal ou série de conteúdos sobre um tema de interesse.",
+        "Desenvolver uma campanha de combate à desinformação, com materiais de divulgação e ações educativas.",
+        "Criar uma exposição visual (fotografia, ilustração, design, audiovisual, entre outros), montando uma mostra ou intervenção artística.",
+        "Organizar um evento ou espaço de expressão (slam, mostra de artes, sarau, festival digital, roda de mídia).",
+        "Planejar e implementar uma estratégia de comunicação para a UEL, escola, projeto comunitário ou outra instituição.",
+        "Apresentar seu projeto para a seção, escola, universidade ou comunidade, explicando o processo e os resultados.",
+        "Produzir e divulgar conteúdos em diferentes formatos (vídeo, texto, áudio, artes visuais) para públicos diversos.",
+        "Conduzir uma oficina, vivência ou bate-papo sobre expressão, oratória, comunicação digital ou leitura crítica de mídia.",
+        "Apoiar outros jovens a desenvolverem suas próprias iniciativas comunicacionais, oferecendo orientação técnica ou artística.",
+        "Registrar e compartilhar sua experiência em redes sociais, blogs, plataformas escoteiras ou espaços de comunicação comunitária."
+      ],
+      "niveis": [],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260178,
+      "post_slug": "educacao",
+      "titulo": "Educação",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Sênior/Pioneiro",
+      "url": "https://www.escoteiros.org.br/especialidades/educacao/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Senior_e_Pioneiro_Educacao.png",
+      "requisitos": [
+        "Participar de oficinas, cursos, seminários ou fóruns sobre educação e metodologias inovadoras ou participativas.",
+        "Observar educadores em diferentes contextos (escola, universidade, projetos sociais, escotismo), analisando suas práticas, linguagem, interação e impacto.",
+        "Pesquisar sobre fundamentos de educação libertadora, popular, inclusiva, crítica ou inovadora, elaborando um breve registro reflexivo.",
+        "Entrevistar professores, pedagogos, educadores populares, mediadores culturais, instrutores técnicos ou escotistas experientes.",
+        "Analisar o próprio processo de aprendizagem, identificando estratégias, ritmos, motivações e desafios pessoais.",
+        "Validar experiências anteriores, como facilitação de oficinas, monitoria, liderança juvenil, apoio a estudos ou condução de atividades em grupo.",
+        "Conduzir uma oficina, minicurso, vivência, debate, roda de conversa ou atividade prática para jovens, escola, comunidade ou UEL.",
+        "Criar um recurso educativo (jogo, carta de atividades, vídeo, podcast, guia visual, material impresso/digital, sequência didática).",
+        "Planejar e implementar um projeto de tutoria ou rede de troca de saberes entre pares, com acompanhamento e registro do processo.",
+        "Desenvolver e aplicar uma atividade educativa em escola, projeto social, comunidade ou UEL.",
+        "Facilitar um processo de escuta ativa, diálogo e construção coletiva, registrando aprendizagens e encaminhamentos.",
+        "Elaborar um artigo, estudo, ensaio ou iniciação científica sobre uma temática educacional de seu interesse.",
+        "Apresentar sua experiência para a seção, escola, comunidade.",
+        "Produzir materiais explicativos ou conteúdos digitais sobre o papel do educador, métodos de aprendizagem ou temas estudados.",
+        "Conduzir uma reflexão guiada com outros jovens sobre suas formas de aprender e ensinar.",
+        "Acompanhar colegas em suas próprias ações educativas, oferecendo apoio como facilitador ou mentor.",
+        "Criar e disponibilizar um legado educativo acessível (jogo, cartilha, guia, sequência didática, vídeo, banco de ideias) para a seção, escola ou comunidade.",
+        "Acompanhar colegas em suas próprias ações educativas, oferecendo apoio como facilitador ou mentor.",
+        "Criar e disponibilizar um legado educativo acessível (jogo, cartilha, guia, sequência didática, vídeo, banco de ideias) para a seção, escola ou comunidade."
+      ],
+      "niveis": [],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260179,
+      "post_slug": "empreendedorismo-e-negocios",
+      "titulo": "Empreendedorismo e Negócios",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Sênior/Pioneiro",
+      "url": "https://www.escoteiros.org.br/especialidades/empreendedorismo-e-negocios/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Senior_e_Pioneiro_Empreendedorismo_e_Negocios.png",
+      "requisitos": [
+        "Participar de oficinas, hackathons, feiras, bootcamps ou encontros de empreendedores jovens.",
+        "Pesquisar modelos de negócios reais, iniciativas de impacto, startups e trajetórias de empreendedores(as) comerciais, sociais ou culturais.",
+        "Entrevistar empreendedores(as), investidores(as), educadores financeiros, líderes comunitários ou pessoas que já tiraram projetos do papel.",
+        "Estudar ferramentas como Canvas, Mapa de Empatia, SWOT, Jornada do Usuário, 5W2H, Lean Startup.",
+        "Observar o contexto local para identificar necessidades, dores, oportunidades e potenciais parcerias.",
+        "Validar experiências anteriores em feiras, clubes de empreendedorismo, economia criativa, economia solidária ou especialidades relacionadas.",
+        "Analisar um caso real de falha ou sucesso empreendedor, identificando fatores-chave.",
+        "Participar de uma conversa com profissionais de áreas como marketing, design, finanças ou inovação, conectando saberes.",
+        "Com base no que aprendeu, desenvolva e coloque em prática um projeto empreendedor, como:",
+        "Criar e executar um projeto, produto, serviço ou iniciativa de impacto, com objetivos e proposta de valor claros.",
+        "Desenvolver um modelo de negócio completo, incluindo viabilidade financeira, estratégias de divulgação, análise de riscos e definição de indicadores.",
+        "Realizar uma feira, simulação de vendas, apresentação de pitch ou demonstração pública do projeto (com retorno real ou fictício).",
+        "Elaborar um guia, vídeo, infográfico, landing page ou material educativo sobre como transformar ideias em ação.",
+        "Criar uma solução para um desafio real da comunidade, incorporando inovação e sustentabilidade.",
+        "Desenvolver um protótipo simples, que represente a ideia central do seu projeto, testá-lo com usuários reais e registrar feedbacks.",
+        "Elabore uma proposta objetiva, com duração entre 2 e 3 minutos, que apresente de forma clara a sua ideia, projeto ou solução. Estruture sua fala destacando o problema, a proposta, os diferenciais e o impacto esperado. Depois, apresente-o para um grupo avaliador — que pode ser sua seção, professores, mentores ou outro público relevante.",
+        "Criar um plano de parcerias para o projeto (ONGs, comerciantes locais, instituições, comunidade escoteira).",
+        "Apresentar seu projeto em eventos, escolas, feiras ou espaços juvenis, mostrando processo, erros e aprendizados.",
+        "Produzir conteúdo (vídeos, textos, podcasts) explicando sua experiência e dicas para quem deseja empreender.",
+        "Conduzir uma oficina de prototipagem, ideação ou planejamento de negócios para outros jovens.",
+        "Apoiar colegas na validação de ideias, na construção de modelos de negócio ou na elaboração de MVPs.",
+        "Criar ou fortalecer uma rede de troca colaborativa de jovens empreendedores na comunidade ou na UEL.",
+        "Documentar todo o processo em um portfólio digital ou relatório.",
+        "Disponibilizar seu projeto para ser replicado por outras unidades ou grupos, criando um “manual de implementação”.",
+        "Participar de eventos externos (como feiras comunitárias, mostras culturais ou oficinas públicas) levando sua solução para mais pessoas."
+      ],
+      "niveis": [],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260180,
+      "post_slug": "financas-e-economia",
+      "titulo": "Finanças e Economia",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Sênior/Pioneiro",
+      "url": "https://www.escoteiros.org.br/especialidades/financas-e-economia/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Senior_e_Pioneiro_Financas_e_Economia.png",
+      "requisitos": [
+        "Participar de oficinas, cursos, palestras ou rodas de conversa sobre finanças, economia solidária ou planejamento financeiro.",
+        "Pesquisar ferramentas de organização financeira (planilhas, apps, métodos de envelope, metas SMART).",
+        "Observar hábitos de consumo pessoal e familiar, identificando padrões, gatilhos e oportunidades de mudança.",
+        "Entrevistar profissionais das áreas financeira, administrativa ou bancária.",
+        "Estudar modelos alternativos de economia popular, colaborativa, sustentável ou comunitária (moedas sociais, bancos comunitários, cooperativas).",
+        "Validar experiências anteriores envolvendo gestão de recursos, vendas, campanhas ou feiras solidárias.",
+        "Analisar um caso real de endividamento e identificar estratégias de prevenção.",
+        "Estudar os princípios básicos de investimentos para iniciantes (Renda Fixa, CDB, Tesouro Selic) sem caráter consultivo.",
+        "Pesquisar como funcionam impostos, tributos e taxas que influenciam a vida de jovens e famílias.",
+        "Criar um orçamento pessoal, familiar ou coletivo, com metas e monitoramento ao longo de algumas semanas.",
+        "Conduzir uma campanha educativa sobre consumo consciente, redução de desperdício ou finanças responsáveis.",
+        "Organizar uma feira de trocas, economia criativa ou economia solidária na comunidade, escola, universidade ou UEL.",
+        "Desenvolver um recurso educativo (planilha, guia, vídeo, infográfico, podcast) sobre organização financeira para jovens.",
+        "Criar um plano financeiro completo para um projeto escoteiro, social ou empreendedor.",
+        "Planejar e executar uma ação de arrecadação transparente, com registro de entradas, saídas e prestação de contas.",
+        "Simular investimentos básicos utilizando plataformas virtuais de treinamento (sem envolver dinheiro real).",
+        "Criar uma análise comparativa de preços, serviços ou produtos, avaliando custo-benefício e escolha responsável.",
+        "Elaborar um plano de redução de gastos ou readequação financeira na rotina pessoal.",
+        "Apresentar seu plano, projeto ou análise financeira para a seção, escola, universidade ou comunidade.",
+        "Produzir conteúdos acessíveis e didáticos sobre finanças pessoais, economia solidária ou consumo consciente.",
+        "Conduzir uma oficina prática de organização financeira, planejamento ou economia colaborativa.",
+        "Estimular diálogos sobre desigualdade, justiça econômica, ética e escolhas financeiras responsáveis.",
+        "Deixar como legado um recurso educativo (cartilha, planilha, guia prático, mural ou vídeo) para sua UEL ou comunidade.",
+        "Criar uma “Semana da Consciência Financeira” ou uma roda de conversa aberta sobre economia na vida real.",
+        "Compartilhar estratégias pessoais de aprendizagem financeira em redes jovens ou grupos de apoio.",
+        "Ajudar colegas a organizar seus próprios orçamentos e planos financeiros, atuando como multiplicador."
+      ],
+      "niveis": [],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260181,
+      "post_slug": "gastronomia",
+      "titulo": "Gastronomia",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Sênior/Pioneiro",
+      "url": "https://www.escoteiros.org.br/especialidades/gastronomia/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Senior_e_Pioneiro_Gastronomia.png",
+      "requisitos": [
+        "CONHECER",
+        "FAZER",
+        "COMPARTILHAR"
+      ],
+      "niveis": [],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260182,
+      "post_slug": "idiomas",
+      "titulo": "Idiomas",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Sênior/Pioneiro",
+      "url": "https://www.escoteiros.org.br/especialidades/idiomas/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Senior_e_Pioneiro_Idiomas.png",
+      "requisitos": [
+        "CONHECER",
+        "FAZER",
+        "COMPARTILHAR"
+      ],
+      "niveis": [],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260183,
+      "post_slug": "lideranca-e-gestao",
+      "titulo": "Liderança e Gestão",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Sênior/Pioneiro",
+      "url": "https://www.escoteiros.org.br/especialidades/lideranca-e-gestao/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Senior_e_Pioneiro_Lideranca_e_Gestao.png",
+      "requisitos": [
+        "CONHECER",
+        "FAZER",
+        "COMPARTILHAR"
+      ],
+      "niveis": [],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260184,
+      "post_slug": "tecnologia",
+      "titulo": "Tecnologia",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Sênior/Pioneiro",
+      "url": "https://www.escoteiros.org.br/especialidades/tecnologia/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Senior_e_Pioneiro_Tecnologia.png",
+      "requisitos": [
+        "CONHECER",
+        "FAZER",
+        "COMPARTILHAR"
+      ],
+      "niveis": [],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260185,
+      "post_slug": "viagens",
+      "titulo": "Viagens",
+      "eixo": "Habilidades para a Vida",
+      "publico": "Sênior/Pioneiro",
+      "url": "https://www.escoteiros.org.br/especialidades/viagens/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Senior_e_Pioneiro_Viagens.png",
+      "requisitos": [
+        "CONHECER",
+        "FAZER",
+        "COMPARTILHAR"
+      ],
+      "niveis": [],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260186,
+      "post_slug": "agricultura-sustentavel",
+      "titulo": "Agricultura Sustentável",
+      "eixo": "Meio Ambiente",
+      "publico": "Sênior/Pioneiro",
+      "url": "https://www.escoteiros.org.br/especialidades/agricultura-sustentavel/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Senior_e_Pioneiro_Agricultura_Sustentavel.png",
+      "requisitos": [
+        "CONHECER",
+        "FAZER",
+        "COMPARTILHAR"
+      ],
+      "niveis": [],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260187,
+      "post_slug": "agricultura-sustentavel-2",
+      "titulo": "Ecoturismo",
+      "eixo": "Meio Ambiente",
+      "publico": "Sênior/Pioneiro",
+      "url": "https://www.escoteiros.org.br/especialidades/agricultura-sustentavel-2/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Senior_e_Pioneiro_Ecoturismo.png",
+      "requisitos": [
+        "CONHECER",
+        "FAZER",
+        "COMPARTILHAR"
+      ],
+      "niveis": [],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260188,
+      "post_slug": "educacao-ambiental",
+      "titulo": "Educação Ambiental",
+      "eixo": "Meio Ambiente",
+      "publico": "Sênior/Pioneiro",
+      "url": "https://www.escoteiros.org.br/especialidades/educacao-ambiental/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Senior_e_Pioneiro_Educacao_Ambiental.png",
+      "requisitos": [
+        "CONHECER",
+        "FAZER",
+        "COMPARTILHAR"
+      ],
+      "niveis": [],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260189,
+      "post_slug": "esportes-de-aventura",
+      "titulo": "Esportes de Aventura",
+      "eixo": "Meio Ambiente",
+      "publico": "Sênior/Pioneiro",
+      "url": "https://www.escoteiros.org.br/especialidades/esportes-de-aventura/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Senior_e_Pioneiro_Esportes_de_Aventura.png",
+      "requisitos": [
+        "CONHECER",
+        "FAZER",
+        "COMPARTILHAR"
+      ],
+      "niveis": [],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260190,
+      "post_slug": "habilidades-escoteiras",
+      "titulo": "Habilidades Escoteiras",
+      "eixo": "Meio Ambiente",
+      "publico": "Sênior/Pioneiro",
+      "url": "https://www.escoteiros.org.br/especialidades/habilidades-escoteiras/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Senior_e_Pioneiro_Habilidades_Escoteiras.png",
+      "requisitos": [
+        "CONHECER",
+        "FAZER",
+        "COMPARTILHAR"
+      ],
+      "niveis": [],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260191,
+      "post_slug": "natureza-e-ciencias-naturais",
+      "titulo": "Natureza e Ciências Naturais",
+      "eixo": "Meio Ambiente",
+      "publico": "Sênior/Pioneiro",
+      "url": "https://www.escoteiros.org.br/especialidades/natureza-e-ciencias-naturais/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Senior_e_Pioneiro_Natureza_e_Ciencias_Naturais.png",
+      "requisitos": [
+        "CONHECER",
+        "FAZER",
+        "COMPARTILHAR"
+      ],
+      "niveis": [],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260192,
+      "post_slug": "sustentabilidade",
+      "titulo": "Sustentabilidade",
+      "eixo": "Meio Ambiente",
+      "publico": "Sênior/Pioneiro",
+      "url": "https://www.escoteiros.org.br/especialidades/sustentabilidade/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Senior_e_Pioneiro_Sustentabilidade.png",
+      "requisitos": [
+        "CONHECER",
+        "FAZER",
+        "COMPARTILHAR"
+      ],
+      "niveis": [],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260193,
+      "post_slug": "acoes-humanitarias",
+      "titulo": "Ações Humanitárias",
+      "eixo": "Paz e Desenvolvimento",
+      "publico": "Sênior/Pioneiro",
+      "url": "https://www.escoteiros.org.br/especialidades/acoes-humanitarias/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Senior_e_Pioneiro_Acoes_Humanitarias.png",
+      "requisitos": [
+        "CONHECER",
+        "FAZER",
+        "COMPARTILHAR"
+      ],
+      "niveis": [],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260194,
+      "post_slug": "ciencias-humanas",
+      "titulo": "Ciências Humanas",
+      "eixo": "Paz e Desenvolvimento",
+      "publico": "Sênior/Pioneiro",
+      "url": "https://www.escoteiros.org.br/especialidades/ciencias-humanas/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Senior_e_Pioneiro_Ciencias_Humanas.png",
+      "requisitos": [
+        "CONHECER",
+        "FAZER",
+        "COMPARTILHAR"
+      ],
+      "niveis": [],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260195,
+      "post_slug": "cultura-e-arte",
+      "titulo": "Cultura e Arte",
+      "eixo": "Paz e Desenvolvimento",
+      "publico": "Sênior/Pioneiro",
+      "url": "https://www.escoteiros.org.br/especialidades/cultura-e-arte/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Senior_e_Pioneiro_Cultura_e_Arte.png",
+      "requisitos": [
+        "CONHECER",
+        "FAZER",
+        "COMPARTILHAR"
+      ],
+      "niveis": [],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260196,
+      "post_slug": "desenvolvimento-comunitario",
+      "titulo": "Desenvolvimento Comunitário",
+      "eixo": "Paz e Desenvolvimento",
+      "publico": "Sênior/Pioneiro",
+      "url": "https://www.escoteiros.org.br/especialidades/desenvolvimento-comunitario/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Senior_e_Pioneiro_Desenvolvimento_Comunitario.png",
+      "requisitos": [
+        "CONHECER",
+        "FAZER",
+        "COMPARTILHAR"
+      ],
+      "niveis": [],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260197,
+      "post_slug": "direitos-humanos",
+      "titulo": "Direitos Humanos",
+      "eixo": "Paz e Desenvolvimento",
+      "publico": "Sênior/Pioneiro",
+      "url": "https://www.escoteiros.org.br/especialidades/direitos-humanos/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Senior_e_Pioneiro_Direitos_Humanos.png",
+      "requisitos": [
+        "CONHECER",
+        "FAZER",
+        "COMPARTILHAR"
+      ],
+      "niveis": [],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260198,
+      "post_slug": "diversidades",
+      "titulo": "Diversidades",
+      "eixo": "Paz e Desenvolvimento",
+      "publico": "Sênior/Pioneiro",
+      "url": "https://www.escoteiros.org.br/especialidades/diversidades/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Senior_e_Pioneiro_Diversidades.png",
+      "requisitos": [
+        "CONHECER",
+        "FAZER",
+        "COMPARTILHAR"
+      ],
+      "niveis": [],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260199,
+      "post_slug": "equidade",
+      "titulo": "Equidade",
+      "eixo": "Paz e Desenvolvimento",
+      "publico": "Sênior/Pioneiro",
+      "url": "https://www.escoteiros.org.br/especialidades/equidade/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Senior_e_Pioneiro_Equidade.png",
+      "requisitos": [
+        "CONHECER",
+        "FAZER",
+        "COMPARTILHAR"
+      ],
+      "niveis": [],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260200,
+      "post_slug": "fe-crencas-e-dialogo-inter-religioso",
+      "titulo": "Fé, Crenças e Diálogo Inter-religioso",
+      "eixo": "Paz e Desenvolvimento",
+      "publico": "Sênior/Pioneiro",
+      "url": "https://www.escoteiros.org.br/especialidades/fe-crencas-e-dialogo-inter-religioso/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Senior_e_Pioneiro_Fe_Crencas_e_Dialogo_Inter_Religioso.png",
+      "requisitos": [
+        "CONHECER",
+        "FAZER",
+        "COMPARTILHAR"
+      ],
+      "niveis": [],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260201,
+      "post_slug": "inclusao-e-acessibilidade",
+      "titulo": "Inclusão e Acessibilidade",
+      "eixo": "Paz e Desenvolvimento",
+      "publico": "Sênior/Pioneiro",
+      "url": "https://www.escoteiros.org.br/especialidades/inclusao-e-acessibilidade/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Senior_e_Pioneiro_Inclusao_e_Acessibilidade.png",
+      "requisitos": [
+        "CONHECER",
+        "FAZER",
+        "COMPARTILHAR"
+      ],
+      "niveis": [],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260202,
+      "post_slug": "politicas-publicas",
+      "titulo": "Políticas Públicas",
+      "eixo": "Paz e Desenvolvimento",
+      "publico": "Sênior/Pioneiro",
+      "url": "https://www.escoteiros.org.br/especialidades/politicas-publicas/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Senior_e_Pioneiro_Politicas_Publicas.png",
+      "requisitos": [
+        "CONHECER",
+        "FAZER",
+        "COMPARTILHAR"
+      ],
+      "niveis": [],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260203,
+      "post_slug": "educacao-alimentar-e-nutricional",
+      "titulo": "Educação Alimentar e Nutricional",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Sênior/Pioneiro",
+      "url": "https://www.escoteiros.org.br/especialidades/educacao-alimentar-e-nutricional/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Senior_e_Pioneiro_Educacao_Alimentar_e_Nutricional.png",
+      "requisitos": [
+        "CONHECER",
+        "FAZER",
+        "COMPARTILHAR"
+      ],
+      "niveis": [],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260204,
+      "post_slug": "esportes",
+      "titulo": "Esportes",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Sênior/Pioneiro",
+      "url": "https://www.escoteiros.org.br/especialidades/esportes/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Senior_e_Pioneiro_Esportes.png",
+      "requisitos": [
+        "CONHECER",
+        "FAZER",
+        "COMPARTILHAR"
+      ],
+      "niveis": [],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260205,
+      "post_slug": "hobbies-e-lazer",
+      "titulo": "Hobbies e Lazer",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Sênior/Pioneiro",
+      "url": "https://www.escoteiros.org.br/especialidades/hobbies-e-lazer/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Senior_e_Pioneiro_Hobbies_Lazer.png",
+      "requisitos": [
+        "CONHECER",
+        "FAZER",
+        "COMPARTILHAR"
+      ],
+      "niveis": [],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260206,
+      "post_slug": "saude",
+      "titulo": "Saúde",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Sênior/Pioneiro",
+      "url": "https://www.escoteiros.org.br/especialidades/saude/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Senior_e_Pioneiro_Saude.png",
+      "requisitos": [
+        "CONHECER",
+        "FAZER",
+        "COMPARTILHAR"
+      ],
+      "niveis": [],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260207,
+      "post_slug": "saude-mental-e-bem-estar-emocional",
+      "titulo": "Saúde Mental e Bem-Estar Emocional",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Sênior/Pioneiro",
+      "url": "https://www.escoteiros.org.br/especialidades/saude-mental-e-bem-estar-emocional/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Senior_e_Pioneiro_Bem_Estar_Emocional_e_Saude_Mental.png",
+      "requisitos": [
+        "CONHECER",
+        "FAZER",
+        "COMPARTILHAR"
+      ],
+      "niveis": [],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    },
+    {
+      "id": 260208,
+      "post_slug": "saude-sexual-e-reprodutiva",
+      "titulo": "Saúde Sexual e Reprodutiva",
+      "eixo": "Saúde e Bem-Estar",
+      "publico": "Sênior/Pioneiro",
+      "url": "https://www.escoteiros.org.br/especialidades/saude-sexual-e-reprodutiva/",
+      "imagem": "https://www.escoteiros.org.br/wp-content/uploads/2026/07/Especialidades_Senior_e_Pioneiro_Saude_Sexual_e_Reprodutiva.png",
+      "requisitos": [
+        "CONHECER",
+        "FAZER",
+        "COMPARTILHAR"
+      ],
+      "niveis": [],
+      "notas_tecnicas": [],
+      "fonte": "https://www.escoteiros.org.br/especialidades/",
+      "capturado_em": "2026-08-11T12:37:54+00:00"
+    }
+  ]
+} as const;

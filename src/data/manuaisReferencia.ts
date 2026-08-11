@@ -46,7 +46,7 @@ export const MANUAIS_REFERENCIA: ManualReferencia[] = [
     titulo: 'Guia de Especialidades 18ª Ed. 2024-1',
     ramo: 'todos',
     tipo: 'guia',
-    descricao: 'Catálogo implementado no app para consulta e transição: 274 especialidades do programa anterior, em 5 ramos do conhecimento, com 3 níveis cumulativos. Não substituir pelos Guias de Especialidades e Insígnias 2025 sem importação integral.',
+    descricao: 'Catálogo preservado no app para consulta e transição: 274 especialidades do programa anterior, em 5 ramos do conhecimento, com 3 níveis cumulativos. O catálogo ativo usa a base pública UEB 2026.',
     topicos: [
       'Ciência e Tecnologia',
       'Cultura',
