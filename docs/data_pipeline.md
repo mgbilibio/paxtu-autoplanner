@@ -9,6 +9,7 @@ que toque progressão, especialidades ou catálogo.
 |---------|--------------|
 | `conhecimento/por/**/*.md` | POR 2025 (Lobinho + Escoteiro) — texto canônico |
 | `conhecimento/especialidades/2026_ueb_atualizado/especialidades_ueb_2026.json` | Base pública UEB 2026 estruturada (208 especialidades; 1.385 requisitos) |
+| `docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/` | HTMLs originais consultados, manifesto e hashes da captura UEB 2026 |
 | `conhecimento/especialidades/**/*.md` | Guia 18ª Edição 2024-1 (274 especialidades; programa anterior/transição) |
 | `conhecimento/docs/**/*.md` | Material de apoio e backups históricos |
 | `src/data/catalog/branch_senior.json`, `branch_pioneiro.json` | POR 2025 dos ramos ainda sem MD |

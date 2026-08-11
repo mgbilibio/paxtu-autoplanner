@@ -1,0 +1,1222 @@
+{
+  "kind": "paxtu-biblioteca-fontes-web",
+  "capturedAt": "2026-08-11T12:48:48Z",
+  "sourceSet": "UEB Especialidades 2026",
+  "libraryPath": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11",
+  "originalsPolicy": "HTML original local, nao versionado por tamanho e por ser regeneravel; README, manifest e hashes sao versionados.",
+  "sources": [
+    {
+      "label": "UEB Especialidades",
+      "url": "https://www.escoteiros.org.br/especialidades/",
+      "local": "paginas_consultadas/escoteiros_especialidades.html"
+    },
+    {
+      "label": "Loja Guia Lobinho e Escoteiro 2025",
+      "url": "https://loja.escoteiros.org.br/guia-de-especialidades-e-insignias-ramos-lobinho-e-escoteiro-ebook/",
+      "local": "paginas_consultadas/loja_guia_lobinho_escoteiro_ebook.html"
+    },
+    {
+      "label": "Loja Guia Senior e Pioneiro 2025",
+      "url": "https://loja.escoteiros.org.br/guia-de-especialidades-e-insignias-ramos-senior-e-pioneiro-ebook/",
+      "local": "paginas_consultadas/loja_guia_senior_pioneiro_ebook.html"
+    },
+    {
+      "label": "UEB admin-ajax public fragments and specialty pages",
+      "url": "https://www.escoteiros.org.br/wp-admin/admin-ajax.php",
+      "local": "raw_html/"
+    }
+  ],
+  "counts": {
+    "files": 237,
+    "bytes": 31720221.0,
+    "rawHtmlFiles": 234,
+    "consultedPageFiles": 3
+  },
+  "files": [
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/paginas_consultadas/escoteiros_especialidades.html",
+      "bytes": 150632,
+      "sha256": "14b6f52cbf2654b9c63bef13d49d65e31b98c1f7ac09745c44f722b6812c9acd"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/paginas_consultadas/loja_guia_lobinho_escoteiro_ebook.html",
+      "bytes": 155343,
+      "sha256": "cc60617f6be6f91f57eb6f0df2a6deb1df413d2466fc2245fc9998383df094a9"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/paginas_consultadas/loja_guia_senior_pioneiro_ebook.html",
+      "bytes": 155060,
+      "sha256": "18aa6d8ca9b129972f96ca7e3f699a0cfc07dbc072d243c5e8229d62bd4c15f5"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/categoria_habilidades-para-a-vida_p1.html",
+      "bytes": 7560,
+      "sha256": "c3c80427aa64a84b43bd6db2ce318f3da3312f6a684913faccba158a7e6b8d71"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/categoria_habilidades-para-a-vida_p2.html",
+      "bytes": 7545,
+      "sha256": "52f630c078e11b48cb7cd6166f9cc1b8aa89d34f8f8ec45ff1d68a5f9cc4e663"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/categoria_habilidades-para-a-vida_p3.html",
+      "bytes": 7542,
+      "sha256": "2f77934f600f44485c9fe098e42809b41435b1763bec70923534ee6b5fd80ddb"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/categoria_habilidades-para-a-vida_p4.html",
+      "bytes": 7529,
+      "sha256": "412297d259846f5fc820a3b6d7f6a2f957172e657f58d3acdecf8b89893170e5"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/categoria_habilidades-para-a-vida_p5.html",
+      "bytes": 7557,
+      "sha256": "0cd4818d01a63e0b8aae483c7f0cc1e4ae5ded499917a1f4fed70516e50ee228"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/categoria_habilidades-para-a-vida_p6.html",
+      "bytes": 7587,
+      "sha256": "8e808f24a331c616be273ba1c5418228c1e3daa71d8c5856e9eae834245f6e87"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/categoria_habilidades-para-a-vida_p7.html",
+      "bytes": 2543,
+      "sha256": "08bf98a2be46cbb32aa75442a44e306264de63d0fc4f5526641f03c68e1edd66"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/categoria_habilidades-para-a-vida-programa-educativo-atualizado-ramos-senior-e-pioneiro_p1.html",
+      "bytes": 7424,
+      "sha256": "38a3e6ea3e79efbcd7b20d4fbf846b4961828613a23b8a6c5b64f84cf12cf3c5"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/categoria_meio-ambiente_p1.html",
+      "bytes": 7636,
+      "sha256": "fac6a99cf03f21869dd5bbd9b55a065d0e8c7d6cddf0487efafdc910d95574fc"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/categoria_meio-ambiente_p2.html",
+      "bytes": 7516,
+      "sha256": "58e7c7322ddd643eaf354112dda27164056f5d1421fc01f49df4ef1c761b8aac"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/categoria_meio-ambiente_p3.html",
+      "bytes": 7555,
+      "sha256": "aa4a34adb87524e7c37ed61a204bae30ca1369461c49b9ce76cc81813f8a6f57"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/categoria_meio-ambiente_p4.html",
+      "bytes": 4647,
+      "sha256": "c30ba9cb27ab58333bf13f7f57606ef074a514804c58d76409fd7d62f679610d"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/categoria_meio-ambiente-programa-educativo-atualizado-ramos-senior-e-pioneiro_p1.html",
+      "bytes": 6171,
+      "sha256": "3e03521c4950dec113479e1d9aa3fa2d617d40ecd6ffd35893a0b2d75377e25b"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/categoria_paz-e-desenvolvimento_p1.html",
+      "bytes": 7557,
+      "sha256": "82917a7f022890467ef00ff021bb24cf08dc8ac0f72ca1833e803b3036fb069c"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/categoria_paz-e-desenvolvimento_p2.html",
+      "bytes": 7593,
+      "sha256": "162ce63f9222f37865ec170b168e2b7a276dabefb7fc2d2fa93196425e622504"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/categoria_paz-e-desenvolvimento_p3.html",
+      "bytes": 7521,
+      "sha256": "1bd640de6d13b8f8e49b6d98d92a8bcbb9213292c2dce3a2669eb17fa72b563a"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/categoria_paz-e-desenvolvimento_p4.html",
+      "bytes": 7480,
+      "sha256": "3a4c7fbb79fd8473daad827f0418e1116a77e6e5472acc43ecfcde1e1d6241d3"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/categoria_paz-e-desenvolvimento-programa-educativo-atualizado-ramos-senior-e-pioneiro_p1.html",
+      "bytes": 7583,
+      "sha256": "6e20ce0b263dc095687554cf5c2df263b896f03ce36527816a5682970264ac67"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/categoria_paz-e-desenvolvimento-programa-educativo-atualizado-ramos-senior-e-pioneiro_p2.html",
+      "bytes": 1849,
+      "sha256": "18bece62231ec623f96fa3a1a617f5eaa3c432c6afc81a21e52a7d054e97a209"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/categoria_saude-e-bem-estar_p1.html",
+      "bytes": 7390,
+      "sha256": "17ea6751981b6f1da601eb93d09fad8a11a1e2bfed8024d887023c1ca5200fd3"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/categoria_saude-e-bem-estar_p2.html",
+      "bytes": 7519,
+      "sha256": "5772b598a73838aacd770cdb6003c036d2e62ff1502013eddda44cee98c2b603"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/categoria_saude-e-bem-estar_p3.html",
+      "bytes": 7460,
+      "sha256": "b9904aa04827a45ad1266e0926a6a6bc9dc4b287c14becfd481e2181687b31e7"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/categoria_saude-e-bem-estar_p4.html",
+      "bytes": 7522,
+      "sha256": "ba8aabaff2151d18b26707b8357517c743c28faceda92148a463e520697c94f9"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/categoria_saude-e-bem-estar_p5.html",
+      "bytes": 7416,
+      "sha256": "2bc865705e948d5896407bed58c3089fa00382a1f000c3fdf3b45e26b168a317"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/categoria_saude-e-bem-estar_p6.html",
+      "bytes": 6007,
+      "sha256": "d6f7873951cd57aacdb1de95496d6080ef128b1f8d815cc078241627edc6196c"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/categoria_saude-e-bem-estar-programa-educativo-atualizado-ramos-senior-e-pioneiro_p1.html",
+      "bytes": 5446,
+      "sha256": "9fb3e5397e676c8d32fecaf9310607dde795d8e6e3b734efa8544fc67b05a724"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_acampamento-atualizado.html",
+      "bytes": 149511,
+      "sha256": "9c8f071374b2dc4cbac606c32e895e21555cc0f17cc82f840ee1797286ac3d62"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_acoes-humanitarias.html",
+      "bytes": 149556,
+      "sha256": "b4901fa4aed1674b05ed71b71319e87e4cbcc4655f94eb9703dc1d96f6946277"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_administracao-atualizado.html",
+      "bytes": 150450,
+      "sha256": "31feb1d7972b06817aacbc9394f5f3c8d75090ac7d9b47bc8acd35a0fd335488"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_aeromodelismo-2.html",
+      "bytes": 148949,
+      "sha256": "dd86d4ae1824c5ff58702c64320cbea620a6152f651e323f60820e9d32a163ff"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_aeronautica-atualizado.html",
+      "bytes": 150181,
+      "sha256": "3dc97b3d7c83efadb6ba357e70563e31a57903abde66206bbc155db71ff0f5b4"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_agricultura-atualizado.html",
+      "bytes": 149770,
+      "sha256": "88ff688f59f7a09ee0c84d4150b5be0a53bca994474d0cb89372d3fecf939ee4"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_agricultura-sustentavel-2.html",
+      "bytes": 149971,
+      "sha256": "e0dc8a43b31f336fae59ac5c179be074a46c696d2d2ff816e14cac603741a8a4"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_agricultura-sustentavel.html",
+      "bytes": 150332,
+      "sha256": "70b79d51bc5d511a0fcd3e7190b708a05c80a8796df415302d2fba3053e6b967"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_anatomia-humana-2.html",
+      "bytes": 149270,
+      "sha256": "f001e605426a6029c3257c2276bb9084503cd7c9e62afbe1f88abc01aac2eed8"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_animais-peconhentos-e-venenosos-atualizado.html",
+      "bytes": 149862,
+      "sha256": "8a1b3401b219f066812cedb15da95c9cd567a4598e871b036c416148fe8f74ce"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_anime-atualizado.html",
+      "bytes": 149656,
+      "sha256": "0c86c73c577f3966246e20c19d92b003873ec2535409f721a9d42984c280f7a7"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_aquarismo-atualizado.html",
+      "bytes": 149028,
+      "sha256": "46105ace9aed5aed065597fbc966c0c2ec339443d89f776989750e9aebdb58f2"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_aquicultura-atualizado.html",
+      "bytes": 150142,
+      "sha256": "eb1c3a346cb3852770ab509a4168a11592d92adef4a1cf8fdc0b11f6e0cd0b7a"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_arqueologia-atualizado.html",
+      "bytes": 149085,
+      "sha256": "30595f0b28f049a6e08c3f9a080ec83c7f50fd3838b0b2b6c8cc7210ec9e73e6"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_arquitetura-e-urbanismo-atualizado.html",
+      "bytes": 150387,
+      "sha256": "7ffd113d485f6b0edde5c49dd2a9bcb09da09c357cfb3fcfbf6eecf9a8c1d650"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_arte-da-marinharia-atualizado.html",
+      "bytes": 149628,
+      "sha256": "b3d2f0caa1ba2c130f0cf640e60095c437ee98b9b112cdde9f48e3d507265bc5"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_arte-digital-atualizado.html",
+      "bytes": 149965,
+      "sha256": "09ec61d3ecc978471ab49b7e0f38b8fc5640573351ad734057d72f65febd5a52"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_artes-cenicas-atualizado.html",
+      "bytes": 149117,
+      "sha256": "a212270335fb7236924cb933033c4352c848b373cc3e17c00dac941e8d168b06"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_artes-marciais-2.html",
+      "bytes": 148982,
+      "sha256": "f58530d62e02f14dadf7d4e65b1d31c3abe6ff8213fee57ad5f28166bfbc2c33"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_artes-visuais-atualizado.html",
+      "bytes": 149940,
+      "sha256": "4c541b563078a6ae88e467be2aba071244a31178227ec909320aef27c330d103"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_artesanato-atualizado.html",
+      "bytes": 149951,
+      "sha256": "8a179d5a6b52de23bdeac9a48c790fbcca792af332b6e8eccb216a5b4e2b99cc"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_astronomia-atualizado.html",
+      "bytes": 150037,
+      "sha256": "3c1ee6f42af4de41e46eb106715042317f4c3e01e6604617f182d02293b56cba"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_baba-2.html",
+      "bytes": 148797,
+      "sha256": "166a942b4744365d2174f9f93aeeaff1850fba6b867aa71a952f92a4d91cf6db"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_biblioteconomia-atualizado.html",
+      "bytes": 149795,
+      "sha256": "f41e4ec2f8d70921e363b43d72c3140605b3e86b376e80dc54d359e517be46c8"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_biologia-atualizado.html",
+      "bytes": 149983,
+      "sha256": "dbeb191bf5e0c4f68846193e34d5ad4b4f8d9440e02123d7be99602b197095a0"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_botanica-atualizado.html",
+      "bytes": 149156,
+      "sha256": "57e7ff04289d3fbe68f2bc2481daaff25dedc0527b80b65d0a292fac5edd2ede"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_brasilidades-atualizado.html",
+      "bytes": 149744,
+      "sha256": "a83861d83f3c3caf757a11df9543e473e26cdeb7922a96c59c7525943750b95f"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_canoagem-2.html",
+      "bytes": 148805,
+      "sha256": "64b6a9483f00e036855d74ed76eedc7f3a1cd56f8063b09ce09b85e53ac99c0e"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_canto-2.html",
+      "bytes": 148849,
+      "sha256": "4fc9e57c62e73cc67cf36065d2efb06a7a349c5d46c10aca57d3f184c97ea0ae"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_capoeira-atualizado.html",
+      "bytes": 149181,
+      "sha256": "f2a0a4005850bf2d53cdcf0eafa3e794922446b196e328a473ec68fdb3c0a41d"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_cartografia-atualizado.html",
+      "bytes": 149704,
+      "sha256": "e2e089fe140a50ff342238e1b54278490b37dbcc3de07c002582fbce82919d79"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_ciclismo-2.html",
+      "bytes": 148663,
+      "sha256": "4eb53e15948a79bc531c4409311a6698ea8b034c48675a5b763c3a8d353cffeb"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_ciencias-humanas.html",
+      "bytes": 149935,
+      "sha256": "150df3e55fa6883eb2ac188c365e451c0dc79f0c409dc38de4063f3787149b05"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_civilizacoes-da-antiguidade-atualizado.html",
+      "bytes": 149666,
+      "sha256": "384e6fb3bce148a57c4ac2bd722a4518b23fe8894628a7ae3ed4d1c59c02fc39"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_colecoes-2.html",
+      "bytes": 148329,
+      "sha256": "c7dae4ce25cf85a6a97ae2130770e8329bbeaad61ead5ee1ada995f8cc11983f"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_comedia-atualizado.html",
+      "bytes": 149292,
+      "sha256": "44393d297a0e2ae0606f259b7d550fb41bd431defcdf00da6424b7a44a821d4a"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_comunicacoes-2.html",
+      "bytes": 148799,
+      "sha256": "9bf79520c00ca62a544aaef8cc392f2edddc7b155893a64b958f9fcde78f1cb0"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_comunicacoes-atualizado.html",
+      "bytes": 149486,
+      "sha256": "b2d18783b1b7205c4299fa65acab89ab00211c936e606080d93b71152936f58c"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_confeitaria-atualizado.html",
+      "bytes": 149041,
+      "sha256": "fc16598a3ce569f3c65e278f47639e907ec1c639455a93b343a866c860ebe6f5"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_construcao-civil-atualizado.html",
+      "bytes": 149308,
+      "sha256": "414d404c58d8924b7276181920106ad71ad835c520443c31ecbe066475c34236"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_corrida-de-orientacao-atualizado.html",
+      "bytes": 149655,
+      "sha256": "ddc56cb7c7503e652c24bf585a21aad0fd58847899f75b674085d9a27796eb83"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_corrida-de-rua-2.html",
+      "bytes": 149137,
+      "sha256": "3228d16725e0046a04907df7b4e004821e9c55f8f742b6749c87674dfba83da7"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_cosplay-atualizado.html",
+      "bytes": 149236,
+      "sha256": "865b73d0edb1062100fc756802ae8d5a83d7885684f69947ef95b6aaaf7d7e99"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_costura-e-estilismo-atualizado.html",
+      "bytes": 149279,
+      "sha256": "5415b9993ef85af7178053c2aafed1a786109d4433f4d253e8da17e924fafe5c"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_criptografia-atualizado.html",
+      "bytes": 149084,
+      "sha256": "5540441443da41aeec7d5b6312c97c0f00137bf63b24187ecf8bcfd35b813572"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_cubo-magico-2.html",
+      "bytes": 148731,
+      "sha256": "a58dd10c43ac15c396f195202828dd9c193c425682b7bad66fd2b1c441acb2ef"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_cuidados-bucais-2.html",
+      "bytes": 148966,
+      "sha256": "3932813e55000549ceb0cebe05d247aa8d918b7fd9ffc7cd748234c025292689"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_cuidados-com-animais-de-estimacao-atualizado.html",
+      "bytes": 150395,
+      "sha256": "1005fc1a67377f8a45f141d56aec4fb2a11cc6a156f240bbd13c5f9181f38356"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_cuidados-com-idosos-2.html",
+      "bytes": 149137,
+      "sha256": "6724d796bed29149fc1bc918cd7f1b1584709b9414e29eca15c05104672dad35"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_culinaria-atualizado.html",
+      "bytes": 149933,
+      "sha256": "8968e04cd6088344a6c2b60f1825df6efe3dbccf0f32bd50cbb027aaf09f5dfd"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_culinaria-mateira-2.html",
+      "bytes": 148949,
+      "sha256": "115da2d8e8e5f22de51c6cd5e62f45eaa18a312349c8bea31e519cd279323358"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_culinaria-mateira-atualizado.html",
+      "bytes": 149352,
+      "sha256": "68f214401b0ab59da1f8d88a4f8fe3739514a31dc154106cdcd1ae210b18bfb2"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_culinaria-tipica-atualizado.html",
+      "bytes": 149365,
+      "sha256": "badec4767f340b711005901538d8be5808431c14abaea86708e269aa31be75a5"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_culinaria-vegetariana-2.html",
+      "bytes": 149116,
+      "sha256": "8bae3dc0a894f4d76d53e5e460931e84870b73825f1755c8e2e77f1ecb675553"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_cultura-e-arte.html",
+      "bytes": 149658,
+      "sha256": "d59e7d1114a88971cd06438fdeab6375d861d5217afbb6a7ca051ca446509b06"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_danca-2.html",
+      "bytes": 148546,
+      "sha256": "1fb0ec3e81c9f80281a6ec2b5db872f70c17fa37dc6f275ac22021a1320d73c5"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_dancas-folcloricas-atualizado.html",
+      "bytes": 149630,
+      "sha256": "5d0c00914f431127f4c2079ca5723a76be12dfebe0e8c1b9a782508897bd6e15"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_defesa-civil-atualizado.html",
+      "bytes": 149637,
+      "sha256": "4f00e11ed041b8f8518a24bc14cd4e44375dca8a15de469d2126a20b141a51ee"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_desenvolvimento-comunitario.html",
+      "bytes": 149835,
+      "sha256": "9f270714e683e01a24001fa98204920c89f3353fb47953e05d6108381f640e9c"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_design-de-interiores-atualizado.html",
+      "bytes": 149358,
+      "sha256": "841d48dc33ee22bc979e48ed46bfd15b7383c9894c5d03a73474355f6ca47d47"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_desportos-inclusivos-2.html",
+      "bytes": 148972,
+      "sha256": "4a04f253b865502ca13afa54f29347eef67510b05961f35c6ad490a98af988ac"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_direitos-humanos.html",
+      "bytes": 149946,
+      "sha256": "359ee83fa0f64621d9fe21c27427e05d03138f6b89727df5e9e0e20f2b19baf0"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_diversidades.html",
+      "bytes": 149032,
+      "sha256": "79bdb58e4572a9dcb23a552e780d365389e0929d16525bd37178b8a6a97bd1c9"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_e-sports-atualizado.html",
+      "bytes": 149141,
+      "sha256": "90757088ba6791b073e613db08c182952d3ac9bb4903dbaf92c9fa1c7a43490f"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_educacao-alimentar-e-nutricional.html",
+      "bytes": 149479,
+      "sha256": "ad330a2582169eb8c8130e60d4f851f32ed360a09a006ce69d1c385c0a598150"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_educacao-ambiental.html",
+      "bytes": 149871,
+      "sha256": "f1fe8bbec7a6c06203e0b2d29cbbfdf4d09b467db05ff249cdd29123015bb598"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_educacao-financeira-atualizado.html",
+      "bytes": 149421,
+      "sha256": "a08fd9d34fa5ef1e6b8957733cdff54915982059f16fff871ffbb40084dbf1c6"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_educacao.html",
+      "bytes": 149017,
+      "sha256": "063b87f4f3c7c089a205467b9968e6ef0f9c2d5e3cb480cdb42c7f7370dffa91"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_empreendedorismo-atualizado.html",
+      "bytes": 149519,
+      "sha256": "87376407f0ea4b11bf269df34f2242fc08f6cf0fbe80d1c2928a43bcd32fa71b"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_empreendedorismo-e-negocios.html",
+      "bytes": 150485,
+      "sha256": "7f9ed7a1fd00f06bfc3fc5b4106448384f42514c7c9f17fc91f5b98e943ff73b"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_encadernacao-atualizado.html",
+      "bytes": 149643,
+      "sha256": "b1868b351cc08bc88ca6699dda16555aabc0ba0a090c74284189c412a5801fa8"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_energia-2.html",
+      "bytes": 148860,
+      "sha256": "d6991c24fa37d53ed69a3ca4e1a3addb95fa73e624c017dbb2a3a412d6ec8dd5"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_energia-atualizado.html",
+      "bytes": 149637,
+      "sha256": "83e95ba627a9dbc783112c92fc9dbe9c3410d3db3577da82f484140c33d92e50"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_entomologia-atualizado.html",
+      "bytes": 149525,
+      "sha256": "0158662f69b0c50a3c9f10070d8b161bec45db979192f82c4691cd5cfa8948ee"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_equidade.html",
+      "bytes": 149102,
+      "sha256": "fd0fa74df6cc6d083afa97ac1748e6420beb8e07cc712c15bf0f680bb3f81f3a"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_escalada-atualizado.html",
+      "bytes": 149656,
+      "sha256": "2b4946f252033f5c28dffe0306ddf1c2e51ff8eaf90df4585ff656319a82b1d3"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_escotismo-mundial-atualizado.html",
+      "bytes": 149687,
+      "sha256": "acc51847442518e314ea4a72a13e558e693ba7cf0481af9a7146ab99cd611328"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_espeleoturismo-atualizado.html",
+      "bytes": 149331,
+      "sha256": "30e7942fbb88947cd00ef5c0b66d42444118e74645d8a8c24d5832822b693243"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_esportes-de-aventura.html",
+      "bytes": 149967,
+      "sha256": "a9789579081426e4ba086f058820c6777d1b3f59bca535f770e2f2bbdd116102"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_esportes-de-quadra.html",
+      "bytes": 149276,
+      "sha256": "1bc7b0ba7d0fd39af02a46cdf609b9b702773ae040c447dbe486676295e7535c"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_esportes.html",
+      "bytes": 149223,
+      "sha256": "e04bae2429270f3492b0e272db097c2408a76d85a8229253914f21392ce33e84"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_etiqueta-atualizado.html",
+      "bytes": 149386,
+      "sha256": "ec641486ac895abd132dc674611ceaf1e326f1188641f886c25ccbc43d004de6"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_excursoes-atualizado.html",
+      "bytes": 149352,
+      "sha256": "65190a5ce6f53c536806ef6112770f7ca6c801dac51913d6ba9d373c08fb860c"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_expressao-musical.html",
+      "bytes": 149297,
+      "sha256": "e4ed3fca88cb5647f20d2fe52984ed01601b4be1e3b097ec6fd9c14091dca806"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_fe-crencas-e-dialogo-inter-religioso.html",
+      "bytes": 149681,
+      "sha256": "81528d8650507e9b82cfccb45cdb9a0e44b2019df1875c493af164fd49a7af84"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_ferramentas-de-corte-atualizado.html",
+      "bytes": 149678,
+      "sha256": "11f467fbfdb328f060ef87f5d8cc32345e3796f963b73a72c6c1a17cd46711d7"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_financas-e-economia.html",
+      "bytes": 149996,
+      "sha256": "b8fa7accdcdebc05e44da3dd79ef375a298fa77bfc1b8d097a68dcbf53308e2b"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_fiscalizacao-de-patio-de-aerodromo-atualizado.html",
+      "bytes": 150471,
+      "sha256": "6793763290bcc3ef9409a0633b924270f7d9458b5b698ca7620d9cf2bbf15f7c"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_fogo-de-conselho-atualizado.html",
+      "bytes": 149312,
+      "sha256": "5e35591f36f36d22b8c7ca3c0f34c3c83aff6000f205074d0334483e795824af"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_fotografia-atualizado.html",
+      "bytes": 149918,
+      "sha256": "9182fb3ab0ed037215b668abc81d24bb826c82c209dfa313077025380fb9a4b0"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_futebol-2.html",
+      "bytes": 148559,
+      "sha256": "f862ad761fcfe1adf57f5f763135ecc8780da0fc7cd5aa12fdee0e47126e70fd"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_gastronomia.html",
+      "bytes": 149785,
+      "sha256": "63241aca13cdc64ad8e3fbf8404f8abf4ca8166c8d912ecfe1a3177a6b52f696"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_genealogia-atualizado.html",
+      "bytes": 149092,
+      "sha256": "e598a1949d1d2d82973fb5127567138a10bbf6530e4abfc5f187869e87168c17"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_geografia-atualizado.html",
+      "bytes": 149731,
+      "sha256": "239b05b84ada004e43ccad7d639035d7f5029d861d6459c0083e539ee8d0ed91"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_geologia-atualizado.html",
+      "bytes": 149324,
+      "sha256": "7e5548839b327b0cb44f3b9a140c193d09d1c77b1dae8f08fb5fdb1b71608eec"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_ginasticas.html",
+      "bytes": 149246,
+      "sha256": "a510fb62b6dd9b405f72b983ef52e931742c142b98e5c4bd7287e6559504b369"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_gps-atualizado.html",
+      "bytes": 148898,
+      "sha256": "73c35708889bf688bd6e351a0feafccba30d1bd35cc12d3bf8d8dee140eb648d"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_grafite-atualizado.html",
+      "bytes": 149982,
+      "sha256": "21262c2b680dce3cc793af7924862bbe93d958c284a929f6652d92ddde4d4d73"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_habilidades-escoteiras.html",
+      "bytes": 150169,
+      "sha256": "7655c1e764a164f7bf2b7673b66baaafb3fbe81529cef3fc7e21c102c0cf8bcc"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_hipismo-2.html",
+      "bytes": 149182,
+      "sha256": "9730488d353474762c06bdba750f039c9d35225c5c199182aec3c41d02c32397"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_historia-aeroespacial-2.html",
+      "bytes": 149404,
+      "sha256": "36bb5cfeb683699a20638f4ffa9f4507ec45fce6167fb117ec4a633bef7c93c4"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_historia-brasileira-2.html",
+      "bytes": 149150,
+      "sha256": "49dee1299350e8e9e35ecb168d094d4d594d7fedab2467320f5fc64b9895addd"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_historia-da-arte-2.html",
+      "bytes": 148828,
+      "sha256": "8750fa6520f6c96dcb66a034c85df1eed705f41f72400f7bcb138e6d7d6c265d"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_historia-da-aviacao.html",
+      "bytes": 149082,
+      "sha256": "b753a91c712a1933e15dd71435267a67b28b01cd4695af605488eebcd535afad"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_historia-do-escotismo-2.html",
+      "bytes": 149055,
+      "sha256": "b0505ead761df9b0b0435b86dd70f7a1bfcdab27b234f5ecbc6a3610d5d8f3df"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_historia-local-2.html",
+      "bytes": 148791,
+      "sha256": "ada6d91c6e821408f73781bd795e096b1e1365f7d131a164a62c34a68626af7b"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_historia-maritima-2.html",
+      "bytes": 148990,
+      "sha256": "9e7d7b068da97446ddde4b90dc1de7e6dec51226267c7123a26816439005c9e0"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_historia-mundial-2.html",
+      "bytes": 148938,
+      "sha256": "052b54f7b09872f0e933f918576c635ccf9b2be11304ddf27a62273ac9cfa35c"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_hobbies-e-lazer.html",
+      "bytes": 149056,
+      "sha256": "177af8291cdb81ab7b350abc77e664f514f502f0283b49d67b0836c8154fa2a0"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_horticultura-atualizado.html",
+      "bytes": 149212,
+      "sha256": "763572bb9ff5ec60e922b947b3791d8f641319e9c7bea41788fc023833fb8f51"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_hq-atualizado.html",
+      "bytes": 149502,
+      "sha256": "137fddb1fd4df3b4bb3df7da5301d2f4e893d2932af6e9bd3142a2ed72555317"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_idiomas.html",
+      "bytes": 149406,
+      "sha256": "770ad28996766928d56ee0b03ac6f49fb8dd2f3adddb6d58996363e2179ef53c"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_inclusao-2.html",
+      "bytes": 148548,
+      "sha256": "26ff3657c516acb7c9ba7ccce94bd55ee2467784f1c635a29268213d188662b2"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_inclusao-e-acessibilidade.html",
+      "bytes": 149801,
+      "sha256": "ee21594d99afa1210b8b401b20fb726cabb1c84f8dc9b0cfca745153e5ed747f"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_informacoes-turisticas-2.html",
+      "bytes": 149134,
+      "sha256": "1a1a12a77093d164a4f8712abd55fd89c67af1f1416702ee1967fcef506ebfa4"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_informatica-atualizado.html",
+      "bytes": 150403,
+      "sha256": "7675a1f3d31ae891ca102bed3be90ab3f0dd47e64ccfc99d413162b5536cc207"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_ioio-2.html",
+      "bytes": 148609,
+      "sha256": "427cbc3bd45bbec66b13005da84098d3ee856501aebcd650e33a28aadbc1ff5a"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_jardinagem-e-paisagismo-atualizado.html",
+      "bytes": 149692,
+      "sha256": "08750ed8f9a2f0abaeebf593daa57ae8c60292c9188156b09bdf538f0ce6e532"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_jogos-de-cartas-colecionaveis-2.html",
+      "bytes": 149282,
+      "sha256": "1f4b3793abb2029d26afb4e47de32d283327de2ac3f3d52a9824eb65e3fec5fe"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_jogos-de-tabuleiro-2.html",
+      "bytes": 149174,
+      "sha256": "fd86df4b2aa0db5f21dc418f0bc19eb7e4e3cbd422ae9f6a42610a8d2ef695a9"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_jornalismo-atualizado.html",
+      "bytes": 150402,
+      "sha256": "e8e680e8d3b72825ff1eb2d59db8b7bb07b4fb55a09b0d4ca9d653258cdf153d"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_libras-2.html",
+      "bytes": 149200,
+      "sha256": "981bff339c5d659bf949bd2a9880b0c9654a5a02a58db30503f4783b54c06300"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_lideranca-e-gestao.html",
+      "bytes": 150207,
+      "sha256": "f780c4c297b1bd93457dd82a4d87ce4ac7302fd78e4e2ef1a6642c7e8ebacc81"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_linguas-2.html",
+      "bytes": 148509,
+      "sha256": "021b355b95a9058bd613454bbbba6f5a9480b3024998c8a3aeae6e42f98881eb"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_literatura-2.html",
+      "bytes": 148925,
+      "sha256": "bc52c8bf5f8c41d86a951dd05901d9899f50ddcea13ed92cc4d20165d2c5e4cd"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_magica-e-ilusionismo-2.html",
+      "bytes": 149097,
+      "sha256": "11a297ef523183fca5d776eaec8697c395a362dceb02f82dcc9bf729b674755e"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_manicure-atualizado.html",
+      "bytes": 149221,
+      "sha256": "e50b9c33a259d7c80544617879be8faf93fd1c11084488d21c589b36b4db7738"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_manutencao-eletrica-atualizado.html",
+      "bytes": 149811,
+      "sha256": "714793844a26cbd6568f0be303d97e38e0bfe974e0e94567350711d531612f36"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_maquete-atualizado.html",
+      "bytes": 149100,
+      "sha256": "7406267349ca88ba9eabb638f7d84d3ae44304e21892dcb0581e8c1a435bb220"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_maquiagem-2.html",
+      "bytes": 148638,
+      "sha256": "dcfe5ac43c832a18fc9bb561e0de5b548c38a37ed4160b09a22ea661b29247b2"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_marcenaria-atualizado.html",
+      "bytes": 150150,
+      "sha256": "589c50e31fe6d5cab7e6ffa046e3573dd0d7bae455d3a900b209da8e30f85b7a"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_marinharia-atualizado.html",
+      "bytes": 149560,
+      "sha256": "90966ccce720b1ce567bdb6f7c5a34208f509c9bfae06982f7acf8c9b338ae5d"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_matematica-atualizado.html",
+      "bytes": 150525,
+      "sha256": "234268c63a4252b3d98ae0e17c869d30c4cfad181ae4bb4374a0e5c3f2210309"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_mecanica-de-automoveis-atualizado.html",
+      "bytes": 150430,
+      "sha256": "949003e2e892f01c145fa9f481ae4530272f7fbbe01191c70e11e13990b1ad8e"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_meliponicultura-atualizado.html",
+      "bytes": 149960,
+      "sha256": "9efbe18ab853823d4fb8adafa63bde20ca0c3042ab20771085a99e3595b9808d"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_mergulho-2.html",
+      "bytes": 149008,
+      "sha256": "f8fc75857f13413634a3f0a93b314ddfd9f9f459c99a67382cfd328a22177edb"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_meteorologia-atualizado.html",
+      "bytes": 149297,
+      "sha256": "51e9ed5ad4f052309a24d5707cf78f0a19b38e34857ec9558a85fd62ee87316f"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_microbiologia-atualizado.html",
+      "bytes": 149543,
+      "sha256": "e4dbcfdcb73c15b7e669c4b294f9ee47eb1f7b00fbe11437a85ad8b07a734625"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_mitologias.html",
+      "bytes": 148458,
+      "sha256": "9a2c026a4093b9c7bfefc7c8445c5c4c82367f18202ec0ffc3206653a792aab5"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_montanhismo-atualizado.html",
+      "bytes": 149248,
+      "sha256": "5cd65bfe4dccefb60ac3d790b3343c45edda0d156ae94714c545fc38f437a955"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_mountain-bike-atualizado.html",
+      "bytes": 149477,
+      "sha256": "38ae71ffbeeeecce2a7fcacb7809f4a44e1670c4c70f613c1f9f74c1e9afa1be"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_museologia-2.html",
+      "bytes": 148532,
+      "sha256": "57242619c73290f5933a787ccb405bd5420c0589bbb139670685de93e239f361"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_natacao-2.html",
+      "bytes": 149184,
+      "sha256": "9bf692a81b23cb9a39de49ec481b4b5c9c46aacadd4848b3457ed82144d40f20"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_natureza-e-ciencias-naturais.html",
+      "bytes": 150337,
+      "sha256": "8d3ae4c5f3d82931a8a1cdbd03e7d90be0dde0c08ce4fefdf48fa8903185597e"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_nutricao-2.html",
+      "bytes": 148873,
+      "sha256": "7412e10c378924ad24870c219a3c69cb9761e5f98aba09f1771ae9479c76731c"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_oceanologia-atualizado.html",
+      "bytes": 149555,
+      "sha256": "14487dceec52a0099b906befd6e3af455b2f15c89fe66ae259ea25ceae50cd46"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_oratoria-atualizado.html",
+      "bytes": 149184,
+      "sha256": "87e14966e1218013e9208ee9063ba581538fdaf19a5722f649a96e0dda7f4786"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_origami.html",
+      "bytes": 148610,
+      "sha256": "aac5415d37704e2189c476eddffbb95153d80ec8ca34410b10992c798ba000f6"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_paleontologia.html",
+      "bytes": 148616,
+      "sha256": "93c888f1f3bd99e17763034a8875d83362e433206f5039c0f0fee5d9d28f7338"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_patinacao-2.html",
+      "bytes": 148940,
+      "sha256": "cf594932752517ca48f3a80d10037ffc6b434ddcc18bee94efb8a98f5d35e1df"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_paz-e-justica.html",
+      "bytes": 148984,
+      "sha256": "0193791a08f3206fa8e13e33378592ffb97662a0f77a9c614856b52b2174f80f"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_pesca-atualizado.html",
+      "bytes": 149748,
+      "sha256": "be4bbf09836c1b4a2ace2005039abb9519c13c4e94563d9be377858767d2cf9c"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_pintura-atualizado.html",
+      "bytes": 150042,
+      "sha256": "4dc5d63ea52cfcfa9d3b439dd17b6975aadc48c8bbbea98142c9ee5430b994e2"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_pioneiria-atualizado.html",
+      "bytes": 149548,
+      "sha256": "29b566c66ebf1418415ff7adcd56464b9fd414797fdeac70cf7ea0e6fe17ea8b"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_pipas-2.html",
+      "bytes": 148759,
+      "sha256": "0b879851ca56651985b1bb76196b02efbbf624f3067e3ec7927ce61c5259f00e"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_planador-atualizado.html",
+      "bytes": 149254,
+      "sha256": "d6ea80857e184b2871797143df4d52d3f2c47aee2a0221164eb8577e169c3e94"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_plantas-medicinais-2.html",
+      "bytes": 149090,
+      "sha256": "00a858f0f19c88b07979e1a61b8408272832ba9ea02d661157da6c276d7b15d6"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_plastimodelismo-atualizado.html",
+      "bytes": 149681,
+      "sha256": "a90baaf94602ea1c9eec07d8036c4de029f06fba9800db124bf3ba1e565832b8"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_poesia-2.html",
+      "bytes": 148403,
+      "sha256": "82d554b4e8dbcd9c246e22f8277658eefc2a3fc2313d00026032860c82c636df"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_politicas-publicas.html",
+      "bytes": 149495,
+      "sha256": "e41c4712018cbbe8fdfd5993188a0a0629af93913e96b9efa9a0265cadaef358"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_prevencao-ao-bullying-2.html",
+      "bytes": 149213,
+      "sha256": "74290df54a8fecab1fcce1f616ecad0b9250048f65321a9c23d9be7d42e1a65b"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_prevencao-aos-vicios.html",
+      "bytes": 149209,
+      "sha256": "bf449d1c220c996135483d7ae53e146ac32ee611b2a7a438b9e21282970e0a83"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_prevencao-de-fake-news.html",
+      "bytes": 149095,
+      "sha256": "70b863ead2a75f059c38ddd47d5b02fc4a70e799c9cffd8e4e1fd143363adb8a"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_prevencao-de-incendio-atualizado.html",
+      "bytes": 149874,
+      "sha256": "bfc0a7aee829b9221a0d6b25810398cb84c40059d5d33cadf816a812ba3707f2"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_prevencao-em-saude-2.html",
+      "bytes": 149447,
+      "sha256": "752fabe72348f4da8a72950a00d27ec1970167851ae1fd867c5d52fd26be6000"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_primeiros-socorros-2.html",
+      "bytes": 150838,
+      "sha256": "b6f8cfc57e4a4de53756b31c9584ebe5ce40a304157e048ecb03d54d1432fe7b"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_producao-grafica-atualizado.html",
+      "bytes": 149397,
+      "sha256": "a3ade0b2be02ff2e485e9edefbbdb2df8e36cfbaf853a2b6f01c1c0c170810c0"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_programacao-atualizado.html",
+      "bytes": 149942,
+      "sha256": "c1442b8e17561776b5b687e441350000933a940c9a8fd31a9c33051b20695ab1"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_propaganda-e-marketing-atualizado.html",
+      "bytes": 150050,
+      "sha256": "b3e7b198570fd638eac72c38787a5b564cd807e8dd729674fbda974816c2bd63"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_quebra-cabecas.html",
+      "bytes": 148521,
+      "sha256": "fe2dbf13afc59eb03c2944d007ac1b6ce52e3ad9fbe46d147db8a0a323c95075"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_quimica-atualizado.html",
+      "bytes": 149913,
+      "sha256": "50dfacf245bfbff6e64f92cee97782c81d1c6ac4974427579998177fb8cd8b38"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_radioamadorismo-atualizado.html",
+      "bytes": 149729,
+      "sha256": "2aaf9b58b58d4aebe3d04d7faaf42ee10e52923c96728487ad846300fc21e5f6"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_radioescuta-atualizado.html",
+      "bytes": 149453,
+      "sha256": "8b9633ed4309849f2d44c14cd74482fe07814e40c188da8263a48f1327453746"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_rastreamento-atualizado.html",
+      "bytes": 149410,
+      "sha256": "56cb7520e561052f415a9cc6863cb1338a8d7ebce5593a3a99fc516ee92bae5f"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_redes-de-computadores-atualizado.html",
+      "bytes": 150165,
+      "sha256": "17d145dfae8b72300369440882c3eac0969593120f874128f580e8a8e5fffd1e"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_remo-2.html",
+      "bytes": 149174,
+      "sha256": "89f635068622b24fa8812a0dcf054e72523ae72877239868ca39b0e9df17357f"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_reparos-domesticos-atualizado.html",
+      "bytes": 150128,
+      "sha256": "4582da36fae15ea2e6d48067e2ec5fbfd545d78d122e8a7bfcdd703aaef3da59"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_robotica-atualizado.html",
+      "bytes": 149685,
+      "sha256": "0e2d6da38ea86d3e38710f664885a7b62f73a49915babeeb798886e35ceff3ef"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_rpg.html",
+      "bytes": 148566,
+      "sha256": "fc38aef2843023454c925a7057086b9398f0c6a28d771db152da731d503b3d90"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_salvamento-2.html",
+      "bytes": 149543,
+      "sha256": "2cca1574007c8ddd4abce6f7653cead484780289053d85481791a81fc1521bb9"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_saude-mental-e-bem-estar-emocional.html",
+      "bytes": 149453,
+      "sha256": "1ed51b1b69a60ca8143534c24975c0b4743797e682e772f54c0f6832bd7b84eb"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_saude-sexual-e-reprodutiva.html",
+      "bytes": 148818,
+      "sha256": "8b8ce03ebf42a04b3ba27942a76a5028c101acea141425742287c980079092fc"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_saude.html",
+      "bytes": 148542,
+      "sha256": "acc17b472b99b305eb902a7b06ec7c0aa80315f07dea124861d803414815e369"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_seguranca-2.html",
+      "bytes": 148879,
+      "sha256": "7acf117ca0f232d8cb5872bbbd566f34e9087c74a92dc6c0108628a97c690a1b"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_seguranca-e-emergencia-nautica.html",
+      "bytes": 150234,
+      "sha256": "8063240768b10d1904904505e405b421980c3271d6389119b04a6ce44e02a1d4"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_seguranca-no-transito-atualizado.html",
+      "bytes": 150346,
+      "sha256": "c7eaee964c49639b26de3bc6a3320cb7b3a61b984d3ee138936cbc3647587634"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_simulacao-aerea-atualizado.html",
+      "bytes": 150404,
+      "sha256": "f2e0aabffcc3bd518e9bd49cc795dc1196dbe7fecaf77fcefa5a78f0737fd197"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_sinalizacao-atualizado.html",
+      "bytes": 149957,
+      "sha256": "c8381d0cb9c701b91f576d5a9412802db2127ccfc35992d981ff295bddf1b5bf"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_skateboard-2.html",
+      "bytes": 149323,
+      "sha256": "6e1e9fb8e5f55ed3d356cb43c7bd5fc6cfc55480310fa978153f8000f6ebfd1b"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_slackline-2.html",
+      "bytes": 148935,
+      "sha256": "778685965227b7a076231b6dacce2ed45e1b37e56552c293ff4e463bd446e37c"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_sobrevivencia-atualizado.html",
+      "bytes": 149608,
+      "sha256": "d5840640fa881a91a822c858f26fadaf97d41b1254ff16f30044c23520c03f24"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_sustentabilidade.html",
+      "bytes": 149782,
+      "sha256": "853d965d98b1cee91506b1572e18400db830cc219b1d46c9660a148d5ea9a73e"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_tecnicas-verticais-2.html",
+      "bytes": 149977,
+      "sha256": "c8163ac785327e1390e0429daf2e27cb38bbe481a03f4b9e69ba67a0abe1ecfb"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_tecnologia.html",
+      "bytes": 149626,
+      "sha256": "3cbfae89be49a280eac2a770e013ae82be8cae3390d6d0e1d41be73b1f6f40e0"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_tenis-2.html",
+      "bytes": 148623,
+      "sha256": "495da99c95073d68f70278d1a87ad3f419fc519659d1452d8af39167903c7dfd"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_tenis-de-mesa-2.html",
+      "bytes": 148893,
+      "sha256": "88e9cab14f487502e8bafcc3cb926c65b0c8628df050f2f124dec5cdf161b13e"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_tiro-com-arco.html",
+      "bytes": 149512,
+      "sha256": "6c0f4bc9709eb02060d2381cc9b68628df6a073480862449f9b4f4e040884f39"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_tradicoes-dos-povos-originarios.html",
+      "bytes": 149818,
+      "sha256": "ad2b9cc34cb0d83e9e85f975a14f52fad8b3d0080cb14e61294f6b3f1079d534"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_triatlo-2.html",
+      "bytes": 148763,
+      "sha256": "873da38a2946731ae004afd7411fdd121e39c6ced7ae4f5081ce0fe5868e228c"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_vela-2.html",
+      "bytes": 149434,
+      "sha256": "addf6574071e272c9460ac5ece0c4c9dbbe31c18f3d6848eff9c47ed35602f73"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_vendas-atualizado.html",
+      "bytes": 150602,
+      "sha256": "7673fa3c58b6960ab7e6dfb863411382655223778ef1198e17a3d12030d1536d"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_viagens.html",
+      "bytes": 149090,
+      "sha256": "a88c962e5a5d062aedbb514abe13cd4cc2135ee6abced6e26e32dc8858443a30"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_videomaker-atualizado.html",
+      "bytes": 149942,
+      "sha256": "27fdfec4534501825c11d43ee76e4608e6a727a5f3afff03f5cfddaa53020227"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_vigilancia-epidemiologica-2.html",
+      "bytes": 149739,
+      "sha256": "158134164bb4c4063ab33dc7fb431bf3008b54d9ac193c8f81bfa5809d53ee32"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_web-design-atualizado.html",
+      "bytes": 149819,
+      "sha256": "b02fc03fde2f79906961cec7c65a9bac8cc9a51231bb336779e4a1199713eb5e"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_xadrez-2.html",
+      "bytes": 149126,
+      "sha256": "ff7185cc7f21bc24c2a2bf9d5ea732831ac80d2de6506bea917682edfdb1bc1b"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_yoga-2.html",
+      "bytes": 148963,
+      "sha256": "00a490b2680f10fd3fd45ab1968ce41593d58565ce775e6a4d620aba1298b88e"
+    },
+    {
+      "path": "docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/raw_html/especialidade_zoologia-atualizado.html",
+      "bytes": 149662,
+      "sha256": "bb2dcacfbfb20fac3ed022bd82b61cb7cf5f41f3565dfab0f260128d3ef5a80b"
+    }
+  ]
+}

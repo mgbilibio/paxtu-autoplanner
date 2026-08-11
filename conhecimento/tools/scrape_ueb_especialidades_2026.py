@@ -22,7 +22,8 @@ from bs4 import BeautifulSoup
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT_DIR = ROOT / "conhecimento" / "especialidades" / "2026_ueb_atualizado"
-RAW_DIR = OUT_DIR / "raw_html"
+BIBLIOTECA_DIR = ROOT / "docs" / "biblioteca" / "fontes_web" / "ueb_especialidades_2026_08_11"
+RAW_DIR = BIBLIOTECA_DIR / "raw_html"
 GENERATED_DIR = ROOT / "src" / "data" / "generated"
 AJAX_URL = "https://www.escoteiros.org.br/wp-admin/admin-ajax.php"
 BASE_URL = "https://www.escoteiros.org.br/especialidades/"

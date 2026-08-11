@@ -49,6 +49,13 @@ release_assets/
 docs/biblioteca/*
 !docs/biblioteca/manuais_essenciais/
 !docs/biblioteca/manuais_essenciais/**
+!docs/biblioteca/fontes_web/
+!docs/biblioteca/fontes_web/**/
+!docs/biblioteca/fontes_web/**/README.md
+!docs/biblioteca/fontes_web/**/manifest.json
+!docs/biblioteca/fontes_web/**/hashes.sha256
+docs/biblioteca/fontes_web/**/raw_html/
+docs/biblioteca/fontes_web/**/paginas_consultadas/
 
 # Snapshots historicos grandes (decidir caso a caso)
 _data/results/snapshots/

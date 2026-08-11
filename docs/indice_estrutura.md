@@ -45,7 +45,7 @@ Atualizado em 2026-08-11. Este índice descreve somente `PaxtuAP`, o app alvo. D
 - `conhecimento/bd/progressao_2025.sqlite`: progressão oficial atual.
 - `conhecimento/bd/especialidades_guia.sqlite`: Guia de Especialidades 18ª Ed. 2024-1 estruturado para consulta/transição.
 - `conhecimento/especialidades/2026_ueb_atualizado/especialidades_ueb_2026.json`: especialidades públicas UEB 2026 estruturadas.
-- `conhecimento/especialidades/2026_ueb_atualizado/raw_html/`: cache local regenerável, não versionado.
+- `docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/`: originais HTML consultados, manifesto e hashes; cache bruto local não versionado.
 - `conhecimento/bd/biblioteca_fts.sqlite`: busca nos documentos de referência.
 - `conhecimento/tools/`: geração, auditoria e release check.
 - `docs/biblioteca/`: PDFs e extrações para auditoria de fonte.
