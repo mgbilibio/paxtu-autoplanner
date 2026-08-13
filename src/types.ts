@@ -225,6 +225,8 @@ export interface UserProfile {
   email?: string;
   isAdmin?: boolean;
   active?: boolean;
+  pendingApproval?: boolean;
+  rejected?: boolean;
 }
 
 export interface SectionEnrollment {

@@ -34,7 +34,8 @@ import { useGlobalEvents } from './hooks/useGlobalEvents';
 import { clampSettingNumber } from './utils/clamp';
 import { isSpecialtyCode } from './utils/specialtyCodes';
 import { isWebApp } from './services/platform';
-import { subscribeGroupAuth, signOutGroup } from './services/firebase/groupAuth';
+import { subscribeGroupAuth, signOutGroup, isAwaitingAccess } from './services/firebase/groupAuth';
+import { PendingAccessScreen } from './components/profiles/PendingAccessScreen';
 import { LlmModelControls } from './components/LlmModelControls';
 import { clearGeminiOAuthAccessToken, tryRequestGeminiAccessToken } from './services/googleAuth';
 
@@ -181,7 +182,9 @@ function App() {
     const unsub = subscribeGroupAuth(profile => {
       if (profile) {
         setCurrentUser(profile);
-        void tryRequestGeminiAccessToken();
+        if (!isAwaitingAccess(profile) && profile.active !== false) {
+          void tryRequestGeminiAccessToken();
+        }
       } else {
         setCurrentUser(null);
       }
@@ -443,7 +446,9 @@ function App() {
   const handleWebAuthenticated = (profile: UserProfile) => {
     setCurrentUser(profile);
     setWebAuthReady(true);
-    void tryRequestGeminiAccessToken();
+    if (!isAwaitingAccess(profile) && profile.active !== false) {
+      void tryRequestGeminiAccessToken();
+    }
   };
 
   const enterAppAsWebUser = async (user: UserProfile) => {
@@ -466,10 +471,11 @@ function App() {
 
   useEffect(() => {
     if (!isWebApp() || !webAuthReady || !currentUser || currentSection) return;
+    if (isAwaitingAccess(currentUser) || currentUser.active === false) return;
     if (!appConfig?.isConfigured) return;
     if (view === 'PROFILE_CONFIG') return;
     void enterAppAsWebUser(currentUser);
-  }, [webAuthReady, currentUser?.id, currentSection?.id, appConfig?.isConfigured, view]);
+  }, [webAuthReady, currentUser?.id, currentUser?.pendingApproval, currentUser?.rejected, currentUser?.active, currentSection?.id, appConfig?.isConfigured, view]);
 
   const assumeSectionEditLock = () => {
     if (!currentSection || !currentUser) return;
@@ -788,6 +794,9 @@ function App() {
   }
   if (isWebApp() && !currentUser) {
     return <WebAuthGate onAuthenticated={handleWebAuthenticated} />;
+  }
+  if (isWebApp() && currentUser && isAwaitingAccess(currentUser)) {
+    return <PendingAccessScreen rejected={!!currentUser.rejected} onLogout={() => { void doLogout(); }} />;
   }
   if (!appConfig || !appConfig.isConfigured) return <SetupWizard onComplete={handleSetupComplete} />;
   if (view === 'PROFILE_CONFIG') {

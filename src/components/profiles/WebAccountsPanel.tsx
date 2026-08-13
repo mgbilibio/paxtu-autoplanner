@@ -6,9 +6,11 @@ import { PasswordField } from '../PasswordField';
 import {
   GroupPerson,
   WEB_ROLE_OPTIONS,
+  approvePendingPerson,
   countActiveAdmins,
   inviteGroupPerson,
   listGroupPeople,
+  rejectPendingPerson,
   sendPersonPasswordReset,
   setPersonActive,
   updatePersonProfile,
@@ -20,6 +22,89 @@ interface Props {
   isAdmin: boolean;
   isGroupAdmin?: boolean;
 }
+
+const formatRequestedAt = (date?: Date | null): string => {
+  if (!date) return '';
+  return date.toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
+};
+
+const PendingRequestCard: React.FC<{
+  person: GroupPerson;
+  sections: ScoutSection[];
+  onOk: (message: string) => void;
+  onErr: (err: unknown) => void;
+  onDone: () => Promise<void>;
+}> = ({ person, sections, onOk, onErr, onDone }) => {
+  const [role, setRole] = useState('Chefe de Seção');
+  const [sectionId, setSectionId] = useState(sections[0]?.id || '');
+
+  useEffect(() => {
+    if (!sectionId && sections[0]) setSectionId(sections[0].id);
+  }, [sections, sectionId]);
+
+  const uid = person.uid || '';
+
+  return (
+    <div className="border border-amber-300 rounded-lg p-3 bg-amber-50 flex flex-col gap-2">
+      <div>
+        <p className="font-bold text-slate-800">{person.displayName}</p>
+        <p className="text-xs text-slate-600">
+          {person.email}
+          {person.requestedAt ? ` · pedido em ${formatRequestedAt(person.requestedAt)}` : ''}
+          {person.rejected ? ' · recusado' : ' · aguardando liberação'}
+        </p>
+      </div>
+      <div className="flex flex-wrap gap-2">
+        <select className="text-xs p-1 border rounded bg-white" value={role} onChange={e => setRole(e.target.value)}>
+          {WEB_ROLE_OPTIONS.map(item => (
+            <option key={item.value} value={item.value}>{item.label}</option>
+          ))}
+        </select>
+        <select
+          className="text-xs p-1 border rounded bg-white"
+          value={sectionId}
+          onChange={e => setSectionId(e.target.value)}
+          disabled={role === 'ADMINISTRADOR'}
+        >
+          {role === 'ADMINISTRADOR' && <option value="">Todas as seções</option>}
+          {sections.length === 0 && role !== 'ADMINISTRADOR' && <option value="">Crie uma seção primeiro</option>}
+          {sections.map(section => (
+            <option key={section.id} value={section.id}>{section.name}</option>
+          ))}
+        </select>
+        <button
+          type="button"
+          className="text-xs font-bold px-3 py-1 bg-green-700 text-white rounded"
+          onClick={() => {
+            approvePendingPerson(uid, {
+              role,
+              sectionIds: role === 'ADMINISTRADOR' ? [] : [sectionId],
+            })
+              .then(() => onDone())
+              .then(() => onOk(`${person.displayName} liberado(a).`))
+              .catch(onErr);
+          }}
+        >
+          Liberar
+        </button>
+        {!person.rejected && (
+          <button
+            type="button"
+            className="text-xs font-bold px-3 py-1 bg-white text-red-700 border border-red-300 rounded"
+            onClick={() => {
+              rejectPendingPerson(uid)
+                .then(() => onDone())
+                .then(() => onOk(`${person.displayName} recusado(a).`))
+                .catch(onErr);
+            }}
+          >
+            Recusar
+          </button>
+        )}
+      </div>
+    </div>
+  );
+};
 
 export const WebAccountsPanel: React.FC<Props> = ({ currentAccountId, isAdmin, isGroupAdmin }) => {
   const [people, setPeople] = useState<GroupPerson[]>([]);
@@ -90,18 +175,57 @@ export const WebAccountsPanel: React.FC<Props> = ({ currentAccountId, isAdmin, i
     }
   };
 
+  const pendingRequests = people.filter(person => person.awaitingApproval);
+  const rejectedRequests = people.filter(person => person.rejected && !person.awaitingApproval);
+  const members = people.filter(person => !person.awaitingApproval && !person.rejected);
+
   return (
     <div className="space-y-4">
       <div className="bg-sky-50 border border-sky-200 rounded-lg p-3 text-[11px] text-sky-950 leading-relaxed">
-        Cadastre o <strong>e-mail pessoal</strong> de cada escotista — Gmail, Google Workspace, @escoteiros ou outro domínio.
-        Não existe e-mail único do grupo. Quem tem conta Google entra com Google; quem não tem usa e-mail e senha
-        (informe uma senha inicial abaixo, ou deixe em branco para a pessoa definir no primeiro acesso).
+        Quem tem o link do site cria a própria conta (Google ou e-mail e senha). Os pedidos aparecem abaixo para você
+        <strong> Liberar</strong> (seção + papel) ou <strong> Recusar</strong>.
+        Convite prévio continua opcional — não é mais obrigatório cadastrar cada e-mail antes.
       </div>
 
       {isAdmin && (
         <>
+          <div className="space-y-2">
+            <h4 className="font-bold text-sm text-slate-800">Pedidos de acesso</h4>
+            {pendingRequests.length === 0 && (
+              <p className="text-xs text-slate-500">Nenhum pedido aguardando liberação.</p>
+            )}
+            {pendingRequests.map(person => (
+              <PendingRequestCard
+                key={person.uid || person.email}
+                person={person}
+                sections={sections}
+                onOk={showOk}
+                onErr={showErr}
+                onDone={refresh}
+              />
+            ))}
+            {rejectedRequests.length > 0 && (
+              <>
+                <h5 className="font-bold text-xs text-slate-600 pt-2">Recusados</h5>
+                {rejectedRequests.map(person => (
+                  <PendingRequestCard
+                    key={person.uid || person.email}
+                    person={person}
+                    sections={sections}
+                    onOk={showOk}
+                    onErr={showErr}
+                    onDone={refresh}
+                  />
+                ))}
+              </>
+            )}
+          </div>
+
           <div className="border rounded-lg p-4">
-            <h4 className="font-bold text-sm text-slate-800 mb-2">Cadastrar escotista</h4>
+            <h4 className="font-bold text-sm text-slate-800 mb-2">Convite opcional</h4>
+            <p className="text-[11px] text-slate-500 mb-2">
+              Só se quiser liberar alguém de antemão. O caminho normal é a pessoa se cadastrar e você aprovar o pedido.
+            </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
               <input
                 placeholder="Nome de exibição"
@@ -142,13 +266,14 @@ export const WebAccountsPanel: React.FC<Props> = ({ currentAccountId, isAdmin, i
                 ))}
               </select>
               <button type="button" onClick={() => { void handleInvite(); }} className="p-2 bg-blue-600 text-white rounded font-bold">
-                Cadastrar
+                Convidar
               </button>
             </div>
           </div>
 
           <div className="space-y-2">
-            {people.map(person => (
+            <h4 className="font-bold text-sm text-slate-800">Pessoas com acesso</h4>
+            {members.map(person => (
               <div key={person.email} className="border rounded-lg p-3 bg-white flex flex-col gap-2">
                 <div className="flex justify-between gap-2 flex-wrap">
                   <div>
@@ -225,7 +350,7 @@ export const WebAccountsPanel: React.FC<Props> = ({ currentAccountId, isAdmin, i
       <GroupBackupPanel enabled={!!isGroupAdmin} />
 
       {!isAdmin && (
-        <p className="text-xs text-slate-600">Só o administrador cadastra e desativa acessos.</p>
+        <p className="text-xs text-slate-600">Só o administrador libera, recusa e desativa acessos.</p>
       )}
 
       {feedback && <p className="text-xs text-green-700 font-bold">{feedback}</p>}

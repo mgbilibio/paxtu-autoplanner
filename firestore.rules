@@ -77,6 +77,18 @@ service cloud.firestore {
         && get(inviteRef()).data.email == authEmail();
     }
 
+    function emptySectionIds(data) {
+      return !data.keys().hasAny(['sectionIds'])
+        || (data.sectionIds is list && data.sectionIds.size() == 0);
+    }
+
+    function isPendingSelfPayload() {
+      return request.resource.data.email == authEmail()
+        && request.resource.data.active == false
+        && request.resource.data.isAdmin == false
+        && emptySectionIds(request.resource.data);
+    }
+
     match /meta/{docId} {
       allow read: if signedIn();
       allow create: if docId == 'bootstrap'
@@ -96,20 +108,37 @@ service cloud.firestore {
         || isBoard()
         || (signedIn() && request.auth.uid == uid);
 
-      allow create: if signedIn()
-        && request.auth.uid == uid
-        && request.resource.data.email == authEmail()
-        && request.resource.data.active == true
-        && (
-          hasActiveInvite()
-          || (
-            isBootstrapClaim()
-            && request.resource.data.isAdmin == true
-            && request.resource.data.role == 'ADMINISTRADOR'
+      allow create: if isAdmin()
+        || (
+          signedIn()
+          && request.auth.uid == uid
+          && request.resource.data.email == authEmail()
+          && (
+            isPendingSelfPayload()
+            || (
+              request.resource.data.active == true
+              && hasActiveInvite()
+            )
+            || (
+              isBootstrapClaim()
+              && request.resource.data.active == true
+              && request.resource.data.isAdmin == true
+              && request.resource.data.role == 'ADMINISTRADOR'
+            )
           )
         );
 
-      allow update, delete: if isAdmin();
+      allow update: if isAdmin()
+        || (
+          signedIn()
+          && request.auth.uid == uid
+          && resource.data.active == false
+          && resource.data.isAdmin == false
+          && resource.data.rejected != true
+          && isPendingSelfPayload()
+        );
+
+      allow delete: if isAdmin();
     }
 
     match /groups/{groupId} {

@@ -32,7 +32,9 @@ const getPersistedUsers = async (): Promise<UserProfile[]> => {
 export const getUsersAsync = async (): Promise<UserProfile[]> => {
   if (isFirestoreBacked()) {
     const people = await listGroupPeople();
-    return people.map(groupPersonToProfile);
+    return people
+      .filter(person => person.active && !person.awaitingApproval && !person.rejected)
+      .map(groupPersonToProfile);
   }
   const users = await getPersistedUsers();
   const hasAdmin = users.some(user => user.role === 'ADMINISTRADOR');

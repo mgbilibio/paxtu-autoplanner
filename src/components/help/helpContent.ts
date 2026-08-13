@@ -21,7 +21,7 @@ export interface HelpFaq {
 export const ROTEIRO: HelpStep[] = [
   {
     titulo: '1. Configurar o app',
-    texto: 'No ScoutsAuto web, entre com Google ou o seu e-mail e senha. No desktop, escolha o provedor de IA e a pasta de dados.',
+    texto: 'No ScoutsAuto web, entre com Google ou crie conta com e-mail e senha; o administrador libera o acesso. No desktop, escolha o provedor de IA e a pasta de dados.',
   },
   {
     titulo: '2. Montar a estrutura',
@@ -103,8 +103,8 @@ export const TELA_HELP: Record<string, ScreenHelp> = {
   },
   LOGIN: {
     titulo: 'Login',
-    corpo: 'Seleciona o perfil que vai usar o app agora.',
-    dicas: ['Chefia e assistentes vão ao painel.', 'Diretoria e leitura vão aos relatórios.'],
+    corpo: 'No site ScoutsAuto, entre com Google ou e-mail e senha. Se ainda não tem conta, crie uma e aguarde o administrador liberar. No desktop, selecione o perfil local.',
+    dicas: ['Chefia e assistentes vão ao painel.', 'Diretoria e leitura vão aos relatórios.', 'Pedido pendente não abre tropa nem alcateia.'],
   },
   CALENDAR: {
     titulo: 'Agenda',
@@ -141,5 +141,9 @@ export const FAQ: HelpFaq[] = [
   {
     q: 'Como volto ao modo legado?',
     a: 'Ative a compatibilidade POR 2020 nas configurações avançadas apenas para consulta histórica.',
+  },
+  {
+    q: 'Como uma pessoa nova entra no site?',
+    a: 'Ela abre o link, entra com Google ou cria conta com e-mail, senha e nome. O administrador vê o pedido em Acessos e libera com seção (tropa/alcateia) e papel, ou recusa.',
   },
 ];
