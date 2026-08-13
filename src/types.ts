@@ -122,7 +122,7 @@ export interface GroupProfile {
   patrols: string[];
 }
 
-/** gemini | ollama (alias local) | ollama-local | ollama-cloud | xai-oauth (reservado) */
+/** gemini | ollama (alias local) | ollama-local | ollama-cloud | xai-oauth */
 export type LlmProviderId = 'gemini' | 'ollama' | 'ollama-local' | 'ollama-cloud' | 'xai-oauth';
 export type DataSyncMode = 'local' | 'sharedFolder';
 
@@ -141,7 +141,9 @@ export interface AppConfig {
   /** Chave ollama.com (perfil Ollama Cloud). */
   ollamaCloudApiKey?: string;
   ollamaCloudModel?: string;
-  /** Modelo preferido quando provider = xai-oauth (auth ainda planejada). */
+  /** Chave api.x.ai colada pelo usuário (só localStorage; nunca no git). */
+  xaiApiKey?: string;
+  /** Modelo preferido quando provider = xai-oauth. */
   xaiOAuthModel?: string;
   syncMode?: DataSyncMode; // local: máquina individual; sharedFolder: Google Drive/OneDrive/Dropbox.
 }

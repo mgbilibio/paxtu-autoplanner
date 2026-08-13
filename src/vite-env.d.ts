@@ -1,7 +1,61 @@
 /// <reference types="vite/client" />
 
+interface ImportMetaEnv {
+  readonly VITE_GOOGLE_CLIENT_ID?: string;
+  readonly VITE_GEMINI_API_KEY?: string;
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv;
+}
+
+declare module '*.md?raw' {
+  const content: string;
+  export default content;
+}
+
+declare module '*.html?raw' {
+  const content: string;
+  export default content;
+}
+
+interface GoogleIdConfiguration {
+  client_id: string;
+  callback: (response: { credential?: string }) => void;
+  ux_mode?: 'popup' | 'redirect';
+  auto_select?: boolean;
+  cancel_on_tap_outside?: boolean;
+}
+
+interface GoogleButtonConfiguration {
+  theme?: 'outline' | 'filled_blue' | 'filled_black';
+  size?: 'large' | 'medium' | 'small';
+  text?: 'signin_with' | 'signup_with' | 'continue_with' | 'signin';
+  locale?: string;
+  width?: number;
+}
+
+interface GoogleTokenClientConfig {
+  client_id: string;
+  scope: string;
+  callback: (response: { access_token?: string; error?: string }) => void;
+}
+
 interface Window {
-  fileSystem: {
+  google?: {
+    accounts: {
+      id: {
+        initialize: (config: GoogleIdConfiguration) => void;
+        renderButton: (parent: HTMLElement, config: GoogleButtonConfiguration) => void;
+      };
+      oauth2: {
+        initTokenClient: (config: GoogleTokenClientConfig) => {
+          requestAccessToken: (override?: { prompt?: string }) => void;
+        };
+      };
+    };
+  };
+  fileSystem?: {
     selectFolder: () => Promise<string | null>
     readData: (folderPath: string, fileName: string) => Promise<string | null>
     writeData: (folderPath: string, fileName: string, content: string) => Promise<boolean>
@@ -26,4 +80,5 @@ interface Window {
       error?: string
     }>
   }
+  showDirectoryPicker?: (options?: { mode?: 'read' | 'readwrite' }) => Promise<{ name: string }>
 }

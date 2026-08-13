@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { askLlm } from '../services/llmProvider';
 import { FAQ, HelpTab, ROTEIRO, TELA_HELP } from './help/helpContent';
 import { AskAi, Faq, Roteiro, TelaAtual } from './help/HelpSections';
+import { openUserGuideInBrowser } from '../services/webLibraryService';
 
 interface Props {
   onClose: () => void;
@@ -85,7 +86,7 @@ export const HelpPanel: React.FC<Props> = ({ onClose, currentView }) => {
         </div>
         <div className="border-t bg-slate-50 px-5 py-3 flex justify-end">
           <button
-            onClick={() => window.fileSystem?.openGuide?.()}
+            onClick={() => { void openUserGuideInBrowser(); }}
             className="text-sm font-bold bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700"
             title="Abrir o Manual do Usuario completo (v2.12)"
           >

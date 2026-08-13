@@ -142,6 +142,7 @@ const backupValueWithoutSecrets = (key: string, value: string): string => {
       ...config,
       apiKey: '',
       ollamaCloudApiKey: '',
+      xaiApiKey: '',
     });
   } catch {
     return value;
