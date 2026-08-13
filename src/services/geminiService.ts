@@ -1,6 +1,6 @@
 import { GoogleGenAI } from "@google/genai";
 import { MeetingPlan, GeneratorParams, GroundingSource } from "../types";
-import { getStoredApiKey } from "./storageService";
+import { getAppConfig, getStoredApiKey } from "./storageService";
 import { SectionAnalysis } from "./recommendationService";
 import { buildManuaisContextForBranch } from '../data/manuaisReferencia';
 import { normalizePlanForUse } from './planNormalizationService';
@@ -29,49 +29,71 @@ const resolveApiKey = (): string | undefined => {
   return getStoredApiKey() ?? undefined;
 };
 
-// Web: classe Flash-Lite barata/rápida. O alias -latest acompanha o id vigente
-// no @google/genai / Gemini API; os demais são fallbacks pinados (jul/2026).
-export const WEB_GEMINI_LITE_CANDIDATES = [
-  'gemini-flash-lite-latest',
+// Catálogo Flash / Flash-Lite (ago/2026). IDs conferidos na docs Gemini API:
+// 3.7 Flash (13 ago 2026), 3.6 Flash, 3.5 Flash-Lite GA + alias flash-lite-latest.
+// Web e desktop usam a mesma lista e o mesmo padrão (Lite, barato/rápido).
+export interface GeminiFlashChoice {
+  id: string;
+  label: string;
+}
+
+export const GEMINI_FLASH_MODELS: GeminiFlashChoice[] = [
+  { id: 'gemini-3.5-flash-lite', label: 'Gemini 3.5 Flash-Lite — mais barato/rápido' },
+  { id: 'gemini-flash-lite-latest', label: 'Gemini Flash-Lite latest (alias)' },
+  { id: 'gemini-3.6-flash', label: 'Gemini 3.6 Flash' },
+  { id: 'gemini-3.7-flash', label: 'Gemini 3.7 Flash — mais capaz' },
+  { id: 'gemini-3.5-flash', label: 'Gemini 3.5 Flash' },
+  { id: 'gemini-2.5-flash-lite', label: 'Gemini 2.5 Flash-Lite' },
+  { id: 'gemini-2.5-flash', label: 'Gemini 2.5 Flash' },
+];
+
+/** Fallbacks Lite se o id pinado falhar. Alias latest acompanha o GA vigente. */
+export const GEMINI_LITE_CANDIDATES = [
   'gemini-3.5-flash-lite',
+  'gemini-flash-lite-latest',
   'gemini-3.1-flash-lite',
   'gemini-2.5-flash-lite',
 ];
 
-export const DESKTOP_DEFAULT_GEMINI_MODEL = 'gemini-2.5-flash';
+/** @deprecated Use GEMINI_LITE_CANDIDATES. Mantido para imports existentes. */
+export const WEB_GEMINI_LITE_CANDIDATES = GEMINI_LITE_CANDIDATES;
 
-export const getDefaultGeminiModel = (): string =>
-  isWebApp() ? WEB_GEMINI_LITE_CANDIDATES[0] : DESKTOP_DEFAULT_GEMINI_MODEL;
+export const DEFAULT_GEMINI_MODEL = GEMINI_LITE_CANDIDATES[0];
+export const DESKTOP_DEFAULT_GEMINI_MODEL = DEFAULT_GEMINI_MODEL;
+
+export const geminiModelLabel = (id: string): string =>
+  GEMINI_FLASH_MODELS.find(model => model.id === id)?.label || id;
+
+export const curatedGeminiModelIds = (): string[] => GEMINI_FLASH_MODELS.map(model => model.id);
+
+export const getDefaultGeminiModel = (): string => {
+  const saved = getAppConfig()?.geminiModel?.trim();
+  if (saved) return saved;
+  return DEFAULT_GEMINI_MODEL;
+};
 
 const geminiVersionScore = (id: string): number => {
   const match = id.match(/gemini-(\d+(?:\.\d+)?)/i);
   return match ? Number(match[1]) : 0;
 };
 
+const isSelectableFlashModel = (id: string): boolean =>
+  /gemini/i.test(id)
+  && /flash/i.test(id)
+  && !/pro|image|tts|embed|live|vision/i.test(id);
+
 export const pickPreferredGeminiModel = (models: string[], current?: string): string => {
   if (models.length === 0) return getDefaultGeminiModel();
-  if (isWebApp()) {
-    const lite = models.filter(id => /flash-lite/i.test(id) && !/pro/i.test(id) && !/image/i.test(id));
-    if (current && lite.includes(current)) return current;
-    const latestAlias = lite.find(id => /flash-lite-latest/i.test(id));
-    if (latestAlias) return latestAlias;
-    if (lite.length > 0) {
-      return [...lite].sort((a, b) => geminiVersionScore(b) - geminiVersionScore(a) || b.localeCompare(a))[0];
-    }
-    for (const candidate of WEB_GEMINI_LITE_CANDIDATES) {
-      if (models.includes(candidate)) return candidate;
-    }
-    const flash = models.find(id => /flash/i.test(id) && !/pro/i.test(id) && !/image/i.test(id));
-    return flash || WEB_GEMINI_LITE_CANDIDATES[0];
+  if (current && models.includes(current)) return current;
+  for (const candidate of GEMINI_LITE_CANDIDATES) {
+    if (models.includes(candidate)) return candidate;
   }
-  const prefOrder = [
-    'gemini-2.5-flash',
-    'gemini-3.1-flash-live-preview',
-    'gemini-3-flash-preview',
-    'gemini-2.0-flash',
-    'gemini-1.5-flash',
-  ];
-  return prefOrder.find(id => models.includes(id)) || (current && models.includes(current) ? current : models[0]);
+  const lite = models.filter(id => /flash-lite/i.test(id) && isSelectableFlashModel(id));
+  if (lite.length > 0) {
+    return [...lite].sort((a, b) => geminiVersionScore(b) - geminiVersionScore(a) || b.localeCompare(a))[0];
+  }
+  const flash = models.find(id => isSelectableFlashModel(id));
+  return flash || DEFAULT_GEMINI_MODEL;
 };
 
 export const hasGeminiCredentials = (): boolean =>
@@ -124,7 +146,7 @@ export interface SmartSuggestion {
 }
 
 // Q&A genérico para Painel de Ajuda — sem JSON, resposta livre em português.
-// A geração principal usa o modelo escolhido no dropdown; na web o padrão é Flash-Lite.
+// A geração principal usa o modelo escolhido no dropdown; o padrão é Flash-Lite.
 
 export const askGemini = async (question: string, context: string, modelId?: string): Promise<string> => {
     if (!hasGeminiCredentials()) throw new Error(GEMINI_MISSING_KEY);
@@ -198,13 +220,15 @@ const parseGeminiModelList = (raw: Array<{ name?: string; supportedGenerationMet
     );
 
 export const getAvailableModels = async (): Promise<string[]> => {
-  const fallbacks = isWebApp()
-    ? [...WEB_GEMINI_LITE_CANDIDATES, 'gemini-2.5-flash']
-    : ['gemini-2.5-flash', 'gemini-2.5-flash-lite'];
+  const curated = curatedGeminiModelIds();
+  const fallbacks = curated;
   if (!hasGeminiCredentials()) return fallbacks;
 
-  const sortModels = (models: string[]) =>
-    [...models].sort((a, b) => geminiVersionScore(b) - geminiVersionScore(a) || b.localeCompare(a));
+  const mergeFlashModels = (discovered: string[]): string[] => {
+    const extras = discovered.filter(id => isSelectableFlashModel(id) && !curated.includes(id));
+    extras.sort((a, b) => geminiVersionScore(b) - geminiVersionScore(a) || b.localeCompare(a));
+    return extras.length > 0 ? [...curated, ...extras] : curated;
+  };
 
   try {
     const apiKey = resolveApiKey();
@@ -219,7 +243,7 @@ export const getAvailableModels = async (): Promise<string[]> => {
           models.push(model.name.replace('models/', ''));
         }
       }
-      return models.length > 0 ? sortModels(models) : fallbacks;
+      return models.length > 0 ? mergeFlashModels(models) : fallbacks;
     }
     const oauth = isWebApp() ? getGeminiOAuthAccessToken() : undefined;
     if (!oauth) return fallbacks;
@@ -229,7 +253,7 @@ export const getAvailableModels = async (): Promise<string[]> => {
     if (!response.ok) return fallbacks;
     const body = await response.json() as { models?: Array<{ name?: string }> };
     const models = parseGeminiModelList(body.models || []);
-    return models.length > 0 ? sortModels(models) : fallbacks;
+    return models.length > 0 ? mergeFlashModels(models) : fallbacks;
   } catch (e) {
     console.error('Erro ao listar modelos Gemini:', e);
     return fallbacks;

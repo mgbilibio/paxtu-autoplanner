@@ -134,6 +134,8 @@ export interface AppConfig {
   showLegacy?: boolean; // Quando true, expõe controles do POR 2020. Padrão: false (apenas POR 2025+).
   // Configuração do provider de IA. Padrão: gemini (preferencial).
   llmProvider?: LlmProviderId;
+  /** Modelo Gemini escolhido no seletor (Flash/Flash-Lite). Persistido no localStorage. */
+  geminiModel?: string;
   ollamaBaseUrl?: string; // Default: http://localhost:11434
   ollamaModel?: string;   // Selecionado pelo usuário a partir da lista dinâmica do Ollama.
   ollamaGenerationContext?: number;
