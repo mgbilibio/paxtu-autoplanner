@@ -31,7 +31,7 @@ export const getCatalogAsync = async (): Promise<MeetingPlan[]> => {
       return getCatalogSync();
     }
   }
-  return getCatalogSync();
+  return readJsonDoc<MeetingPlan[]>(CATALOG_FILENAME, STORAGE_KEY, []);
 };
 
 export const savePlanToCatalog = async (plan: MeetingPlan): Promise<void> => {
@@ -47,15 +47,7 @@ export const savePlanToCatalog = async (plan: MeetingPlan): Promise<void> => {
   const updatedCatalog = index >= 0
     ? currentCatalog.map((item, i) => (i === index ? toSave : item))
     : [toSave, ...currentCatalog];
-  if (isFileBacked()) {
-    try {
-      await writeJsonDoc(CATALOG_FILENAME, STORAGE_KEY, updatedCatalog);
-    } catch {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedCatalog));
-    }
-  } else {
-    await writeJsonDoc(CATALOG_FILENAME, STORAGE_KEY, updatedCatalog);
-  }
+  await writeJsonDoc(CATALOG_FILENAME, STORAGE_KEY, updatedCatalog);
   dispatchDataEvent(DATA_EVENTS.CATALOG_UPDATED);
 };
 

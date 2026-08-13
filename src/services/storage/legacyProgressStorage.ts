@@ -4,6 +4,7 @@ import { DATA_EVENTS, dispatchDataEvent } from './events';
 import { findMemberForLayout } from './memberStorage';
 import { PROGRESSION_FOLDER } from './names';
 import { assertCanWriteSection } from './sectionLockStorage';
+import { isFirestoreBacked, readCachedEntity, writeCachedEntity } from './dualBackend';
 
 const progressCacheKey = (memberId: string): string => `PAXTU_PROG_${memberId}`;
 const PROGRESS_CACHE_KEY = 'PAXTU_PROG_CACHE';
@@ -29,6 +30,22 @@ export const getMemberProgress = (): MemberProgress[] => getMemberProgressLegacy
 export const getMemberProgressIndividual = async (
   memberId: string,
 ): Promise<MemberProgress | null> => {
+  if (isFirestoreBacked()) {
+    return readCachedEntity<MemberProgress>(
+      progressCacheKey(memberId),
+      async () => {
+        const member = await findMemberForLayout(memberId);
+        return {
+          layout: null,
+          flat: { folder: '', file: `${memberId}.json` },
+          sectionId: member?.sectionId,
+          memberId,
+          progressKind: 'legacyProgress',
+          entityId: 'current',
+        };
+      },
+    );
+  }
   const cacheKey = progressCacheKey(memberId);
   const cached = parseOrDefault<MemberProgress | null>(cacheKey, null);
   if (cached) return cached;
@@ -54,6 +71,22 @@ export const getMemberProgressIndividual = async (
 export const saveMemberProgressIndividual = async (
   progress: MemberProgress,
 ): Promise<void> => {
+  if (isFirestoreBacked()) {
+    const member = await findMemberForLayout(progress.memberId);
+    await writeCachedEntity(
+      progressCacheKey(progress.memberId),
+      progress,
+      async () => ({
+        layout: null,
+        flat: { folder: '', file: `${progress.memberId}.json` },
+        sectionId: member?.sectionId,
+        memberId: progress.memberId,
+        progressKind: 'legacyProgress',
+        entityId: 'current',
+      }),
+    );
+    return;
+  }
   localStorage.setItem(progressCacheKey(progress.memberId), JSON.stringify(progress));
   const config = getAppConfig();
   if (config?.dataFolder && window.fileSystem) {

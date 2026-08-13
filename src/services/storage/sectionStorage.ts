@@ -1,11 +1,12 @@
 import { ScoutSection } from '../../types';
 import { sectionFolder } from '../dataLayoutService';
 import { getAppConfig } from './configStorage';
-import { readJsonDoc, writeJsonDoc } from './dualBackend';
+import { isFirestoreBacked, readJsonDoc, writeJsonDoc } from './dualBackend';
 import { DATA_EVENTS, dispatchDataEvent } from './events';
 import { purgeMembersOfSection } from './memberStorage';
 import { SECTIONS_FILENAME, SECTIONS_KEY } from './names';
 import { runExclusive } from './writeQueue';
+import { deleteSectionCloud } from '../firebase/firestore';
 
 export const getSectionsAsync = async (): Promise<ScoutSection[]> => {
   return readJsonDoc<ScoutSection[]>(SECTIONS_FILENAME, SECTIONS_KEY, []);
@@ -31,6 +32,9 @@ export const deleteSectionAsync = async (id: string): Promise<void> => {
   // Remove membros desta secao do agregado + limpa caches (LGPD) antes de apagar
   // a pasta da secao (lock, jovens, adultos) no filesystem.
   await purgeMembersOfSection(id);
+  if (isFirestoreBacked()) {
+    await deleteSectionCloud(id);
+  }
   const config = getAppConfig();
   if (config?.dataFolder && window.fileSystem?.deletePath) {
     await window.fileSystem.deletePath(config.dataFolder, sectionFolder(id));

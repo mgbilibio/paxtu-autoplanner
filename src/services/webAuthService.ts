@@ -1,6 +1,8 @@
 import { UserProfile } from '../types';
 import { USER_ROLES, UserRole } from './roleService';
 
+/** Contas no navegador (PBKDF2). A SPA web usa Firebase Auth; este módulo permanece só como legado. */
+
 export const WEB_ACCOUNTS_KEY = 'PAXTU_WEB_ACCOUNTS';
 export const WEB_SESSION_KEY = 'PAXTU_WEB_SESSION';
 

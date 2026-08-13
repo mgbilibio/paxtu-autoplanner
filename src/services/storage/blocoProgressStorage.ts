@@ -39,9 +39,8 @@ export const getMemberBlocoState = async (
     blocoStateKey(memberId, blocoId),
     async () => {
       const config = getAppConfig();
-      if (!config?.dataFolder) return null;
       const member = await findMemberForLayout(memberId);
-      const layout = member
+      const layout = member && config?.dataFolder
         ? (() => {
             const p = memberBlocoPath(member.sectionId, memberId, blocoId);
             return { folder: p.folder, file: p.file };
@@ -50,9 +49,13 @@ export const getMemberBlocoState = async (
       return {
         layout,
         flat: {
-          folder: `${config.dataFolder}/${BLOCO_PROGRESS_FOLDER}`,
+          folder: config?.dataFolder ? `${config.dataFolder}/${BLOCO_PROGRESS_FOLDER}` : '',
           file: `${memberId}_b${blocoId}.json`,
         },
+        sectionId: member?.sectionId,
+        memberId,
+        progressKind: 'bloco' as const,
+        entityId: String(blocoId),
       };
     },
     migrateBlocoState,
@@ -72,10 +75,9 @@ export const saveMemberBlocoState = async (
     stamped,
     async () => {
       const config = getAppConfig();
-      if (!config?.dataFolder) return null;
       const member = await findMemberForLayout(stamped.memberId);
       assertCanWriteSection(member?.sectionId);
-      const layout = member
+      const layout = member && config?.dataFolder
         ? (() => {
             const p = memberBlocoPath(member.sectionId, stamped.memberId, stamped.blocoId);
             return { folder: p.folder, file: p.file };
@@ -84,9 +86,13 @@ export const saveMemberBlocoState = async (
       return {
         layout,
         flat: {
-          folder: `${config.dataFolder}/${BLOCO_PROGRESS_FOLDER}`,
+          folder: config?.dataFolder ? `${config.dataFolder}/${BLOCO_PROGRESS_FOLDER}` : '',
           file: `${stamped.memberId}_b${stamped.blocoId}.json`,
         },
+        sectionId: member?.sectionId,
+        memberId: stamped.memberId,
+        progressKind: 'bloco' as const,
+        entityId: String(stamped.blocoId),
       };
     },
   );

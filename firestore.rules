@@ -1,0 +1,89 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function emailKey() {
+      return signedIn() && request.auth.token.email != null
+        ? request.auth.token.email.lower()
+        : '';
+    }
+
+    function userPath() {
+      return /databases/$(database)/documents/users/$(request.auth.uid);
+    }
+
+    function userData() {
+      return get(userPath()).data;
+    }
+
+    function isAdmin() {
+      return signedIn()
+        && exists(userPath())
+        && userData().isAdmin == true
+        && userData().active == true;
+    }
+
+    function inSection(sectionId) {
+      return isAdmin()
+        || (signedIn() && exists(userPath()) && userData().active == true && sectionId in userData().sectionIds);
+    }
+
+    function bootstrapOpen() {
+      return !exists(/databases/$(database)/documents/meta/bootstrap);
+    }
+
+    function invitePath() {
+      return /databases/$(database)/documents/invites/$(emailKey());
+    }
+
+    function hasInvite() {
+      return emailKey() != '' && exists(invitePath()) && get(invitePath()).data.active == true;
+    }
+
+    match /meta/bootstrap {
+      allow read: if signedIn();
+      allow create: if signedIn()
+        && bootstrapOpen()
+        && request.resource.data.adminUid == request.auth.uid;
+      allow update, delete: if false;
+    }
+
+    match /invites/{emailId} {
+      allow read: if isAdmin() || (signedIn() && emailId == emailKey());
+      allow write: if isAdmin();
+    }
+
+    match /users/{uid} {
+      allow read: if isAdmin() || (signedIn() && request.auth.uid == uid);
+      allow create: if signedIn() && request.auth.uid == uid && (
+        (bootstrapOpen() && request.resource.data.isAdmin == true)
+        || hasInvite()
+      );
+      allow update: if isAdmin()
+        || (signedIn() && request.auth.uid == uid && request.resource.data.isAdmin == resource.data.isAdmin);
+      allow delete: if isAdmin();
+    }
+
+    match /groups/{groupId} {
+      allow read: if signedIn();
+      allow write: if isAdmin();
+    }
+
+    match /sections/{sectionId} {
+      allow read: if inSection(sectionId);
+      allow create, delete: if isAdmin();
+      allow update: if isAdmin() || inSection(sectionId);
+
+      match /data/{docId} {
+        allow read, write: if inSection(sectionId);
+      }
+
+      match /members/{memberId}/{document=**} {
+        allow read, write: if inSection(sectionId);
+      }
+    }
+  }
+}

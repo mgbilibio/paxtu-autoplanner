@@ -17,9 +17,8 @@ export const getMemberSpecialtyState = async (
     specialtyStateKey(memberId, especialidadeId),
     async () => {
       const config = getAppConfig();
-      if (!config?.dataFolder) return null;
       const member = await findMemberForLayout(memberId);
-      const layout = member
+      const layout = member && config?.dataFolder
         ? (() => {
             const p = memberSpecialtyPath(member.sectionId, memberId, especialidadeId);
             return { folder: p.folder, file: p.file };
@@ -28,9 +27,13 @@ export const getMemberSpecialtyState = async (
       return {
         layout,
         flat: {
-          folder: `${config.dataFolder}/${SPECIALTY_PROGRESS_FOLDER}`,
+          folder: config?.dataFolder ? `${config.dataFolder}/${SPECIALTY_PROGRESS_FOLDER}` : '',
           file: `${memberId}_e${especialidadeId}.json`,
         },
+        sectionId: member?.sectionId,
+        memberId,
+        progressKind: 'specialty' as const,
+        entityId: String(especialidadeId),
       };
     },
   );
@@ -55,10 +58,9 @@ export const saveMemberSpecialtyState = async (
     stamped,
     async () => {
       const config = getAppConfig();
-      if (!config?.dataFolder) return null;
       const member = await findMemberForLayout(stamped.memberId);
       assertCanWriteSection(member?.sectionId);
-      const layout = member
+      const layout = member && config?.dataFolder
         ? (() => {
             const p = memberSpecialtyPath(member.sectionId, stamped.memberId, stamped.especialidadeId);
             return { folder: p.folder, file: p.file };
@@ -67,9 +69,13 @@ export const saveMemberSpecialtyState = async (
       return {
         layout,
         flat: {
-          folder: `${config.dataFolder}/${SPECIALTY_PROGRESS_FOLDER}`,
+          folder: config?.dataFolder ? `${config.dataFolder}/${SPECIALTY_PROGRESS_FOLDER}` : '',
           file: `${stamped.memberId}_e${stamped.especialidadeId}.json`,
         },
+        sectionId: member?.sectionId,
+        memberId: stamped.memberId,
+        progressKind: 'specialty' as const,
+        entityId: String(stamped.especialidadeId),
       };
     },
   );

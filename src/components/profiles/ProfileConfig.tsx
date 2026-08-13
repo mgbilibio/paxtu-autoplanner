@@ -79,7 +79,7 @@ export const ProfileConfig: React.FC<Props> = ({ currentAccountId, isAdmin }) =>
               <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${steps.usuario ? 'bg-green-500 text-white' : steps.secao ? 'bg-indigo-200 text-indigo-700' : 'bg-gray-200 text-gray-400'}`}>
                 {steps.usuario ? '✓' : '3'}
               </span>
-              <span>Cadastre pelo menos um <strong>Usuário</strong> (chefia) — depois você cadastra os jovens</span>
+              <span>Cadastre a chefia por <strong>e-mail</strong> (abaixo) — só quem o admin cadastrar entra</span>
             </li>
           </ol>
           <p className="text-[11px] text-indigo-600 mt-3 italic">
@@ -100,10 +100,10 @@ export const ProfileConfig: React.FC<Props> = ({ currentAccountId, isAdmin }) =>
       )}
 
       <StructureManager />
-      <UserManager />
+      {!isWebApp() && <UserManager />}
       {isWebApp() && (
         <div className="bg-white rounded-xl border p-4">
-          <h3 className="font-bold text-slate-800 mb-2">Contas deste navegador</h3>
+          <h3 className="font-bold text-slate-800 mb-2">Contas do grupo (Firebase)</h3>
           <WebAccountsPanel currentAccountId={currentAccountId} isAdmin={!!isAdmin} />
         </div>
       )}

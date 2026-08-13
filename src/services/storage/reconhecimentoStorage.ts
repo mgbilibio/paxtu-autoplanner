@@ -11,9 +11,8 @@ const recKey = (memberId: string, recId: number): string =>
 
 const resolveReadPaths = (memberId: string, reconhecimentoId: number) => async () => {
   const config = getAppConfig();
-  if (!config?.dataFolder) return null;
   const member = await findMemberForLayout(memberId);
-  const layout = member
+  const layout = member && config?.dataFolder
     ? (() => {
         const p = memberReconhecimentoPath(member.sectionId, memberId, reconhecimentoId);
         return { folder: p.folder, file: p.file };
@@ -22,9 +21,13 @@ const resolveReadPaths = (memberId: string, reconhecimentoId: number) => async (
   return {
     layout,
     flat: {
-      folder: `${config.dataFolder}/${BLOCO_PROGRESS_FOLDER}`,
+      folder: config?.dataFolder ? `${config.dataFolder}/${BLOCO_PROGRESS_FOLDER}` : '',
       file: `${memberId}_rec${reconhecimentoId}.json`,
     },
+    sectionId: member?.sectionId,
+    memberId,
+    progressKind: 'reconhecimento' as const,
+    entityId: String(reconhecimentoId),
   };
 };
 
@@ -46,10 +49,9 @@ export const saveMemberReconhecimento = async (
     state,
     async () => {
       const config = getAppConfig();
-      if (!config?.dataFolder) return null;
       const member = await findMemberForLayout(state.memberId);
       assertCanWriteSection(member?.sectionId);
-      const layout = member
+      const layout = member && config?.dataFolder
         ? (() => {
             const p = memberReconhecimentoPath(member.sectionId, state.memberId, state.reconhecimentoId);
             return { folder: p.folder, file: p.file };
@@ -58,9 +60,13 @@ export const saveMemberReconhecimento = async (
       return {
         layout,
         flat: {
-          folder: `${config.dataFolder}/${BLOCO_PROGRESS_FOLDER}`,
+          folder: config?.dataFolder ? `${config.dataFolder}/${BLOCO_PROGRESS_FOLDER}` : '',
           file: `${state.memberId}_rec${state.reconhecimentoId}.json`,
         },
+        sectionId: member?.sectionId,
+        memberId: state.memberId,
+        progressKind: 'reconhecimento' as const,
+        entityId: String(state.reconhecimentoId),
       };
     },
   );

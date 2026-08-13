@@ -5,7 +5,7 @@ import { getPlanningCatalog, buildCatalogDigest } from './services/catalogServic
 import { generateScoutPlanRouted as generateScoutPlan, listAvailableModels as getAvailableModels, getActiveProvider, getProviderById, normalizeProviderId, GEMINI_STUDIO_URL, GEMINI_KEY_HELP } from './services/llmProvider';
 import { getDefaultGeminiModel, pickPreferredGeminiModel, hasGeminiCredentials, curatedGeminiModelIds } from './services/geminiService';
 import { pickXaiFastModel } from './services/xaiService';
-import { getAnnotations, saveAnnotation, getAppConfig, saveAppConfig, normalizePath, downloadProgressBackup, importProgressBackup, saveSectionAsync, getAllMemberBlocoStates, downloadLocalAppBackup, importLocalAppBackup, ensureWorkspaceMetadata, acquireSectionEditLock, releaseSectionEditLock, renewSectionEditLock, EditLock, getSectionsAsync, saveUserAsync } from './services/storageService';
+import { getAnnotations, saveAnnotation, getAppConfig, saveAppConfig, normalizePath, downloadProgressBackup, importProgressBackup, saveSectionAsync, getAllMemberBlocoStates, downloadLocalAppBackup, importLocalAppBackup, ensureWorkspaceMetadata, acquireSectionEditLock, releaseSectionEditLock, renewSectionEditLock, EditLock, getSectionsAsync } from './services/storageService';
 import { getProgressionDetail } from './services/progressionDetailService';
 import { PlanDisplay } from './components/PlanDisplay';
 import { Catalog } from './components/Catalog';
@@ -34,7 +34,8 @@ import { useGlobalEvents } from './hooks/useGlobalEvents';
 import { clampSettingNumber } from './utils/clamp';
 import { isSpecialtyCode } from './utils/specialtyCodes';
 import { isWebApp } from './services/platform';
-import { clearWebSession, restoreWebSessionAccount, webAccountToProfile } from './services/webAuthService';
+import { subscribeFirebaseAuth, signOutFirebase } from './services/firebase/auth';
+import { isFirebaseConfigured } from './services/firebase/config';
 import { LlmModelControls } from './components/LlmModelControls';
 import { clearGeminiOAuthAccessToken, tryRequestGeminiAccessToken } from './services/googleAuth';
 
@@ -178,13 +179,32 @@ function App() {
 
   useEffect(() => {
     if (!isWebApp()) return;
-    const account = restoreWebSessionAccount();
-    if (account) {
-      const profile = webAccountToProfile(account);
-      void saveUserAsync(profile);
-      setCurrentUser(profile);
+    if (!isFirebaseConfigured()) {
+      setWebAuthReady(true);
+      return;
     }
-    setWebAuthReady(true);
+    const unsub = subscribeFirebaseAuth(profile => {
+      if (profile) {
+        setCurrentUser(profile);
+        const existing = getAppConfig();
+        if (!existing?.isConfigured) {
+          const cfg: AppConfig = {
+            ...(existing || { apiKey: '', dataFolder: 'firebase', isConfigured: true }),
+            apiKey: existing?.apiKey || '',
+            dataFolder: 'firebase',
+            isConfigured: true,
+            llmProvider: existing?.llmProvider || 'gemini',
+          };
+          saveAppConfig(cfg);
+          setAppConfig(cfg);
+        }
+        void tryRequestGeminiAccessToken();
+      } else {
+        setCurrentUser(null);
+      }
+      setWebAuthReady(true);
+    });
+    return () => unsub();
   }, []);
 
   useEffect(() => {
@@ -440,6 +460,18 @@ function App() {
   const handleWebAuthenticated = (profile: UserProfile) => {
     setCurrentUser(profile);
     setWebAuthReady(true);
+    const existing = getAppConfig();
+    if (!existing?.isConfigured) {
+      const cfg: AppConfig = {
+        ...(existing || { apiKey: '', dataFolder: 'firebase', isConfigured: true }),
+        apiKey: existing?.apiKey || '',
+        dataFolder: 'firebase',
+        isConfigured: true,
+        llmProvider: existing?.llmProvider || 'gemini',
+      };
+      saveAppConfig(cfg);
+      setAppConfig(cfg);
+    }
     void tryRequestGeminiAccessToken();
   };
 
@@ -512,7 +544,7 @@ function App() {
     setLlmElapsed(0);
     setView('LOGIN');
     if (isWebApp()) {
-      clearWebSession();
+      void signOutFirebase();
       clearGeminiOAuthAccessToken();
     }
     reset();
@@ -783,7 +815,9 @@ function App() {
   if (isWebApp() && !currentUser) {
     return <WebAuthGate onAuthenticated={handleWebAuthenticated} />;
   }
-  if (!appConfig || !appConfig.isConfigured) return <SetupWizard onComplete={handleSetupComplete} />;
+  if (!(isWebApp() && isFirebaseConfigured()) && (!appConfig || !appConfig.isConfigured)) {
+    return <SetupWizard onComplete={handleSetupComplete} />;
+  }
   if (view === 'PROFILE_CONFIG') {
     const backFromStructure = () => {
       if (isWebApp() && currentUser) {

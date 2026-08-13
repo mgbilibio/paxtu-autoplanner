@@ -217,6 +217,9 @@ export interface UserProfile {
   sectionId: string;
   role: string;
   avatar?: string;
+  email?: string;
+  sectionIds?: string[];
+  active?: boolean;
 }
 
 export interface SectionEnrollment {

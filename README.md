@@ -16,7 +16,7 @@ O repositório é público. Quem controla `main` é o Margus (PRs, sem push dire
 - Especialidades POR 2025+: base pública UEB 2026, com 208 especialidades e 1.385 requisitos.
 - Especialidades 2024-1: preservadas para histórico/transição, separadas do fluxo atualizado.
 - POR 2020: compatibilidade histórica, separada do fluxo atual.
-- Dados: armazenamento local ou pasta compartilhada, segregada por seção e pessoa.
+- Dados: no desktop, pasta local ou compartilhada; na web, Firestore por seção.
 
 As fontes normativas ficam em `docs/biblioteca/` e a base estruturada, auditável, em `conhecimento/`.
 
@@ -25,7 +25,7 @@ As fontes normativas ficam em `docs/biblioteca/` e a base estruturada, auditáve
 | O quê | Onde | Para quem |
 | --- | --- | --- |
 | Colaborar no **código** | GitHub (fork + pull request para `main`) | Quem mexe no programa |
-| Usar o **planejador** na web | Login no site (Google, ou usuário/senha se o Client ID ainda não estiver configurado) | Escotista usuário |
+| Usar o **planejador** na web | Login no site (Google / X / e-mail) | Escotista cadastrado pelo admin do grupo |
 
 Não existe tipo “escotista colaborador” dentro do app. Contribuição de código é só pelo GitHub.
 
@@ -35,15 +35,26 @@ URL: `https://mgbilibio.github.io/paxtu-autoplanner/`
 
 Publicação: Actions em push para `main` (`npm run build:web`, sem Electron e **sem** `GEMINI_API_KEY`). Ative uma vez em **Settings → Pages → Source: GitHub Actions**.
 
-### Login web (preferido: Google)
+### Login web (Firebase)
 
-1. Crie no Google Cloud um **OAuth client ID do tipo aplicativo Web** (JavaScript origin). Sem client secret no repo.
-2. Origins: `https://mgbilibio.github.io` e `http://localhost:5173` (dev).
-3. Coloque o Client ID (público) na variável de repositório `VITE_GOOGLE_CLIENT_ID` (Actions → Variables). O workflow injeta no build.
-4. Depois do Google, e-mail/nome viram o `UserProfile` da sessão. A sessão fica em `sessionStorage` (atualizar a página mantém; sair limpa).
-5. Sem Client ID, o site continua com **usuário e senha** (PBKDF2 no navegador). Contas ficam no `localStorage` deste browser até existir backend. Exporte/importe JSON só com hashes, nunca senha em texto.
+O site usa **Firebase Auth + Cloud Firestore** (plano Spark). Dados da tropa/alcateia **não** ficam no localStorage — dois chefes em dois aparelhos veem a mesma seção.
 
-O primeiro Google (ou a primeira senha) neste navegador vira administrador do planejador.
+1. Crie um projeto Firebase, ative Authentication (Google; Twitter/X se quiser; e-mail/senha) e Firestore.
+2. Cole as regras de `firestore.rules` no console.
+3. Em Authentication → Settings → Authorized domains: `mgbilibio.github.io` e `localhost`.
+4. Copie os valores **públicos** do app (Project settings) para as variáveis de repositório:
+   `VITE_FIREBASE_API_KEY`, `VITE_FIREBASE_AUTH_DOMAIN`, `VITE_FIREBASE_PROJECT_ID`, `VITE_FIREBASE_STORAGE_BUCKET`, `VITE_FIREBASE_MESSAGING_SENDER_ID`, `VITE_FIREBASE_APP_ID`.
+5. Opcional: `VITE_FIREBASE_ENABLE_X=true` para mostrar **Continuar com X** (o provedor precisa estar ativo no Firebase).
+6. Sem essas variáveis o site mostra um aviso em português e **não** inventa dados no navegador.
+7. Nunca coloque JSON de service account no repositório.
+
+Tela de entrada: **Continuar com Google**, opcionalmente **Continuar com X**, e e-mail + senha com olho de mostrar/ocultar. Não há “criar conta” público.
+
+A primeira pessoa que entrar, se ainda não houver administrador no Firestore, vira admin do grupo (uma vez). Depois disso, e-mail desconhecido ouve: *Peça ao administrador do grupo para te cadastrar.*
+
+O admin cadastra usuários por e-mail, nome, seção e papel (Chefe, Assistente, Diretoria, Leitura, ADMINISTRADOR) e pode desativar contas.
+
+Chaves de IA (Gemini/xAI) continuam só no navegador de cada chefia.
 
 ### IA na web
 
@@ -55,9 +66,9 @@ O primeiro Google (ou a primeira senha) neste navegador vira administrador do pl
 
 Nenhuma chave de API entra no repositório nem no bundle do Pages.
 
-### Limite do navegador
+### Dados da seção
 
-Grupos, seções, jovens e contas web ficam no **localStorage** deste browser (sem servidor). Não é sincronização entre aparelhos. Faça backup em Configurações → Avançado.
+Na web, jovens, reuniões, progressão e agenda da seção ficam no **Firestore**, por `sections/{id}/...`. No desktop, o filesystem (pasta local ou compartilhada) continua valendo (`npm run dev`).
 
 ## Desktop
 
