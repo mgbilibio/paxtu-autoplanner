@@ -10,9 +10,10 @@ import { isWebApp } from '../../services/platform';
 interface Props {
   currentAccountId?: string;
   isAdmin?: boolean;
+  isGroupAdmin?: boolean;
 }
 
-export const ProfileConfig: React.FC<Props> = ({ currentAccountId, isAdmin }) => {
+export const ProfileConfig: React.FC<Props> = ({ currentAccountId, isAdmin, isGroupAdmin }) => {
   const [steps, setSteps] = useState({ grupo: false, secao: false, usuario: false });
 
   useEffect(() => {
@@ -104,7 +105,11 @@ export const ProfileConfig: React.FC<Props> = ({ currentAccountId, isAdmin }) =>
       {isWebApp() && (
         <div className="bg-white rounded-xl border p-4">
           <h3 className="font-bold text-slate-800 mb-2">Acessos do grupo</h3>
-          <WebAccountsPanel currentAccountId={currentAccountId} isAdmin={!!isAdmin} />
+          <WebAccountsPanel
+            currentAccountId={currentAccountId}
+            isAdmin={!!isAdmin}
+            isGroupAdmin={!!isGroupAdmin}
+          />
         </div>
       )}
     </div>
