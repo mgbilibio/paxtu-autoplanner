@@ -13,13 +13,15 @@ import {
   setPersonActive,
   updatePersonProfile,
 } from '../../services/firebase/groupAuth';
+import { GroupBackupPanel } from './GroupBackupPanel';
 
 interface Props {
   currentAccountId?: string;
   isAdmin: boolean;
+  isGroupAdmin?: boolean;
 }
 
-export const WebAccountsPanel: React.FC<Props> = ({ currentAccountId, isAdmin }) => {
+export const WebAccountsPanel: React.FC<Props> = ({ currentAccountId, isAdmin, isGroupAdmin }) => {
   const [people, setPeople] = useState<GroupPerson[]>([]);
   const [sections, setSections] = useState<ScoutSection[]>([]);
   const [feedback, setFeedback] = useState<string | null>(null);
@@ -219,6 +221,8 @@ export const WebAccountsPanel: React.FC<Props> = ({ currentAccountId, isAdmin })
           </div>
         </>
       )}
+
+      <GroupBackupPanel enabled={!!isGroupAdmin} />
 
       {!isAdmin && (
         <p className="text-xs text-slate-600">Só o administrador cadastra e desativa acessos.</p>

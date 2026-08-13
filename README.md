@@ -82,6 +82,22 @@ Nenhuma chave de API entra no repositório nem no bundle do Pages.
 
 No ScoutsAuto web, tropa/alcateia, jovens, reuniões, progressão, presença e agenda ficam no Firestore, por seção. Chefe e assistentes da mesma seção vêem os mesmos dados em máquinas diferentes. Chaves de IA continuam só neste navegador. O desktop (`npm run dev`) segue com pasta no disco.
 
+## Backup e troca de dono
+
+O administrador, no site, pode **baixar e restaurar um JSON** em Configurações → Acessos (ou em Gerenciar Perfis): usuários, convites, grupos, seções e documentos da seção. Sem senhas, hashes do Auth nem chaves de API. Funciona no plano Spark, sem Cloud Storage.
+
+**Trocar propriedade**
+
+- O projeto Firebase é um projeto Google Cloud. No [IAM do Google Cloud](https://console.cloud.google.com/iam-admin/iam?project=scoutsauto-d3068), adicione a conta Google da outra pessoa como **Owner**. Ela aceita. Depois o dono original pode ser removido.
+- Inclua a mesma pessoa como Owner em Firebase Console → Project settings → Users and permissions.
+- A troca **não** exige exportar dados se o projeto continuar o mesmo. Usuários do Auth e o Firestore permanecem.
+- Não há e-mail compartilhado do grupo; convide a conta Google pessoal.
+
+**Export oficial (opcional, depois)**
+
+- `gcloud firestore export` para um bucket GCS é o dump oficial; em geral precisa de Blaze e de um bucket. Não é necessário para o uso atual.
+- `firebase auth:export accounts.json --project scoutsauto-d3068` exporta contas do Auth (hashes de senha, não texto puro), se o Firebase CLI estiver instalado.
+
 ## Desktop
 
 Pré-requisitos: Node.js para interface/empacotamento e Python para ferramentas de validação e geração dos bancos.

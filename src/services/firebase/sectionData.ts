@@ -78,3 +78,17 @@ export const writeMemberSubdoc = async (
     stripUndefined(value) as Record<string, unknown>,
   );
 };
+
+export const MEMBER_SUBCOLLECTIONS = ['bloco', 'progress', 'specialty', 'reconhecimento'] as const;
+
+export const listNamedSubcollection = async (
+  ...path: [string, ...string[]]
+): Promise<Record<string, Record<string, unknown>>> => {
+  const [first, ...rest] = path;
+  const snap = await getDocs(collection(getFirestoreDb(), first, ...rest));
+  const result: Record<string, Record<string, unknown>> = {};
+  snap.forEach(item => {
+    result[item.id] = item.data() as Record<string, unknown>;
+  });
+  return result;
+};

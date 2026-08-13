@@ -136,7 +136,7 @@ export const FAQ: HelpFaq[] = [
   },
   {
     q: 'Como faço backup?',
-    a: 'Em Configurações > Avançado, use Backup completo ou Backup de progressão.',
+    a: 'No desktop, Configurações > Avançado tem backup local. No site ScoutsAuto, o administrador baixa e restaura o JSON do grupo em Acessos (usuários, convites, seções e documentos da tropa). Sem senhas nem chaves de API.',
   },
   {
     q: 'Como volto ao modo legado?',
