@@ -31,6 +31,9 @@ conhecimento/por/2025/*/planilha/itens/
 .env
 .env.local
 .env.*.local
+.firebase/
+firebase-debug.log
+firestore-debug.log
 
 # IDE
 .vscode/launch.json

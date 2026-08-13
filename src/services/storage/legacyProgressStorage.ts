@@ -1,6 +1,8 @@
 import { MemberProgress } from '../../types';
+import { readMemberSubdoc, writeMemberSubdoc } from '../firebase/sectionData';
 import { getAppConfig } from './configStorage';
 import { DATA_EVENTS, dispatchDataEvent } from './events';
+import { isFirestoreBacked } from './dualBackend';
 import { findMemberForLayout } from './memberStorage';
 import { PROGRESSION_FOLDER } from './names';
 import { assertCanWriteSection } from './sectionLockStorage';
@@ -29,6 +31,11 @@ export const getMemberProgress = (): MemberProgress[] => getMemberProgressLegacy
 export const getMemberProgressIndividual = async (
   memberId: string,
 ): Promise<MemberProgress | null> => {
+  if (isFirestoreBacked()) {
+    const member = await findMemberForLayout(memberId);
+    if (!member?.sectionId) return null;
+    return readMemberSubdoc<MemberProgress>(member.sectionId, memberId, 'progress', 'legacy');
+  }
   const cacheKey = progressCacheKey(memberId);
   const cached = parseOrDefault<MemberProgress | null>(cacheKey, null);
   if (cached) return cached;
@@ -54,6 +61,13 @@ export const getMemberProgressIndividual = async (
 export const saveMemberProgressIndividual = async (
   progress: MemberProgress,
 ): Promise<void> => {
+  if (isFirestoreBacked()) {
+    const member = await findMemberForLayout(progress.memberId);
+    assertCanWriteSection(member?.sectionId);
+    if (!member?.sectionId) return;
+    await writeMemberSubdoc(member.sectionId, progress.memberId, 'progress', 'legacy', progress);
+    return;
+  }
   localStorage.setItem(progressCacheKey(progress.memberId), JSON.stringify(progress));
   const config = getAppConfig();
   if (config?.dataFolder && window.fileSystem) {

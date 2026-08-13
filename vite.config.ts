@@ -56,8 +56,8 @@ export default defineConfig(({ mode }) => ({
           if (id.includes('node_modules/react')) {
             return 'vendor-react'
           }
-          if (id.includes('node_modules/minisearch')) {
-            return 'vendor-search'
+          if (id.includes('node_modules/firebase')) {
+            return 'vendor-firebase'
           }
           if (id.includes('/src/data/generated/progressao_2025')) {
             return 'data-progressao-2025'

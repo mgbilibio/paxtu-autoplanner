@@ -1,6 +1,7 @@
 import { CatalogAnnotation, MeetingPlan } from '../../types';
+import { listSectionDocuments, readAccessibleItems, readSectionItems, writeSectionItems } from '../firebase/sectionData';
 import { getAppConfig } from './configStorage';
-import { isFileBacked, readJsonDoc, writeJsonDoc } from './dualBackend';
+import { isFileBacked, isFirestoreBacked, readJsonDoc, writeJsonDoc } from './dualBackend';
 import { DATA_EVENTS, dispatchDataEvent } from './events';
 import { CATALOG_FILENAME, STORAGE_KEY, TRACKER_KEY } from './names';
 import { assertCanWriteSection } from './sectionLockStorage';
@@ -22,6 +23,9 @@ export const getCatalogSync = (): MeetingPlan[] =>
   parseOrDefault<MeetingPlan[]>(STORAGE_KEY, []);
 
 export const getCatalogAsync = async (): Promise<MeetingPlan[]> => {
+  if (isFirestoreBacked()) {
+    return readAccessibleItems<MeetingPlan>('catalog');
+  }
   if (isFileBacked()) {
     try {
       const config = getAppConfig();
@@ -34,19 +38,34 @@ export const getCatalogAsync = async (): Promise<MeetingPlan[]> => {
   return getCatalogSync();
 };
 
+const upsertCatalog = (current: MeetingPlan[], toSave: MeetingPlan): MeetingPlan[] => {
+  const index = current.findIndex(item => item.id === toSave.id);
+  return index >= 0
+    ? current.map((item, i) => (i === index ? toSave : item))
+    : [toSave, ...current];
+};
+
 export const savePlanToCatalog = async (plan: MeetingPlan): Promise<void> => {
   assertCanWriteSection(plan.sectionId);
-  // Remove o campo de UI _uid das atividades antes de persistir (e reatribuido na
-  // normalizacao ao carregar) — mantem o JSON do catalogo/backup limpo.
   const toSave: MeetingPlan = {
     ...plan,
     activities: (plan.activities || []).map(({ _uid, ...rest }) => rest),
   };
+  if (isFirestoreBacked()) {
+    let sectionId = toSave.sectionId;
+    if (!sectionId) {
+      const sections = await listSectionDocuments();
+      sectionId = sections[0]?.id;
+      if (!sectionId) throw new Error('Crie uma seção antes de salvar o roteiro.');
+      toSave.sectionId = sectionId;
+    }
+    const current = await readSectionItems<MeetingPlan>(sectionId, 'catalog');
+    await writeSectionItems(sectionId, 'catalog', upsertCatalog(current, toSave));
+    dispatchDataEvent(DATA_EVENTS.CATALOG_UPDATED);
+    return;
+  }
   const currentCatalog = await getCatalogAsync();
-  const index = currentCatalog.findIndex(item => item.id === toSave.id);
-  const updatedCatalog = index >= 0
-    ? currentCatalog.map((item, i) => (i === index ? toSave : item))
-    : [toSave, ...currentCatalog];
+  const updatedCatalog = upsertCatalog(currentCatalog, toSave);
   if (isFileBacked()) {
     try {
       await writeJsonDoc(CATALOG_FILENAME, STORAGE_KEY, updatedCatalog);
@@ -70,6 +89,16 @@ export const clonePlan = (orig: MeetingPlan): MeetingPlan => ({
 });
 
 export const deleteFromCatalog = async (id: string): Promise<void> => {
+  if (isFirestoreBacked()) {
+    const sections = await listSectionDocuments();
+    await Promise.all(sections.map(async section => {
+      const current = await readSectionItems<MeetingPlan>(section.id, 'catalog');
+      if (!current.some(plan => plan.id === id)) return;
+      await writeSectionItems(section.id, 'catalog', current.filter(plan => plan.id !== id));
+    }));
+    dispatchDataEvent(DATA_EVENTS.CATALOG_UPDATED);
+    return;
+  }
   const current = await getCatalogAsync();
   const updated = current.filter(plan => plan.id !== id);
   await writeJsonDoc(CATALOG_FILENAME, STORAGE_KEY, updated);

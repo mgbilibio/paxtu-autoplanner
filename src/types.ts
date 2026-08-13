@@ -196,6 +196,8 @@ export interface ScoutGroup {
   sections: string[];
 }
 
+export type SectionKind = 'alcateia' | 'tropa' | 'cla' | 'outra';
+
 export interface ScoutSection {
   id: string;
   groupId?: string;
@@ -203,7 +205,9 @@ export interface ScoutSection {
   branch: ScoutBranch;
   progressionSystem?: 'LEGACY_2020' | 'POR_2025';
   migrationDate?: string; 
-  teams?: ScoutTeam[]; 
+  teams?: ScoutTeam[];
+  kind?: SectionKind;
+  groupName?: string;
 }
 
 export interface ScoutTeam {
@@ -215,8 +219,12 @@ export interface UserProfile {
   id: string;
   name: string;
   sectionId: string;
+  sectionIds?: string[];
   role: string;
   avatar?: string;
+  email?: string;
+  isAdmin?: boolean;
+  active?: boolean;
 }
 
 export interface SectionEnrollment {

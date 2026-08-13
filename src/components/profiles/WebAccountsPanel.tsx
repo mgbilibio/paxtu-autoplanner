@@ -1,59 +1,43 @@
 import React, { useEffect, useState } from 'react';
 import { ScoutSection } from '../../types';
 import { getSectionsAsync, DATA_EVENTS } from '../../services/storageService';
-import { getRoleLabel, USER_ROLES } from '../../services/roleService';
+import { getRoleLabel } from '../../services/roleService';
+import { PasswordField } from '../PasswordField';
 import {
-  WebAccount,
-  assignableWebRoles,
-  countAdmins,
-  createWebAccount,
-  exportWebAccounts,
-  importWebAccounts,
-  listWebAccounts,
-  resetWebAccountPassword,
-  setWebAccountDisabled,
-  updateWebAccountProfile,
-} from '../../services/webAuthService';
-import { saveUserAsync } from '../../services/storageService';
+  GroupPerson,
+  WEB_ROLE_OPTIONS,
+  countActiveAdmins,
+  inviteGroupPerson,
+  listGroupPeople,
+  sendPersonPasswordReset,
+  setPersonActive,
+  updatePersonProfile,
+} from '../../services/firebase/groupAuth';
 
 interface Props {
   currentAccountId?: string;
   isAdmin: boolean;
 }
 
-const downloadJson = (filename: string, payload: unknown): void => {
-  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const anchor = document.createElement('a');
-  anchor.href = url;
-  anchor.download = filename;
-  document.body.appendChild(anchor);
-  anchor.click();
-  document.body.removeChild(anchor);
-  URL.revokeObjectURL(url);
-};
-
 export const WebAccountsPanel: React.FC<Props> = ({ currentAccountId, isAdmin }) => {
-  const [accounts, setAccounts] = useState<WebAccount[]>([]);
+  const [people, setPeople] = useState<GroupPerson[]>([]);
   const [sections, setSections] = useState<ScoutSection[]>([]);
   const [feedback, setFeedback] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const [displayName, setDisplayName] = useState('');
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('Chefe de Seção');
   const [sectionId, setSectionId] = useState('');
 
-  const [ownCurrent, setOwnCurrent] = useState('');
-  const [ownNext, setOwnNext] = useState('');
-  const [resetId, setResetId] = useState<string | null>(null);
-  const [resetPassword, setResetPassword] = useState('');
-
   const refresh = async () => {
-    setAccounts(listWebAccounts());
-    const sectionData = await getSectionsAsync();
+    const [sectionData, groupPeople] = await Promise.all([
+      getSectionsAsync(),
+      isAdmin ? listGroupPeople() : Promise.resolve([]),
+    ]);
     setSections(sectionData);
+    setPeople(groupPeople);
     setSectionId(prev => {
       if (sectionData.length === 0) return '';
       if (!prev || !sectionData.find(item => item.id === prev)) return sectionData[0].id;
@@ -62,7 +46,7 @@ export const WebAccountsPanel: React.FC<Props> = ({ currentAccountId, isAdmin })
   };
 
   useEffect(() => {
-    refresh();
+    void refresh();
     const onUpdate = () => { void refresh(); };
     window.addEventListener(DATA_EVENTS.SECTIONS_UPDATED, onUpdate);
     window.addEventListener(DATA_EVENTS.USERS_UPDATED, onUpdate);
@@ -70,7 +54,7 @@ export const WebAccountsPanel: React.FC<Props> = ({ currentAccountId, isAdmin })
       window.removeEventListener(DATA_EVENTS.SECTIONS_UPDATED, onUpdate);
       window.removeEventListener(DATA_EVENTS.USERS_UPDATED, onUpdate);
     };
-  }, []);
+  }, [isAdmin]);
 
   const showOk = (message: string) => {
     setError(null);
@@ -81,201 +65,163 @@ export const WebAccountsPanel: React.FC<Props> = ({ currentAccountId, isAdmin })
     setError(err instanceof Error ? err.message : 'Operação recusada.');
   };
 
-  const handleCreate = async () => {
+  const handleInvite = async () => {
     try {
-      const account = await createWebAccount({
-        username,
-        password,
+      const person = await inviteGroupPerson({
+        email,
         displayName,
         role,
-        sectionId: role === 'ADMINISTRADOR' ? 'ADMIN_GLOBAL' : sectionId,
-      });
-      await saveUserAsync({
-        id: account.id,
-        name: account.displayName,
-        role: account.role,
-        sectionId: account.sectionId,
+        sectionIds: role === 'ADMINISTRADOR' ? [] : [sectionId],
+        password: password.trim() || undefined,
       });
       setDisplayName('');
-      setUsername('');
+      setEmail('');
       setPassword('');
-      showOk(`Conta ${account.username} criada.`);
+      showOk(
+        person.uid
+          ? `${person.displayName} cadastrado(a) com e-mail e senha. Já pode entrar.`
+          : `${person.displayName} cadastrado(a). Quem tem conta Google entra com esse e-mail; senão, e-mail e senha no primeiro acesso.`,
+      );
       await refresh();
     } catch (err) {
       showErr(err);
     }
   };
-
-  const handleOwnPassword = async () => {
-    if (!currentAccountId) return;
-    try {
-      await resetWebAccountPassword(currentAccountId, ownNext);
-      setOwnCurrent('');
-      setOwnNext('');
-      showOk('Senha atualizada neste navegador.');
-    } catch (err) {
-      showErr(err);
-    }
-  };
-
-  const handleReset = async () => {
-    if (!resetId) return;
-    try {
-      await resetWebAccountPassword(resetId, resetPassword);
-      setResetId(null);
-      setResetPassword('');
-      showOk('Senha redefinida.');
-    } catch (err) {
-      showErr(err);
-    }
-  };
-
-  const handleExport = () => {
-    downloadJson(`paxtu_contas_web_${new Date().toISOString().slice(0, 10)}.json`, exportWebAccounts());
-    showOk('Lista exportada (hashes, sem senhas em texto).');
-  };
-
-  const handleImport = async (file: File, mode: 'replace' | 'merge') => {
-    try {
-      const parsed = JSON.parse(await file.text());
-      const count = importWebAccounts(parsed, mode);
-      showOk(mode === 'replace' ? `Diretório substituído: ${count} conta(s).` : `Importadas ${count} conta(s) novas.`);
-      await refresh();
-    } catch (err) {
-      showErr(err);
-    }
-  };
-
-  const isGoogleAccount = accounts.find(account => account.id === currentAccountId)?.authProvider === 'google';
 
   return (
     <div className="space-y-4">
-      <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-[11px] text-amber-900 leading-relaxed">
-        Contas web ficam neste navegador (localStorage). Exporte o JSON (somente hashes) para levar a outro browser.
-        Colaborar no repositório continua no GitHub — aqui só entram escotistas usuários do planejador.
+      <div className="bg-sky-50 border border-sky-200 rounded-lg p-3 text-[11px] text-sky-950 leading-relaxed">
+        Cadastre o <strong>e-mail pessoal</strong> de cada escotista — Gmail, Google Workspace, @escoteiros ou outro domínio.
+        Não existe e-mail único do grupo. Quem tem conta Google entra com Google; quem não tem usa e-mail e senha
+        (informe uma senha inicial abaixo, ou deixe em branco para a pessoa definir no primeiro acesso).
       </div>
-
-      {!isGoogleAccount && (
-      <div className="border rounded-lg p-4 bg-slate-50">
-        <h4 className="font-bold text-sm text-slate-800 mb-2">Minha senha</h4>
-        <div className="flex flex-col md:flex-row gap-2">
-          <input type="password" placeholder="Nova senha" className="flex-1 p-2 border rounded" value={ownNext} onChange={e => setOwnNext(e.target.value)} autoComplete="new-password" />
-          <input type="password" placeholder="Atual (não verificada além do login)" className="hidden" value={ownCurrent} onChange={e => setOwnCurrent(e.target.value)} />
-          <button type="button" onClick={handleOwnPassword} className="px-3 py-2 bg-slate-800 text-white rounded text-xs font-bold">Atualizar senha</button>
-        </div>
-      </div>
-      )}
 
       {isAdmin && (
         <>
           <div className="border rounded-lg p-4">
-            <h4 className="font-bold text-sm text-slate-800 mb-2">Novo escotista usuário</h4>
+            <h4 className="font-bold text-sm text-slate-800 mb-2">Cadastrar escotista</h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-              <input placeholder="Nome de exibição" className="p-2 border rounded" value={displayName} onChange={e => setDisplayName(e.target.value)} />
-              <input placeholder="Usuário" className="p-2 border rounded" value={username} onChange={e => setUsername(e.target.value)} autoComplete="off" />
-              <input type="password" placeholder="Senha inicial" className="p-2 border rounded" value={password} onChange={e => setPassword(e.target.value)} autoComplete="new-password" />
+              <input
+                placeholder="Nome de exibição"
+                className="p-2 border rounded"
+                value={displayName}
+                onChange={e => setDisplayName(e.target.value)}
+              />
+              <input
+                type="email"
+                placeholder="E-mail pessoal"
+                className="p-2 border rounded"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                autoComplete="off"
+              />
+              <PasswordField
+                placeholder="Senha inicial (opcional)"
+                className="p-2 border rounded w-full"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                autoComplete="new-password"
+              />
               <select className="p-2 border rounded bg-white" value={role} onChange={e => setRole(e.target.value)}>
-                {assignableWebRoles().map(item => (
-                  <option key={item} value={item}>{item}</option>
+                {WEB_ROLE_OPTIONS.map(item => (
+                  <option key={item.value} value={item.value}>{item.label}</option>
                 ))}
               </select>
-              <select className="p-2 border rounded bg-white" value={sectionId} onChange={e => setSectionId(e.target.value)}>
-                {sections.length === 0 && <option value="">Sem seção ainda</option>}
+              <select
+                className="p-2 border rounded bg-white"
+                value={sectionId}
+                onChange={e => setSectionId(e.target.value)}
+                disabled={role === 'ADMINISTRADOR'}
+              >
+                {role === 'ADMINISTRADOR' && <option value="">Todas as seções</option>}
+                {sections.length === 0 && role !== 'ADMINISTRADOR' && <option value="">Crie uma seção primeiro</option>}
                 {sections.map(section => (
                   <option key={section.id} value={section.id}>{section.name}</option>
                 ))}
               </select>
-              <button type="button" onClick={handleCreate} className="p-2 bg-blue-600 text-white rounded font-bold">Criar conta</button>
+              <button type="button" onClick={() => { void handleInvite(); }} className="p-2 bg-blue-600 text-white rounded font-bold">
+                Cadastrar
+              </button>
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-2">
-            <button type="button" onClick={handleExport} className="px-3 py-2 bg-slate-800 text-white rounded text-xs font-bold">Exportar contas (JSON)</button>
-            <label className="px-3 py-2 bg-indigo-700 text-white rounded text-xs font-bold cursor-pointer">
-              Importar (substituir)
-              <input type="file" accept="application/json" className="hidden" onChange={e => { const file = e.target.files?.[0]; if (file) void handleImport(file, 'replace'); e.target.value = ''; }} />
-            </label>
-            <label className="px-3 py-2 bg-indigo-500 text-white rounded text-xs font-bold cursor-pointer">
-              Importar (mesclar)
-              <input type="file" accept="application/json" className="hidden" onChange={e => { const file = e.target.files?.[0]; if (file) void handleImport(file, 'merge'); e.target.value = ''; }} />
-            </label>
-          </div>
-
           <div className="space-y-2">
-            {accounts.map(account => (
-              <div key={account.id} className="border rounded-lg p-3 bg-white flex flex-col gap-2">
+            {people.map(person => (
+              <div key={person.email} className="border rounded-lg p-3 bg-white flex flex-col gap-2">
                 <div className="flex justify-between gap-2 flex-wrap">
                   <div>
-                    <p className="font-bold text-slate-800">{account.displayName}</p>
+                    <p className="font-bold text-slate-800">{person.displayName}</p>
                     <p className="text-xs text-slate-500">
-                      @{account.username} · {getRoleLabel(account.role)}
-                      {account.authProvider === 'google' ? ' · Google' : ''}
-                      {account.disabled ? ' · desativada' : ''}
-                      {account.id === currentAccountId ? ' · você' : ''}
+                      {person.email} · {getRoleLabel(person.role)}
+                      {person.pending ? ' · aguardando primeiro acesso' : ''}
+                      {person.active ? '' : ' · desativado'}
+                      {person.uid && person.uid === currentAccountId ? ' · você' : ''}
                     </p>
                   </div>
-                  <div className="flex gap-2">
-                    {account.authProvider !== 'google' && (
+                  <div className="flex gap-2 flex-wrap">
                     <button
                       type="button"
                       className="text-xs font-bold text-indigo-700"
-                      onClick={() => setResetId(account.id)}
+                      onClick={() => {
+                        sendPersonPasswordReset(person.email)
+                          .then(() => showOk(`E-mail de redefinição enviado para ${person.email}.`))
+                          .catch(showErr);
+                      }}
                     >
-                      Redefinir senha
+                      Enviar redefinição de senha
                     </button>
-                    )}
                     <button
                       type="button"
                       className="text-xs font-bold text-amber-800"
                       onClick={() => {
-                        try {
-                          setWebAccountDisabled(account.id, !account.disabled);
-                          void refresh();
-                        } catch (err) {
-                          showErr(err);
-                        }
+                        setPersonActive(person.email, !person.active)
+                          .then(() => refresh())
+                          .catch(showErr);
                       }}
                     >
-                      {account.disabled ? 'Reativar' : 'Desativar'}
+                      {person.active ? 'Desativar' : 'Reativar'}
                     </button>
                   </div>
                 </div>
-                {account.role !== 'ADMINISTRADOR' && (
+                <div className="flex flex-wrap gap-2">
                   <select
                     className="text-xs p-1 border rounded bg-white max-w-xs"
-                    value={account.role}
+                    value={getRoleLabel(person.role)}
                     onChange={e => {
-                      try {
-                        updateWebAccountProfile(account.id, { role: e.target.value });
-                        void saveUserAsync({
-                          id: account.id,
-                          name: account.displayName,
-                          role: e.target.value,
-                          sectionId: account.sectionId,
-                        });
-                        void refresh();
-                      } catch (err) {
-                        showErr(err);
-                      }
+                      updatePersonProfile(person.email, { role: e.target.value })
+                        .then(() => refresh())
+                        .catch(showErr);
                     }}
                   >
-                    {USER_ROLES.map(item => (
-                      <option key={item} value={item}>{item}</option>
+                    {WEB_ROLE_OPTIONS.map(item => (
+                      <option key={item.value} value={item.value}>{item.label}</option>
                     ))}
                   </select>
-                )}
-                {resetId === account.id && (
-                  <div className="flex gap-2">
-                    <input type="password" className="flex-1 p-2 border rounded text-sm" placeholder="Nova senha" value={resetPassword} onChange={e => setResetPassword(e.target.value)} autoComplete="new-password" />
-                    <button type="button" onClick={handleReset} className="px-3 py-1 bg-indigo-700 text-white rounded text-xs font-bold">Salvar</button>
-                    <button type="button" onClick={() => { setResetId(null); setResetPassword(''); }} className="text-xs">Cancelar</button>
-                  </div>
-                )}
+                  {getRoleLabel(person.role) !== 'ADMINISTRADOR' && (
+                    <select
+                      className="text-xs p-1 border rounded bg-white max-w-xs"
+                      value={person.sectionIds[0] || ''}
+                      onChange={e => {
+                        updatePersonProfile(person.email, { sectionIds: e.target.value ? [e.target.value] : [] })
+                          .then(() => refresh())
+                          .catch(showErr);
+                      }}
+                    >
+                      {sections.map(section => (
+                        <option key={section.id} value={section.id}>{section.name}</option>
+                      ))}
+                    </select>
+                  )}
+                </div>
               </div>
             ))}
-            <p className="text-[11px] text-slate-500">{countAdmins(accounts)} administrador(es) ativo(s).</p>
+            <p className="text-[11px] text-slate-500">{countActiveAdmins(people)} administrador(es) ativo(s).</p>
           </div>
         </>
+      )}
+
+      {!isAdmin && (
+        <p className="text-xs text-slate-600">Só o administrador cadastra e desativa acessos.</p>
       )}
 
       {feedback && <p className="text-xs text-green-700 font-bold">{feedback}</p>}

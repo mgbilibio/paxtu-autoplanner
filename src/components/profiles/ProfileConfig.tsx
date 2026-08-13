@@ -79,7 +79,7 @@ export const ProfileConfig: React.FC<Props> = ({ currentAccountId, isAdmin }) =>
               <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${steps.usuario ? 'bg-green-500 text-white' : steps.secao ? 'bg-indigo-200 text-indigo-700' : 'bg-gray-200 text-gray-400'}`}>
                 {steps.usuario ? '✓' : '3'}
               </span>
-              <span>Cadastre pelo menos um <strong>Usuário</strong> (chefia) — depois você cadastra os jovens</span>
+              <span>Cadastre pelo menos um <strong>Usuário</strong> da chefia {isWebApp() ? 'pelo e-mail pessoal' : '(depois você cadastra os jovens)'}</span>
             </li>
           </ol>
           <p className="text-[11px] text-indigo-600 mt-3 italic">
@@ -93,17 +93,17 @@ export const ProfileConfig: React.FC<Props> = ({ currentAccountId, isAdmin }) =>
           <p className="text-sm text-green-900 font-bold">✅ Estrutura pronta!</p>
           <p className="text-xs text-green-700 mt-1">
             {isWebApp()
-              ? 'Estrutura pronta. Use “Entrar no aplicativo” para ir ao planejador.'
+              ? 'Estrutura pronta. Use “Entrar no aplicativo” para ir ao planejador. A tropa fica no Firestore do ScoutsAuto.'
               : 'Volte ao Login e entre com o usuário criado para começar a planejar.'}
           </p>
         </div>
       )}
 
       <StructureManager />
-      <UserManager />
+      {!isWebApp() && <UserManager />}
       {isWebApp() && (
         <div className="bg-white rounded-xl border p-4">
-          <h3 className="font-bold text-slate-800 mb-2">Contas deste navegador</h3>
+          <h3 className="font-bold text-slate-800 mb-2">Acessos do grupo</h3>
           <WebAccountsPanel currentAccountId={currentAccountId} isAdmin={!!isAdmin} />
         </div>
       )}

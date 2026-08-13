@@ -1,0 +1,135 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null
+        && request.auth.token.email is string
+        && request.auth.token.email.size() > 0;
+    }
+
+    function authEmail() {
+      return request.auth.token.email.lower();
+    }
+
+    function userPath() {
+      return /databases/$(database)/documents/users/$(request.auth.uid);
+    }
+
+    function userDoc() {
+      return get(userPath()).data;
+    }
+
+    function isActiveUser() {
+      return signedIn()
+        && exists(userPath())
+        && userDoc().active == true;
+    }
+
+    function isAdmin() {
+      return isActiveUser() && userDoc().isAdmin == true;
+    }
+
+    function isBoard() {
+      return isActiveUser() && userDoc().role == 'Diretoria';
+    }
+
+    function isReadOnly() {
+      return isActiveUser()
+        && (userDoc().role == 'Diretoria' || userDoc().role == 'Leitura/Auditoria');
+    }
+
+    function sectionIdsOf(data) {
+      return data.keys().hasAny(['sectionIds']) && data.sectionIds is list
+        ? data.sectionIds
+        : (data.keys().hasAny(['sectionId']) ? [data.sectionId] : []);
+    }
+
+    function hasSection(sectionId) {
+      return isAdmin()
+        || isBoard()
+        || (isActiveUser() && sectionId in sectionIdsOf(userDoc()));
+    }
+
+    function canWriteSection(sectionId) {
+      return hasSection(sectionId) && !isReadOnly();
+    }
+
+    function bootstrapRef() {
+      return /databases/$(database)/documents/meta/bootstrap;
+    }
+
+    function inviteRef() {
+      return /databases/$(database)/documents/invites/$(authEmail());
+    }
+
+    function isBootstrapClaim() {
+      return signedIn()
+        && (
+          !exists(bootstrapRef())
+          || getAfter(bootstrapRef()).data.uid == request.auth.uid
+        );
+    }
+
+    function hasActiveInvite() {
+      return signedIn()
+        && exists(inviteRef())
+        && get(inviteRef()).data.active == true
+        && get(inviteRef()).data.email == authEmail();
+    }
+
+    match /meta/{docId} {
+      allow read: if signedIn();
+      allow create: if docId == 'bootstrap'
+        && isBootstrapClaim()
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.email == authEmail();
+      allow update, delete: if isAdmin();
+    }
+
+    match /invites/{emailKey} {
+      allow read: if isAdmin() || (signedIn() && emailKey == authEmail());
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /users/{uid} {
+      allow read: if isAdmin()
+        || isBoard()
+        || (signedIn() && request.auth.uid == uid);
+
+      allow create: if signedIn()
+        && request.auth.uid == uid
+        && request.resource.data.email == authEmail()
+        && request.resource.data.active == true
+        && (
+          hasActiveInvite()
+          || (
+            isBootstrapClaim()
+            && request.resource.data.isAdmin == true
+            && request.resource.data.role == 'ADMINISTRADOR'
+          )
+        );
+
+      allow update, delete: if isAdmin();
+    }
+
+    match /groups/{groupId} {
+      allow read: if isActiveUser();
+      allow write: if isAdmin();
+    }
+
+    match /sections/{sectionId} {
+      allow read: if hasSection(sectionId);
+      allow create, update, delete: if isAdmin();
+
+      match /docs/{docId} {
+        allow read: if hasSection(sectionId);
+        allow write: if canWriteSection(sectionId);
+      }
+
+      match /members/{memberId}/{document=**} {
+        allow read: if hasSection(sectionId);
+        allow write: if canWriteSection(sectionId);
+      }
+    }
+  }
+}
