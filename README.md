@@ -25,7 +25,7 @@ As fontes normativas ficam em `docs/biblioteca/` e a base estruturada, auditáve
 | O quê | Onde | Para quem |
 | --- | --- | --- |
 | Colaborar no **código** | GitHub (fork + pull request para `main`) | Quem mexe no programa |
-| Usar o **planejador** na web | Login no ScoutsAuto (Google, X se habilitado, ou e-mail e senha do endereço cadastrado) | Escotista usuário |
+| Usar o **planejador** na web | Login no ScoutsAuto (Google, X se habilitado, ou e-mail e senha; cadastro próprio, o admin libera) | Escotista usuário |
 
 Não existe tipo “escotista colaborador” dentro do app. Contribuição de código é só pelo GitHub.
 
@@ -39,7 +39,7 @@ Publicação: Actions em push para `main` (`npm run build:web`, sem Electron e *
 
 O site ScoutsAuto usa **Firebase Auth + Cloud Firestore** (plano Spark, gratuito). O projeto chama-se `scoutsauto` e fica na conta Google pessoal de quem mantém o repositório — o grupo **não** tem e-mail compartilhado. Cada escotista entra com o **próprio** endereço (Gmail, Google Workspace, `@escoteiros` ou outro domínio). Não há lista de domínios permitidos.
 
-Não existe cadastro público. O administrador cadastra cada pessoa por e-mail, nome, seção e papel. Sem as variáveis `VITE_FIREBASE_*`, a tela de login aparece, mas o acesso falha fechado (não há assistente de “primeiro admin” só neste navegador).
+Não existe cadastro aberto na tropa. Qualquer pessoa com o link do site pode entrar (Google ou e-mail e senha) e fica **pendente** até o administrador liberar seção e papel. Convites prévios são opcionais. Sem as variáveis `VITE_FIREBASE_*`, a tela de login aparece, mas o acesso falha fechado (não há assistente de “primeiro admin” só neste navegador).
 
 1. No [Firebase Console](https://console.firebase.google.com/) crie o projeto **scoutsauto** (Spark).
 2. Authentication → ative **Google** e **E-mail/senha**. Opcional: Twitter/X, e então defina `VITE_FIREBASE_AUTH_X=true`.
@@ -61,11 +61,11 @@ Nunca commitar JSON de service account nem chaves privadas. O workflow `deploy-p
 
 ### Login no ScoutsAuto
 
-Tela única: **Continuar com Google**, **Continuar com X** (se habilitado) e **e-mail + senha** com botão de mostrar/ocultar senha.
+Tela única: **Continuar com Google**, **Continuar com X** (se habilitado) e **e-mail + senha** com botão de mostrar/ocultar senha. Quem ainda não tem conta usa **Criar conta** (nome de exibição, e-mail e senha).
 
-- Google funciona para Gmail e Google Workspace. Quem tem `@escoteiros` (ou outro) **sem** conta Google usa e-mail e senha — o administrador cadastra esse endereço (senha inicial opcional).
+- Google funciona para Gmail e Google Workspace. Quem tem `@escoteiros` (ou outro) **sem** conta Google usa e-mail e senha.
 - Se o Firestore ainda não tem administrador, o **primeiro** login Google ou e-mail bem-sucedido vira admin do grupo (uma vez).
-- Depois disso, e-mail desconhecido: “Peça ao administrador do grupo para te cadastrar.”
+- Depois disso, conta nova fica pendente: “Cadastro enviado. Aguarde o administrador liberar seu acesso.” O administrador libera em Acessos (seção tropa/alcateia + papel) ou recusa. Convite prévio é extra opcional.
 - Quem entra com Google para a API Gemini ainda pode usar `VITE_GOOGLE_CLIENT_ID` (OAuth do AI Studio); isso é separado do login Firebase.
 
 ### IA na web

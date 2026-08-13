@@ -19,6 +19,12 @@ export const BACKEND_NOT_CONFIGURED_MESSAGE =
 export const NOT_INVITED_MESSAGE =
   'Peça ao administrador do grupo para te cadastrar.';
 
+export const PENDING_ACCESS_MESSAGE =
+  'Cadastro enviado. Aguarde o administrador liberar seu acesso.';
+
+export const REJECTED_ACCESS_MESSAGE =
+  'Cadastro recusado pelo administrador.';
+
 export const getFirebaseWebConfig = (): FirebaseWebConfig | null => {
   const apiKey = env('VITE_FIREBASE_API_KEY');
   const authDomain = env('VITE_FIREBASE_AUTH_DOMAIN');

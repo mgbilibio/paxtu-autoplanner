@@ -5,7 +5,7 @@ import {
   BACKEND_NOT_CONFIGURED_MESSAGE,
   isFirebaseConfigured,
   isXSignInEnabled,
-  NOT_INVITED_MESSAGE,
+  registerWithEmailPassword,
   signInWithEmailPassword,
   signInWithGoogle,
   signInWithX,
@@ -16,12 +16,15 @@ interface Props {
 }
 
 export const WebAuthGate: React.FC<Props> = ({ onAuthenticated }) => {
+  const [mode, setMode] = useState<'entrar' | 'criar'>('entrar');
+  const [displayName, setDisplayName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const configured = isFirebaseConfigured();
   const xOn = isXSignInEnabled();
+  const registering = mode === 'criar';
 
   const run = async (action: () => Promise<UserProfile>) => {
     setError(null);
@@ -34,7 +37,7 @@ export const WebAuthGate: React.FC<Props> = ({ onAuthenticated }) => {
       const profile = await action();
       onAuthenticated(profile);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Falha no login.');
+      setError(err instanceof Error ? err.message : (registering ? 'Falha no cadastro.' : 'Falha no login.'));
     } finally {
       setBusy(false);
     }
@@ -42,6 +45,10 @@ export const WebAuthGate: React.FC<Props> = ({ onAuthenticated }) => {
 
   const submitEmail = async (event: React.FormEvent) => {
     event.preventDefault();
+    if (registering) {
+      await run(() => registerWithEmailPassword(email, password, displayName));
+      return;
+    }
     await run(() => signInWithEmailPassword(email, password));
   };
 
@@ -52,7 +59,9 @@ export const WebAuthGate: React.FC<Props> = ({ onAuthenticated }) => {
           <div className="text-5xl mb-3">⚜️</div>
           <h1 className="text-2xl font-bold">ScoutsAuto</h1>
           <p className="text-slate-400 text-sm mt-2">
-            Entre com o <strong className="text-slate-200">seu e-mail</strong> para usar o planejador do grupo.
+            {registering
+              ? 'Crie sua conta. O administrador libera o acesso à tropa ou alcateia.'
+              : 'Entre com o seu e-mail para usar o planejador do grupo.'}
           </p>
         </div>
 
@@ -83,9 +92,27 @@ export const WebAuthGate: React.FC<Props> = ({ onAuthenticated }) => {
           </button>
         )}
 
-        <p className="text-center text-[11px] uppercase tracking-wide text-slate-500 my-4">ou e-mail e senha</p>
+        <p className="text-center text-[11px] uppercase tracking-wide text-slate-500 my-4">
+          ou e-mail e senha
+        </p>
 
         <form onSubmit={submitEmail}>
+          {registering && (
+            <>
+              <label htmlFor="web-login-name" className="block text-xs font-bold uppercase text-slate-400 mb-1">
+                Nome de exibição
+              </label>
+              <input
+                id="web-login-name"
+                type="text"
+                className="w-full mb-3 p-3 rounded-lg bg-slate-900 border border-slate-600"
+                value={displayName}
+                onChange={e => setDisplayName(e.target.value)}
+                autoComplete="name"
+                required
+              />
+            </>
+          )}
           <label htmlFor="web-login-email" className="block text-xs font-bold uppercase text-slate-400 mb-1">E-mail</label>
           <input
             id="web-login-email"
@@ -103,7 +130,8 @@ export const WebAuthGate: React.FC<Props> = ({ onAuthenticated }) => {
             className="w-full mb-4 p-3 rounded-lg bg-slate-900 border border-slate-600"
             value={password}
             onChange={e => setPassword(e.target.value)}
-            autoComplete="current-password"
+            autoComplete={registering ? 'new-password' : 'current-password'}
+            minLength={registering ? 6 : undefined}
             required
           />
           {error && <p role="alert" className="text-sm text-red-300 mb-3">{error}</p>}
@@ -112,14 +140,27 @@ export const WebAuthGate: React.FC<Props> = ({ onAuthenticated }) => {
             disabled={busy}
             className="w-full py-3 bg-green-600 hover:bg-green-700 disabled:opacity-50 rounded-lg font-bold"
           >
-            {busy ? 'Entrando…' : 'Entrar'}
+            {busy
+              ? (registering ? 'Criando conta…' : 'Entrando…')
+              : (registering ? 'Criar conta' : 'Entrar')}
           </button>
         </form>
 
+        <button
+          type="button"
+          className="w-full mt-3 text-sm text-sky-300 hover:text-sky-200"
+          onClick={() => {
+            setError(null);
+            setMode(registering ? 'entrar' : 'criar');
+          }}
+        >
+          {registering ? 'Já tenho conta? Entrar' : 'Primeiro acesso? Criar conta'}
+        </button>
+
         <p className="text-[11px] text-slate-500 mt-4 leading-relaxed">
-          Não há cadastro público. Se você ainda não entra, {NOT_INVITED_MESSAGE.toLowerCase()}
-          {' '}Use o e-mail pessoal (Gmail, Google Workspace, @escoteiros ou outro).
-          Quem tem conta Google pode continuar com Google; quem não tem usa e-mail e senha.
+          Qualquer pessoa com o link pode entrar ou criar conta (Google ou e-mail e senha).
+          Até o administrador liberar, você não vê a tropa nem a alcateia.
+          Use o e-mail pessoal (Gmail, Google Workspace, @escoteiros ou outro).
         </p>
       </div>
     </div>

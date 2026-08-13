@@ -7,6 +7,7 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
+  updateProfile,
   type User,
 } from 'firebase/auth';
 import {
@@ -14,6 +15,7 @@ import {
   doc,
   getDoc,
   getDocs,
+  onSnapshot,
   runTransaction,
   serverTimestamp,
   setDoc,
@@ -29,10 +31,19 @@ import {
   isFirebaseConfigured,
   isXSignInEnabled,
   NOT_INVITED_MESSAGE,
+  PENDING_ACCESS_MESSAGE,
+  REJECTED_ACCESS_MESSAGE,
 } from './config';
 import { setFirebaseSessionUid } from './session';
 
-export { BACKEND_NOT_CONFIGURED_MESSAGE, isFirebaseConfigured, isXSignInEnabled, NOT_INVITED_MESSAGE };
+export {
+  BACKEND_NOT_CONFIGURED_MESSAGE,
+  isFirebaseConfigured,
+  isXSignInEnabled,
+  NOT_INVITED_MESSAGE,
+  PENDING_ACCESS_MESSAGE,
+  REJECTED_ACCESS_MESSAGE,
+};
 
 export const WEB_ROLE_OPTIONS: { value: UserRole; label: string }[] = [
   { value: 'Chefe de Seção', label: 'Chefe' },
@@ -51,6 +62,9 @@ export interface GroupPerson {
   active: boolean;
   uid?: string;
   pending: boolean;
+  awaitingApproval: boolean;
+  rejected: boolean;
+  requestedAt?: Date | null;
 }
 
 const emailKey = (raw: string): string =>
@@ -75,37 +89,61 @@ const authEmailOf = (user: User): string => {
 
 const roleIsAdmin = (role: string): boolean => getRoleLabel(role) === 'ADMINISTRADOR';
 
-const personToProfile = (person: GroupPerson, uid: string): UserProfile => ({
-  id: uid,
-  name: person.displayName,
-  role: getRoleLabel(person.role),
-  sectionId: person.isAdmin || roleIsAdmin(person.role)
-    ? 'ADMIN_GLOBAL'
-    : (person.sectionIds[0] || ''),
-  sectionIds: person.sectionIds,
-  email: person.email,
-  isAdmin: person.isAdmin || roleIsAdmin(person.role),
-  active: person.active,
-});
+const timestampToDate = (value: unknown): Date | null => {
+  if (value instanceof Date && !Number.isNaN(value.getTime())) return value;
+  if (value && typeof value === 'object' && 'toDate' in value && typeof (value as { toDate: unknown }).toDate === 'function') {
+    const date = (value as { toDate: () => Date }).toDate();
+    return date instanceof Date && !Number.isNaN(date.getTime()) ? date : null;
+  }
+  return null;
+};
+
+const personToProfile = (person: GroupPerson, uid: string): UserProfile => {
+  const awaiting = person.awaitingApproval === true;
+  const rejected = person.rejected === true;
+  const active = person.active === true && !awaiting && !rejected;
+  return {
+    id: uid,
+    name: person.displayName,
+    role: active ? getRoleLabel(person.role) : '',
+    sectionId: active && (person.isAdmin || roleIsAdmin(person.role))
+      ? 'ADMIN_GLOBAL'
+      : (active ? (person.sectionIds[0] || '') : ''),
+    sectionIds: active ? person.sectionIds : [],
+    email: person.email,
+    isAdmin: active && (person.isAdmin || roleIsAdmin(person.role)),
+    active,
+    pendingApproval: awaiting,
+    rejected,
+  };
+};
 
 export const groupPersonToProfile = (person: GroupPerson): UserProfile =>
   personToProfile(person, person.uid || person.email);
+
+export const isAwaitingAccess = (profile: UserProfile | null | undefined): boolean =>
+  !!profile && (profile.pendingApproval === true || profile.rejected === true);
 
 const inviteFromData = (email: string, data: Record<string, unknown>): GroupPerson => {
   const sectionIds = Array.isArray(data.sectionIds)
     ? (data.sectionIds as unknown[]).filter((id): id is string => typeof id === 'string')
     : (typeof data.sectionId === 'string' && data.sectionId ? [data.sectionId] : []);
   const role = typeof data.role === 'string' ? data.role : 'Chefe de Seção';
-  const isAdmin = data.isAdmin === true || roleIsAdmin(role);
+  const awaitingApproval = data.pendingApproval === true;
+  const rejected = data.rejected === true;
+  const isAdmin = !awaitingApproval && !rejected && (data.isAdmin === true || roleIsAdmin(role));
   return {
     email,
     displayName: typeof data.displayName === 'string' ? data.displayName : email,
     role: getRoleLabel(role),
     sectionIds: isAdmin ? [] : sectionIds,
     isAdmin,
-    active: data.active !== false,
+    active: !awaitingApproval && !rejected && data.active !== false,
     uid: typeof data.uid === 'string' ? data.uid : undefined,
     pending: typeof data.uid !== 'string',
+    awaitingApproval,
+    rejected,
+    requestedAt: timestampToDate(data.requestedAt),
   };
 };
 
@@ -113,6 +151,15 @@ const userFromData = (uid: string, data: Record<string, unknown>): GroupPerson =
   const email = typeof data.email === 'string' ? data.email : '';
   const person = inviteFromData(email, data);
   return { ...person, uid, pending: false };
+};
+
+const applySession = (profile: UserProfile, uid: string): UserProfile => {
+  if (profile.active && !profile.pendingApproval && !profile.rejected) {
+    setFirebaseSessionUid(uid);
+  } else {
+    setFirebaseSessionUid(null);
+  }
+  return profile;
 };
 
 const failClosed = async (authUser: User, message: string): Promise<never> => {
@@ -158,6 +205,7 @@ const claimBootstrap = async (user: User, email: string): Promise<UserProfile> =
       sectionIds: [],
       isAdmin: true,
       active: true,
+      pendingApproval: false,
       createdAt: serverTimestamp(),
     });
   });
@@ -171,6 +219,8 @@ const claimBootstrap = async (user: User, email: string): Promise<UserProfile> =
     active: true,
     uid: user.uid,
     pending: false,
+    awaitingApproval: false,
+    rejected: false,
   }, user.uid);
 };
 
@@ -189,13 +239,54 @@ const claimInvite = async (user: User, email: string, invite: GroupPerson): Prom
     sectionIds: invite.isAdmin ? [] : invite.sectionIds,
     isAdmin: invite.isAdmin,
     active: true,
+    pendingApproval: false,
+    rejected: false,
     createdAt: serverTimestamp(),
   };
   await setDoc(userRef, payload);
   await updateDoc(inviteRef, { uid: user.uid, displayName }).catch(async () => {
     await setDoc(inviteRef, { ...invite, uid: user.uid, displayName, email }, { merge: true });
   });
-  return personToProfile({ ...invite, displayName, uid: user.uid, pending: false }, user.uid);
+  return personToProfile({ ...invite, displayName, uid: user.uid, pending: false, awaitingApproval: false, rejected: false }, user.uid);
+};
+
+const createPendingMembership = async (user: User, email: string): Promise<UserProfile> => {
+  const db = getFirestoreDb();
+  const userRef = doc(db, 'users', user.uid);
+  const displayName = (user.displayName || email.split('@')[0]).trim();
+  await runTransaction(db, async tx => {
+    const existing = await tx.get(userRef);
+    if (existing.exists()) return;
+    tx.set(userRef, {
+      email,
+      displayName,
+      role: '',
+      sectionIds: [],
+      isAdmin: false,
+      active: false,
+      pendingApproval: true,
+      rejected: false,
+      requestedAt: serverTimestamp(),
+      createdAt: serverTimestamp(),
+    });
+  });
+  const snap = await getDoc(userRef);
+  if (snap.exists()) {
+    return personToProfile(userFromData(user.uid, snap.data() as Record<string, unknown>), user.uid);
+  }
+  return personToProfile({
+    email,
+    displayName,
+    role: '',
+    sectionIds: [],
+    isAdmin: false,
+    active: false,
+    uid: user.uid,
+    pending: false,
+    awaitingApproval: true,
+    rejected: false,
+    requestedAt: new Date(),
+  }, user.uid);
 };
 
 export const resolveMembership = async (user: User): Promise<UserProfile> => {
@@ -206,38 +297,50 @@ export const resolveMembership = async (user: User): Promise<UserProfile> => {
   const userSnap = await getDoc(doc(db, 'users', user.uid));
   if (userSnap.exists()) {
     const person = userFromData(user.uid, userSnap.data() as Record<string, unknown>);
-    if (!person.active) {
-      return failClosed(user, 'Esta conta está desativada. Peça a um administrador.');
+    if (person.active) {
+      return applySession(personToProfile(person, user.uid), user.uid);
     }
-    setFirebaseSessionUid(user.uid);
-    return personToProfile(person, user.uid);
+    if (person.awaitingApproval || person.rejected) {
+      return applySession(personToProfile(person, user.uid), user.uid);
+    }
+    return failClosed(user, 'Esta conta está desativada. Peça a um administrador.');
   }
 
   const inviteSnap = await getDoc(doc(db, 'invites', email));
   if (inviteSnap.exists()) {
     const invite = inviteFromData(email, inviteSnap.data() as Record<string, unknown>);
     const profile = await claimInvite(user, email, invite);
-    setFirebaseSessionUid(user.uid);
-    return profile;
+    return applySession(profile, user.uid);
   }
 
   const bootstrapSnap = await getDoc(doc(db, 'meta', 'bootstrap'));
   if (!bootstrapSnap.exists()) {
-    const profile = await claimBootstrap(user, email);
-    setFirebaseSessionUid(user.uid);
-    return profile;
+    try {
+      const profile = await claimBootstrap(user, email);
+      return applySession(profile, user.uid);
+    } catch (err) {
+      if (!(err instanceof Error && err.message === NOT_INVITED_MESSAGE)) {
+        throw err;
+      }
+    }
   }
 
-  return failClosed(user, NOT_INVITED_MESSAGE);
+  const profile = await createPendingMembership(user, email);
+  return applySession(profile, user.uid);
 };
 
 const translateAuthError = (err: unknown, fallback: string): Error => {
   if (err instanceof Error && (
     err.message === NOT_INVITED_MESSAGE
     || err.message === BACKEND_NOT_CONFIGURED_MESSAGE
+    || err.message === PENDING_ACCESS_MESSAGE
+    || err.message === REJECTED_ACCESS_MESSAGE
     || err.message.startsWith('Esta conta')
     || err.message.startsWith('Peça ao administrador')
     || err.message.startsWith('O backend')
+    || err.message.startsWith('Informe')
+    || err.message.startsWith('A senha')
+    || err.message.startsWith('Este e-mail já tem conta')
   )) {
     return err;
   }
@@ -260,11 +363,17 @@ const translateAuthError = (err: unknown, fallback: string): Error => {
   ) {
     return new Error('E-mail ou senha inválidos.');
   }
+  if (code === 'auth/email-already-in-use') {
+    return new Error('Este e-mail já tem conta. Entre com a senha.');
+  }
+  if (code === 'auth/weak-password') {
+    return new Error('A senha precisa ter pelo menos 6 caracteres.');
+  }
   if (code === 'auth/too-many-requests') {
     return new Error('Muitas tentativas. Aguarde um pouco e tente de novo.');
   }
   if (code === 'auth/operation-not-allowed') {
-    return new Error('Este provedor de login ainda não foi ligado no Firebase Authentication.');
+    return new Error('Este provedor de login ainda não está ligado no Firebase Authentication.');
   }
   if (err instanceof Error && err.message) return err;
   return new Error(fallback);
@@ -306,33 +415,37 @@ export const signInWithEmailPassword = async (emailRaw: string, password: string
   const email = normalizeEmail(emailRaw);
   if (!isValidEmail(email)) throw new Error('Informe um e-mail válido.');
   if (!password) throw new Error('Informe a senha.');
-  const auth = getFirebaseAuth();
   try {
-    const existing = await signInWithEmailAndPassword(auth, email, password);
+    const existing = await signInWithEmailAndPassword(getFirebaseAuth(), email, password);
     return await afterAuth(existing.user);
-  } catch (signInErr) {
-    const code = typeof signInErr === 'object' && signInErr && 'code' in signInErr
-      ? String((signInErr as { code: string }).code)
-      : '';
-    const maybeFirstLogin = [
-      'auth/user-not-found',
-      'auth/invalid-credential',
-      'auth/invalid-login-credentials',
-    ].includes(code);
-    if (!maybeFirstLogin) throw translateAuthError(signInErr, 'Falha no login.');
+  } catch (err) {
+    throw translateAuthError(err, 'Falha no login.');
+  }
+};
 
+export const registerWithEmailPassword = async (
+  emailRaw: string,
+  password: string,
+  displayNameRaw: string,
+): Promise<UserProfile> => {
+  requireFirebase();
+  const email = normalizeEmail(emailRaw);
+  const displayName = displayNameRaw.trim();
+  if (!displayName) throw new Error('Informe o nome de exibição.');
+  if (!isValidEmail(email)) throw new Error('Informe um e-mail válido.');
+  if (!password) throw new Error('Informe a senha.');
+  if (password.length < 6) throw new Error('A senha precisa ter pelo menos 6 caracteres.');
+  try {
+    const created = await createUserWithEmailAndPassword(getFirebaseAuth(), email, password);
     try {
-      const created = await createUserWithEmailAndPassword(auth, email, password);
-      return await afterAuth(created.user);
-    } catch (createErr) {
-      const createCode = typeof createErr === 'object' && createErr && 'code' in createErr
-        ? String((createErr as { code: string }).code)
-        : '';
-      if (createCode === 'auth/email-already-in-use') {
-        throw new Error('E-mail ou senha inválidos.');
-      }
-      throw translateAuthError(createErr, 'Falha no login.');
+      await updateProfile(created.user, { displayName });
+      await created.user.reload();
+    } catch {
+      // o documento do grupo ainda recebe o nome no primeiro write
     }
+    return await afterAuth(created.user);
+  } catch (err) {
+    throw translateAuthError(err, 'Falha no cadastro.');
   }
 };
 
@@ -351,26 +464,48 @@ export const subscribeGroupAuth = (onChange: (profile: UserProfile | null) => vo
     onChange(null);
     return () => undefined;
   }
-  return onAuthStateChanged(getFirebaseAuth(), async user => {
+  let cancelled = false;
+  let unsubDoc: (() => void) | null = null;
+  const unsubAuth = onAuthStateChanged(getFirebaseAuth(), async user => {
+    unsubDoc?.();
+    unsubDoc = null;
     if (!user) {
       setFirebaseSessionUid(null);
-      onChange(null);
+      if (!cancelled) onChange(null);
       return;
     }
     try {
       const profile = await resolveMembership(user);
+      if (cancelled) return;
       onChange(profile);
+      unsubDoc = onSnapshot(doc(getFirestoreDb(), 'users', user.uid), snap => {
+        if (cancelled) return;
+        if (!snap.exists()) return;
+        const person = userFromData(user.uid, snap.data() as Record<string, unknown>);
+        if (!person.active && !person.awaitingApproval && !person.rejected) {
+          setFirebaseSessionUid(null);
+          void signOut(getFirebaseAuth());
+          onChange(null);
+          return;
+        }
+        onChange(applySession(personToProfile(person, user.uid), user.uid));
+      });
     } catch {
       setFirebaseSessionUid(null);
       try {
         await signOut(getFirebaseAuth());
       } catch {
-        onChange(null);
+        if (!cancelled) onChange(null);
         return;
       }
-      onChange(null);
+      if (!cancelled) onChange(null);
     }
   });
+  return () => {
+    cancelled = true;
+    unsubDoc?.();
+    unsubAuth();
+  };
 };
 
 export const listGroupPeople = async (): Promise<GroupPerson[]> => {
@@ -395,6 +530,9 @@ export const listGroupPeople = async (): Promise<GroupPerson[]> => {
       ...person,
       pending: false,
       uid: item.id,
+      awaitingApproval: person.awaitingApproval,
+      rejected: person.rejected,
+      requestedAt: person.requestedAt ?? prev?.requestedAt,
     });
   });
   return [...byEmail.values()].sort((a, b) => a.displayName.localeCompare(b.displayName, 'pt-BR'));
@@ -460,6 +598,8 @@ export const inviteGroupPerson = async (input: InvitePersonInput): Promise<Group
     active: true,
     uid,
     pending: !uid,
+    awaitingApproval: false,
+    rejected: false,
   };
   await setDoc(doc(db, 'invites', email), {
     email,
@@ -480,10 +620,65 @@ export const inviteGroupPerson = async (input: InvitePersonInput): Promise<Group
       sectionIds,
       isAdmin,
       active: true,
+      pendingApproval: false,
+      rejected: false,
       createdAt: serverTimestamp(),
     }, { merge: true });
   }
   return person;
+};
+
+const requireRoleAndSection = (role: string, sectionIdsInput: string[]): { isAdmin: boolean; sectionIds: string[] } => {
+  if (!(USER_ROLES as readonly string[]).includes(role)) {
+    throw new Error('Papel inválido.');
+  }
+  const isAdmin = roleIsAdmin(role);
+  const sectionIds = isAdmin ? [] : sectionIdsInput.filter(Boolean);
+  if (!isAdmin && sectionIds.length === 0) {
+    throw new Error('Escolha a seção (tropa, alcateia etc.).');
+  }
+  return { isAdmin, sectionIds };
+};
+
+export const approvePendingPerson = async (
+  uid: string,
+  input: { role: string; sectionIds: string[] },
+): Promise<void> => {
+  requireFirebase();
+  if (!uid) throw new Error('Pedido sem identificação.');
+  const { isAdmin, sectionIds } = requireRoleAndSection(input.role, input.sectionIds);
+  const db = getFirestoreDb();
+  const userRef = doc(db, 'users', uid);
+  const snap = await getDoc(userRef);
+  if (!snap.exists()) throw new Error('Pedido não encontrado.');
+  await updateDoc(userRef, {
+    role: input.role,
+    sectionIds,
+    isAdmin,
+    active: true,
+    pendingApproval: false,
+    rejected: false,
+    approvedAt: serverTimestamp(),
+    approvedBy: getFirebaseAuth().currentUser?.uid || null,
+  });
+};
+
+export const rejectPendingPerson = async (uid: string): Promise<void> => {
+  requireFirebase();
+  if (!uid) throw new Error('Pedido sem identificação.');
+  const db = getFirestoreDb();
+  const userRef = doc(db, 'users', uid);
+  const snap = await getDoc(userRef);
+  if (!snap.exists()) throw new Error('Pedido não encontrado.');
+  await updateDoc(userRef, {
+    active: false,
+    isAdmin: false,
+    sectionIds: [],
+    pendingApproval: false,
+    rejected: true,
+    rejectedAt: serverTimestamp(),
+    rejectedBy: getFirebaseAuth().currentUser?.uid || null,
+  });
 };
 
 export const setPersonActive = async (emailRaw: string, active: boolean): Promise<void> => {
