@@ -10,6 +10,7 @@ import { generatePrintableHistory } from '../services/reportingService';
 import { getMemberProgress } from '../services/storageService';
 import {
   buildMinimalMember,
+  formatMemberWriteError,
   incompleteReasons,
   isMemberProfileIncomplete,
   parseMemberLines,
@@ -191,30 +192,37 @@ export const MembersManager: React.FC<Props> = ({ sectionId, isAdmin }) => {
 
     let added = 0;
     let skipped = 0;
-    for (const row of parsed) {
-      if (existingNames.has(row.name.toLowerCase())) {
-        skipped++;
-        continue;
+    try {
+      for (const row of parsed) {
+        if (existingNames.has(row.name.toLowerCase())) {
+          skipped++;
+          continue;
+        }
+        const member = buildMinimalMember({
+          name: row.name,
+          sectionId: finalSectionId,
+          branch: secBranch,
+          role: row.role || bulkRole,
+          patrol: row.patrol || bulkPatrol.trim() || undefined,
+          registerNumber: row.registerNumber,
+        });
+        await saveMemberAsync(member);
+        existingNames.add(row.name.toLowerCase());
+        added++;
       }
-      const member = buildMinimalMember({
-        name: row.name,
-        sectionId: finalSectionId,
-        branch: secBranch,
-        role: row.role || bulkRole,
-        patrol: row.patrol || bulkPatrol.trim() || undefined,
-        registerNumber: row.registerNumber,
-      });
-      await saveMemberAsync(member);
-      existingNames.add(row.name.toLowerCase());
-      added++;
-    }
 
-    setBulkBusy(false);
-    setBulkText('');
-    setFormOk(
-      `✓ ${added} cadastrado(s)${skipped ? ` · ${skipped} ignorado(s) (nome já existia)` : ''}. Complete dados depois na edição.`
-    );
-    loadMembers();
+      setBulkText('');
+      setFormOk(
+        `✓ ${added} cadastrado(s)${skipped ? ` · ${skipped} ignorado(s) (nome já existia)` : ''}. Complete dados depois na edição.`
+      );
+      loadMembers();
+    } catch (err) {
+      const msg = formatMemberWriteError(err);
+      setFormError(msg);
+      window.dispatchEvent(new CustomEvent('paxtu:toast', { detail: { kind: 'error', message: msg } }));
+    } finally {
+      setBulkBusy(false);
+    }
   };
 
   const handleEdit = (m: ScoutMember) => {

@@ -28,6 +28,7 @@ import {
 import { ConfirmDialog } from '../ConfirmDialog';
 import {
   buildMinimalMember,
+  formatMemberWriteError,
   isMemberProfileIncomplete,
   parseMemberLines,
 } from '../../utils/memberQuickAdd';
@@ -77,6 +78,8 @@ export const StructureManager: React.FC = () => {
   const [importDefaultRole, setImportDefaultRole] = useState<TroopRole>(TroopRole.JUVENIL);
   const [importPatrol, setImportPatrol] = useState('');
   const [importFeedback, setImportFeedback] = useState<string | null>(null);
+  const [importFailed, setImportFailed] = useState(false);
+  const [importBusy, setImportBusy] = useState(false);
   const [confirmAction, setConfirmAction] = useState<ConfirmAction | null>(null);
 
   useEffect(() => {
@@ -223,18 +226,31 @@ export const StructureManager: React.FC = () => {
       setImportDefaultRole(opts?.role || (opts?.patrol ? TroopRole.JUVENIL : TroopRole.CHEFE));
       setCsvText('');
       setImportFeedback(null);
+      setImportFailed(false);
+      setImportBusy(false);
   };
 
   const handleProcessImport = async () => {
-      if (!importMode || !csvText.trim()) return;
+      if (!importMode || !csvText.trim() || importBusy) return;
       const section = sections.find(s => s.id === importMode.sectionId);
-      if (!section) return;
+      if (!section) {
+          const msg = 'Seção não encontrada. Recarregue a página e tente de novo.';
+          setImportFailed(true);
+          setImportFeedback(msg);
+          window.dispatchEvent(new CustomEvent('paxtu:toast', { detail: { kind: 'error', message: msg } }));
+          return;
+      }
 
       const parsed = parseMemberLines(csvText);
       if (parsed.length === 0) {
+          setImportFailed(true);
           setImportFeedback('Nenhum nome válido encontrado.');
           return;
       }
+
+      setImportBusy(true);
+      setImportFailed(false);
+      setImportFeedback(null);
 
       let count = 0, skipped = 0;
       const existing = new Set(
@@ -243,28 +259,38 @@ export const StructureManager: React.FC = () => {
           .map(m => m.name.toLowerCase())
       );
 
-      for (const row of parsed) {
-          if (existing.has(row.name.toLowerCase())) {
-              skipped++;
-              continue;
+      try {
+          for (const row of parsed) {
+              if (existing.has(row.name.toLowerCase())) {
+                  skipped++;
+                  continue;
+              }
+              const member = buildMinimalMember({
+                  name: row.name,
+                  sectionId: importMode.sectionId,
+                  branch: section.branch,
+                  role: row.role || importDefaultRole,
+                  patrol: row.patrol || importPatrol.trim() || undefined,
+                  registerNumber: row.registerNumber,
+              });
+              await saveMemberAsync(member);
+              existing.add(row.name.toLowerCase());
+              count++;
           }
-          const member = buildMinimalMember({
-              name: row.name,
-              sectionId: importMode.sectionId,
-              branch: section.branch,
-              role: row.role || importDefaultRole,
-              patrol: row.patrol || importPatrol.trim() || undefined,
-              registerNumber: row.registerNumber,
-          });
-          await saveMemberAsync(member);
-          existing.add(row.name.toLowerCase());
-          count++;
+          setImportFailed(false);
+          setImportFeedback(
+            `✓ ${count} cadastrado(s)${skipped > 0 ? ` · ${skipped} duplicado(s) ignorado(s)` : ''}. Complete dados depois na edição.`
+          );
+          setCsvText('');
+          setTimeout(() => { setImportMode(null); setImportFeedback(null); setImportFailed(false); }, 4000);
+      } catch (err) {
+          const msg = formatMemberWriteError(err);
+          setImportFailed(true);
+          setImportFeedback(msg);
+          window.dispatchEvent(new CustomEvent('paxtu:toast', { detail: { kind: 'error', message: msg } }));
+      } finally {
+          setImportBusy(false);
       }
-      setImportFeedback(
-        `✓ ${count} cadastrado(s)${skipped > 0 ? ` · ${skipped} duplicado(s) ignorado(s)` : ''}. Complete dados depois na edição.`
-      );
-      setCsvText('');
-      setTimeout(() => { setImportMode(null); setImportFeedback(null); }, 4000);
   };
 
   const openNewMemberModal = (sectionId: string, teamName?: string) => {
@@ -483,11 +509,17 @@ export const StructureManager: React.FC = () => {
                                 />
                                 <div className="flex gap-2 justify-between items-center flex-wrap">
                                     {importFeedback ? (
-                                      <span role="status" className="text-xs text-green-700 font-bold">{importFeedback}</span>
+                                      <span role={importFailed ? 'alert' : 'status'} className={`text-xs font-bold ${importFailed ? 'text-red-700' : 'text-green-700'}`}>{importFeedback}</span>
                                     ) : <span className="text-[10px] text-indigo-500">Duplicados por nome são ignorados.</span>}
                                     <div className="flex gap-2">
-                                      <button onClick={() => { setImportMode(null); setCsvText(''); setImportFeedback(null); }} className="text-xs text-slate-500 px-3 py-1">Cancelar</button>
-                                      <button onClick={handleProcessImport} className="text-xs bg-indigo-600 text-white px-4 py-1 rounded font-bold">Cadastrar todos</button>
+                                      <button onClick={() => { setImportMode(null); setCsvText(''); setImportFeedback(null); setImportFailed(false); }} className="text-xs text-slate-500 px-3 py-1">Cancelar</button>
+                                      <button
+                                        onClick={handleProcessImport}
+                                        disabled={importBusy || !csvText.trim()}
+                                        className="text-xs bg-indigo-600 text-white px-4 py-1 rounded font-bold disabled:opacity-60"
+                                      >
+                                        {importBusy ? 'Cadastrando…' : 'Cadastrar todos'}
+                                      </button>
                                     </div>
                                 </div>
                             </div>
