@@ -47,7 +47,7 @@ O primeiro Google (ou a primeira senha) neste navegador vira administrador do pl
 
 ### IA na web
 
-- **Gemini é o padrão**, na classe **Flash-Lite** (barata/rápida). O id padrão é o alias `gemini-flash-lite-latest`, com fallbacks pinados (`gemini-3.5-flash-lite`, etc.). Não usamos Pro por omissão. O seletor de provedor continua visível.
+- **Gemini é o padrão**, na classe **Flash-Lite** (barata/rápida). O id padrão é `gemini-3.5-flash-lite` (GA); o seletor também lista `gemini-flash-lite-latest`, **Gemini 3.6 Flash** e **Gemini 3.7 Flash** (mais capaz, 13 ago 2026). A escolha fica no localStorage. Não usamos Pro por omissão.
 - Cada escotista cola a própria chave do [AI Studio](https://aistudio.google.com/app/apikey) (conta Google, sem cartão). A chave fica **só no localStorage**. Sem chave, a UI permanece e avisa na hora de gerar.
 - Se o login Google conseguir um token OAuth da API Gemini (`generative-language`), o site tenta usar; se CORS, app OAuth não verificado ou escopo faltar, volta para “colar chave do AI Studio”.
 - **xAI/Grok** é extra opcional: chave colada no localStorage. O site escolhe um modelo barato/rápido do catálogo atual (hoje `grok-4.3`; não há mais `grok-3-mini`). **Não** há “entrar com X” — OAuth xAI não é equivalente ao Google e exigiria SuperGrok/X Premium+ e um Client ID oficial nosso.
@@ -70,7 +70,7 @@ npm install
 npm run dev
 ```
 
-O picker de perfis local (tela “Quem está usando hoje?”) permanece. Modelos Gemini no desktop continuam os de sempre (`gemini-2.5-flash`, etc.).
+O picker de perfis local (tela “Quem está usando hoje?”) permanece. O seletor Gemini (3.7 / 3.6 / Lite) é o mesmo da web; o padrão é Flash-Lite.
 
 Para Gemini no desktop, copie `.env.example` para `.env.local` e informe a chave **só na sua máquina**. Nunca publique `.env.local`.
 

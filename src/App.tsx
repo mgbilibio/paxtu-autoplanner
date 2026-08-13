@@ -3,7 +3,7 @@ import { ScoutBranch, MeetingPlan, ObjectiveItem, CatalogAnnotation, AppConfig, 
 import { BRANCHES } from './constants';
 import { getPlanningCatalog, buildCatalogDigest } from './services/catalogService';
 import { generateScoutPlanRouted as generateScoutPlan, listAvailableModels as getAvailableModels, getActiveProvider, getProviderById, normalizeProviderId, GEMINI_STUDIO_URL, GEMINI_KEY_HELP } from './services/llmProvider';
-import { getDefaultGeminiModel, pickPreferredGeminiModel, hasGeminiCredentials } from './services/geminiService';
+import { getDefaultGeminiModel, pickPreferredGeminiModel, hasGeminiCredentials, curatedGeminiModelIds } from './services/geminiService';
 import { pickXaiFastModel } from './services/xaiService';
 import { getAnnotations, saveAnnotation, getAppConfig, saveAppConfig, normalizePath, downloadProgressBackup, importProgressBackup, saveSectionAsync, getAllMemberBlocoStates, downloadLocalAppBackup, importLocalAppBackup, ensureWorkspaceMetadata, acquireSectionEditLock, releaseSectionEditLock, renewSectionEditLock, EditLock, getSectionsAsync, saveUserAsync } from './services/storageService';
 import { getProgressionDetail } from './services/progressionDetailService';
@@ -35,6 +35,7 @@ import { clampSettingNumber } from './utils/clamp';
 import { isSpecialtyCode } from './utils/specialtyCodes';
 import { isWebApp } from './services/platform';
 import { clearWebSession, restoreWebSessionAccount, webAccountToProfile } from './services/webAuthService';
+import { LlmModelControls } from './components/LlmModelControls';
 import { clearGeminiOAuthAccessToken, tryRequestGeminiAccessToken } from './services/googleAuth';
 
 function App() {
@@ -72,7 +73,7 @@ function App() {
     next.has(name) ? next.delete(name) : next.add(name);
     return next;
   });
-  const [availableModels, setAvailableModels] = useState<string[]>([]);
+  const [availableModels, setAvailableModels] = useState<string[]>(() => curatedGeminiModelIds());
   const [selectedModel, setSelectedModel] = useState<string>(getDefaultGeminiModel());
   const [isRefreshingModels, setIsRefreshingModels] = useState(false);
   
@@ -167,6 +168,11 @@ function App() {
         setOllamaContextInput(config.ollamaGenerationContext || 262144);
         setOllamaOutputInput(config.ollamaGenerationOutput || 12288);
         setSyncModeInput(config.syncMode || 'local');
+        const prov = normalizeProviderId(config.llmProvider);
+        if (prov === 'gemini') setSelectedModel(config.geminiModel || getDefaultGeminiModel());
+        else if (prov === 'xai-oauth' && config.xaiOAuthModel) setSelectedModel(config.xaiOAuthModel);
+        else if (prov === 'ollama-cloud' && config.ollamaCloudModel) setSelectedModel(config.ollamaCloudModel);
+        else if (prov === 'ollama-local' && config.ollamaModel) setSelectedModel(config.ollamaModel);
     }
   }, []);
 
@@ -254,9 +260,28 @@ function App() {
     await applyLegacyToggle(enabled);
   };
 
+  const persistSelectedModel = (id: string, provider?: LlmProviderId) => {
+    setSelectedModel(id);
+    const config = getAppConfig();
+    if (!config) return;
+    const prov = normalizeProviderId(provider || config.llmProvider);
+    const next: AppConfig = { ...config };
+    if (prov === 'gemini') next.geminiModel = id;
+    else if (prov === 'xai-oauth') next.xaiOAuthModel = id;
+    else if (prov === 'ollama-cloud') next.ollamaCloudModel = id;
+    else if (prov === 'ollama-local') next.ollamaModel = id;
+    saveAppConfig(next);
+    setAppConfig(next);
+  };
+
+  const geminiSelectorModels = (): string[] => {
+    const curated = curatedGeminiModelIds();
+    const extras = availableModels.filter(id => /^gemini/i.test(id) && !curated.includes(id));
+    return extras.length > 0 ? [...curated, ...extras] : curated;
+  };
+
   const fetchModels = async () => {
       const providerId = normalizeProviderId(appConfig?.llmProvider || 'gemini');
-      if (providerId === 'gemini' && !hasGeminiCredentials()) return;
       if (providerId === 'xai-oauth' && !appConfig?.xaiApiKey && !xaiKeyInput.trim()) return;
       setIsRefreshingModels(true);
       try {
@@ -264,7 +289,7 @@ function App() {
           setAvailableModels(models);
           if (models.length > 0) {
               if (providerId === 'gemini') {
-                  setSelectedModel(pickPreferredGeminiModel(models, selectedModel));
+                  setSelectedModel(pickPreferredGeminiModel(models, appConfig?.geminiModel || selectedModel));
               } else if (providerId === 'xai-oauth') {
                   setSelectedModel(pickXaiFastModel(models, appConfig?.xaiOAuthModel || selectedModel));
               } else {
@@ -525,6 +550,7 @@ function App() {
       ollamaCloudModel: prov === 'ollama-cloud' ? selectedModel : appConfig.ollamaCloudModel,
       xaiApiKey: xaiKeyInput.trim(),
       xaiOAuthModel: prov === 'xai-oauth' ? selectedModel : appConfig.xaiOAuthModel,
+      geminiModel: prov === 'gemini' ? selectedModel : appConfig.geminiModel,
       ollamaGenerationContext: clampSettingNumber(ollamaContextInput, 262144, 32768, 1048576),
       ollamaGenerationOutput: clampSettingNumber(ollamaOutputInput, 12288, 2048, 65536),
       syncMode: syncModeInput,
@@ -895,16 +921,22 @@ function App() {
                 {settingsTab === 'ia' && (
                 <div className="mb-4 p-3 bg-slate-50 border border-slate-200 rounded-lg">
                     <p className="text-xs font-bold text-slate-700 mb-2">Provedor de IA <span className="font-normal text-slate-500">(preferência: Gemini → Ollama local → Cloud → xAI)</span></p>
-                    {isWebApp() && (
-                      <p className="text-[11px] text-slate-600 mb-2 leading-relaxed">
-                        Neste site o padrão é <strong>Gemini Flash-Lite</strong> (barato e rápido). Cole a chave do{' '}
-                        <a href={GEMINI_STUDIO_URL} target="_blank" rel="noreferrer" className="text-blue-700 underline">AI Studio</a>
-                        {' '}(fica só neste navegador). xAI é extra opcional com chave colada — não há “entrar com xAI”.
-                      </p>
-                    )}
+                    <p className="text-[11px] text-slate-600 mb-2 leading-relaxed">
+                      O padrão é <strong>Gemini 3.5 Flash-Lite</strong> (mais barato/rápido). Troque para 3.6 ou 3.7 Flash se precisar de mais capacidade.
+                      {isWebApp() && (
+                        <> Cole a chave do{' '}
+                          <a href={GEMINI_STUDIO_URL} target="_blank" rel="noreferrer" className="text-blue-700 underline">AI Studio</a>
+                          {' '}(fica só neste navegador). xAI é extra opcional com chave colada — não há “entrar com xAI”.
+                        </>
+                      )}
+                    </p>
                     <div className="flex flex-col gap-2 mb-3">
                         <label className="flex items-center gap-2 cursor-pointer">
-                            <input type="radio" name="provider" checked={normalizeProviderId(providerInput) === 'gemini'} onChange={() => setProviderInput('gemini')} />
+                            <input type="radio" name="provider" checked={normalizeProviderId(providerInput) === 'gemini'} onChange={() => {
+                              setProviderInput('gemini');
+                              setSelectedModel(appConfig?.geminiModel || getDefaultGeminiModel());
+                              setAvailableModels(curatedGeminiModelIds());
+                            }} />
                             <span className="text-sm"><strong>1. Gemini</strong> <span className="text-[10px] text-emerald-700 font-bold">recomendado</span> <span className="text-[10px] text-gray-500">— AI Studio, grátis/simples</span></span>
                         </label>
                         <label className="flex items-center gap-2 cursor-pointer">
@@ -930,6 +962,13 @@ function App() {
                                 {GEMINI_KEY_HELP} Se o login Google conseguir um token da API Gemini, ele é tentado automaticamente; se CORS ou o app OAuth não permitir, cole a chave aqui.
                               </p>
                             )}
+                            <LlmModelControls
+                              selectId="settings-gemini-model"
+                              provider="gemini"
+                              models={geminiSelectorModels()}
+                              value={selectedModel}
+                              onChange={(id) => persistSelectedModel(id, 'gemini')}
+                            />
                         </div>
                     )}
 
@@ -1017,11 +1056,13 @@ function App() {
                             Não implementamos “entrar com X”: OAuth xAI exige SuperGrok/X Premium+ e um Client ID oficial nosso.
                           </p>
                           <input type="password" value={xaiKeyInput} onChange={(e) => setXaiKeyInput(e.target.value)} className="w-full p-2 border rounded text-sm" placeholder="API Key xAI" />
-                          {availableModels.length > 0 && (
-                            <select value={selectedModel} onChange={(e) => setSelectedModel(e.target.value)} className="w-full p-2 border rounded text-sm">
-                              {availableModels.map(m => <option key={m} value={m}>{m}</option>)}
-                            </select>
-                          )}
+                          <LlmModelControls
+                            selectId="settings-xai-model"
+                            provider="xai-oauth"
+                            models={availableModels}
+                            value={selectedModel}
+                            onChange={(id) => persistSelectedModel(id, 'xai-oauth')}
+                          />
                         </div>
                     )}
                 </div>
@@ -1331,13 +1372,20 @@ function App() {
                       <span className="px-3 py-1 text-[10px] rounded-md bg-green-50 text-green-700 font-bold border border-green-200">POR 2025+</span>
                     )}
                     <div className="flex gap-2 bg-slate-900 p-1.5 rounded-lg items-center">
-                        <label htmlFor="model-select" className="text-white text-xs font-bold">Modelo:</label>
-                        <select id="model-select" value={selectedModel} onChange={(e) => setSelectedModel(e.target.value)} className="bg-transparent text-white text-xs outline-none border-none">
-                            {availableModels.length === 0 && <option value="" className="text-black">Nenhum modelo — configure a IA</option>}
-                            {availableModels.map(m => <option key={m} value={m} className="text-black">{m}</option>)}
-                        </select>
-                        {isRefreshingModels && <span className="text-white text-xs animate-spin" aria-hidden="true">⟳</span>}
-                        <button onClick={fetchModels} aria-label="Recarregar modelos" className="text-white text-xs">🔄</button>
+                        <LlmModelControls
+                          selectId="model-select"
+                          compact
+                          provider={normalizeProviderId(appConfig?.llmProvider)}
+                          models={
+                            normalizeProviderId(appConfig?.llmProvider) === 'gemini'
+                              ? geminiSelectorModels()
+                              : availableModels
+                          }
+                          value={selectedModel}
+                          onChange={(id) => persistSelectedModel(id, normalizeProviderId(appConfig?.llmProvider))}
+                          refreshing={isRefreshingModels}
+                          onRefresh={fetchModels}
+                        />
                     </div>
                   </div>
                   <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">

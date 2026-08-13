@@ -67,6 +67,7 @@ export const TELA_HELP: Record<string, ScreenHelp> = {
     dicas: [
       'Modo "Tema livre + amarra": informe o tema e gere — sem marcar catálogo.',
       'Modo "A partir da seleção": marque poucos objetivos e a IA parte deles.',
+      'O padrão da IA é Gemini Flash-Lite (mais barato/rápido). 3.7 Flash é o mais capaz. “Ver cota / uso” abre o AI Studio.',
       'Com Ollama cloud use contexto ≥256k; a geração roda em partes.',
     ],
   },

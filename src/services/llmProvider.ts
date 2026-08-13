@@ -10,6 +10,10 @@ import * as xai from './xaiService';
 import { isWebApp } from './platform';
 
 export const GEMINI_STUDIO_URL = 'https://aistudio.google.com/app/apikey';
+/** Painel de uso/cota do AI Studio (aba de rate limits no mesmo endereço). */
+export const GEMINI_USAGE_URL = 'https://aistudio.google.com/usage';
+/** Usage Explorer oficial da xAI Console. */
+export const XAI_USAGE_URL = 'https://console.x.ai/team/default/usage';
 export const GEMINI_KEY_HELP =
   'Obtenha uma chave grátis em https://aistudio.google.com/app/apikey (conta Google, sem cartão de crédito) e cole em Configurações. A chave fica só neste aparelho/navegador — nunca no repositório.';
 

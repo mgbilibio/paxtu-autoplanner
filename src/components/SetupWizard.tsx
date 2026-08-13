@@ -138,7 +138,7 @@ export const SetupWizard: React.FC<Props> = ({ onComplete }) => {
               <p className="text-gray-600 text-sm mb-4 leading-relaxed">
                 {isWebApp()
                   ? <>Padrão: <strong>Gemini Flash-Lite</strong> (barato e rápido). A chave do AI Studio é opcional agora — cole depois em Configurações. xAI é extra com chave colada. Ollama local só no app desktop.</>
-                  : <>Escolha entre <strong>Gemini</strong> (cloud, requer chave + internet) ou <strong>Ollama</strong> (local, sem internet, mantém seus dados na máquina).</>}
+                  : <>Padrão: <strong>Gemini Flash-Lite</strong> (barato e rápido). Escolha 3.6 ou 3.7 Flash no seletor se precisar de mais capacidade. Ollama fica na máquina.</>}
               </p>
 
               <div className={`grid gap-2 mb-6 ${isWebApp() ? 'grid-cols-3' : 'grid-cols-2'}`}>
@@ -147,7 +147,7 @@ export const SetupWizard: React.FC<Props> = ({ onComplete }) => {
                   className={`p-4 border-2 rounded-lg text-left transition-all ${provider === 'gemini' ? 'border-blue-600 bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`}
                 >
                   <div className="font-bold text-sm">☁️ Gemini</div>
-                  <div className="text-[11px] text-gray-500 mt-1">{isWebApp() ? 'Flash-Lite · AI Studio' : 'Cloud Google · respostas rápidas'}</div>
+                  <div className="text-[11px] text-gray-500 mt-1">Flash-Lite · AI Studio</div>
                 </button>
                 {isWebApp() && (
                   <button
