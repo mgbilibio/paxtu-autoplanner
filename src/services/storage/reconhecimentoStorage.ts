@@ -1,6 +1,7 @@
 import { MemberReconhecimentoState } from '../../types';
 import { memberReconhecimentoPath } from '../dataLayoutService';
-import { readCachedEntity, writeCachedEntity } from './dualBackend';
+import { readMemberSubdoc, writeMemberSubdoc } from '../firebase/sectionData';
+import { isFirestoreBacked, readCachedEntity, writeCachedEntity } from './dualBackend';
 import { findMemberForLayout } from './memberStorage';
 import { BLOCO_PROGRESS_FOLDER } from './names';
 import { assertCanWriteSection } from './sectionLockStorage';
@@ -32,6 +33,16 @@ export const getMemberReconhecimento = async (
   memberId: string,
   reconhecimentoId: number,
 ): Promise<MemberReconhecimentoState | null> => {
+  if (isFirestoreBacked()) {
+    const member = await findMemberForLayout(memberId);
+    if (!member?.sectionId) return null;
+    return readMemberSubdoc<MemberReconhecimentoState>(
+      member.sectionId,
+      memberId,
+      'reconhecimento',
+      String(reconhecimentoId),
+    );
+  }
   return readCachedEntity<MemberReconhecimentoState>(
     recKey(memberId, reconhecimentoId),
     resolveReadPaths(memberId, reconhecimentoId),
@@ -41,6 +52,19 @@ export const getMemberReconhecimento = async (
 export const saveMemberReconhecimento = async (
   state: MemberReconhecimentoState,
 ): Promise<void> => {
+  if (isFirestoreBacked()) {
+    const member = await findMemberForLayout(state.memberId);
+    assertCanWriteSection(member?.sectionId);
+    if (!member?.sectionId) return;
+    await writeMemberSubdoc(
+      member.sectionId,
+      state.memberId,
+      'reconhecimento',
+      String(state.reconhecimentoId),
+      state,
+    );
+    return;
+  }
   await writeCachedEntity<MemberReconhecimentoState>(
     recKey(state.memberId, state.reconhecimentoId),
     state,

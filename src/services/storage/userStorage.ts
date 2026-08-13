@@ -1,7 +1,8 @@
 import { UserProfile } from '../../types';
 import { adultFolder, adultProfilePath } from '../dataLayoutService';
+import { groupPersonToProfile, listGroupPeople, setPersonActive } from '../firebase/groupAuth';
 import { getAppConfig } from './configStorage';
-import { isFileBacked, readJsonDoc, writeJsonDoc } from './dualBackend';
+import { isFileBacked, isFirestoreBacked, readJsonDoc, writeJsonDoc } from './dualBackend';
 import { DATA_EVENTS, dispatchDataEvent } from './events';
 import { writeLayoutFile } from './layoutStorage';
 import { USERS_FILENAME, USERS_KEY } from './names';
@@ -29,14 +30,17 @@ const getPersistedUsers = async (): Promise<UserProfile[]> => {
 };
 
 export const getUsersAsync = async (): Promise<UserProfile[]> => {
+  if (isFirestoreBacked()) {
+    const people = await listGroupPeople();
+    return people.map(groupPersonToProfile);
+  }
   const users = await getPersistedUsers();
-  // Injeta o seed apenas se nao houver outro administrador real cadastrado.
   const hasAdmin = users.some(user => user.role === 'ADMINISTRADOR');
   return hasAdmin ? users : [...users, adminMasterSeed];
 };
 
 export const saveUserAsync = async (user: UserProfile): Promise<void> => {
-  // Salvar o seed virtual e no-op: ele nao deve ser persistido.
+  if (isFirestoreBacked()) return;
   if (user.id === ADMIN_MASTER_ID) return;
   // Releitura dos usuarios reais dentro da secao critica (anti lost update).
   await runExclusive(USERS_FILENAME, async () => {
@@ -54,7 +58,13 @@ export const saveUserAsync = async (user: UserProfile): Promise<void> => {
 };
 
 export const deleteUserAsync = async (id: string): Promise<void> => {
-  // O seed virtual nao existe no agregado: deletar e no-op silencioso.
+  if (isFirestoreBacked()) {
+    const people = await listGroupPeople();
+    const person = people.find(item => item.uid === id || item.email === id);
+    if (person) await setPersonActive(person.email, false);
+    dispatchDataEvent(DATA_EVENTS.USERS_UPDATED);
+    return;
+  }
   if (id === ADMIN_MASTER_ID) return;
   const removed = await runExclusive(USERS_FILENAME, async () => {
     const current = await getPersistedUsers();

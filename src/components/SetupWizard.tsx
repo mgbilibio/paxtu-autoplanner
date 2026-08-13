@@ -102,7 +102,7 @@ export const SetupWizard: React.FC<Props> = ({ onComplete }) => {
           : 'gemini';
     const config: AppConfig = {
       apiKey: resolvedProvider === 'gemini' ? apiKey.trim() : '',
-      dataFolder: dataFolder.trim(),
+      dataFolder: isWebApp() ? 'firestore-grupo' : dataFolder.trim(),
       isConfigured: true,
       llmProvider: resolvedProvider,
       ollamaBaseUrl: normalizeOllamaBaseUrl(ollamaUrl) || 'http://localhost:11434',
@@ -110,7 +110,7 @@ export const SetupWizard: React.FC<Props> = ({ onComplete }) => {
       ollamaGenerationContext: 262144,
       ollamaGenerationOutput: 12288,
       xaiApiKey: xaiKey.trim() || undefined,
-      syncMode,
+      syncMode: isWebApp() ? 'local' : syncMode,
       profile: { groupName, sectionName, city, defaultLocation, patrols: [] },
     };
     onComplete(config);
@@ -309,16 +309,21 @@ export const SetupWizard: React.FC<Props> = ({ onComplete }) => {
           {step === 2 && (
             <div className="animate-slide-in">
               <h2 className="text-xl font-bold text-gray-800 mb-4">📂 Local dos Dados</h2>
+              {isWebApp() ? (
+                <>
+                  <p className="text-gray-600 text-sm mb-6 leading-relaxed">
+                    A tropa e a alcateia deste site ficam no Firestore, compartilhadas pela chefia da seção.
+                  </p>
+                  <div className="bg-sky-50 border border-sky-200 rounded-lg p-3 mb-4 text-[11px] text-sky-950 leading-relaxed">
+                    Cada pessoa entra com o <strong>próprio e-mail</strong> (Gmail, Google Workspace, @escoteiros ou outro).
+                    Não há e-mail único do grupo. Chaves de IA continuam neste navegador.
+                  </div>
+                </>
+              ) : (
+                <>
               <p className="text-gray-600 text-sm mb-6 leading-relaxed">
                 Onde seus roteiros, fichas e configurações devem ser salvos? Escolha uma pasta segura.
               </p>
-              {isWebApp() && (
-                <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-4 text-[11px] text-amber-900 leading-relaxed">
-                  Neste site os dados ficam no <strong>localStorage deste navegador</strong> (sem servidor).
-                  O seletor de pasta e o modo compartilhado continuam visíveis como no desktop: use-os como referência
-                  ou, se o navegador oferecer, escolha uma pasta local. A gravação efetiva permanece neste browser até existir backend.
-                </div>
-              )}
               <label className="block text-xs font-bold text-gray-700 uppercase mb-2">Caminho da Pasta</label>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
                 <button
@@ -380,6 +385,8 @@ export const SetupWizard: React.FC<Props> = ({ onComplete }) => {
                 <p role="alert" className="text-[11px] text-amber-700 mt-2 bg-amber-50 border border-amber-200 rounded p-2">
                   ⚠️ Você ainda não escolheu uma pasta. Clique em <strong>Escolher</strong> para selecionar onde salvar os dados.
                 </p>
+              )}
+                </>
               )}
               <div className="mt-8 flex gap-3">
                 <button onClick={() => setStep(1)} className="px-4 py-3 text-gray-500 font-medium hover:text-gray-800">Voltar</button>

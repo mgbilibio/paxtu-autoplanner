@@ -29,9 +29,12 @@ export const getRoleLabel = (role?: string): UserRole => {
   const normalized = normalizeRole(role);
   if (normalized === 'administrador') return 'ADMINISTRADOR';
   if (normalized === 'diretor' || normalized === 'diretoria') return 'Diretoria';
-  if (normalized === 'auditoria') return 'Leitura/Auditoria';
+  if (normalized === 'auditoria' || normalized === 'leitura') return 'Leitura/Auditoria';
   if (normalized === 'leitura/auditoria') return 'Leitura/Auditoria';
   if (normalized === 'assistente') return 'Assistente';
+  if (normalized === 'chefe' || normalized === 'chefe de seção' || normalized === 'chefe de secao') {
+    return 'Chefe de Seção';
+  }
   return 'Chefe de Seção';
 };
 

@@ -3,8 +3,9 @@ import {
   MEMBER_BLOCO_STATE_SCHEMA_VERSION,
 } from '../../types';
 import { memberBlocoPath } from '../dataLayoutService';
+import { readMemberSubdoc, writeMemberSubdoc } from '../firebase/sectionData';
 import { getAppConfig } from './configStorage';
-import { readCachedEntity, writeCachedEntity } from './dualBackend';
+import { isFirestoreBacked, readCachedEntity, writeCachedEntity } from './dualBackend';
 import { findMemberForLayout } from './memberStorage';
 import { BLOCO_PROGRESS_FOLDER, TOTAL_BLOCOS } from './names';
 import { assertCanWriteSection } from './sectionLockStorage';
@@ -35,6 +36,12 @@ export const getMemberBlocoState = async (
   memberId: string,
   blocoId: number,
 ): Promise<MemberBlocoState | null> => {
+  if (isFirestoreBacked()) {
+    const member = await findMemberForLayout(memberId);
+    if (!member?.sectionId) return null;
+    const raw = await readMemberSubdoc<MemberBlocoState>(member.sectionId, memberId, 'bloco', String(blocoId));
+    return raw ? migrateBlocoState(raw) : null;
+  }
   return readCachedEntity<MemberBlocoState>(
     blocoStateKey(memberId, blocoId),
     async () => {
@@ -67,6 +74,13 @@ export const saveMemberBlocoState = async (
     schemaVersion: MEMBER_BLOCO_STATE_SCHEMA_VERSION,
     lastUpdate: new Date().toISOString(),
   };
+  if (isFirestoreBacked()) {
+    const member = await findMemberForLayout(stamped.memberId);
+    assertCanWriteSection(member?.sectionId);
+    if (!member?.sectionId) return;
+    await writeMemberSubdoc(member.sectionId, stamped.memberId, 'bloco', String(stamped.blocoId), stamped);
+    return;
+  }
   await writeCachedEntity<MemberBlocoState>(
     blocoStateKey(stamped.memberId, stamped.blocoId),
     stamped,

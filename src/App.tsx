@@ -5,7 +5,7 @@ import { getPlanningCatalog, buildCatalogDigest } from './services/catalogServic
 import { generateScoutPlanRouted as generateScoutPlan, listAvailableModels as getAvailableModels, getActiveProvider, getProviderById, normalizeProviderId, GEMINI_STUDIO_URL, GEMINI_KEY_HELP } from './services/llmProvider';
 import { getDefaultGeminiModel, pickPreferredGeminiModel, hasGeminiCredentials, curatedGeminiModelIds } from './services/geminiService';
 import { pickXaiFastModel } from './services/xaiService';
-import { getAnnotations, saveAnnotation, getAppConfig, saveAppConfig, normalizePath, downloadProgressBackup, importProgressBackup, saveSectionAsync, getAllMemberBlocoStates, downloadLocalAppBackup, importLocalAppBackup, ensureWorkspaceMetadata, acquireSectionEditLock, releaseSectionEditLock, renewSectionEditLock, EditLock, getSectionsAsync, saveUserAsync } from './services/storageService';
+import { getAnnotations, saveAnnotation, getAppConfig, saveAppConfig, normalizePath, downloadProgressBackup, importProgressBackup, saveSectionAsync, getAllMemberBlocoStates, downloadLocalAppBackup, importLocalAppBackup, ensureWorkspaceMetadata, acquireSectionEditLock, releaseSectionEditLock, renewSectionEditLock, EditLock, getSectionsAsync } from './services/storageService';
 import { getProgressionDetail } from './services/progressionDetailService';
 import { PlanDisplay } from './components/PlanDisplay';
 import { Catalog } from './components/Catalog';
@@ -34,7 +34,7 @@ import { useGlobalEvents } from './hooks/useGlobalEvents';
 import { clampSettingNumber } from './utils/clamp';
 import { isSpecialtyCode } from './utils/specialtyCodes';
 import { isWebApp } from './services/platform';
-import { clearWebSession, restoreWebSessionAccount, webAccountToProfile } from './services/webAuthService';
+import { subscribeGroupAuth, signOutGroup } from './services/firebase/groupAuth';
 import { LlmModelControls } from './components/LlmModelControls';
 import { clearGeminiOAuthAccessToken, tryRequestGeminiAccessToken } from './services/googleAuth';
 
@@ -178,13 +178,16 @@ function App() {
 
   useEffect(() => {
     if (!isWebApp()) return;
-    const account = restoreWebSessionAccount();
-    if (account) {
-      const profile = webAccountToProfile(account);
-      void saveUserAsync(profile);
-      setCurrentUser(profile);
-    }
-    setWebAuthReady(true);
+    const unsub = subscribeGroupAuth(profile => {
+      if (profile) {
+        setCurrentUser(profile);
+        void tryRequestGeminiAccessToken();
+      } else {
+        setCurrentUser(null);
+      }
+      setWebAuthReady(true);
+    });
+    return () => unsub();
   }, []);
 
   useEffect(() => {
@@ -450,7 +453,10 @@ function App() {
       return;
     }
     const sections = await getSectionsAsync();
-    const section = sections.find(item => item.id === user.sectionId) || sections[0];
+    const wanted = (user.sectionIds && user.sectionIds.length > 0)
+      ? user.sectionIds
+      : (user.sectionId ? [user.sectionId] : []);
+    const section = sections.find(item => wanted.includes(item.id)) || sections[0];
     if (!section) {
       setView('PROFILE_CONFIG');
       return;
@@ -512,7 +518,7 @@ function App() {
     setLlmElapsed(0);
     setView('LOGIN');
     if (isWebApp()) {
-      clearWebSession();
+      void signOutGroup();
       clearGeminiOAuthAccessToken();
     }
     reset();
@@ -910,7 +916,7 @@ function App() {
                 <h3 id="settings-title" className="text-xl font-bold text-gray-800 mb-4">⚙️ Configurações</h3>
                 {error && <div className="bg-red-50 text-red-600 p-3 rounded mb-4 text-xs" role="alert">{error}</div>}
                 <div className="flex border-b mb-4" role="tablist">
-                    {([['ia','IA'],['dados','Dados'],['avancado','Avançado'], ...(isWebApp() ? [['contas','Contas'] as const] : [])] as const).map(([id,label]) => (
+                    {([['ia','IA'],['dados','Dados'],['avancado','Avançado'], ...(isWebApp() ? [['contas','Acessos'] as const] : [])] as const).map(([id,label]) => (
                         <button key={id} role="tab" aria-selected={settingsTab === id}
                             onClick={() => setSettingsTab(id)}
                             className={`px-4 py-2 text-sm font-bold border-b-2 transition-colors ${settingsTab === id ? 'border-indigo-600 text-indigo-700' : 'border-transparent text-slate-500 hover:text-slate-700'}`}>
@@ -1070,6 +1076,14 @@ function App() {
 
                 {settingsTab === 'dados' && (
                 <>
+                {isWebApp() ? (
+                <div className="p-3 bg-sky-50 border border-sky-200 rounded-lg text-[11px] text-sky-950 leading-relaxed">
+                  No ScoutsAuto web, tropa, alcateia, jovens e progressão ficam no <strong>Cloud Firestore</strong>,
+                  ligados ao login de cada pessoa. Chefe e assistentes da mesma seção vêem os mesmos dados em máquinas diferentes.
+                  Chaves de IA continuam só neste navegador.
+                </div>
+                ) : (
+                <>
                 <div className="space-y-2">
                     <label className="text-xs font-bold text-slate-700 block">Pasta de dados</label>
                     <input type="text" value={folderInput} onChange={(e) => setFolderInput(e.target.value)} className="w-full p-3 border rounded-lg text-sm bg-gray-50" placeholder="Pasta de dados" />
@@ -1090,6 +1104,8 @@ function App() {
                         </p>
                     )}
                 </div>
+                </>
+                )}
                 </>
                 )}
 

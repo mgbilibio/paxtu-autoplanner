@@ -1,15 +1,14 @@
 import { ScoutMember } from '../../types';
 import { memberFolder, memberProfilePath } from '../dataLayoutService';
+import { readAccessibleItems, readSectionItems, writeSectionItems } from '../firebase/sectionData';
 import { getAppConfig } from './configStorage';
-import { isFileBacked, readJsonDoc, writeJsonDoc } from './dualBackend';
+import { isFileBacked, isFirestoreBacked, readJsonDoc, writeJsonDoc } from './dualBackend';
 import { DATA_EVENTS, dispatchDataEvent } from './events';
 import { writeLayoutFile } from './layoutStorage';
 import { MEMBERS_FILENAME, MEMBERS_KEY } from './names';
 import { assertCanWriteSection } from './sectionLockStorage';
 import { runExclusive } from './writeQueue';
 
-// Remove do localStorage todas as chaves de cache deste membro (bloco,
-// especialidade, reconhecimento e progressao legada).
 const clearMemberCaches = (memberId: string): void => {
   const prefixes = [
     `PAXTU_BLOCO_${memberId}_`,
@@ -23,6 +22,10 @@ const clearMemberCaches = (memberId: string): void => {
 };
 
 export const getMembersAsync = async (sectionId?: string): Promise<ScoutMember[]> => {
+  if (isFirestoreBacked()) {
+    if (sectionId) return readSectionItems<ScoutMember>(sectionId, 'members');
+    return readAccessibleItems<ScoutMember>('members');
+  }
   const members = await readJsonDoc<ScoutMember[]>(MEMBERS_FILENAME, MEMBERS_KEY, []);
   if (sectionId) return members.filter(member => member.sectionId === sectionId);
   return members;
@@ -35,8 +38,18 @@ export const findMemberForLayout = async (memberId: string): Promise<ScoutMember
 
 export const saveMemberAsync = async (member: ScoutMember): Promise<void> => {
   assertCanWriteSection(member.sectionId);
-  // Secao critica serializada por chave: relê o agregado ATUAL aqui dentro
-  // (nao antes da fila) para nao perder updates concorrentes de outro membro.
+  if (isFirestoreBacked()) {
+    const sectionId = member.sectionId || '';
+    await runExclusive(`firestore-members-${sectionId}`, async () => {
+      const current = await readSectionItems<ScoutMember>(sectionId, 'members');
+      const index = current.findIndex(item => item.id === member.id);
+      const updated = index >= 0 ? [...current] : [...current, member];
+      if (index >= 0) updated[index] = member;
+      await writeSectionItems(sectionId, 'members', updated);
+    });
+    dispatchDataEvent(DATA_EVENTS.MEMBERS_UPDATED);
+    return;
+  }
   await runExclusive(MEMBERS_FILENAME, async () => {
     const current = await getMembersAsync();
     const index = current.findIndex(item => item.id === member.id);
@@ -51,9 +64,14 @@ export const saveMemberAsync = async (member: ScoutMember): Promise<void> => {
   dispatchDataEvent(DATA_EVENTS.MEMBERS_UPDATED);
 };
 
-// Remove do agregado todos os membros de uma secao e limpa seus caches. Usado
-// ao excluir a secao (a pasta FS dos jovens e removida por deleteSectionAsync).
 export const purgeMembersOfSection = async (sectionId: string): Promise<void> => {
+  if (isFirestoreBacked()) {
+    const ofSection = await readSectionItems<ScoutMember>(sectionId, 'members');
+    await writeSectionItems(sectionId, 'members', []);
+    ofSection.forEach(member => clearMemberCaches(member.id));
+    if (ofSection.length > 0) dispatchDataEvent(DATA_EVENTS.MEMBERS_UPDATED);
+    return;
+  }
   const ofSection = await runExclusive(MEMBERS_FILENAME, async () => {
     const all = await getMembersAsync();
     const toRemove = all.filter(member => member.sectionId === sectionId);
@@ -67,6 +85,19 @@ export const purgeMembersOfSection = async (sectionId: string): Promise<void> =>
 };
 
 export const deleteMemberAsync = async (id: string): Promise<void> => {
+  if (isFirestoreBacked()) {
+    const member = await findMemberForLayout(id);
+    assertCanWriteSection(member?.sectionId);
+    if (member?.sectionId) {
+      await runExclusive(`firestore-members-${member.sectionId}`, async () => {
+        const current = await readSectionItems<ScoutMember>(member.sectionId!, 'members');
+        await writeSectionItems(member.sectionId!, 'members', current.filter(item => item.id !== id));
+      });
+    }
+    clearMemberCaches(id);
+    dispatchDataEvent(DATA_EVENTS.MEMBERS_UPDATED);
+    return;
+  }
   const member = await runExclusive(MEMBERS_FILENAME, async () => {
     const current = await getMembersAsync();
     const found = current.find(item => item.id === id);
@@ -74,8 +105,6 @@ export const deleteMemberAsync = async (id: string): Promise<void> => {
     await writeJsonDoc(MEMBERS_FILENAME, MEMBERS_KEY, current.filter(m => m.id !== id));
     return found;
   });
-  // LGPD: remove a pasta do jovem (perfil + progressao + especialidades) no
-  // filesystem e limpa o cache local, para nao deixar dados de menor orfaos.
   const config = getAppConfig();
   if (member && config?.dataFolder && window.fileSystem?.deletePath) {
     await window.fileSystem.deletePath(config.dataFolder, memberFolder(member.sectionId, member.id));

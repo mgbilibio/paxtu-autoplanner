@@ -21,7 +21,7 @@ export interface HelpFaq {
 export const ROTEIRO: HelpStep[] = [
   {
     titulo: '1. Configurar o app',
-    texto: 'No primeiro acesso, escolha o provedor de IA, a pasta de dados e o modo local ou compartilhado.',
+    texto: 'No ScoutsAuto web, entre com Google ou o seu e-mail e senha. No desktop, escolha o provedor de IA e a pasta de dados.',
   },
   {
     titulo: '2. Montar a estrutura',
