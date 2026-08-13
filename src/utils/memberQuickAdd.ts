@@ -26,6 +26,22 @@ const parseRoleToken = (token: string): TroopRole | undefined => {
   return ROLE_ALIASES[key];
 };
 
+const TROOP_ROLES = new Set<string>(Object.values(TroopRole));
+
+/** Garante TroopRole canónico ('Chefe' | 'Assistente' | 'Juvenil'). */
+export const resolveTroopRole = (value: unknown, fallback: TroopRole = TroopRole.JUVENIL): TroopRole => {
+  if (typeof value === 'string' && value.trim()) {
+    if (TROOP_ROLES.has(value)) return value as TroopRole;
+    const aliased = parseRoleToken(value);
+    if (aliased) return aliased;
+  }
+  return TROOP_ROLES.has(fallback) ? fallback : TroopRole.JUVENIL;
+};
+
+/** Progressão POR/blocos de jovens: só Juvenil. Chefe e Assistente ficam de fora. */
+export const isYouthMember = (member: { role?: string } | null | undefined): boolean =>
+  member?.role === TroopRole.JUVENIL;
+
 export type ParsedMemberLine = {
   name: string;
   registerNumber?: string;
@@ -156,7 +172,7 @@ export const buildMinimalMember = (opts: {
     name: opts.name.trim(),
     sectionId: opts.sectionId,
     branch: opts.branch,
-    role: opts.role || TroopRole.JUVENIL,
+    role: resolveTroopRole(opts.role, TroopRole.JUVENIL),
     isArchived: false,
   };
   if (opts.patrol) member.patrol = opts.patrol;

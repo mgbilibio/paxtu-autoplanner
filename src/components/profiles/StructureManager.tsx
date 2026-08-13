@@ -31,6 +31,7 @@ import {
   formatMemberWriteError,
   isMemberProfileIncomplete,
   parseMemberLines,
+  resolveTroopRole,
 } from '../../utils/memberQuickAdd';
 
 type ConfirmAction = {
@@ -80,6 +81,8 @@ export const StructureManager: React.FC = () => {
   const [importFeedback, setImportFeedback] = useState<string | null>(null);
   const [importFailed, setImportFailed] = useState(false);
   const [importBusy, setImportBusy] = useState(false);
+  const [staffSelection, setStaffSelection] = useState<Set<string>>(new Set());
+  const [staffBusy, setStaffBusy] = useState(false);
   const [confirmAction, setConfirmAction] = useState<ConfirmAction | null>(null);
 
   useEffect(() => {
@@ -195,7 +198,7 @@ export const StructureManager: React.FC = () => {
       if (!editingMember) return;
       const trimmed = (editingMember.name || '').trim();
       if (!trimmed) return; // só o nome é obrigatório — primeiro nome basta
-      const toSave = { ...editingMember, name: trimmed };
+      const toSave = { ...editingMember, name: trimmed, role: resolveTroopRole(editingMember.role) };
       await saveMemberAsync(toSave);
 
       // Auto-Sync login account if it already exists or if checkbox is checked
@@ -265,11 +268,15 @@ export const StructureManager: React.FC = () => {
                   skipped++;
                   continue;
               }
+              const defaultRole = resolveTroopRole(
+                importDefaultRole,
+                importMode.defaultRole || (importPatrol.trim() ? TroopRole.JUVENIL : TroopRole.CHEFE),
+              );
               const member = buildMinimalMember({
                   name: row.name,
                   sectionId: importMode.sectionId,
                   branch: section.branch,
-                  role: row.role || importDefaultRole,
+                  role: resolveTroopRole(row.role, defaultRole),
                   patrol: row.patrol || importPatrol.trim() || undefined,
                   registerNumber: row.registerNumber,
               });
@@ -300,7 +307,7 @@ export const StructureManager: React.FC = () => {
           name: '',
           sectionId: sectionId,
           branch: section?.branch || ScoutBranch.ESCOTEIRO,
-          role: TroopRole.JUVENIL,
+          role: teamName ? TroopRole.JUVENIL : TroopRole.CHEFE,
           patrol: teamName || '',
           registerNumber: '',
           medicalInfo: '',
@@ -350,15 +357,53 @@ export const StructureManager: React.FC = () => {
       });
   };
 
-  const renderMemberRow = (member: ScoutMember) => {
+  const toggleStaffSelection = (id: string) => {
+      setStaffSelection(prev => {
+          const next = new Set(prev);
+          next.has(id) ? next.delete(id) : next.add(id);
+          return next;
+      });
+  };
+
+  const handleBulkSetStaffRole = async (sectionId: string, role: TroopRole) => {
+      const targets = members.filter(m =>
+          m.sectionId === sectionId && !m.patrol && !m.isArchived && staffSelection.has(m.id)
+      );
+      if (targets.length === 0 || staffBusy) return;
+      setStaffBusy(true);
+      try {
+          for (const member of targets) {
+              await saveMemberAsync({ ...member, role: resolveTroopRole(role, role) });
+          }
+          setStaffSelection(prev => {
+              const next = new Set(prev);
+              targets.forEach(m => next.delete(m.id));
+              return next;
+          });
+      } finally {
+          setStaffBusy(false);
+      }
+  };
+
+  const renderMemberRow = (member: ScoutMember, opts?: { selectable?: boolean }) => {
       const incomplete = !member.isArchived && isMemberProfileIncomplete(member);
       return (
       <div key={member.id} className={`flex items-center justify-between p-2 pl-4 border-l-2 hover:bg-slate-50 hover:border-slate-400 transition-colors text-sm group ${member.isArchived ? 'bg-slate-100/50 border-slate-300 opacity-60' : incomplete ? 'border-amber-300 bg-amber-50/40' : 'border-slate-200'}`}>
           <div className="flex items-center gap-2 min-w-0">
+              {opts?.selectable && (
+                <input
+                  type="checkbox"
+                  checked={staffSelection.has(member.id)}
+                  onChange={() => toggleStaffSelection(member.id)}
+                  className="w-3.5 h-3.5 text-indigo-600 rounded shrink-0"
+                  title="Selecionar para definir função"
+                />
+              )}
               <span title={member.role}>{member.role === TroopRole.JUVENIL ? '👤' : '👮'}</span>
               <div className="flex flex-col min-w-0">
                   <span className={`font-medium truncate ${member.isArchived ? 'text-slate-500 italic' : 'text-slate-700'}`}>{member.name}</span>
                   <div className="flex gap-1 flex-wrap">
+                    <span className={`text-[8px] px-1 rounded font-bold uppercase ${member.role === TroopRole.JUVENIL ? 'bg-slate-100 text-slate-600' : 'bg-indigo-100 text-indigo-800'}`}>{member.role || '—'}</span>
                     {incomplete && <span className="text-[8px] bg-amber-100 text-amber-800 px-1 rounded font-bold uppercase" title="Complete nascimento e outros dados quando puder">incompleto</span>}
                     {(member.medicalInfo || member.emergencyContact) && <span className="text-[9px] text-red-400 font-bold">⚠️ Info Médica/Contato</span>}
                   </div>
@@ -481,7 +526,11 @@ export const StructureManager: React.FC = () => {
                                     <label className="text-[10px] font-bold text-indigo-800 uppercase">Função padrão</label>
                                     <select
                                       value={importDefaultRole}
-                                      onChange={e => setImportDefaultRole(e.target.value as TroopRole)}
+                                      onChange={e => {
+                                        const role = resolveTroopRole(e.target.value, TroopRole.CHEFE);
+                                        setImportDefaultRole(role);
+                                        setImportMode(mode => mode ? { ...mode, defaultRole: role } : mode);
+                                      }}
                                       className="w-full p-1.5 border rounded text-xs bg-white"
                                     >
                                       <option value={TroopRole.JUVENIL}>Juvenil</option>
@@ -545,7 +594,49 @@ export const StructureManager: React.FC = () => {
                                     <button onClick={() => openNewMemberModal(section.id)} className="text-[10px] text-slate-500 hover:text-slate-700 px-1.5 py-0.5 rounded">+ um</button>
                                   </div>
                                 </div>
-                                {members.filter(m => m.sectionId === section.id && !m.patrol && !m.isArchived).map(renderMemberRow)}
+                                {(() => {
+                                  const staff = members.filter(m => m.sectionId === section.id && !m.patrol && !m.isArchived);
+                                  const selectedHere = staff.filter(m => staffSelection.has(m.id));
+                                  const allSelected = staff.length > 0 && selectedHere.length === staff.length;
+                                  if (staff.length === 0) return null;
+                                  return (
+                                    <div className="flex flex-wrap items-center gap-1.5 pl-2 pr-1 pb-1">
+                                      <label className="flex items-center gap-1 text-[10px] text-slate-500 font-bold cursor-pointer">
+                                        <input
+                                          type="checkbox"
+                                          checked={allSelected}
+                                          onChange={() => {
+                                            setStaffSelection(prev => {
+                                              const next = new Set(prev);
+                                              if (allSelected) staff.forEach(m => next.delete(m.id));
+                                              else staff.forEach(m => next.add(m.id));
+                                              return next;
+                                            });
+                                          }}
+                                          className="w-3.5 h-3.5 text-indigo-600 rounded"
+                                        />
+                                        Selecionar
+                                      </label>
+                                      <button
+                                        type="button"
+                                        disabled={selectedHere.length === 0 || staffBusy}
+                                        onClick={() => handleBulkSetStaffRole(section.id, TroopRole.CHEFE)}
+                                        className="text-[10px] font-bold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 disabled:opacity-40 px-1.5 py-0.5 rounded"
+                                      >
+                                        {staffBusy ? 'Salvando…' : `Definir como Chefe${selectedHere.length ? ` (${selectedHere.length})` : ''}`}
+                                      </button>
+                                      <button
+                                        type="button"
+                                        disabled={selectedHere.length === 0 || staffBusy}
+                                        onClick={() => handleBulkSetStaffRole(section.id, TroopRole.ASSISTENTE)}
+                                        className="text-[10px] font-bold text-amber-800 bg-amber-50 hover:bg-amber-100 disabled:opacity-40 px-1.5 py-0.5 rounded"
+                                      >
+                                        Definir como Assistente
+                                      </button>
+                                    </div>
+                                  );
+                                })()}
+                                {members.filter(m => m.sectionId === section.id && !m.patrol && !m.isArchived).map(m => renderMemberRow(m, { selectable: true }))}
                             </div>
 
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 mt-2">
@@ -560,7 +651,7 @@ export const StructureManager: React.FC = () => {
                                             </div>
                                         </div>
                                         <div className="p-1">
-                                            {members.filter(m => m.sectionId === section.id && m.patrol === team.name && !m.isArchived).map(renderMemberRow)}
+                                            {members.filter(m => m.sectionId === section.id && m.patrol === team.name && !m.isArchived).map(m => renderMemberRow(m))}
                                             {members.filter(m => m.sectionId === section.id && m.patrol === team.name && !m.isArchived).length === 0 && (
                                               <p className="text-[10px] text-slate-400 italic px-2 py-1">Vazia — use ⚡ para colar a lista de nomes</p>
                                             )}
@@ -575,7 +666,7 @@ export const StructureManager: React.FC = () => {
                                 </button>
                                 {showArchived[section.id] && (
                                     <div className="mt-2 space-y-1">
-                                        {members.filter(m => m.sectionId === section.id && m.isArchived).map(renderMemberRow)}
+                                        {members.filter(m => m.sectionId === section.id && m.isArchived).map(m => renderMemberRow(m))}
                                         {members.filter(m => m.sectionId === section.id && m.isArchived).length === 0 && <p className="text-[10px] text-slate-300 italic pl-4">Nenhum membro arquivado.</p>}
                                     </div>
                                 )}

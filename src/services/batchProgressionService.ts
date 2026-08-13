@@ -1,4 +1,5 @@
-import { ProgressLaunch, ProgressLaunchApply, ScoutBranch } from '../types';
+import { ProgressLaunch, ProgressLaunchApply, ScoutBranch, TroopRole } from '../types';
+import { isYouthMember } from '../utils/memberQuickAdd';
 import {
   getMemberBlocoState,
   getMemberSpecialtyState,
@@ -304,10 +305,14 @@ export const createAndApplyProgressLaunch = async (params: {
   planTheme: string;
   codes: string[];
   memberIds: string[];
-  members: Array<{ id: string; branch: ScoutBranch }>;
+  members: Array<{ id: string; branch: ScoutBranch; role?: TroopRole | string }>;
 }): Promise<ProgressLaunch> => {
+  const youthIds = params.memberIds.filter(id => {
+    const member = params.members.find(m => m.id === id);
+    return !!member && isYouthMember(member);
+  });
   const applies: ProgressLaunchApply[] = [];
-  for (const memberId of params.memberIds) {
+  for (const memberId of youthIds) {
     const member = params.members.find(m => m.id === memberId);
     if (!member) continue;
     const result = await applyProgressionCodes(
@@ -334,7 +339,7 @@ export const createAndApplyProgressLaunch = async (params: {
     planId: params.planId,
     planTheme: params.planTheme,
     codes: params.codes,
-    creditedMemberIds: [...params.memberIds],
+    creditedMemberIds: [...youthIds],
     excludedMemberIds: [],
     applies,
     createdAt: now,
@@ -350,7 +355,7 @@ export const createAndApplyProgressLaunch = async (params: {
 export const syncProgressLaunchCredits = async (
   launch: ProgressLaunch,
   nextCreditedIds: string[],
-  members: Array<{ id: string; branch: ScoutBranch }>,
+  members: Array<{ id: string; branch: ScoutBranch; role?: TroopRole | string }>,
 ): Promise<ProgressLaunch> => {
   const prev = new Set(launch.creditedMemberIds);
   const next = new Set(nextCreditedIds);

@@ -19,6 +19,7 @@ import {
   extractProgressionCodes,
   syncProgressLaunchCredits,
 } from '../services/batchProgressionService';
+import { isYouthMember } from '../utils/memberQuickAdd';
 
 interface Props {
   sectionId?: string;
@@ -289,13 +290,22 @@ export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin }) =>
           return;
       }
 
+      const youthPresentIds = attendance.filter(id => {
+        const member = members.find(m => m.id === id);
+        return !!member && isYouthMember(member);
+      });
+      if (youthPresentIds.length === 0) {
+          setError('Nenhum jovem presente. Chefe e Assistente não recebem progressão de blocos/POR.');
+          return;
+      }
+
       setConfirmAction({
           title: 'Lançar progressão',
-          message: `Aplicar ${codesToApply.size} item(s) para ${attendance.length} jovem(ns) presentes?\n\nItens: ${Array.from(codesToApply).join(', ')}\n\nDepois você pode REVISAR e excluir quem não atingiu a avaliação — a presença não muda.`,
+          message: `Aplicar ${codesToApply.size} item(s) para ${youthPresentIds.length} jovem(ns) presentes?\n\nItens: ${Array.from(codesToApply).join(', ')}\n\nDepois você pode REVISAR e excluir quem não atingiu a avaliação — a presença não muda.`,
           confirmText: 'Aplicar a todos os presentes',
           onConfirm: async () => {
               try {
-                emitProcessProgress(`Lançando progressão para ${attendance.length} jovem(ns)...`);
+                emitProcessProgress(`Lançando progressão para ${youthPresentIds.length} jovem(ns)...`);
                 const launch = await createAndApplyProgressLaunch({
                   eventId: eventId!,
                   sectionId: finalSectionId,
@@ -303,7 +313,7 @@ export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin }) =>
                   planId: plan.id,
                   planTheme: plan.theme,
                   codes: Array.from(codesToApply),
-                  memberIds: attendance,
+                  memberIds: youthPresentIds,
                   members,
                 });
                 const blocks = launch.applies.reduce((s, a) => s + a.codesApplied.filter(c => /^B\d+\./.test(c)).length, 0);

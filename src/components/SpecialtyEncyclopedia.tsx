@@ -16,6 +16,7 @@ import {
   getMembersAsync,
   saveMemberSpecialtyState,
 } from '../services/storageService';
+import { isYouthMember } from '../utils/memberQuickAdd';
 import { buildFichasHtml } from '../services/specialtyFichaExport';
 import { parseDevolucao, applyDevolucao, ParsedDevolucao } from '../services/specialtyFichaImport';
 import { forceDownloadHtml, safeFileName as safeName } from '../services/htmlExportCommon';
@@ -98,7 +99,7 @@ export const SpecialtyEncyclopedia: React.FC<Props> = ({ onClose, member }) => {
   const [pendingMemberId, setPendingMemberId] = useState<string>('');
 
   useEffect(() => {
-    getMembersAsync().then(list => setMembers(list)).catch(() => setMembers([]));
+    getMembersAsync().then(list => setMembers(list.filter(isYouthMember))).catch(() => setMembers([]));
   }, []);
 
   const toggleSelected = (id: number) => {

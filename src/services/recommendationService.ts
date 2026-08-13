@@ -2,6 +2,7 @@ import { ScoutBranch, ScoutSection } from '../types';
 import { getCatalogForSection } from './catalogService';
 import { getMembersAsync } from './storageService';
 import { getMemberHomologatedCodes } from './reportingService';
+import { isYouthMember } from '../utils/memberQuickAdd';
 
 export interface TroopStat {
   itemCode: string;
@@ -28,7 +29,7 @@ export interface SectionAnalysis {
 
 export const analyzeTroopGaps = async (branch: ScoutBranch, section?: ScoutSection | null): Promise<SectionAnalysis | null> => {
   const allMembers = await getMembersAsync(section?.id);
-  const activeMembers = allMembers.filter(m => m.branch === branch && !m.isArchived);
+  const activeMembers = allMembers.filter(m => m.branch === branch && !m.isArchived && isYouthMember(m));
   
   if (activeMembers.length === 0) return null;
 

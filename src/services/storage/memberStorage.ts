@@ -1,4 +1,5 @@
 import { ScoutMember } from '../../types';
+import { resolveTroopRole } from '../../utils/memberQuickAdd';
 import { memberFolder, memberProfilePath } from '../dataLayoutService';
 import { readAccessibleItems, readSectionItems, writeSectionItems } from '../firebase/sectionData';
 import { getAppConfig } from './configStorage';
@@ -37,14 +38,15 @@ export const findMemberForLayout = async (memberId: string): Promise<ScoutMember
 };
 
 export const saveMemberAsync = async (member: ScoutMember): Promise<void> => {
-  assertCanWriteSection(member.sectionId);
+  const toSave: ScoutMember = { ...member, role: resolveTroopRole(member.role) };
+  assertCanWriteSection(toSave.sectionId);
   if (isFirestoreBacked()) {
-    const sectionId = member.sectionId || '';
+    const sectionId = toSave.sectionId || '';
     await runExclusive(`firestore-members-${sectionId}`, async () => {
       const current = await readSectionItems<ScoutMember>(sectionId, 'members');
-      const index = current.findIndex(item => item.id === member.id);
-      const updated = index >= 0 ? [...current] : [...current, member];
-      if (index >= 0) updated[index] = member;
+      const index = current.findIndex(item => item.id === toSave.id);
+      const updated = index >= 0 ? [...current] : [...current, toSave];
+      if (index >= 0) updated[index] = toSave;
       await writeSectionItems(sectionId, 'members', updated);
     });
     dispatchDataEvent(DATA_EVENTS.MEMBERS_UPDATED);
@@ -52,14 +54,14 @@ export const saveMemberAsync = async (member: ScoutMember): Promise<void> => {
   }
   await runExclusive(MEMBERS_FILENAME, async () => {
     const current = await getMembersAsync();
-    const index = current.findIndex(item => item.id === member.id);
-    const updated = index >= 0 ? [...current] : [...current, member];
-    if (index >= 0) updated[index] = member;
+    const index = current.findIndex(item => item.id === toSave.id);
+    const updated = index >= 0 ? [...current] : [...current, toSave];
+    if (index >= 0) updated[index] = toSave;
     await writeJsonDoc(MEMBERS_FILENAME, MEMBERS_KEY, updated);
   });
   if (isFileBacked()) {
-    const path = memberProfilePath(member.sectionId, member.id);
-    await writeLayoutFile(path.folder, path.file, member);
+    const path = memberProfilePath(toSave.sectionId, toSave.id);
+    await writeLayoutFile(path.folder, path.file, toSave);
   }
   dispatchDataEvent(DATA_EVENTS.MEMBERS_UPDATED);
 };

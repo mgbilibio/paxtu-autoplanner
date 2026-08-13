@@ -97,7 +97,8 @@ export const TELA_HELP: Record<string, ScreenHelp> = {
     titulo: 'Estrutura',
     corpo: 'Cria grupo, seção, equipes e usuários. Cadastro rápido: só o nome basta; lista de patrulha/chefia em um lance.',
     dicas: [
-      'Use ⚡ Lista rápida para colar nomes da patrulha ou da chefia.',
+      'Use ⚡ Lista rápida para colar nomes da patrulha ou da chefia. Função Chefe grava como Chefe.',
+      'Na Chefia / sem equipe, selecione pessoas e defina Chefe ou Assistente em lote.',
       'Complete nascimento e registro depois na edição.',
     ],
   },

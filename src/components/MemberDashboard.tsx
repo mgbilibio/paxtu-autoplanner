@@ -9,6 +9,7 @@ import { BlocoTracker } from './BlocoTracker';
 import { ProgressionMap } from './ProgressionMap';
 import { SpecialtyEncyclopedia } from './SpecialtyEncyclopedia';
 import { getAppConfig } from '../services/storageService';
+import { isYouthMember } from '../utils/memberQuickAdd';
 
 interface Props {
   member: ScoutMember;
@@ -31,6 +32,23 @@ export const MemberDashboard: React.FC<Props> = ({ member, section, onClose, onP
   const defaultMode: 'tracker' | 'legacy' = (isPor2025 && isLobOrEsc) ? 'tracker' : 'legacy';
   const [mode, setMode] = useState<'tracker' | 'legacy'>(defaultMode);
   const [showSpecialties, setShowSpecialties] = useState(false);
+
+  if (!isYouthMember(member)) {
+    return (
+      <div className="fixed inset-0 z-[60] bg-slate-900/95 flex items-center justify-center p-4" onClick={onClose}>
+        <div className="bg-white rounded-xl shadow-2xl p-6 max-w-md w-full" onClick={e => e.stopPropagation()}>
+          <h3 className="text-lg font-bold text-slate-800 mb-2">Sem progressão de jovens</h3>
+          <p className="text-sm text-slate-600 mb-4">
+            {member.name} está cadastrado(a) como <strong>{member.role || 'chefia'}</strong>.
+            Chefe e Assistente não acompanham blocos/POR de jovens.
+          </p>
+          <button onClick={onClose} className="px-4 py-2 bg-slate-800 text-white rounded-lg font-bold text-sm">
+            Fechar
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (mode === 'tracker') {
     return (

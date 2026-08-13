@@ -13,7 +13,9 @@ import {
   formatMemberWriteError,
   incompleteReasons,
   isMemberProfileIncomplete,
+  isYouthMember,
   parseMemberLines,
+  resolveTroopRole,
 } from '../utils/memberQuickAdd';
 
 interface Props {
@@ -141,7 +143,7 @@ export const MembersManager: React.FC<Props> = ({ sectionId, isAdmin }) => {
         : Date.now().toString()),
       sectionId: finalSectionId,
       name: trimmed,
-      role,
+      role: resolveTroopRole(role),
       branch: resolvedSection?.branch || branch,
       patrol: patrol.trim() || undefined,
       registerNumber: register.trim() || undefined,
@@ -202,7 +204,7 @@ export const MembersManager: React.FC<Props> = ({ sectionId, isAdmin }) => {
           name: row.name,
           sectionId: finalSectionId,
           branch: secBranch,
-          role: row.role || bulkRole,
+          role: resolveTroopRole(row.role, bulkRole),
           patrol: row.patrol || bulkPatrol.trim() || undefined,
           registerNumber: row.registerNumber,
         });
@@ -594,7 +596,9 @@ export const MembersManager: React.FC<Props> = ({ sectionId, isAdmin }) => {
                       )}
                     </div>
                     <div className="opacity-0 group-hover:opacity-100 transition-opacity flex flex-col gap-1">
-                      <button onClick={() => setHistoryMember(m)} className="text-green-600 hover:bg-green-50 p-1 rounded" title="Ficha de Progressão">📜</button>
+                      {isYouthMember(m) && (
+                        <button onClick={() => setHistoryMember(m)} className="text-green-600 hover:bg-green-50 p-1 rounded" title="Ficha de Progressão">📜</button>
+                      )}
                       <button onClick={() => handleEdit(m)} className="text-blue-500 hover:bg-blue-50 p-1 rounded" title="Editar / completar">✏️</button>
                       <button onClick={() => { setMoveId(m.id); setMoveTargetSection(sections[0]?.id || ''); }} className="text-orange-500 hover:bg-orange-50 p-1 rounded" title="Mover de Seção">➡️</button>
                       <button onClick={() => setDeleteTarget(m.id)} className="text-red-500 hover:bg-red-50 p-1 rounded" title="Excluir">🗑️</button>
