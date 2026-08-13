@@ -46,7 +46,15 @@ export const readSectionItems = async <T>(sectionId: string, docId: string): Pro
 };
 
 export const writeSectionItems = async <T>(sectionId: string, docId: string, items: T[]): Promise<void> => {
-  await setDoc(doc(getFirestoreDb(), 'sections', sectionId, 'docs', docId), { items });
+  if (!sectionId) {
+    throw new Error('Seção não definida para gravar os dados.');
+  }
+  // Firestore rejeita `undefined` em qualquer campo (inclusive itens do array).
+  // buildMinimalMember e outros payloads usam campos opcionais omitidos como undefined.
+  await setDoc(
+    doc(getFirestoreDb(), 'sections', sectionId, 'docs', docId),
+    stripUndefined({ items }),
+  );
 };
 
 export const readAccessibleItems = async <T>(docId: string): Promise<T[]> => {

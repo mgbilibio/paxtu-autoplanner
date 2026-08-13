@@ -150,13 +150,36 @@ export const buildMinimalMember = (opts: {
   role?: TroopRole;
   patrol?: string;
   registerNumber?: string;
-}): ScoutMember => ({
-  id: newMemberId(),
-  name: opts.name.trim(),
-  sectionId: opts.sectionId,
-  branch: opts.branch,
-  role: opts.role || TroopRole.JUVENIL,
-  patrol: opts.patrol || undefined,
-  registerNumber: opts.registerNumber || undefined,
-  isArchived: false,
-});
+}): ScoutMember => {
+  const member: ScoutMember = {
+    id: newMemberId(),
+    name: opts.name.trim(),
+    sectionId: opts.sectionId,
+    branch: opts.branch,
+    role: opts.role || TroopRole.JUVENIL,
+    isArchived: false,
+  };
+  if (opts.patrol) member.patrol = opts.patrol;
+  if (opts.registerNumber) member.registerNumber = opts.registerNumber;
+  return member;
+};
+
+/** Mensagem em português para falha de gravação (Firestore/lock/FS). */
+export const formatMemberWriteError = (err: unknown): string => {
+  const raw = err instanceof Error ? err.message : String(err || '');
+  if (/permission-denied|insufficient permissions/i.test(raw)) {
+    return 'Sem permissão para gravar nesta seção. Peça a um administrador para liberar o acesso.';
+  }
+  if (/modo consulta|sem lock/i.test(raw)) {
+    return 'A seção está em modo consulta. Ative a edição para cadastrar membros.';
+  }
+  if (/unsupported field value: undefined/i.test(raw)) {
+    return 'Não foi possível gravar os membros (campo vazio incompatível com o Firestore). Tente novamente.';
+  }
+  if (/seção não definida/i.test(raw)) {
+    return 'Seção não definida. Recarregue a página e tente de novo.';
+  }
+  return raw
+    ? `Não foi possível cadastrar os membros. ${raw}`
+    : 'Não foi possível cadastrar os membros. Tente novamente.';
+};
