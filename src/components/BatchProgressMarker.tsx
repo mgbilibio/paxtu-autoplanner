@@ -10,6 +10,7 @@ import {
   ACOES_VARIAVEIS_2025,
 } from '../data/generated/progressao_2025';
 import { getMembersAsync, getMemberBlocoState, saveMemberBlocoState, canWriteSection } from '../services/storageService';
+import { isYouthMember } from '../utils/memberQuickAdd';
 
 interface Props {
   sectionId?: string;
@@ -44,7 +45,7 @@ export const BatchProgressMarker: React.FC<Props> = ({ sectionId, branch, onClos
     getMembersAsync().then(all => {
       const filtered = all.filter(m => {
         if (sectionId && m.sectionId !== sectionId) return false;
-        return !m.isArchived && m.branch === branch;
+        return !m.isArchived && m.branch === branch && isYouthMember(m);
       });
       setMembers(filtered);
       setSelectedMembers(new Set(filtered.map(m => m.id))); // default todos

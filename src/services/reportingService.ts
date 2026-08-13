@@ -1,4 +1,5 @@
 import { ScoutMember, ScoutBranch, ScoutSection, ProgressionRecord } from "../types";
+import { isYouthMember } from "../utils/memberQuickAdd";
 import {
   getCalendarEventsAsync,
   getMembersAsync,
@@ -53,9 +54,10 @@ export const getTroopProgressData = async (branchFilter?: ScoutBranch, sectionId
     getMembersAsync(sectionId)
   ]);
 
-  const activeMembers = branchFilter
-    ? members.filter(m => m.branch === branchFilter)
-    : members;
+  const activeMembers = members.filter(m => {
+    if (!isYouthMember(m) || m.isArchived) return false;
+    return branchFilter ? m.branch === branchFilter : true;
+  });
 
   return Promise.all(activeMembers.map(async member => {
     // Frequencia: ignora eventos anteriores ao ingresso do membro (M14).

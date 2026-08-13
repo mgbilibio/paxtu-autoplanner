@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { ScoutMember, ScoutBranch } from '../types';
 import { getMembersAsync, countConcludedBlocos, getMemberReconhecimento } from '../services/storageService';
+import { isYouthMember } from '../utils/memberQuickAdd';
 import { RAMOS_2025, ETAPAS_2025, RECONHECIMENTOS_2025 } from '../data/generated/progressao_2025';
 import { StatusBadge } from './StatusBadge';
 import { BatchProgressMarker } from './BatchProgressMarker';
@@ -63,6 +64,7 @@ export const SectionProgressOverview: React.FC<Props> = ({ sectionId, branch, on
       const filtered = all.filter(m => {
         if (sectionId && m.sectionId !== sectionId) return false;
         if (branch && m.branch !== branch) return false;
+        if (!isYouthMember(m)) return false;
         return !m.isArchived && (m.branch === ScoutBranch.LOBINHO || m.branch === ScoutBranch.ESCOTEIRO);
       });
 
@@ -118,7 +120,7 @@ export const SectionProgressOverview: React.FC<Props> = ({ sectionId, branch, on
   if (rows.length === 0) {
     return (
       <div className="p-8 text-center text-gray-500">
-        <p className="text-sm">Nenhum membro Lobinho/Escoteiro encontrado nesta seção.</p>
+        <p className="text-sm">Nenhum jovem Lobinho/Escoteiro encontrado nesta seção. Chefia não entra na progressão de blocos.</p>
       </div>
     );
   }
