@@ -25,7 +25,7 @@ export const getCatalogAsync = async (): Promise<MeetingPlan[]> => {
   if (isFileBacked()) {
     try {
       const config = getAppConfig();
-      const content = await window.fileSystem.readData(config!.dataFolder, CATALOG_FILENAME);
+      const content = await window.fileSystem?.readData(config!.dataFolder, CATALOG_FILENAME);
       return content ? JSON.parse(content) : [];
     } catch {
       return getCatalogSync();

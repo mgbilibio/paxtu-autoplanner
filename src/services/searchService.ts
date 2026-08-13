@@ -201,26 +201,29 @@ export interface LibrarySearchOutcome {
 }
 
 export const searchLibrary = async (query: string, limit = 20): Promise<LibrarySearchOutcome> => {
-  // Fora do Electron (browser dev) nao ha biblioteca local: silenciosamente vazio.
-  if (!query.trim() || !window.fileSystem?.searchLibrary) return { results: [], ok: true };
-  const response = await window.fileSystem.searchLibrary(query, limit);
-  if (!response.ok) {
-    // Qualquer falha do backend de busca (componente de consulta ausente,
-    // indice FTS5 nao encontrado, erro de execucao) significa, para o usuario,
-    // "busca dentro dos livros indisponivel" — sem acoplar a UI ao texto do erro.
-    return { results: [], ok: false, unavailable: true, error: response.error };
+  if (!query.trim()) return { results: [], ok: true };
+  if (window.fileSystem?.searchLibrary) {
+    const response = await window.fileSystem.searchLibrary(query, limit);
+    if (!response.ok) {
+      // Qualquer falha do backend de busca (componente de consulta ausente,
+      // indice FTS5 nao encontrado, erro de execucao) significa, para o usuario,
+      // "busca dentro dos livros indisponivel" — sem acoplar a UI ao texto do erro.
+      return { results: [], ok: false, unavailable: true, error: response.error };
+    }
+    return {
+      ok: true,
+      results: response.results.map(item => ({
+        id: `biblioteca-${item.id}`,
+        kind: 'biblioteca',
+        title: item.title,
+        body: item.snippet,
+        sourcePath: item.sourcePath,
+        sourcePdf: item.sourcePdf,
+        blockIndex: item.blockIndex,
+        pdfPage: item.pdfPage,
+      })),
+    };
   }
-  return {
-    ok: true,
-    results: response.results.map(item => ({
-      id: `biblioteca-${item.id}`,
-      kind: 'biblioteca',
-      title: item.title,
-      body: item.snippet,
-      sourcePath: item.sourcePath,
-      sourcePdf: item.sourcePdf,
-      blockIndex: item.blockIndex,
-      pdfPage: item.pdfPage,
-    })),
-  };
+  const { searchWebLibrary } = await import('./webLibraryService');
+  return searchWebLibrary(query, limit);
 };

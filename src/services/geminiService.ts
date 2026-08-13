@@ -6,6 +6,8 @@ import { buildManuaisContextForBranch } from '../data/manuaisReferencia';
 import { normalizePlanForUse } from './planNormalizationService';
 import { getProgressionDetail } from './progressionDetailService';
 import { extractJson } from './llmJson';
+import { isWebApp } from './platform';
+import { getGeminiOAuthAccessToken } from './googleAuth';
 
 // Remove possiveis segredos (api key) de mensagens de erro da SDK antes de
 // exibir/logar — a SDK as vezes ecoa a URL da request com a chave.
@@ -13,6 +15,9 @@ const sanitizeLlmError = (error: any): string =>
   String(error?.message || error || 'Desconhecido')
     .replace(/key=[\w-]+/gi, 'key=***')
     .replace(/AIza[\w-]{10,}/g, '***');
+
+const GEMINI_MISSING_KEY =
+  'Chave Gemini não configurada. Obtenha uma chave grátis em https://aistudio.google.com/app/apikey (conta Google, sem cartão) e cole em Configurações.';
 
 // Resolve a chave Gemini. Producao usa SOMENTE getStoredApiKey() — nunca embute
 // VITE_GEMINI_API_KEY no bundle. Em dev (import.meta.env.DEV) aceita a env como
@@ -24,6 +29,94 @@ const resolveApiKey = (): string | undefined => {
   return getStoredApiKey() ?? undefined;
 };
 
+// Web: classe Flash-Lite barata/rápida. O alias -latest acompanha o id vigente
+// no @google/genai / Gemini API; os demais são fallbacks pinados (jul/2026).
+export const WEB_GEMINI_LITE_CANDIDATES = [
+  'gemini-flash-lite-latest',
+  'gemini-3.5-flash-lite',
+  'gemini-3.1-flash-lite',
+  'gemini-2.5-flash-lite',
+];
+
+export const DESKTOP_DEFAULT_GEMINI_MODEL = 'gemini-2.5-flash';
+
+export const getDefaultGeminiModel = (): string =>
+  isWebApp() ? WEB_GEMINI_LITE_CANDIDATES[0] : DESKTOP_DEFAULT_GEMINI_MODEL;
+
+const geminiVersionScore = (id: string): number => {
+  const match = id.match(/gemini-(\d+(?:\.\d+)?)/i);
+  return match ? Number(match[1]) : 0;
+};
+
+export const pickPreferredGeminiModel = (models: string[], current?: string): string => {
+  if (models.length === 0) return getDefaultGeminiModel();
+  if (isWebApp()) {
+    const lite = models.filter(id => /flash-lite/i.test(id) && !/pro/i.test(id) && !/image/i.test(id));
+    if (current && lite.includes(current)) return current;
+    const latestAlias = lite.find(id => /flash-lite-latest/i.test(id));
+    if (latestAlias) return latestAlias;
+    if (lite.length > 0) {
+      return [...lite].sort((a, b) => geminiVersionScore(b) - geminiVersionScore(a) || b.localeCompare(a))[0];
+    }
+    for (const candidate of WEB_GEMINI_LITE_CANDIDATES) {
+      if (models.includes(candidate)) return candidate;
+    }
+    const flash = models.find(id => /flash/i.test(id) && !/pro/i.test(id) && !/image/i.test(id));
+    return flash || WEB_GEMINI_LITE_CANDIDATES[0];
+  }
+  const prefOrder = [
+    'gemini-2.5-flash',
+    'gemini-3.1-flash-live-preview',
+    'gemini-3-flash-preview',
+    'gemini-2.0-flash',
+    'gemini-1.5-flash',
+  ];
+  return prefOrder.find(id => models.includes(id)) || (current && models.includes(current) ? current : models[0]);
+};
+
+export const hasGeminiCredentials = (): boolean =>
+  Boolean(resolveApiKey() || (isWebApp() && getGeminiOAuthAccessToken()));
+
+const generateGeminiText = async (modelId: string, prompt: string, temperature = 0.5): Promise<{ text: string; finishReason?: string }> => {
+  const apiKey = resolveApiKey();
+  if (apiKey) {
+    const ai = new GoogleGenAI({ apiKey });
+    const res = await ai.models.generateContent({
+      model: modelId,
+      contents: [{ role: 'user', parts: [{ text: prompt }] }],
+      config: { temperature },
+    });
+    return { text: res.text || '', finishReason: (res as { candidates?: Array<{ finishReason?: string }> })?.candidates?.[0]?.finishReason };
+  }
+  const oauth = isWebApp() ? getGeminiOAuthAccessToken() : undefined;
+  if (oauth) {
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(modelId)}:generateContent`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${oauth}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents: [{ role: 'user', parts: [{ text: prompt }] }],
+          generationConfig: { temperature },
+        }),
+      },
+    );
+    const body = await response.json() as {
+      error?: { message?: string };
+      candidates?: Array<{ finishReason?: string; content?: { parts?: Array<{ text?: string }> } }>;
+    };
+    if (!response.ok) {
+      throw new Error(body.error?.message || `Gemini OAuth HTTP ${response.status}. Cole uma chave do AI Studio em Configurações.`);
+    }
+    const text = body.candidates?.[0]?.content?.parts?.map(part => part.text || '').join('') || '';
+    return { text, finishReason: body.candidates?.[0]?.finishReason };
+  }
+  throw new Error(GEMINI_MISSING_KEY);
+};
+
 export interface SmartSuggestion {
   theme: string;
   rationale: string;
@@ -31,42 +124,28 @@ export interface SmartSuggestion {
 }
 
 // Q&A genérico para Painel de Ajuda — sem JSON, resposta livre em português.
-// Modelo Gemini padrao para chamadas internas (quando o usuario nao escolheu um).
-// 2.5-flash e gratuito e vigente (jun/2026). Evitar 2.0-flash/1.5 (descontinuados/legado).
-// A geracao principal usa o modelo escolhido no dropdown, populado por getAvailableModels().
-const DEFAULT_GEMINI_MODEL = 'gemini-2.5-flash';
+// A geração principal usa o modelo escolhido no dropdown; na web o padrão é Flash-Lite.
 
 export const askGemini = async (question: string, context: string, modelId?: string): Promise<string> => {
-    const apiKey = getStoredApiKey();
-    if (!apiKey) throw new Error('Chave Gemini não configurada.');
-    const model = modelId || DEFAULT_GEMINI_MODEL;
+    if (!hasGeminiCredentials()) throw new Error(GEMINI_MISSING_KEY);
+    const model = modelId || getDefaultGeminiModel();
     const system = 'Você é um assistente experiente em escotismo (UEB) e no app Paxtu AutoPlanner. Responda em português brasileiro, de forma direta e prática, em até 3 parágrafos. Use o contexto fornecido para fundamentar a resposta. Se a pergunta sair do escopo do app ou escotismo, diga isso de forma cordial.';
     const user = `CONTEXTO DO APP:\n${context}\n\nPERGUNTA DO CHEFE:\n${question}`;
-    // Sanitiza erro cru da SDK para nao vazar key=... ao chamador/log.
     try {
-      return await callGeminiSimple(apiKey, model, system, user);
+      const result = await generateGeminiText(model, `${system}\n\n${user}`);
+      return result.text;
     } catch (e) {
       throw new Error('Erro na IA: ' + sanitizeLlmError(e));
     }
 };
 
-const callGeminiSimple = async (apiKey: string, modelId: string, systemPrompt: string, userPrompt: string): Promise<string> => {
-    const ai = new GoogleGenAI({ apiKey });
-    const response = await ai.models.generateContent({
-        model: modelId,
-        contents: [
-            { role: 'user', parts: [{ text: systemPrompt + "\n\n" + userPrompt }] }
-        ],
-        config: {
-            temperature: 0.5
-        }
-    });
-    return response.text || "";
+const callGeminiSimple = async (_apiKey: string, modelId: string, systemPrompt: string, userPrompt: string): Promise<string> => {
+    const result = await generateGeminiText(modelId, systemPrompt ? `${systemPrompt}\n\n${userPrompt}` : userPrompt);
+    return result.text;
 };
 
 export const generateSmartSuggestions = async (analysis: SectionAnalysis, branch: string): Promise<SmartSuggestion[]> => {
-  const apiKey = resolveApiKey();
-  if (!apiKey) throw new Error("API Key não configurada.");
+  if (!hasGeminiCredentials()) throw new Error(GEMINI_MISSING_KEY);
 
   const catSummary = analysis.categorySummaries.slice(0, 5).map(c => 
     `- ${c.name}: Apenas ${c.completionAverage}% concluído (Prioridade Alta)`
@@ -99,7 +178,7 @@ export const generateSmartSuggestions = async (analysis: SectionAnalysis, branch
   `;
 
   try {
-    const text = await callGeminiSimple(apiKey, DEFAULT_GEMINI_MODEL, "", prompt);
+    const text = await callGeminiSimple('', getDefaultGeminiModel(), "", prompt);
     const parsed = extractJson<SmartSuggestion[]>(text);
     if (!parsed) throw new Error("JSON invalido");
     return parsed;
@@ -109,42 +188,50 @@ export const generateSmartSuggestions = async (analysis: SectionAnalysis, branch
   }
 };
 
+const parseGeminiModelList = (raw: Array<{ name?: string; supportedGenerationMethods?: string[]; supportedActions?: string[] }>): string[] =>
+  raw
+    .map(model => (model.name || '').replace(/^models\//, ''))
+    .filter(name =>
+      name.includes('gemini')
+      && !name.includes('vision')
+      && !/image|tts|embed/i.test(name),
+    );
+
 export const getAvailableModels = async (): Promise<string[]> => {
-  const apiKey = resolveApiKey();
-  // Fallback so quando nao ha chave ou a listagem via API falha. Mantido em
-  // modelos Flash vigentes e gratuitos; a lista real vem de ai.models.list() abaixo.
-  const fallbacks = ["gemini-2.5-flash", "gemini-2.5-flash-lite"];
-  if (!apiKey) return fallbacks;
+  const fallbacks = isWebApp()
+    ? [...WEB_GEMINI_LITE_CANDIDATES, 'gemini-2.5-flash']
+    : ['gemini-2.5-flash', 'gemini-2.5-flash-lite'];
+  if (!hasGeminiCredentials()) return fallbacks;
+
+  const sortModels = (models: string[]) =>
+    [...models].sort((a, b) => geminiVersionScore(b) - geminiVersionScore(a) || b.localeCompare(a));
 
   try {
-    const ai = new GoogleGenAI({ apiKey });
-    const models: string[] = [];
-    
-    // @google/genai v1.x uses async iterator for list()
-    const response = await ai.models.list();
-    for await (const model of response) {
-        if (model.name && model.name.includes("gemini") && 
-            !model.name.includes("vision") &&
-            model.supportedActions?.includes("generateContent")) {
-            models.push(model.name.replace("models/", ""));
+    const apiKey = resolveApiKey();
+    if (apiKey) {
+      const ai = new GoogleGenAI({ apiKey });
+      const models: string[] = [];
+      const response = await ai.models.list();
+      for await (const model of response) {
+        if (model.name && model.name.includes('gemini') &&
+            !model.name.includes('vision') &&
+            model.supportedActions?.includes('generateContent')) {
+          models.push(model.name.replace('models/', ''));
         }
+      }
+      return models.length > 0 ? sortModels(models) : fallbacks;
     }
-    
-    if (models.length === 0) return fallbacks;
-    return models.sort((a, b) => {
-        // Ordem de preferência: 3.1 > 3 > 2.5 > 2.0 > 1.5
-        const getVer = (s: string) => {
-            if (s.includes('3.1')) return 3.1;
-            if (s.includes('3')) return 3.0;
-            if (s.includes('2.5')) return 2.5;
-            if (s.includes('2.0')) return 2.0;
-            if (s.includes('1.5')) return 1.5;
-            return 0;
-        };
-        return getVer(b) - getVer(a) || b.localeCompare(a);
+    const oauth = isWebApp() ? getGeminiOAuthAccessToken() : undefined;
+    if (!oauth) return fallbacks;
+    const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models', {
+      headers: { Authorization: `Bearer ${oauth}` },
     });
+    if (!response.ok) return fallbacks;
+    const body = await response.json() as { models?: Array<{ name?: string }> };
+    const models = parseGeminiModelList(body.models || []);
+    return models.length > 0 ? sortModels(models) : fallbacks;
   } catch (e) {
-    console.error("Erro ao listar modelos Gemini:", e);
+    console.error('Erro ao listar modelos Gemini:', e);
     return fallbacks;
   }
 };
@@ -185,8 +272,7 @@ export const analyzeIndividualProgress = async (params: {
     completedCodes: string[],
     fullCatalog: any[] 
 }): Promise<{ recommendation: string, items: string[] }> => {
-  const apiKey = resolveApiKey();
-  if (!apiKey) throw new Error("API Key não configurada.");
+  if (!hasGeminiCredentials()) throw new Error(GEMINI_MISSING_KEY);
 
   const missingItems = params.fullCatalog
     .filter(item => !params.completedCodes.includes(item.code))
@@ -217,7 +303,7 @@ export const analyzeIndividualProgress = async (params: {
   `;
 
   try {
-    const text = await callGeminiSimple(apiKey, "gemini-2.5-flash", "", prompt);
+    const text = await callGeminiSimple('', getDefaultGeminiModel(), "", prompt);
     const parsed = extractJson<{ recommendation: string, items: string[] }>(text);
     if (!parsed) throw new Error("JSON invalido");
     return parsed;
@@ -237,8 +323,7 @@ export const generateScoutCycle = async (params: {
     planningMode?: 'from_selection' | 'auto_link',
     catalogDigest?: string,
 }): Promise<MeetingCycle> => {
-  const apiKey = resolveApiKey();
-  if (!apiKey) throw new Error("API Key não configurada.");
+  if (!hasGeminiCredentials()) throw new Error(GEMINI_MISSING_KEY);
 
   const mode =
     params.planningMode === 'from_selection' || params.planningMode === 'auto_link'
@@ -279,7 +364,7 @@ export const generateScoutCycle = async (params: {
   `;
 
   try {
-    const text = await callGeminiSimple(apiKey, params.modelId || 'gemini-2.5-flash', "", prompt);
+    const text = await callGeminiSimple('', params.modelId || getDefaultGeminiModel(), "", prompt);
     const parsed = extractJson<MeetingCycle>(text);
     if (!parsed) throw new Error("JSON invalido");
     parsed.id = Date.now().toString();
@@ -291,11 +376,9 @@ export const generateScoutCycle = async (params: {
 };
 
 export const generateScoutPlan = async (params: GeneratorParams & { context?: { sectionName: string, groupName: string } }): Promise<MeetingPlan> => {
-  const apiKey = resolveApiKey();
-  if (!apiKey) throw new Error("Chave de API não encontrada.");
+  if (!hasGeminiCredentials()) throw new Error(GEMINI_MISSING_KEY);
 
-  const ai = new GoogleGenAI({ apiKey: apiKey });
-  const selectedModel = params.modelId || 'gemini-2.5-flash';
+  const selectedModel = params.modelId || getDefaultGeminiModel();
 
   const planningMode =
     params.planningMode === 'from_selection' || params.planningMode === 'auto_link'
@@ -369,8 +452,7 @@ MODO AUTO_LINK:
   userPromptBase += bibliotecaContext;
 
   // Traduz finishReason problematico (MAX_TOKENS/SAFETY) em erro claro pro chefe.
-  const checkFinishReason = (res: any, etapa: string): void => {
-    const reason = res?.candidates?.[0]?.finishReason;
+  const checkFinishReason = (reason: string | undefined, etapa: string): void => {
     if (reason === 'MAX_TOKENS') {
       throw new Error(`A IA cortou a resposta por limite de tokens na etapa "${etapa}". Reduza a quantidade de objetivos/atividades e tente de novo.`);
     }
@@ -379,21 +461,14 @@ MODO AUTO_LINK:
     }
   };
 
-  // Chama o modelo e extrai JSON robustamente; 1 retry exigindo JSON puro se falhar.
   const callJson = async <T,>(prompt: string, etapa: string): Promise<T> => {
-    let res = await ai.models.generateContent({
-      model: selectedModel, contents: [{ role: 'user', parts: [{ text: prompt }] }],
-      config: { temperature: 0.5 },
-    });
-    checkFinishReason(res, etapa);
+    let res = await generateGeminiText(selectedModel, prompt, 0.5);
+    checkFinishReason(res.finishReason, etapa);
     let parsed = extractJson<T>(res.text || '');
     if (parsed === null) {
       const retryPrompt = `${prompt}\n\nIMPORTANTE: sua resposta anterior NAO era um JSON valido. Responda SOMENTE com o JSON pedido, sem texto extra nem markdown.`;
-      res = await ai.models.generateContent({
-        model: selectedModel, contents: [{ role: 'user', parts: [{ text: retryPrompt }] }],
-        config: { temperature: 0.3 },
-      });
-      checkFinishReason(res, etapa);
+      res = await generateGeminiText(selectedModel, retryPrompt, 0.3);
+      checkFinishReason(res.finishReason, etapa);
       parsed = extractJson<T>(res.text || '');
     }
     if (parsed === null) throw new Error(`A IA nao retornou JSON valido na etapa "${etapa}".`);

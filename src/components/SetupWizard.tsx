@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { AppConfig, DataSyncMode, LlmProviderId } from '../types';
 import { normalizeOllamaBaseUrl } from '../services/ollamaUrlSecurity';
 import { isCloudModel, sortModelsCloudFirst } from '../services/ollamaService';
+import { isWebApp } from '../services/platform';
 
 interface Props {
   onComplete: (config: AppConfig) => void;
@@ -10,6 +11,7 @@ interface Props {
 export const SetupWizard: React.FC<Props> = ({ onComplete }) => {
   const [provider, setProvider] = useState<LlmProviderId>('gemini');
   const [apiKey, setApiKey] = useState('');
+  const [xaiKey, setXaiKey] = useState('');
   const [ollamaUrl, setOllamaUrl] = useState('http://localhost:11434');
   const [ollamaTestStatus, setOllamaTestStatus] = useState<{ ok: boolean; error?: string; models?: string[] } | null>(null);
   const [testingOllama, setTestingOllama] = useState(false);
@@ -80,25 +82,34 @@ export const SetupWizard: React.FC<Props> = ({ onComplete }) => {
   };
 
   const canAdvanceFromStep1 = (): boolean => {
-    if (provider === 'gemini') return !!apiKey.trim();
+    if (provider === 'gemini') return isWebApp() || !!apiKey.trim();
+    if (provider === 'xai-oauth') return isWebApp() || !!xaiKey.trim();
+    if (isWebApp() && (provider === 'ollama' || provider === 'ollama-local')) return true;
     return !!ollamaTestStatus?.ok && !!selectedOllamaModel;
   };
 
   const handleFinish = () => {
     const next: typeof errors = {};
-    if (provider === 'gemini' && !apiKey.trim()) next.apiKey = 'A Chave API do Gemini é obrigatória.';
-    if (provider === 'ollama' && !selectedOllamaModel) next.ollama = 'Selecione um modelo Ollama disponível.';
+    if (provider === 'gemini' && !apiKey.trim() && !isWebApp()) next.apiKey = 'A Chave API do Gemini é obrigatória.';
+    if ((provider === 'ollama' || provider === 'ollama-local') && !isWebApp() && !selectedOllamaModel) next.ollama = 'Selecione um modelo Ollama disponível.';
     setErrors(next);
     if (Object.keys(next).length > 0) { setStep(1); return; }
+    const resolvedProvider: LlmProviderId =
+      provider === 'ollama' || provider === 'ollama-local'
+        ? 'ollama-local'
+        : provider === 'xai-oauth'
+          ? 'xai-oauth'
+          : 'gemini';
     const config: AppConfig = {
-      apiKey: provider === 'gemini' ? apiKey.trim() : '',
+      apiKey: resolvedProvider === 'gemini' ? apiKey.trim() : '',
       dataFolder: dataFolder.trim(),
       isConfigured: true,
-      llmProvider: provider,
+      llmProvider: resolvedProvider,
       ollamaBaseUrl: normalizeOllamaBaseUrl(ollamaUrl) || 'http://localhost:11434',
-      ollamaModel: provider === 'ollama' ? selectedOllamaModel : undefined,
+      ollamaModel: resolvedProvider === 'ollama-local' ? selectedOllamaModel : undefined,
       ollamaGenerationContext: 262144,
       ollamaGenerationOutput: 12288,
+      xaiApiKey: xaiKey.trim() || undefined,
       syncMode,
       profile: { groupName, sectionName, city, defaultLocation, patrols: [] },
     };
@@ -125,23 +136,34 @@ export const SetupWizard: React.FC<Props> = ({ onComplete }) => {
             <div className="animate-slide-in">
               <h2 className="text-xl font-bold text-gray-800 mb-4">🔑 Provedor de IA</h2>
               <p className="text-gray-600 text-sm mb-4 leading-relaxed">
-                Escolha entre <strong>Gemini</strong> (cloud, requer chave + internet) ou <strong>Ollama</strong> (local, sem internet, mantém seus dados na máquina).
+                {isWebApp()
+                  ? <>Padrão: <strong>Gemini Flash-Lite</strong> (barato e rápido). A chave do AI Studio é opcional agora — cole depois em Configurações. xAI é extra com chave colada. Ollama local só no app desktop.</>
+                  : <>Escolha entre <strong>Gemini</strong> (cloud, requer chave + internet) ou <strong>Ollama</strong> (local, sem internet, mantém seus dados na máquina).</>}
               </p>
 
-              <div className="flex gap-2 mb-6">
+              <div className={`grid gap-2 mb-6 ${isWebApp() ? 'grid-cols-3' : 'grid-cols-2'}`}>
                 <button
                   onClick={() => setProvider('gemini')}
-                  className={`flex-1 p-4 border-2 rounded-lg text-left transition-all ${provider === 'gemini' ? 'border-blue-600 bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`}
+                  className={`p-4 border-2 rounded-lg text-left transition-all ${provider === 'gemini' ? 'border-blue-600 bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`}
                 >
                   <div className="font-bold text-sm">☁️ Gemini</div>
-                  <div className="text-[11px] text-gray-500 mt-1">Cloud Google · respostas rápidas · busca web</div>
+                  <div className="text-[11px] text-gray-500 mt-1">{isWebApp() ? 'Flash-Lite · AI Studio' : 'Cloud Google · respostas rápidas'}</div>
                 </button>
+                {isWebApp() && (
+                  <button
+                    onClick={() => setProvider('xai-oauth')}
+                    className={`p-4 border-2 rounded-lg text-left transition-all ${provider === 'xai-oauth' ? 'border-slate-800 bg-slate-50' : 'border-gray-200 hover:border-gray-300'}`}
+                  >
+                    <div className="font-bold text-sm">⚡ xAI</div>
+                    <div className="text-[11px] text-gray-500 mt-1">Extra · chave api.x.ai</div>
+                  </button>
+                )}
                 <button
                   onClick={() => setProvider('ollama')}
-                  className={`flex-1 p-4 border-2 rounded-lg text-left transition-all ${provider === 'ollama' ? 'border-emerald-600 bg-emerald-50' : 'border-gray-200 hover:border-gray-300'}`}
+                  className={`p-4 border-2 rounded-lg text-left transition-all ${provider === 'ollama' ? 'border-emerald-600 bg-emerald-50' : 'border-gray-200 hover:border-gray-300'}`}
                 >
                   <div className="font-bold text-sm">💻 Ollama</div>
-                  <div className="text-[11px] text-gray-500 mt-1">Local · privacidade total · funciona offline</div>
+                  <div className="text-[11px] text-gray-500 mt-1">{isWebApp() ? 'Só no app desktop' : 'Local · privacidade total'}</div>
                 </button>
               </div>
 
@@ -168,10 +190,39 @@ export const SetupWizard: React.FC<Props> = ({ onComplete }) => {
                     className={`w-full p-3 border rounded-lg bg-gray-50 focus:bg-white focus:ring-2 outline-none ${errors.apiKey ? 'border-red-400 focus:ring-red-500' : 'border-gray-300 focus:ring-green-500'}`}
                   />
                   {errors.apiKey && <p id="apikey-error" role="alert" className="text-xs text-red-600 mt-1">{errors.apiKey}</p>}
+                  {isWebApp() && (
+                    <p className="text-[11px] text-slate-600 mt-2 bg-slate-50 border border-slate-200 rounded p-2">
+                      Na web a chave Gemini é opcional e fica só neste navegador — nunca no repositório público.
+                      Sem chave, a geração por Gemini permanece disponível nas mesmas telas e avisa na hora de usar.
+                    </p>
+                  )}
                 </>
               )}
 
-              {provider === 'ollama' && (
+              {provider === 'xai-oauth' && (
+                <>
+                  <p className="text-[11px] text-slate-600 bg-slate-50 border border-slate-200 rounded p-3 mb-3 leading-relaxed">
+                    Cole a chave da API xAI (fica só neste navegador). O site escolhe um modelo barato/rápido do catálogo (hoje <code>grok-4.3</code>).
+                    Não há login OAuth xAI — isso exigiria SuperGrok e um Client ID oficial.
+                  </p>
+                  <input
+                    type="password"
+                    value={xaiKey}
+                    onChange={(e) => setXaiKey(e.target.value)}
+                    placeholder="Chave xAI (opcional agora)"
+                    className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50 focus:bg-white focus:ring-2 focus:ring-green-500 outline-none"
+                  />
+                </>
+              )}
+
+              {provider === 'ollama' && isWebApp() && (
+                <p className="text-[11px] text-amber-800 bg-amber-50 border border-amber-200 rounded p-3 mb-3 leading-relaxed">
+                  Ollama local não roda neste site (GitHub Pages). Use Gemini ou xAI aqui, ou o aplicativo desktop para localhost:11434.
+                  Você pode avançar; a geração avisa se este provedor estiver selecionado.
+                </p>
+              )}
+
+              {provider === 'ollama' && !isWebApp() && (
                 <>
                   <div className="bg-emerald-50 border border-emerald-100 rounded-lg p-4 mb-4 text-xs text-emerald-900">
                     <p className="font-bold mb-2">💻 Setup do Ollama (recomendado: cloud):</p>
@@ -261,6 +312,13 @@ export const SetupWizard: React.FC<Props> = ({ onComplete }) => {
               <p className="text-gray-600 text-sm mb-6 leading-relaxed">
                 Onde seus roteiros, fichas e configurações devem ser salvos? Escolha uma pasta segura.
               </p>
+              {isWebApp() && (
+                <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-4 text-[11px] text-amber-900 leading-relaxed">
+                  Neste site os dados ficam no <strong>localStorage deste navegador</strong> (sem servidor).
+                  O seletor de pasta e o modo compartilhado continuam visíveis como no desktop: use-os como referência
+                  ou, se o navegador oferecer, escolha uma pasta local. A gravação efetiva permanece neste browser até existir backend.
+                </div>
+              )}
               <label className="block text-xs font-bold text-gray-700 uppercase mb-2">Caminho da Pasta</label>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
                 <button
@@ -291,23 +349,32 @@ export const SetupWizard: React.FC<Props> = ({ onComplete }) => {
                     value={dataFolder}
                     onChange={(e) => setDataFolder(e.target.value)}
                     readOnly={hasFileSystem}
-                    placeholder={hasFileSystem ? "Clique em 'Escolher' →" : "Caminho da pasta..."}
+                    placeholder={hasFileSystem ? "Clique em 'Escolher' →" : "Caminho da pasta ou navegador-localStorage"}
                     className={`w-full pl-10 p-3 border border-gray-300 rounded-lg outline-none ${hasFileSystem ? 'bg-gray-100 text-gray-500 cursor-not-allowed' : 'bg-gray-50 focus:bg-white focus:ring-2 focus:ring-green-500'}`}
                   />
                 </div>
-                {hasFileSystem && (
-                  <button
-                    onClick={async () => {
-                      if (window.fileSystem) {
-                        const path = await window.fileSystem.selectFolder();
-                        if (path) setDataFolder(path);
+                <button
+                  onClick={async () => {
+                    if (window.fileSystem) {
+                      const path = await window.fileSystem.selectFolder();
+                      if (path) setDataFolder(path);
+                      return;
+                    }
+                    if (typeof window.showDirectoryPicker === 'function') {
+                      try {
+                        const handle = await window.showDirectoryPicker();
+                        setDataFolder(`navegador:${handle.name}`);
+                      } catch {
+                        // cancelado pelo usuário
                       }
-                    }}
-                    className="px-6 py-2 bg-slate-800 text-white font-bold rounded-lg hover:bg-slate-700 text-sm"
-                  >
-                    Escolher
-                  </button>
-                )}
+                      return;
+                    }
+                    setDataFolder('navegador-localStorage');
+                  }}
+                  className="px-6 py-2 bg-slate-800 text-white font-bold rounded-lg hover:bg-slate-700 text-sm"
+                >
+                  Escolher
+                </button>
               </div>
               {hasFileSystem && dataFolder === 'Meus Documentos/PaxtuData' && (
                 <p role="alert" className="text-[11px] text-amber-700 mt-2 bg-amber-50 border border-amber-200 rounded p-2">

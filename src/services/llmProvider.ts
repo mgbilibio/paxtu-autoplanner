@@ -1,10 +1,17 @@
-// Abstração de provider de LLM. Alterna Gemini, Ollama local, Ollama Cloud (e reserva xAI).
+// Abstração de provider de LLM. Alterna Gemini, Ollama local, Ollama Cloud e xAI.
 // Ordem de preferência de produto: gemini → ollama-local → ollama-cloud → xai-oauth.
+// Na web (GitHub Pages) o padrão continua Gemini; xAI é extra opcional com chave no browser.
 
 import { GeneratorParams, MeetingPlan, LlmProviderId } from '../types';
 import { getAppConfig } from './storageService';
 import * as gemini from './geminiService';
 import * as ollama from './ollamaService';
+import * as xai from './xaiService';
+import { isWebApp } from './platform';
+
+export const GEMINI_STUDIO_URL = 'https://aistudio.google.com/app/apikey';
+export const GEMINI_KEY_HELP =
+  'Obtenha uma chave grátis em https://aistudio.google.com/app/apikey (conta Google, sem cartão de crédito) e cole em Configurações. A chave fica só neste aparelho/navegador — nunca no repositório.';
 
 export interface LlmProvider {
   id: LlmProviderId;
@@ -26,8 +33,9 @@ const geminiProvider: LlmProvider = {
   listModels: gemini.getAvailableModels,
   generateScoutPlan: gemini.generateScoutPlan,
   isReachable: async () => {
-    const config = getAppConfig();
-    if (!config?.apiKey) return { ok: false, error: 'Chave de API do Gemini não configurada.' };
+    if (!gemini.hasGeminiCredentials()) {
+      return { ok: false, error: `Chave de API do Gemini não configurada. ${GEMINI_KEY_HELP}` };
+    }
     return { ok: true };
   },
 };
@@ -36,7 +44,15 @@ const ollamaLocalProvider: LlmProvider = {
   id: 'ollama-local',
   listModels: ollama.listModels,
   generateScoutPlan: ollama.generateScoutPlan,
-  isReachable: ollama.isReachable,
+  isReachable: async () => {
+    if (isWebApp()) {
+      return {
+        ok: false,
+        error: 'Ollama local (localhost:11434) está disponível no aplicativo desktop. Neste site use Gemini (padrão) ou xAI, ou Ollama Cloud se você colar uma chave ollama.com.',
+      };
+    }
+    return ollama.isReachable();
+  },
 };
 
 const ollamaCloudProvider: LlmProvider = {
@@ -46,18 +62,11 @@ const ollamaCloudProvider: LlmProvider = {
   isReachable: ollama.isReachable,
 };
 
-const xaiStubProvider: LlmProvider = {
+const xaiProvider: LlmProvider = {
   id: 'xai-oauth',
-  listModels: async () => [],
-  generateScoutPlan: async () => {
-    throw new Error(
-      'xAI Grok OAuth ainda não está ativo neste build. Use Gemini (recomendado) ou Ollama. Ver docs/design/2026-07-18-xai-oauth-provider.md.',
-    );
-  },
-  isReachable: async () => ({
-    ok: false,
-    error: 'xAI OAuth planejado — autenticação por assinatura SuperGrok/X Premium+ em breve.',
-  }),
+  listModels: xai.listModels,
+  generateScoutPlan: xai.generateScoutPlan,
+  isReachable: xai.isReachable,
 };
 
 export const getActiveProvider = (): LlmProvider => {
@@ -69,7 +78,7 @@ export const getProviderById = (id: LlmProviderId): LlmProvider => {
   const n = normalizeProviderId(id);
   if (n === 'ollama-local') return ollamaLocalProvider;
   if (n === 'ollama-cloud') return ollamaCloudProvider;
-  if (n === 'xai-oauth') return xaiStubProvider;
+  if (n === 'xai-oauth') return xaiProvider;
   return geminiProvider;
 };
 
@@ -80,10 +89,14 @@ export const listAvailableModels = () => getActiveProvider().listModels();
 
 export const askLlm = async (question: string, context: string, modelId?: string): Promise<string> => {
   const id = normalizeProviderId(getAppConfig()?.llmProvider);
-  if (id === 'ollama-local' || id === 'ollama-cloud') return ollama.askOllama(question, context, modelId);
-  if (id === 'xai-oauth') {
-    throw new Error('xAI OAuth ainda não disponível para o painel de ajuda. Use Gemini ou Ollama.');
+  if (id === 'ollama-local') {
+    if (isWebApp()) {
+      throw new Error('Ollama local não roda neste site. Use Gemini (cole a chave em Configurações) ou xAI.');
+    }
+    return ollama.askOllama(question, context, modelId);
   }
+  if (id === 'ollama-cloud') return ollama.askOllama(question, context, modelId);
+  if (id === 'xai-oauth') return xai.askXai(question, context, modelId);
   return gemini.askGemini(question, context, modelId);
 };
 
@@ -102,9 +115,11 @@ export const generateScoutCycleRouted = async (params: {
     return gemini.generateScoutCycle(params);
   }
   if (id === 'xai-oauth') {
-    throw new Error('xAI OAuth ainda não disponível para ciclo. Use Gemini ou Ollama.');
+    return xai.generateScoutCycle(params);
   }
-  // ollama-local e ollama-cloud
+  if (id === 'ollama-local' && isWebApp()) {
+    throw new Error('Ollama local não roda neste site. Use Gemini ou xAI.');
+  }
   const cycle = await ollama.generateScoutCycle(params);
   return gemini.normalizeMeetingCycle(cycle as gemini.MeetingCycle);
 };

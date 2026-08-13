@@ -2,8 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import { ScoutBranch, MeetingPlan, ObjectiveItem, CatalogAnnotation, AppConfig, UserProfile, ScoutSection, CatalogItem, PlanningMode, LlmProviderId } from './types';
 import { BRANCHES } from './constants';
 import { getPlanningCatalog, buildCatalogDigest } from './services/catalogService';
-import { generateScoutPlanRouted as generateScoutPlan, listAvailableModels as getAvailableModels, getActiveProvider, getProviderById, normalizeProviderId } from './services/llmProvider';
-import { getAnnotations, saveAnnotation, getAppConfig, saveAppConfig, normalizePath, downloadProgressBackup, importProgressBackup, saveSectionAsync, getAllMemberBlocoStates, downloadLocalAppBackup, importLocalAppBackup, ensureWorkspaceMetadata, acquireSectionEditLock, releaseSectionEditLock, renewSectionEditLock, EditLock } from './services/storageService';
+import { generateScoutPlanRouted as generateScoutPlan, listAvailableModels as getAvailableModels, getActiveProvider, getProviderById, normalizeProviderId, GEMINI_STUDIO_URL, GEMINI_KEY_HELP } from './services/llmProvider';
+import { getDefaultGeminiModel, pickPreferredGeminiModel, hasGeminiCredentials } from './services/geminiService';
+import { pickXaiFastModel } from './services/xaiService';
+import { getAnnotations, saveAnnotation, getAppConfig, saveAppConfig, normalizePath, downloadProgressBackup, importProgressBackup, saveSectionAsync, getAllMemberBlocoStates, downloadLocalAppBackup, importLocalAppBackup, ensureWorkspaceMetadata, acquireSectionEditLock, releaseSectionEditLock, renewSectionEditLock, EditLock, getSectionsAsync, saveUserAsync } from './services/storageService';
 import { getProgressionDetail } from './services/progressionDetailService';
 import { PlanDisplay } from './components/PlanDisplay';
 import { Catalog } from './components/Catalog';
@@ -13,6 +15,8 @@ import { CalendarView } from './components/CalendarView';
 import { ReportsDashboard } from './components/reports/ReportsDashboard';
 import { LoginScreen } from './components/profiles/LoginScreen';
 import { ProfileConfig } from './components/profiles/ProfileConfig';
+import { WebAuthGate } from './components/profiles/WebAuthGate';
+import { WebAccountsPanel } from './components/profiles/WebAccountsPanel';
 import { CyclePlanner } from './components/CyclePlanner';
 import { SpecialtyEncyclopedia } from './components/SpecialtyEncyclopedia';
 import { ProgressaoBlocos2025 } from './components/ProgressaoBlocos2025';
@@ -29,6 +33,9 @@ import { forceDownloadHtml } from './services/htmlExportCommon';
 import { useGlobalEvents } from './hooks/useGlobalEvents';
 import { clampSettingNumber } from './utils/clamp';
 import { isSpecialtyCode } from './utils/specialtyCodes';
+import { isWebApp } from './services/platform';
+import { clearWebSession, restoreWebSessionAccount, webAccountToProfile } from './services/webAuthService';
+import { clearGeminiOAuthAccessToken, tryRequestGeminiAccessToken } from './services/googleAuth';
 
 function App() {
   const [appConfig, setAppConfig] = useState<AppConfig | null>(null);
@@ -66,7 +73,7 @@ function App() {
     return next;
   });
   const [availableModels, setAvailableModels] = useState<string[]>([]);
-  const [selectedModel, setSelectedModel] = useState<string>('gemini-2.5-flash');
+  const [selectedModel, setSelectedModel] = useState<string>(getDefaultGeminiModel());
   const [isRefreshingModels, setIsRefreshingModels] = useState(false);
   
   const [loading, setLoading] = useState<boolean>(false);
@@ -84,6 +91,7 @@ function App() {
   const [providerInput, setProviderInput] = useState<LlmProviderId>('gemini');
   const [ollamaUrlInput, setOllamaUrlInput] = useState<string>('http://localhost:11434');
   const [ollamaCloudKeyInput, setOllamaCloudKeyInput] = useState<string>('');
+  const [xaiKeyInput, setXaiKeyInput] = useState<string>('');
   const [ollamaContextInput, setOllamaContextInput] = useState<number>(262144);
   const [ollamaOutputInput, setOllamaOutputInput] = useState<number>(12288);
   const [syncModeInput, setSyncModeInput] = useState<'local' | 'sharedFolder'>('local');
@@ -94,11 +102,12 @@ function App() {
   // V3: nav mobile colapsável
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   // V7: abas de configurações
-  const [settingsTab, setSettingsTab] = useState<'ia' | 'dados' | 'avancado'>('ia');
+  const [settingsTab, setSettingsTab] = useState<'ia' | 'dados' | 'avancado' | 'contas'>('ia');
   // Painel de Ajuda
   const [showHelp, setShowHelp] = useState(false);
   const [toast, setToast] = useState<{ message: string; kind: 'info' | 'error' } | null>(null);
   const [editLockConflict, setEditLockConflict] = useState<EditLock | null>(null);
+  const [webAuthReady, setWebAuthReady] = useState(!isWebApp());
   const [ownEditLock, setOwnEditLock] = useState<EditLock | null>(null);
   const [confirmacao, setConfirmacao] = useState<{
     title: string;
@@ -154,10 +163,22 @@ function App() {
         setProviderInput(normalizeProviderId(config.llmProvider));
         setOllamaUrlInput(config.ollamaBaseUrl || 'http://localhost:11434');
         setOllamaCloudKeyInput(config.ollamaCloudApiKey || '');
+        setXaiKeyInput(config.xaiApiKey || '');
         setOllamaContextInput(config.ollamaGenerationContext || 262144);
         setOllamaOutputInput(config.ollamaGenerationOutput || 12288);
         setSyncModeInput(config.syncMode || 'local');
     }
+  }, []);
+
+  useEffect(() => {
+    if (!isWebApp()) return;
+    const account = restoreWebSessionAccount();
+    if (account) {
+      const profile = webAccountToProfile(account);
+      void saveUserAsync(profile);
+      setCurrentUser(profile);
+    }
+    setWebAuthReady(true);
   }, []);
 
   useEffect(() => {
@@ -234,29 +255,27 @@ function App() {
   };
 
   const fetchModels = async () => {
-      // Carrega modelos do provider ativo (Gemini ou Ollama).
-      const providerId = appConfig?.llmProvider || 'gemini';
-      const hasGeminiKey = !!appConfig?.apiKey;
-      if (providerId === 'gemini' && !hasGeminiKey) return;
+      const providerId = normalizeProviderId(appConfig?.llmProvider || 'gemini');
+      if (providerId === 'gemini' && !hasGeminiCredentials()) return;
+      if (providerId === 'xai-oauth' && !appConfig?.xaiApiKey && !xaiKeyInput.trim()) return;
       setIsRefreshingModels(true);
       try {
           const models = await getAvailableModels();
           setAvailableModels(models);
           if (models.length > 0) {
               if (providerId === 'gemini') {
-                  const prefOrder = ['gemini-2.5-flash', 'gemini-3.1-flash-live-preview', 'gemini-3-flash-preview', 'gemini-2.0-flash', 'gemini-1.5-flash'];
-                  const bestMatch = prefOrder.find(p => models.includes(p));
-                  setSelectedModel(bestMatch || models[0]);
+                  setSelectedModel(pickPreferredGeminiModel(models, selectedModel));
+              } else if (providerId === 'xai-oauth') {
+                  setSelectedModel(pickXaiFastModel(models, appConfig?.xaiOAuthModel || selectedModel));
               } else {
-                  // Ollama: mantém o modelo configurado se ainda existir; senão, primeiro disponível.
-                  const preferred = appConfig?.ollamaModel;
+                  const preferred = providerId === 'ollama-cloud' ? appConfig?.ollamaCloudModel : appConfig?.ollamaModel;
                   setSelectedModel(preferred && models.includes(preferred) ? preferred : models[0]);
               }
           }
       } catch (e) { console.error(e); } finally { setIsRefreshingModels(false); }
   };
 
-  useEffect(() => { fetchModels(); }, [appConfig?.apiKey, appConfig?.llmProvider, appConfig?.ollamaBaseUrl, appConfig?.ollamaCloudApiKey]);
+  useEffect(() => { fetchModels(); }, [appConfig?.apiKey, appConfig?.llmProvider, appConfig?.ollamaBaseUrl, appConfig?.ollamaCloudApiKey, appConfig?.xaiApiKey]);
 
   useEffect(() => {
     if (!ownEditLock || !currentUser || appConfig?.syncMode !== 'sharedFolder') return;
@@ -369,6 +388,7 @@ function App() {
     setProviderInput(normalizeProviderId(config.llmProvider));
     setOllamaUrlInput(config.ollamaBaseUrl || 'http://localhost:11434');
     setOllamaCloudKeyInput(config.ollamaCloudApiKey || '');
+    setXaiKeyInput(config.xaiApiKey || '');
     setOllamaContextInput(config.ollamaGenerationContext || 262144);
     setOllamaOutputInput(config.ollamaGenerationOutput || 12288);
     setSyncModeInput(config.syncMode || 'local');
@@ -391,6 +411,34 @@ function App() {
       }
       setView(isOperationalProfile(user) ? 'DASHBOARD' : 'REPORTS');
   };
+
+  const handleWebAuthenticated = (profile: UserProfile) => {
+    setCurrentUser(profile);
+    setWebAuthReady(true);
+    void tryRequestGeminiAccessToken();
+  };
+
+  const enterAppAsWebUser = async (user: UserProfile) => {
+    const permissions = getPermissions(user);
+    if (permissions.isGlobal) {
+      await handleLogin(user, { id: 'GLOBAL', name: 'Visão Global', branch: ScoutBranch.ESCOTEIRO });
+      return;
+    }
+    const sections = await getSectionsAsync();
+    const section = sections.find(item => item.id === user.sectionId) || sections[0];
+    if (!section) {
+      setView('PROFILE_CONFIG');
+      return;
+    }
+    await handleLogin(user, section);
+  };
+
+  useEffect(() => {
+    if (!isWebApp() || !webAuthReady || !currentUser || currentSection) return;
+    if (!appConfig?.isConfigured) return;
+    if (view === 'PROFILE_CONFIG') return;
+    void enterAppAsWebUser(currentUser);
+  }, [webAuthReady, currentUser?.id, currentSection?.id, appConfig?.isConfigured, view]);
 
   const assumeSectionEditLock = () => {
     if (!currentSection || !currentUser) return;
@@ -438,6 +486,10 @@ function App() {
     setLlmStartedAt(null);
     setLlmElapsed(0);
     setView('LOGIN');
+    if (isWebApp()) {
+      clearWebSession();
+      clearGeminiOAuthAccessToken();
+    }
     reset();
   };
 
@@ -471,6 +523,8 @@ function App() {
       ollamaModel: prov === 'ollama-local' ? selectedModel : appConfig.ollamaModel,
       ollamaCloudApiKey: ollamaCloudKeyInput.trim(),
       ollamaCloudModel: prov === 'ollama-cloud' ? selectedModel : appConfig.ollamaCloudModel,
+      xaiApiKey: xaiKeyInput.trim(),
+      xaiOAuthModel: prov === 'xai-oauth' ? selectedModel : appConfig.xaiOAuthModel,
       ollamaGenerationContext: clampSettingNumber(ollamaContextInput, 262144, 32768, 1048576),
       ollamaGenerationOutput: clampSettingNumber(ollamaOutputInput, 12288, 2048, 65536),
       syncMode: syncModeInput,
@@ -551,9 +605,15 @@ function App() {
     const runId = Date.now();
     generationRef.current = { id: runId, cancelled: false };
     const activeProvider = normalizeProviderId(appConfig?.llmProvider);
-    if (activeProvider === 'gemini' && !appConfig?.apiKey) {
-      setError('Configure a chave do Gemini em Configurações.');
+    if (activeProvider === 'gemini' && !hasGeminiCredentials()) {
+      setError(`Configure a chave do Gemini em Configurações. ${GEMINI_KEY_HELP}`);
       showToast('Configure a chave do Gemini.', 'error');
+      setShowSettings(true);
+      return;
+    }
+    if (activeProvider === 'ollama-local' && isWebApp()) {
+      setError('Ollama local só funciona no aplicativo desktop. Neste site use Gemini (padrão) ou cole uma chave xAI.');
+      showToast('Ollama local só no desktop.', 'error');
       setShowSettings(true);
       return;
     }
@@ -569,9 +629,10 @@ function App() {
       setShowSettings(true);
       return;
     }
-    if (activeProvider === 'xai-oauth') {
-      setError('xAI OAuth ainda não está ativo. Use Gemini (recomendado) ou Ollama.');
-      showToast('xAI OAuth em breve — use Gemini ou Ollama.', 'error');
+    if (activeProvider === 'xai-oauth' && !(appConfig?.xaiApiKey || xaiKeyInput.trim())) {
+      setError('Cole sua chave da API xAI em Configurações (fica só neste navegador). Não há login OAuth xAI neste site.');
+      showToast('Informe a chave xAI.', 'error');
+      setShowSettings(true);
       return;
     }
     const effectiveMode: PlanningMode =
@@ -690,11 +751,37 @@ function App() {
 
   const loadFromCatalog = (savedPlan: MeetingPlan) => { setPlan(savedPlan); navigateTo('GENERATOR'); setStep(3); };
 
+  if (isWebApp() && !webAuthReady) {
+    return <div className="min-h-screen flex items-center justify-center bg-slate-900 text-white">Carregando…</div>;
+  }
+  if (isWebApp() && !currentUser) {
+    return <WebAuthGate onAuthenticated={handleWebAuthenticated} />;
+  }
   if (!appConfig || !appConfig.isConfigured) return <SetupWizard onComplete={handleSetupComplete} />;
-  if (!currentUser && view === 'LOGIN') return <LoginScreen onLogin={handleLogin} onConfigure={() => setView('PROFILE_CONFIG')} />;
-  if (!currentUser && view === 'PROFILE_CONFIG') return (
-      <div className="min-h-screen bg-gray-100 p-8"><div className="max-w-4xl mx-auto"><button onClick={() => setView('LOGIN')} className="mb-6 text-slate-500 hover:text-slate-800">← Voltar</button><ProfileConfig /></div></div>
-  );
+  if (view === 'PROFILE_CONFIG') {
+    const backFromStructure = () => {
+      if (isWebApp() && currentUser) {
+        void enterAppAsWebUser(currentUser);
+        return;
+      }
+      if (currentUser && currentSection) {
+        setView(isOperationalProfile(currentUser) ? 'DASHBOARD' : 'REPORTS');
+        return;
+      }
+      setView('LOGIN');
+    };
+    return (
+      <div className="min-h-screen bg-gray-100 p-8">
+        <div className="max-w-4xl mx-auto">
+          <button onClick={backFromStructure} className="mb-6 text-slate-500 hover:text-slate-800">
+            {isWebApp() && currentUser ? '→ Entrar no aplicativo' : currentUser ? '← Voltar ao painel' : '← Voltar'}
+          </button>
+          <ProfileConfig currentAccountId={currentUser?.id} isAdmin={getPermissions(currentUser).isGlobal} />
+        </div>
+      </div>
+    );
+  }
+  if (!currentUser) return <LoginScreen onLogin={handleLogin} onConfigure={() => setView('PROFILE_CONFIG')} />;
 
   const permissions = getPermissions(currentUser);
   const isAdmin = permissions.isGlobal;
@@ -797,7 +884,7 @@ function App() {
                 <h3 id="settings-title" className="text-xl font-bold text-gray-800 mb-4">⚙️ Configurações</h3>
                 {error && <div className="bg-red-50 text-red-600 p-3 rounded mb-4 text-xs" role="alert">{error}</div>}
                 <div className="flex border-b mb-4" role="tablist">
-                    {([['ia','IA'],['dados','Dados'],['avancado','Avançado']] as const).map(([id,label]) => (
+                    {([['ia','IA'],['dados','Dados'],['avancado','Avançado'], ...(isWebApp() ? [['contas','Contas'] as const] : [])] as const).map(([id,label]) => (
                         <button key={id} role="tab" aria-selected={settingsTab === id}
                             onClick={() => setSettingsTab(id)}
                             className={`px-4 py-2 text-sm font-bold border-b-2 transition-colors ${settingsTab === id ? 'border-indigo-600 text-indigo-700' : 'border-transparent text-slate-500 hover:text-slate-700'}`}>
@@ -808,6 +895,13 @@ function App() {
                 {settingsTab === 'ia' && (
                 <div className="mb-4 p-3 bg-slate-50 border border-slate-200 rounded-lg">
                     <p className="text-xs font-bold text-slate-700 mb-2">Provedor de IA <span className="font-normal text-slate-500">(preferência: Gemini → Ollama local → Cloud → xAI)</span></p>
+                    {isWebApp() && (
+                      <p className="text-[11px] text-slate-600 mb-2 leading-relaxed">
+                        Neste site o padrão é <strong>Gemini Flash-Lite</strong> (barato e rápido). Cole a chave do{' '}
+                        <a href={GEMINI_STUDIO_URL} target="_blank" rel="noreferrer" className="text-blue-700 underline">AI Studio</a>
+                        {' '}(fica só neste navegador). xAI é extra opcional com chave colada — não há “entrar com xAI”.
+                      </p>
+                    )}
                     <div className="flex flex-col gap-2 mb-3">
                         <label className="flex items-center gap-2 cursor-pointer">
                             <input type="radio" name="provider" checked={normalizeProviderId(providerInput) === 'gemini'} onChange={() => setProviderInput('gemini')} />
@@ -815,27 +909,37 @@ function App() {
                         </label>
                         <label className="flex items-center gap-2 cursor-pointer">
                             <input type="radio" name="provider" checked={normalizeProviderId(providerInput) === 'ollama-local'} onChange={() => setProviderInput('ollama-local')} />
-                            <span className="text-sm"><strong>2. Ollama local</strong> <span className="text-[10px] text-gray-500">— app + porta 11434</span></span>
+                            <span className="text-sm"><strong>2. Ollama local</strong> <span className="text-[10px] text-gray-500">— app + porta 11434{isWebApp() ? ' (só desktop)' : ''}</span></span>
                         </label>
                         <label className="flex items-center gap-2 cursor-pointer">
                             <input type="radio" name="provider" checked={normalizeProviderId(providerInput) === 'ollama-cloud'} onChange={() => setProviderInput('ollama-cloud')} />
                             <span className="text-sm"><strong>3. Ollama Cloud</strong> <span className="text-[10px] text-gray-500">— API web + chave ollama.com</span></span>
                         </label>
-                        <label className="flex items-center gap-2 cursor-pointer opacity-80">
+                        <label className="flex items-center gap-2 cursor-pointer">
                             <input type="radio" name="provider" checked={normalizeProviderId(providerInput) === 'xai-oauth'} onChange={() => setProviderInput('xai-oauth')} />
-                            <span className="text-sm"><strong>4. xAI Grok</strong> <span className="text-[10px] text-amber-700">em breve (OAuth assinatura)</span></span>
+                            <span className="text-sm"><strong>4. xAI Grok</strong> <span className="text-[10px] text-gray-500">— chave api.x.ai, modelo rápido do catálogo</span></span>
                         </label>
                     </div>
 
                     {normalizeProviderId(providerInput) === 'gemini' && (
                         <div className="space-y-2">
-                            <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noreferrer" className="inline-block bg-blue-600 text-white px-3 py-1 rounded font-bold text-[11px]">Obter chave grátis</a>
-                            <input type="password" value={apiKeyInput} onChange={(e) => setApiKeyInput(e.target.value)} className="w-full p-2 border rounded text-sm" placeholder="API Key Gemini" />
+                            <a href={GEMINI_STUDIO_URL} target="_blank" rel="noreferrer" className="inline-block bg-blue-600 text-white px-3 py-1 rounded font-bold text-[11px]">Obter chave grátis</a>
+                            <input type="password" value={apiKeyInput} onChange={(e) => setApiKeyInput(e.target.value)} className="w-full p-2 border rounded text-sm" placeholder="API Key Gemini (AI Studio)" />
+                            {isWebApp() && (
+                              <p className="text-[11px] text-slate-600 leading-relaxed">
+                                {GEMINI_KEY_HELP} Se o login Google conseguir um token da API Gemini, ele é tentado automaticamente; se CORS ou o app OAuth não permitir, cole a chave aqui.
+                              </p>
+                            )}
                         </div>
                     )}
 
                     {normalizeProviderId(providerInput) === 'ollama-local' && (
                         <div className="space-y-2">
+                            {isWebApp() && (
+                              <p className="text-[11px] text-amber-800 bg-amber-50 border border-amber-200 rounded p-2">
+                                Ollama local (localhost:11434) só funciona no aplicativo desktop. Neste site escolha Gemini ou cole uma chave xAI / Ollama Cloud.
+                              </p>
+                            )}
                             <a href="https://ollama.com/download" target="_blank" rel="noreferrer" className="inline-block bg-emerald-700 text-white px-3 py-1 rounded font-bold text-[11px]">Baixar Ollama</a>
                             <p className="text-[11px] text-gray-600">
                                 Modelos locais ou <code className="bg-gray-100 px-1">:cloud</code> via app (<code className="bg-gray-100 px-1">ollama signin</code>).
@@ -907,9 +1011,17 @@ function App() {
                     )}
 
                     {normalizeProviderId(providerInput) === 'xai-oauth' && (
-                        <div className="text-[11px] text-amber-800 bg-amber-50 border border-amber-200 rounded p-2">
-                          xAI Grok via OAuth (SuperGrok / X Premium+) está no plano de design e ainda não gera roteiros neste build.
-                          Use <strong>Gemini</strong> ou <strong>Ollama</strong> por enquanto. Ver <code className="bg-white px-1">docs/design/2026-07-18-xai-oauth-provider.md</code>.
+                        <div className="space-y-2">
+                          <p className="text-[11px] text-slate-600 leading-relaxed">
+                            Extra opcional. Cole a chave da API xAI (console.x.ai). Fica só neste navegador — nunca no repositório.
+                            Não implementamos “entrar com X”: OAuth xAI exige SuperGrok/X Premium+ e um Client ID oficial nosso.
+                          </p>
+                          <input type="password" value={xaiKeyInput} onChange={(e) => setXaiKeyInput(e.target.value)} className="w-full p-2 border rounded text-sm" placeholder="API Key xAI" />
+                          {availableModels.length > 0 && (
+                            <select value={selectedModel} onChange={(e) => setSelectedModel(e.target.value)} className="w-full p-2 border rounded text-sm">
+                              {availableModels.map(m => <option key={m} value={m}>{m}</option>)}
+                            </select>
+                          )}
                         </div>
                     )}
                 </div>
@@ -1026,6 +1138,10 @@ function App() {
                 </div>
                 </>
                 )}
+
+                {settingsTab === 'contas' && isWebApp() && (
+                  <WebAccountsPanel currentAccountId={currentUser?.id} isAdmin={getPermissions(currentUser).isGlobal} />
+                )}
                 <div className="flex justify-end gap-3 mt-6">
                     <button onClick={() => setShowSettings(false)} className="px-4 py-2 text-gray-600">Cancelar</button>
                     <button onClick={handleUpdateSettings} className="px-4 py-2 bg-slate-800 text-white rounded-lg font-bold">Salvar</button>
@@ -1107,6 +1223,9 @@ function App() {
               </div>
               )}
             </div>
+            {permissions.canConfigure && (
+              <button onClick={() => { setView('PROFILE_CONFIG'); setMobileNavOpen(false); }} className="text-sm text-gray-400 hover:text-white px-3 text-left">Estrutura</button>
+            )}
             <button onClick={() => { navigateTo('REPORTS'); setMobileNavOpen(false); }} className="text-sm text-gray-400 hover:text-white px-3 text-left">Relatórios</button>
             <button onClick={() => setShowHelp(true)} aria-label="Ajuda" title="Ajuda (roteiro, FAQ, IA)" className="text-gray-400 hover:text-white p-2 text-xl">❓</button>
             {permissions.canConfigure && (

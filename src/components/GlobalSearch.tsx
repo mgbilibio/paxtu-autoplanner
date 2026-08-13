@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { search, searchLibrary, getDocCount, SearchDoc, SearchKind } from '../services/searchService';
+import { previewLibrarySearchHit } from '../services/webLibraryService';
 
 interface Props {
   onClose: () => void;
@@ -43,13 +44,16 @@ export const GlobalSearch: React.FC<Props> = ({ onClose }) => {
   const totalDocs = useMemo(() => getDocCount(), []);
 
   const openLibraryPdf = async (doc: SearchDoc) => {
-    if (!doc.sourcePdf || !doc.pdfPage || !window.fileSystem?.openPdfAtPage) return;
-    const result = await window.fileSystem.openPdfAtPage(doc.sourcePdf, doc.pdfPage);
-    if (!result.ok) {
-      window.dispatchEvent(new CustomEvent('paxtu:toast', {
-        detail: { kind: 'error', message: 'PDF nao encontrado para esta fonte.' },
-      }));
+    if (doc.sourcePdf && doc.pdfPage && window.fileSystem?.openPdfAtPage) {
+      const result = await window.fileSystem.openPdfAtPage(doc.sourcePdf, doc.pdfPage);
+      if (!result.ok) {
+        window.dispatchEvent(new CustomEvent('paxtu:toast', {
+          detail: { kind: 'error', message: 'PDF nao encontrado para esta fonte.' },
+        }));
+      }
+      return;
     }
+    await previewLibrarySearchHit(doc);
   };
 
   useEffect(() => {
@@ -114,7 +118,7 @@ export const GlobalSearch: React.FC<Props> = ({ onClose }) => {
             <div className="p-8 text-center text-gray-400 text-sm">
               <p className="text-3xl mb-3">🔍</p>
               <p>Indexados <strong>{totalDocs}</strong> documentos operacionais.</p>
-              <p className="text-xs mt-1">No app desktop, a busca também consulta a biblioteca FTS5 local.</p>
+              <p className="text-xs mt-1">A busca consulta o catálogo operacional e a biblioteca (texto no navegador; FTS5 no app desktop).</p>
               <p className="text-xs mt-2">Digite um termo (ex: "fogueira", "compostagem", "primeiros socorros").</p>
               <p className="text-xs mt-1 opacity-60">ESC para fechar.</p>
             </div>
@@ -155,13 +159,13 @@ export const GlobalSearch: React.FC<Props> = ({ onClose }) => {
                     {doc.sourcePath && <span>📚 {doc.sourcePath} · bloco {doc.blockIndex}</span>}
                     {doc.sourcePdf && doc.pdfPage && <span>· PDF p. {doc.pdfPage}</span>}
                   </div>
-                  {doc.kind === 'biblioteca' && doc.sourcePdf && doc.pdfPage && (
+                  {doc.kind === 'biblioteca' && (doc.sourcePdf || doc.pdfPage) && (
                     <button
                       type="button"
                       onClick={() => openLibraryPdf(doc)}
                       className="mt-2 text-[10px] font-bold px-2 py-1 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100"
                     >
-                      Abrir PDF p. {doc.pdfPage}
+                      Abrir {doc.pdfPage ? `p. ${doc.pdfPage}` : 'livro'}
                     </button>
                   )}
                 </div>

@@ -1,11 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { StructureManager } from './StructureManager';
 import { UserManager } from './UserManager';
+import { WebAccountsPanel } from './WebAccountsPanel';
 import { getGroupsAsync, getSectionsAsync, getUsersAsync } from '../../services/storageService';
+import { isWebApp } from '../../services/platform';
 
 // U3: indicador de progresso do onboarding pós-setup wizard.
 // Mostra 3 passos com checkmarks dinâmicos.
-export const ProfileConfig: React.FC = () => {
+interface Props {
+  currentAccountId?: string;
+  isAdmin?: boolean;
+}
+
+export const ProfileConfig: React.FC<Props> = ({ currentAccountId, isAdmin }) => {
   const [steps, setSteps] = useState({ grupo: false, secao: false, usuario: false });
 
   useEffect(() => {
@@ -85,13 +92,21 @@ export const ProfileConfig: React.FC = () => {
         <div className="bg-green-50 p-4 rounded-xl border border-green-200">
           <p className="text-sm text-green-900 font-bold">✅ Estrutura pronta!</p>
           <p className="text-xs text-green-700 mt-1">
-            Volte ao Login e entre com o usuário criado para começar a planejar.
+            {isWebApp()
+              ? 'Estrutura pronta. Use “Entrar no aplicativo” para ir ao planejador.'
+              : 'Volte ao Login e entre com o usuário criado para começar a planejar.'}
           </p>
         </div>
       )}
 
       <StructureManager />
       <UserManager />
+      {isWebApp() && (
+        <div className="bg-white rounded-xl border p-4">
+          <h3 className="font-bold text-slate-800 mb-2">Contas deste navegador</h3>
+          <WebAccountsPanel currentAccountId={currentAccountId} isAdmin={!!isAdmin} />
+        </div>
+      )}
     </div>
   );
 };

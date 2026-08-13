@@ -6,28 +6,32 @@ import electron from 'vite-plugin-electron/simple'
 const configDir = import.meta.dirname
 
 // https://vitejs.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
-    electron({
-      main: {
-        // Shortcut of `build.lib.entry`.
-        entry: 'electron/main.ts',
-        vite: {
-          build: {
-            rollupOptions: {
-              // Modulo nativo: nao pode ser bundlado, resolve de node_modules em runtime.
-              external: ['better-sqlite3'],
+    ...(mode === 'web'
+      ? []
+      : [
+          electron({
+            main: {
+              // Shortcut of `build.lib.entry`.
+              entry: 'electron/main.ts',
+              vite: {
+                build: {
+                  rollupOptions: {
+                    // Modulo nativo: nao pode ser bundlado, resolve de node_modules em runtime.
+                    external: ['better-sqlite3'],
+                  },
+                },
+              },
             },
-          },
-        },
-      },
-      preload: {
-        // Shortcut of `build.rollupOptions.input`.
-        input: path.join(configDir, 'electron/preload.ts'),
-      },
-      renderer: {},
-    }),
+            preload: {
+              // Shortcut of `build.rollupOptions.input`.
+              input: path.join(configDir, 'electron/preload.ts'),
+            },
+            renderer: {},
+          }),
+        ]),
   ],
   resolve: {
     alias: {
@@ -72,4 +76,4 @@ export default defineConfig({
       }
     }
   }
-})
+}))

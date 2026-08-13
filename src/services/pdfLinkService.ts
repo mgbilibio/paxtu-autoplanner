@@ -58,12 +58,19 @@ export const openPdfAtPage = async (fonte: FonteNormativa, page: number): Promis
     return;
   }
 
-  window.dispatchEvent(new CustomEvent('paxtu:toast', {
-    detail: {
-      kind: 'info',
-      message: `Consultar ${FRIENDLY_NAMES[fonte]}, pagina ${page}. Arquivo: ${relativePath}`,
-    },
-  }));
+  // Navegador / GitHub Pages: mesmo acervo em texto, no mesmo overlay de prévia HTML.
+  try {
+    const { previewBookInBrowser } = await import('./webLibraryService');
+    await previewBookInBrowser(fonte, page);
+  } catch (error) {
+    window.dispatchEvent(new CustomEvent('paxtu:toast', {
+      detail: {
+        kind: 'error',
+        message: `Não foi possível abrir ${FRIENDLY_NAMES[fonte]} no navegador.`,
+      },
+    }));
+    void error;
+  }
 };
 
 export const fonteParaRamo = (ramoSlug: string): FonteNormativa | null => {
