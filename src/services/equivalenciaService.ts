@@ -471,6 +471,17 @@ export const listOtherOfficialEtapas = (
   return others;
 };
 
+const isVidaHeaderText = (value?: string): boolean => {
+  if (!value) return false;
+  const key = value
+    .normalize('NFD')
+    .replace(/\p{M}/gu, '')
+    .toLowerCase()
+    .replace(/\s+/g, ' ')
+    .trim();
+  return key === 'data de inicio' || key.startsWith('data de inicio');
+};
+
 const parseVidaRow = (raw: unknown): OfficialVidaRow | null => {
   if (Array.isArray(raw)) {
     const cells = raw.map(cell => {
@@ -478,6 +489,7 @@ const parseVidaRow = (raw: unknown): OfficialVidaRow | null => {
       if (cell == null) return '';
       return String(cell).trim();
     });
+    if (isVidaHeaderText(cells[0])) return null;
     const inicio = cells[0] || '';
     const fim = cells[1] || '';
     const atividade = cells[2] || '';
@@ -497,6 +509,9 @@ const parseVidaRow = (raw: unknown): OfficialVidaRow | null => {
   const local = pickString(rec.local, rec.lugar, rec.unidade, rec.secao, rec.grupo);
   const inicio = pickString(rec.dataInicio, rec.inicio, rec.data, rec.date);
   const fim = pickString(rec.dataFim, rec.fim);
+  if (isVidaHeaderText(inicio) && (!atividade || isVidaHeaderText(atividade) || /atividade/i.test(atividade))) {
+    return null;
+  }
   if (!atividade && !inicio && !local) return null;
   if (atividade && looksLikeCssJunk(atividade)) return null;
   const data = [inicio, fim].filter(Boolean).join(' – ');

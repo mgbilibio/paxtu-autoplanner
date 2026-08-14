@@ -6,8 +6,9 @@ import {
   getDocs,
   setDoc,
 } from 'firebase/firestore';
-import { ScoutGroup, ScoutSection } from '../../types';
+import { ScoutGroup, ScoutMember, ScoutSection } from '../../types';
 import { getFirestoreDb } from './config';
+import { firestoreWriteError, sanitizeMemberForFirestore } from './sanitizeFirestoreMember';
 import { withSectionKind } from './sectionKind';
 import { getFirebaseSessionUid } from './session';
 
@@ -102,12 +103,19 @@ export const writeSectionItems = async <T>(sectionId: string, docId: string, ite
   if (!sectionId) {
     throw new Error('Seção não definida para gravar os dados.');
   }
-  // Firestore rejeita `undefined` em qualquer campo (inclusive aninhados em
-  // Activity.evaluation). JSON.stringify em stripUndefined remove esses campos.
-  await setDoc(
-    doc(getFirestoreDb(), 'sections', sectionId, 'docs', docId),
-    stripUndefined({ items }),
-  );
+  // Firestore rejeita `undefined` e arrays aninhados. stripUndefined remove
+  // undefined; membros passam pelo sanitizer (historico Paxtu string[][]).
+  const payload = docId === 'members'
+    ? (items as ScoutMember[]).map(sanitizeMemberForFirestore)
+    : items;
+  try {
+    await setDoc(
+      doc(getFirestoreDb(), 'sections', sectionId, 'docs', docId),
+      stripUndefined({ items: payload }),
+    );
+  } catch (error) {
+    throw firestoreWriteError(error, docId === 'members' ? 'efetivo' : 'dados da seção');
+  }
 };
 
 export const readAccessibleItems = async <T>(
