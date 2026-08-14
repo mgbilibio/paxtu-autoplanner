@@ -32,7 +32,7 @@ export const looksLikeHistoricoHeader = (row: unknown): boolean => {
   });
 };
 
-const looksLikeTableRow = (value: unknown): value is unknown[] => {
+const looksLikeTableRow = (value: unknown): boolean => {
   if (!Array.isArray(value) || value.length === 0) return false;
   return value.every(cell => {
     if (cell == null) return true;
