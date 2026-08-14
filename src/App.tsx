@@ -1528,7 +1528,7 @@ function App() {
 
       {/* Main Content */}
       <main className="p-4 md:p-8 flex-1">
-        <div className={view === 'MEMBERS' ? 'w-full max-w-[1800px] mx-auto' : 'max-w-6xl mx-auto'}>
+        <div className={view === 'MEMBERS' || view === 'GENERATOR' ? 'w-full max-w-[1800px] mx-auto' : 'max-w-6xl mx-auto'}>
           {view === 'DASHBOARD' && currentSection && (
             <div className="space-y-6 animate-fade-in">
               <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
@@ -1614,7 +1614,7 @@ function App() {
                     </div>
                   </div>
                   <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-                    <div className="lg:col-span-8 bg-white rounded-2xl border flex flex-col min-h-[600px] overflow-hidden shadow-sm">
+                    <div className="lg:col-span-7 min-w-0 bg-white rounded-2xl border flex flex-col min-h-[600px] overflow-hidden shadow-sm">
                         <div className="p-4 bg-gray-50 border-b space-y-3">
                             <div className="flex flex-col md:flex-row gap-2 md:gap-4">
                               <input type="text" placeholder="Pesquisar catálogo..." className="flex-1 p-2 border rounded-lg text-sm" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
@@ -1690,7 +1690,7 @@ function App() {
                             })}
                         </div>
                     </div>
-                    <div className="lg:col-span-4 sticky top-24 bg-white rounded-2xl shadow-xl border flex flex-col max-h-[calc(100vh-120px)] overflow-hidden">
+                    <div className="lg:col-span-5 min-w-0 sticky top-24 bg-white rounded-2xl shadow-xl border flex flex-col max-h-[calc(100vh-120px)] overflow-hidden">
                         <div className="p-4 border-b bg-slate-50 shrink-0 space-y-2">
                           <div className="flex justify-between items-center">
                             <span className="font-black text-slate-800 uppercase text-xs">📋 Planejamento</span>
@@ -1735,7 +1735,7 @@ function App() {
                                 ))
                             )}
                         </div>
-                        <div className="p-4 border-t space-y-3 shrink-0 overflow-y-auto max-h-[55vh] bg-white">
+                        <div className="p-4 border-t space-y-3 shrink-0 overflow-y-auto max-h-[55vh] bg-white min-w-0">
                             <div>
                               <label className="text-[10px] font-bold text-slate-500 uppercase">Tema da reunião</label>
                               <input
@@ -1760,7 +1760,7 @@ function App() {
                                     <input type="number" min="1" value={participantsCount} onChange={(e) => setParticipantsCount(Number(e.target.value))} onBlur={() => setParticipantsCount(v => clampSettingNumber(v, 20, 1, 500))} className="w-full p-2 border rounded-lg text-xs bg-slate-50 outline-none" />
                                 </div>
                             </div>
-                            <div className="rounded-xl border border-indigo-100 bg-indigo-50/40 p-1">
+                            <div className="rounded-xl border border-indigo-100 bg-indigo-50/40 p-1 min-w-0">
                               <CronogramaBlock
                                 compact
                                 editable

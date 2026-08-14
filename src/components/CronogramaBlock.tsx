@@ -166,7 +166,7 @@ export const CronogramaBlock: React.FC<Props> = ({
     : 'w-full p-2 border rounded-lg text-sm bg-white outline-none';
 
   return (
-    <section className={`rounded-xl border border-slate-200 bg-white ${compact ? 'p-3' : 'p-5'} print:border-slate-400 print:shadow-none`}>
+    <section className={`rounded-xl border border-slate-200 bg-white min-w-0 ${compact ? 'p-3' : 'p-5'} print:border-slate-400 print:shadow-none`}>
       <div className="flex items-start justify-between gap-2 mb-3">
         <div>
           <p className="text-[10px] font-black uppercase tracking-[0.18em] text-slate-500">ScoutsAuto</p>
@@ -292,69 +292,70 @@ export const CronogramaBlock: React.FC<Props> = ({
         </label>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full text-left border-collapse min-w-[520px]">
+      <div className="overflow-x-auto min-w-0">
+        <table className="w-full min-w-0 table-fixed text-left border-collapse">
           <thead>
             <tr className="bg-slate-800 text-white text-[10px] uppercase tracking-wider">
-              <th className="px-2 py-2 font-black">Duração</th>
-              {editable && <th className="px-2 py-2 font-black w-16">Min</th>}
-              <th className="px-2 py-2 font-black">Itens da reunião</th>
-              <th className="px-2 py-2 font-black">Responsável</th>
-              {editable && <th className="px-2 py-2 font-black no-print">Tipo</th>}
-              {editable && <th className="px-2 py-2 font-black no-print w-20"></th>}
+              <th className={`py-2 font-black whitespace-nowrap ${compact ? 'w-[12ch] px-1' : 'w-[13ch] px-2'}`}>Duração</th>
+              {editable && <th className={`py-2 font-black ${compact ? 'w-10 px-1' : 'w-14 px-2'}`}>Min</th>}
+              <th className={`py-2 font-black w-full min-w-0 ${compact ? 'px-1' : 'px-2'}`}>Itens da reunião</th>
+              <th className={`py-2 font-black ${compact ? 'w-[9ch] px-1' : 'w-[10ch] px-2'}`}>Responsável</th>
+              {editable && <th className={`py-2 font-black no-print ${compact ? 'w-[7.5rem] px-1' : 'w-28 px-2'}`}>Tipo</th>}
+              {editable && <th className={`py-2 font-black no-print ${compact ? 'w-12 px-0.5' : 'w-16 px-2'}`}></th>}
             </tr>
           </thead>
           <tbody>
             {activities.map((row, index) => {
               const kind = rowKind(row);
+              const cellPad = compact ? 'px-1 py-1' : 'px-2 py-1.5';
               return (
                 <tr key={row._uid || index} className={`border-b border-slate-200 ${kindTone[kind]}`}>
-                  <td className="px-2 py-1.5 text-xs font-bold text-slate-800 whitespace-nowrap">
+                  <td className={`${cellPad} text-xs font-bold text-slate-800 whitespace-nowrap`}>
                     {formatPaperDuration(row.scheduledStartTime, row.durationMinutes)}
                   </td>
                   {editable && (
-                    <td className="px-2 py-1.5">
+                    <td className={cellPad}>
                       <input
                         type="number"
                         min={0}
                         max={180}
                         value={row.durationMinutes}
                         onChange={e => updateRow(index, { durationMinutes: Math.max(0, Number(e.target.value) || 0) })}
-                        className="w-14 p-1 border rounded text-xs bg-white"
+                        className={`${compact ? 'w-9' : 'w-12'} min-w-0 p-1 border rounded text-xs bg-white`}
                       />
                     </td>
                   )}
-                  <td className="px-2 py-1.5">
+                  <td className={`${cellPad} min-w-0`}>
                     {editable ? (
                       <input
                         type="text"
                         value={row.title}
                         onChange={e => updateRow(index, { title: e.target.value })}
-                        className="w-full p-1 border rounded text-xs bg-white"
+                        className="w-full min-w-0 p-1 border rounded text-xs bg-white"
                       />
                     ) : (
-                      <span className="text-sm text-slate-800">{row.title}</span>
+                      <span className="text-sm text-slate-800 break-words">{row.title}</span>
                     )}
                   </td>
-                  <td className="px-2 py-1.5">
+                  <td className={`${cellPad} min-w-0`}>
                     {editable ? (
                       <input
                         type="text"
                         value={row.responsible || ''}
                         onChange={e => updateRow(index, { responsible: e.target.value })}
                         placeholder="Patrulha / chefia"
-                        className="w-full p-1 border rounded text-xs bg-white"
+                        className="w-full min-w-0 p-1 border rounded text-xs bg-white"
                       />
                     ) : (
-                      <span className="text-sm text-slate-700">{row.responsible || '—'}</span>
+                      <span className="text-sm text-slate-700 break-words">{row.responsible || '—'}</span>
                     )}
                   </td>
                   {editable && (
-                    <td className="px-2 py-1.5 no-print">
+                    <td className={`${cellPad} no-print min-w-0`}>
                       <select
                         value={kind}
                         onChange={e => changeKind(index, e.target.value as RowKind)}
-                        className="w-full p-1 border rounded text-[10px] bg-white"
+                        className="w-full min-w-0 p-1 border rounded text-[10px] bg-white"
                       >
                         {(Object.keys(kindLabel) as RowKind[]).map(k => (
                           <option key={k} value={k}>{kindLabel[k]}</option>
@@ -363,11 +364,11 @@ export const CronogramaBlock: React.FC<Props> = ({
                     </td>
                   )}
                   {editable && (
-                    <td className="px-2 py-1.5 no-print">
-                      <div className="flex gap-0.5">
-                        <button type="button" onClick={() => moveRow(index, -1)} className="px-1 text-slate-400 hover:text-slate-700" title="Subir">↑</button>
-                        <button type="button" onClick={() => moveRow(index, 1)} className="px-1 text-slate-400 hover:text-slate-700" title="Descer">↓</button>
-                        <button type="button" onClick={() => removeRow(index)} className="px-1 text-red-300 hover:text-red-600" title="Remover">✕</button>
+                    <td className={`${cellPad} no-print`}>
+                      <div className="flex gap-0.5 justify-end">
+                        <button type="button" onClick={() => moveRow(index, -1)} className="px-0.5 text-slate-400 hover:text-slate-700" title="Subir">↑</button>
+                        <button type="button" onClick={() => moveRow(index, 1)} className="px-0.5 text-slate-400 hover:text-slate-700" title="Descer">↓</button>
+                        <button type="button" onClick={() => removeRow(index)} className="px-0.5 text-red-300 hover:text-red-600" title="Remover">✕</button>
                       </div>
                     </td>
                   )}
