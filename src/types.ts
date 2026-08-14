@@ -237,6 +237,44 @@ export interface SectionEnrollment {
   isActive: boolean;
 }
 
+/** Item oficial UEB/Marechal (códigos antigos, se existirem). Não inventar códigos. */
+export interface OfficialProgressItem {
+  code: string;
+  area?: string;
+  status?: string;
+  date?: string;
+}
+
+export interface OfficialSpecialtyRecord {
+  nome?: string;
+  name?: string;
+  titulo?: string;
+  nivel?: number | string;
+  level?: number | string;
+}
+
+export interface OfficialEtapaRecord {
+  nome?: string;
+  name?: string;
+  etapa?: string;
+  data?: string;
+  date?: string;
+}
+
+/**
+ * Histórico oficial já persistido no Firestore em membros existentes.
+ * Nunca apagar ao gravar o jovem — campos extras desconhecidos devem permanecer.
+ */
+export interface MemberOfficialRecord {
+  source?: string;
+  etapas?: OfficialEtapaRecord[] | string[] | string | Record<string, unknown>;
+  especialidades?: OfficialSpecialtyRecord[] | string[];
+  conquistas?: Array<string | Record<string, unknown>>;
+  condecoracoes?: Array<string | Record<string, unknown>>;
+  vidaEscoteira?: Record<string, unknown> | string;
+  items?: OfficialProgressItem[];
+}
+
 export interface ScoutMember {
   id: string;
   sectionId?: string; 
@@ -254,6 +292,8 @@ export interface ScoutMember {
   
   isArchived?: boolean; 
   enrollments?: SectionEnrollment[];
+  /** Camada oficial UEB (etapas/especialidades antigas). Nunca apagar na gravação. */
+  official?: MemberOfficialRecord;
 }
 
 export interface AttendanceRecord {
@@ -302,6 +342,10 @@ export interface MemberBlocoState {
   dataConclusao?: string;         // ISO date quando bloco fechou
   avaliador?: string;
   notas?: string;
+  /** Créditos variáveis confirmados pela chefia a partir da Ferramenta UEB (não fecha o bloco). */
+  creditosEquivalencia?: number;
+  /** Chefia ignorou a sugestão UEB deste bloco. */
+  equivalenciaIgnorada?: boolean;
   lastUpdate: string;             // ISO timestamp
 }
 

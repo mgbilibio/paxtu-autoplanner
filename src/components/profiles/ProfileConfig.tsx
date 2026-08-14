@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { ScoutSection, UserProfile } from '../../types';
 import { StructureManager } from './StructureManager';
 import { UserManager } from './UserManager';
 import { WebAccountsPanel } from './WebAccountsPanel';
@@ -11,9 +12,17 @@ interface Props {
   currentAccountId?: string;
   isAdmin?: boolean;
   isGroupAdmin?: boolean;
+  currentUser?: UserProfile | null;
+  currentSection?: ScoutSection | null;
 }
 
-export const ProfileConfig: React.FC<Props> = ({ currentAccountId, isAdmin, isGroupAdmin }) => {
+export const ProfileConfig: React.FC<Props> = ({
+  currentAccountId,
+  isAdmin,
+  isGroupAdmin,
+  currentUser,
+  currentSection,
+}) => {
   const [steps, setSteps] = useState({ grupo: false, secao: false, usuario: false });
 
   useEffect(() => {
@@ -109,6 +118,8 @@ export const ProfileConfig: React.FC<Props> = ({ currentAccountId, isAdmin, isGr
             currentAccountId={currentAccountId}
             isAdmin={!!isAdmin}
             isGroupAdmin={!!isGroupAdmin}
+            currentUser={currentUser}
+            currentSection={currentSection}
           />
         </div>
       )}

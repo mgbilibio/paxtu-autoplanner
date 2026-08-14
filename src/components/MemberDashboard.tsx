@@ -10,6 +10,8 @@ import { ProgressionMap } from './ProgressionMap';
 import { SpecialtyEncyclopedia } from './SpecialtyEncyclopedia';
 import { getAppConfig } from '../services/storageService';
 import { isYouthMember } from '../utils/memberQuickAdd';
+import { OfficialEquivalenciaPanel } from './OfficialEquivalenciaPanel';
+import { hasOfficialLayer } from '../services/equivalenciaService';
 
 interface Props {
   member: ScoutMember;
@@ -71,7 +73,12 @@ export const MemberDashboard: React.FC<Props> = ({ member, section, onClose, onP
             <BlocoTracker member={member} onClose={onClose} />
           </div>
           <div className="bg-slate-100 border-t px-4 py-2 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 text-xs flex-shrink-0">
-            <span className="text-slate-500">Sistema POR 2025+ ativo</span>
+            <div className="space-y-0.5">
+              <span className="text-slate-500">Sistema POR 2025+ ativo</span>
+              {hasOfficialLayer(member) && (
+                <OfficialEquivalenciaPanel member={member} compact />
+              )}
+            </div>
             <div className="flex flex-wrap items-center gap-3">
               <button
                 onClick={() => setShowSpecialties(true)}

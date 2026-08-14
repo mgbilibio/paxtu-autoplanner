@@ -91,7 +91,11 @@ export const TELA_HELP: Record<string, ScreenHelp> = {
   BLOCOS_2025: {
     titulo: 'Progressão 2025+',
     corpo: 'Acompanha os 18 blocos por ramo, com fixas, variáveis, substituições e reconhecimentos.',
-    dicas: ['Lobinho e Escoteiro usam esta estrutura.', 'A ficha foi feita para leitura ampla.'],
+    dicas: [
+      'Lobinho e Escoteiro usam esta estrutura.',
+      'A ficha foi feita para leitura ampla.',
+      'No jovem, a camada oficial UEB (se existir) fica visível mesmo com o modo legado desligado. Equivalência só sugere; a chefia confirma.',
+    ],
   },
   PROFILE_CONFIG: {
     titulo: 'Estrutura',
@@ -137,7 +141,11 @@ export const FAQ: HelpFaq[] = [
   },
   {
     q: 'Como faço backup?',
-    a: 'No desktop, Configurações > Avançado tem backup local. No site ScoutsAuto, o administrador baixa e restaura o JSON do grupo em Acessos (usuários, convites, seções e documentos da tropa). Sem senhas nem chaves de API.',
+    a: 'No desktop, Configurações > Avançado tem backup local. No site ScoutsAuto, o administrador baixa e restaura o JSON do grupo em Acessos. Chefe e administrador também exportam o pacote da seção (efetivo, equipes e histórico oficial), sem apagar progressão ao importar. Sem senhas nem chaves de API.',
+  },
+  {
+    q: 'O que é a equivalência UEB no acompanhamento?',
+    a: 'Se o jovem tem histórico oficial (etapas e especialidades antigas), o ScoutsAuto mostra essa camada junto dos blocos POR 2025+. A Ferramenta de Equivalência do Ramo Escoteiro (fev/2026) só sugere créditos. A chefia confirma ou ignora. A etapa oficial nunca é rebaixada e o histórico oficial não é apagado.',
   },
   {
     q: 'Como volto ao modo legado?',

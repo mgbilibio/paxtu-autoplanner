@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ScoutSection } from '../../types';
+import { ScoutSection, UserProfile } from '../../types';
 import { getSectionsAsync, DATA_EVENTS } from '../../services/storageService';
 import { getRoleLabel } from '../../services/roleService';
 import { PasswordField } from '../PasswordField';
@@ -16,11 +16,14 @@ import {
   updatePersonProfile,
 } from '../../services/firebase/groupAuth';
 import { GroupBackupPanel } from './GroupBackupPanel';
+import { SectionPackPanel } from './SectionPackPanel';
 
 interface Props {
   currentAccountId?: string;
   isAdmin: boolean;
   isGroupAdmin?: boolean;
+  currentUser?: UserProfile | null;
+  currentSection?: ScoutSection | null;
 }
 
 const formatRequestedAt = (date?: Date | null): string => {
@@ -106,7 +109,13 @@ const PendingRequestCard: React.FC<{
   );
 };
 
-export const WebAccountsPanel: React.FC<Props> = ({ currentAccountId, isAdmin, isGroupAdmin }) => {
+export const WebAccountsPanel: React.FC<Props> = ({
+  currentAccountId,
+  isAdmin,
+  isGroupAdmin,
+  currentUser,
+  currentSection,
+}) => {
   const [people, setPeople] = useState<GroupPerson[]>([]);
   const [sections, setSections] = useState<ScoutSection[]>([]);
   const [feedback, setFeedback] = useState<string | null>(null);
@@ -348,6 +357,11 @@ export const WebAccountsPanel: React.FC<Props> = ({ currentAccountId, isAdmin, i
       )}
 
       <GroupBackupPanel enabled={!!isGroupAdmin} />
+      <SectionPackPanel
+        user={currentUser}
+        currentSection={currentSection}
+        sections={sections}
+      />
 
       {!isAdmin && (
         <p className="text-xs text-slate-600">Só o administrador libera, recusa e desativa acessos.</p>
