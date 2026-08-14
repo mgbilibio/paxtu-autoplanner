@@ -4,19 +4,23 @@ import { savePlanToCatalog } from '../services/storageService';
 import { normalizePlanForUse } from '../services/planNormalizationService';
 import { exportMeetingPlanHtml } from '../services/meetingPlanHtmlExport';
 import { ConfirmDialog } from './ConfirmDialog';
+import { isCeremonialActivity } from '../services/activityBriefs';
 
 interface Props {
   plan: MeetingPlan;
   onReset: () => void;
   onRegenerate: () => void;
+  onRegenerateActivity?: (index: number, activity: Activity, currentPlan: MeetingPlan) => Promise<MeetingPlan>;
   isGenerating?: boolean;
 }
 
-export const PlanDisplay: React.FC<Props> = ({ plan: initialPlan, onReset, onRegenerate, isGenerating }) => {
+export const PlanDisplay: React.FC<Props> = ({ plan: initialPlan, onReset, onRegenerate, onRegenerateActivity, isGenerating }) => {
   const [plan, setPlan] = useState<MeetingPlan>(normalizePlanForUse(initialPlan));
   const [isSaved, setIsSaved] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [confirmRegenerate, setConfirmRegenerate] = useState(false);
+  const [confirmActivityIndex, setConfirmActivityIndex] = useState<number | null>(null);
+  const [regeneratingIndex, setRegeneratingIndex] = useState<number | null>(null);
   // Autosave: rascunho gravado 2s após última edição, sem precisar clicar Salvar
   const [autoSavedAt, setAutoSavedAt] = useState<string | null>(null);
   const autosaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -176,6 +180,29 @@ export const PlanDisplay: React.FC<Props> = ({ plan: initialPlan, onReset, onReg
           }}
         />
       )}
+      {confirmActivityIndex !== null && (
+        <ConfirmDialog
+          title="Refazer esta atividade"
+          message="Refazer só esta atividade? As outras ficam."
+          confirmText="Refazer"
+          onCancel={() => setConfirmActivityIndex(null)}
+          onConfirm={() => {
+            const index = confirmActivityIndex;
+            setConfirmActivityIndex(null);
+            if (index === null || !onRegenerateActivity) return;
+            const current = plan.activities[index];
+            if (!current) return;
+            setRegeneratingIndex(index);
+            onRegenerateActivity(index, current, plan)
+              .then(nextPlan => {
+                setPlan(normalizePlanForUse(nextPlan));
+                markDirty();
+              })
+              .catch(() => {})
+              .finally(() => setRegeneratingIndex(null));
+          }}
+        />
+      )}
       {/* Header Actions */}
       <div className="bg-slate-900 p-4 flex justify-between items-center sticky top-0 z-20 shadow-md no-print">
         <div className="flex items-center gap-3">
@@ -284,17 +311,30 @@ export const PlanDisplay: React.FC<Props> = ({ plan: initialPlan, onReset, onReg
 
                     {/* Card */}
                     <div className={`border rounded-xl p-6 hover:shadow-md transition-shadow relative ${cardTone(act)}`}>
-                        {isEditing && (
-                            <button 
-                                onClick={() => removeActivity(i)}
-                                className="absolute top-2 right-2 text-red-300 hover:text-red-500 font-bold px-2"
-                            >
-                                🗑️
-                            </button>
-                        )}
+                        <div className="absolute top-2 right-2 flex items-center gap-1">
+                            {onRegenerateActivity && !isCeremonialActivity(act) && (
+                                <button
+                                    type="button"
+                                    onClick={() => setConfirmActivityIndex(i)}
+                                    disabled={regeneratingIndex !== null}
+                                    className="text-[10px] font-bold px-2 py-1 rounded-lg bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100 disabled:opacity-60 disabled:cursor-wait"
+                                    title="Gera de novo só esta atividade"
+                                >
+                                    {regeneratingIndex === i ? 'Gerando…' : '🔄 Refazer esta'}
+                                </button>
+                            )}
+                            {isEditing && (
+                                <button 
+                                    onClick={() => removeActivity(i)}
+                                    className="text-red-300 hover:text-red-500 font-bold px-2"
+                                >
+                                    🗑️
+                                </button>
+                            )}
+                        </div>
 
                         <div className="flex justify-between items-start mb-3">
-                            <div className="flex-1">
+                            <div className="flex-1 pr-28">
                                 {isEditing ? (
                                     <input 
                                         value={act.title}

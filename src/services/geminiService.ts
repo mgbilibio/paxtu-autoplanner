@@ -1,14 +1,15 @@
 import { GoogleGenAI } from "@google/genai";
-import { MeetingPlan, GeneratorParams, GroundingSource } from "../types";
+import { MeetingPlan, GeneratorParams, GroundingSource, GenerateScoutActivityParams, Activity } from "../types";
 import { getAppConfig, getStoredApiKey } from "./storageService";
 import { SectionAnalysis } from "./recommendationService";
 import { buildManuaisContextForBranch } from '../data/manuaisReferencia';
-import { normalizePlanForUse } from './planNormalizationService';
+import { normalizeActivityForUse, normalizePlanForUse } from './planNormalizationService';
 import { getProgressionDetail } from './progressionDetailService';
 import { extractJson } from './llmJson';
 import { isWebApp } from './platform';
 import { getGeminiOAuthAccessToken } from './googleAuth';
 import { attachmentsToGeminiParts, attachmentsToPromptBlock, GeminiInlinePart } from './planAttachments';
+import { activityBriefsPromptBlock, buildSingleActivityPrompt } from './activityBriefs';
 
 // Remove possiveis segredos (api key) de mensagens de erro da SDK antes de
 // exibir/logar — a SDK as vezes ecoa a URL da request com a chave.
@@ -487,6 +488,10 @@ export const generateScoutPlan = async (params: GeneratorParams & { context?: { 
     Quantidade de jovens (estimativa): ${params.participantsCount || 20}.
     Tema: ${params.narrativeTheme || (planningMode === 'auto_link' ? 'livre — invente tema criativo' : 'Padrão')}.
   `;
+  const briefsBlock = activityBriefsPromptBlock(params.activityBriefs, params.activityCount || 3);
+  if (briefsBlock) {
+    userPromptBase += `\n${briefsBlock}\n`;
+  }
 
   if (planningMode === 'from_selection') {
     userPromptBase += `\nOBJETIVOS OBRIGATÓRIOS:\n${objectivesList || '(nenhum)'}\n`;
@@ -665,4 +670,38 @@ MODO AUTO_LINK:
     window.dispatchEvent(new CustomEvent('paxtu:llm-progress', { detail: { message: 'Erro na geração.' } }));
     throw new Error("Erro na IA: " + safe);
   }
+};
+
+export const generateScoutActivity = async (params: GenerateScoutActivityParams): Promise<Activity> => {
+  if (!hasGeminiCredentials()) throw new Error(GEMINI_MISSING_KEY);
+  const selectedModel = params.modelId || getDefaultGeminiModel();
+  const extraParts = attachmentsToGeminiParts(params.attachments);
+  const attachmentBlock = attachmentsToPromptBlock(params.attachments);
+  const prompt = `${buildSingleActivityPrompt(params)}${attachmentBlock ? `\n\n${attachmentBlock}` : ''}`;
+
+  const checkFinishReason = (reason: string | undefined): void => {
+    if (reason === 'MAX_TOKENS') {
+      throw new Error('A IA cortou a resposta por limite de tokens ao refazer a atividade. Tente de novo.');
+    }
+    if (reason === 'SAFETY') {
+      throw new Error('A IA bloqueou a resposta por filtros de segurança ao refazer a atividade.');
+    }
+  };
+
+  let res = await generateGeminiText(selectedModel, prompt, 0.5, extraParts);
+  checkFinishReason(res.finishReason);
+  let parsed = extractJson<Activity>(res.text || '');
+  if (parsed === null) {
+    res = await generateGeminiText(
+      selectedModel,
+      `${prompt}\n\nIMPORTANTE: sua resposta anterior NÃO era um JSON válido. Responda SOMENTE com o objeto JSON pedido.`,
+      0.3,
+      extraParts,
+    );
+    checkFinishReason(res.finishReason);
+    parsed = extractJson<Activity>(res.text || '');
+  }
+  if (parsed === null) throw new Error('A IA não retornou JSON válido ao refazer a atividade.');
+  const { isOperational: _op, operationalType: _type, ...safe } = parsed as Activity;
+  return normalizeActivityForUse(safe, params.slotIndex);
 };
