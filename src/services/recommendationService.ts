@@ -28,7 +28,7 @@ export interface SectionAnalysis {
 }
 
 export const analyzeTroopGaps = async (branch: ScoutBranch, section?: ScoutSection | null): Promise<SectionAnalysis | null> => {
-  const allMembers = await getMembersAsync(section?.id);
+  const allMembers = await getMembersAsync(section?.id, { hydrateOfficial: false });
   const activeMembers = allMembers.filter(m => m.branch === branch && !m.isArchived && isYouthMember(m));
   
   if (activeMembers.length === 0) return null;
@@ -39,11 +39,13 @@ export const analyzeTroopGaps = async (branch: ScoutBranch, section?: ScoutSecti
   // Codigos homologados por membro a partir da fonte REAL (blocos + legado),
   // nao mais do cache legado isolado que ficava vazio no fluxo POR 2025.
   const codesByMember = new Map<string, Set<string>>();
-  await Promise.all(
-    activeMembers.map(async member => {
+  const batchSize = 6;
+  for (let i = 0; i < activeMembers.length; i += batchSize) {
+    const chunk = activeMembers.slice(i, i + batchSize);
+    await Promise.all(chunk.map(async member => {
       codesByMember.set(member.id, await getMemberHomologatedCodes(member.id));
-    }),
-  );
+    }));
+  }
 
   const stats: TroopStat[] = [];
   const categorySummaries: CategorySummary[] = [];

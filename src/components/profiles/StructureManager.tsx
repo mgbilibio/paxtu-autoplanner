@@ -101,7 +101,7 @@ export const StructureManager: React.FC = () => {
     const [groups, secData, memData] = await Promise.all([
         getGroupsAsync(),
         getSectionsAsync(),
-        getMembersAsync()
+        getMembersAsync(undefined, { hydrateOfficial: false })
     ]);
 
     if (groups.length > 0) {
