@@ -7,7 +7,7 @@ import { BRANCH_DOT_CLASS } from './profiles/StructureManager';
 import { MemberDashboard } from './MemberDashboard';
 import { ConfirmDialog } from './ConfirmDialog';
 import { generatePrintableHistory } from '../services/reportingService';
-import { getMemberProgress } from '../services/storageService';
+import { getMemberProgressIndividual } from '../services/storageService';
 import {
   buildMinimalMember,
   formatMemberWriteError,
@@ -658,9 +658,8 @@ export const MembersManager: React.FC<Props> = ({ sectionId, isAdmin }) => {
           member={historyMember}
           section={sections.find(s => s.id === historyMember.sectionId)}
           onClose={() => setHistoryMember(null)}
-          onPrint={() => {
-            const allProgress = getMemberProgress();
-            const memberData = allProgress.find(p => p.memberId === historyMember.id);
+          onPrint={async () => {
+            const memberData = await getMemberProgressIndividual(historyMember.id);
             generatePrintableHistory(
               historyMember,
               sections.find(s => s.id === historyMember.sectionId),

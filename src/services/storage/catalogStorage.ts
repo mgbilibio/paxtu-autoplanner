@@ -2,15 +2,18 @@ import { CatalogAnnotation, MeetingPlan } from '../../types';
 import { isWebApp } from '../platform';
 import { listSectionDocuments, readAccessibleItems, readSectionItems, writeSectionItems } from '../firebase/sectionData';
 import { getAppConfig } from './configStorage';
-import { isFileBacked, isFirestoreBacked, readJsonDoc, writeJsonDoc } from './dualBackend';
+import { isFileBacked, isFirestoreBacked, isWebFirebaseMode, readJsonDoc, writeJsonDoc } from './dualBackend';
 import { DATA_EVENTS, dispatchDataEvent } from './events';
 import { CATALOG_FILENAME, STORAGE_KEY, TRACKER_KEY } from './names';
 import { assertCanWriteSection } from './sectionLockStorage';
 import { runExclusive } from './writeQueue';
 
+let memoryAnnotations: Record<string, CatalogAnnotation> = {};
+
 // Parse tolerante: descarta a chave corrompida e devolve o default em vez de
 // derrubar a leitura inteira (padrao de readCachedEntity).
 const parseOrDefault = <T>(key: string, fallback: T): T => {
+  if (isWebFirebaseMode()) return fallback;
   const raw = localStorage.getItem(key);
   if (!raw) return fallback;
   try {
@@ -36,6 +39,7 @@ export const getCatalogAsync = async (preferredSectionId?: string): Promise<Meet
     }
     return items;
   }
+  if (isWebFirebaseMode()) return [];
   if (isFileBacked()) {
     try {
       const config = getAppConfig();
@@ -93,6 +97,9 @@ export const savePlanToCatalog = async (
     dispatchDataEvent(DATA_EVENTS.CATALOG_UPDATED);
     return toSave;
   }
+  if (isWebFirebaseMode()) {
+    throw new Error('Entre com sua conta para gravar o roteiro no grupo.');
+  }
   const currentCatalog = await getCatalogAsync();
   const updatedCatalog = upsertCatalog(currentCatalog, toSave);
   if (isFileBacked()) {
@@ -129,6 +136,7 @@ export const deleteFromCatalog = async (id: string): Promise<void> => {
     dispatchDataEvent(DATA_EVENTS.CATALOG_UPDATED);
     return;
   }
+  if (isWebFirebaseMode()) return;
   const current = await getCatalogAsync();
   const updated = current.filter(plan => plan.id !== id);
   await writeJsonDoc(CATALOG_FILENAME, STORAGE_KEY, updated);
@@ -149,6 +157,7 @@ export const exportCatalogBackup = (): void => {
 };
 
 export const rebuildCatalogFromFolder = async (): Promise<number> => {
+  if (isWebFirebaseMode()) return 0;
   const config = getAppConfig();
   if (!config?.dataFolder || !window.fileSystem) return 0;
   try {
@@ -187,14 +196,20 @@ export const rebuildCatalogFromFolder = async (): Promise<number> => {
   }
 };
 
-export const getAnnotations = (): Record<string, CatalogAnnotation> =>
-  parseOrDefault<Record<string, CatalogAnnotation>>(TRACKER_KEY, {});
+export const getAnnotations = (): Record<string, CatalogAnnotation> => {
+  if (isWebFirebaseMode()) return memoryAnnotations;
+  return parseOrDefault<Record<string, CatalogAnnotation>>(TRACKER_KEY, {});
+};
 
 export const saveAnnotation = (
   annotation: CatalogAnnotation,
 ): Record<string, CatalogAnnotation> => {
   const current = getAnnotations();
   current[annotation.code] = annotation;
+  if (isWebFirebaseMode()) {
+    memoryAnnotations = current;
+    return current;
+  }
   localStorage.setItem(TRACKER_KEY, JSON.stringify(current));
   return current;
 };

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ScoutMember, CatalogItem, ProgressionRecord, ScoutSection } from '../types';
 import { getCatalogForSection } from '../services/catalogService';
-import { getMemberProgress, updateMemberAchievement } from '../services/storageService';
+import { getMemberProgressIndividual, updateMemberAchievement } from '../services/storageService';
 import { generatePrintableHistory } from '../services/reportingService';
 
 interface Props {
@@ -19,9 +19,8 @@ export const MemberHistoryModal: React.FC<Props> = ({ member, section, onClose }
     loadHistory();
   }, [member.id]);
 
-  const loadHistory = () => {
-    const allData = getMemberProgress();
-    const memberData = allData.find(p => p.memberId === member.id);
+  const loadHistory = async () => {
+    const memberData = await getMemberProgressIndividual(member.id);
     setAchievements(memberData ? memberData.achievements : []);
   };
 
@@ -29,10 +28,10 @@ export const MemberHistoryModal: React.FC<Props> = ({ member, section, onClose }
       generatePrintableHistory(member, section, achievements);
   };
 
-  const handleToggle = (item: CatalogItem, isChecked: boolean) => {
+  const handleToggle = async (item: CatalogItem, isChecked: boolean) => {
     const date = new Date().toISOString().slice(0, 10); // Default to today
-    updateMemberAchievement(member.id, item.code, date, undefined, !isChecked);
-    loadHistory(); // Reload to refresh UI
+    await updateMemberAchievement(member.id, item.code, date, undefined, !isChecked);
+    await loadHistory();
   };
 
   const catalog = getCatalogForSection(member.branch, section);

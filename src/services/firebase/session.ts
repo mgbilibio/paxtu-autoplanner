@@ -9,6 +9,10 @@ export const setFirebaseSessionUid = (uid: string | null): void => {
 
 export const getFirebaseSessionUid = (): string | null => sessionUid;
 
+/** Site ScoutsAuto com Firebase ligado — a tropa não mora no navegador. */
+export const isWebFirebaseMode = (): boolean =>
+  isWebApp() && isFirebaseConfigured();
+
 /** Web + Firebase configurado + sessão autenticada. Electron nunca entra aqui. */
 export const isFirestoreBacked = (): boolean =>
-  isWebApp() && isFirebaseConfigured() && Boolean(sessionUid);
+  isWebFirebaseMode() && Boolean(sessionUid);

@@ -2,7 +2,7 @@ import { MemberProgress } from '../../types';
 import { readMemberSubdoc, writeMemberSubdoc } from '../firebase/sectionData';
 import { getAppConfig } from './configStorage';
 import { DATA_EVENTS, dispatchDataEvent } from './events';
-import { isFirestoreBacked } from './dualBackend';
+import { isFirestoreBacked, isWebFirebaseMode } from './dualBackend';
 import { findMemberForLayout } from './memberStorage';
 import { PROGRESSION_FOLDER } from './names';
 import { assertCanWriteSection } from './sectionLockStorage';
@@ -13,6 +13,7 @@ const PROGRESS_CACHE_KEY = 'PAXTU_PROG_CACHE';
 // Parse tolerante: descarta a chave corrompida e devolve o default em vez de
 // derrubar a leitura inteira (padrao de readCachedEntity).
 const parseOrDefault = <T>(key: string, fallback: T): T => {
+  if (isWebFirebaseMode()) return fallback;
   const raw = localStorage.getItem(key);
   if (!raw) return fallback;
   try {
@@ -36,6 +37,7 @@ export const getMemberProgressIndividual = async (
     if (!member?.sectionId) return null;
     return readMemberSubdoc<MemberProgress>(member.sectionId, memberId, 'progress', 'legacy');
   }
+  if (isWebFirebaseMode()) return null;
   const cacheKey = progressCacheKey(memberId);
   const cached = parseOrDefault<MemberProgress | null>(cacheKey, null);
   if (cached) return cached;
@@ -68,6 +70,7 @@ export const saveMemberProgressIndividual = async (
     await writeMemberSubdoc(member.sectionId, progress.memberId, 'progress', 'legacy', progress);
     return;
   }
+  if (isWebFirebaseMode()) return;
   localStorage.setItem(progressCacheKey(progress.memberId), JSON.stringify(progress));
   const config = getAppConfig();
   if (config?.dataFolder && window.fileSystem) {
@@ -109,11 +112,13 @@ export const updateMemberAchievement = async (
   }
 
   await saveMemberProgressIndividual(memberData);
-  const allProgress = getMemberProgressLegacy();
-  const index = allProgress.findIndex(item => item.memberId === memberId);
-  if (index >= 0) allProgress[index] = memberData;
-  else allProgress.push(memberData);
-  localStorage.setItem(PROGRESS_CACHE_KEY, JSON.stringify(allProgress));
+  if (!isWebFirebaseMode()) {
+    const allProgress = getMemberProgressLegacy();
+    const index = allProgress.findIndex(item => item.memberId === memberId);
+    if (index >= 0) allProgress[index] = memberData;
+    else allProgress.push(memberData);
+    localStorage.setItem(PROGRESS_CACHE_KEY, JSON.stringify(allProgress));
+  }
   dispatchDataEvent(DATA_EVENTS.MEMBERS_UPDATED);
   return memberData;
 };

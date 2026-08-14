@@ -6,6 +6,7 @@ export {
 } from './storage/configStorage';
 
 export { DATA_EVENTS } from './storage/events';
+export { clearWebLocalOperationalData } from './storage/localDataPolicy';
 
 export {
   ensureWorkspaceMetadata,

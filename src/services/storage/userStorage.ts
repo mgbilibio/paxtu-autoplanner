@@ -2,7 +2,7 @@ import { UserProfile } from '../../types';
 import { adultFolder, adultProfilePath } from '../dataLayoutService';
 import { groupPersonToProfile, listGroupPeople, setPersonActive } from '../firebase/groupAuth';
 import { getAppConfig } from './configStorage';
-import { isFileBacked, isFirestoreBacked, readJsonDoc, writeJsonDoc } from './dualBackend';
+import { isFileBacked, isFirestoreBacked, isWebFirebaseMode, readJsonDoc, writeJsonDoc } from './dualBackend';
 import { DATA_EVENTS, dispatchDataEvent } from './events';
 import { writeLayoutFile } from './layoutStorage';
 import { USERS_FILENAME, USERS_KEY } from './names';
@@ -36,6 +36,7 @@ export const getUsersAsync = async (): Promise<UserProfile[]> => {
       .filter(person => person.active && !person.awaitingApproval && !person.rejected)
       .map(groupPersonToProfile);
   }
+  if (isWebFirebaseMode()) return [];
   const users = await getPersistedUsers();
   const hasAdmin = users.some(user => user.role === 'ADMINISTRADOR');
   return hasAdmin ? users : [...users, adminMasterSeed];

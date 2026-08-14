@@ -5,7 +5,7 @@ import { getPlanningCatalog, buildCatalogDigest } from './services/catalogServic
 import { generateScoutPlanRouted as generateScoutPlan, generateScoutActivityRouted as generateScoutActivity, listAvailableModels as getAvailableModels, getActiveProvider, getProviderById, normalizeProviderId, GEMINI_STUDIO_URL, GEMINI_KEY_HELP } from './services/llmProvider';
 import { getDefaultGeminiModel, pickPreferredGeminiModel, hasGeminiCredentials, curatedGeminiModelIds } from './services/geminiService';
 import { pickXaiFastModel } from './services/xaiService';
-import { getAnnotations, saveAnnotation, getAppConfig, saveAppConfig, normalizePath, downloadProgressBackup, importProgressBackup, saveSectionAsync, getAllMemberBlocoStates, downloadLocalAppBackup, importLocalAppBackup, ensureWorkspaceMetadata, acquireSectionEditLock, releaseSectionEditLock, renewSectionEditLock, EditLock, getSectionsAsync, savePlanToCatalog } from './services/storageService';
+import { getAnnotations, saveAnnotation, getAppConfig, saveAppConfig, normalizePath, downloadProgressBackup, importProgressBackup, saveSectionAsync, getAllMemberBlocoStates, downloadLocalAppBackup, importLocalAppBackup, ensureWorkspaceMetadata, acquireSectionEditLock, releaseSectionEditLock, renewSectionEditLock, EditLock, getSectionsAsync, savePlanToCatalog, clearWebLocalOperationalData } from './services/storageService';
 import { getProgressionDetail } from './services/progressionDetailService';
 import { PlanDisplay } from './components/PlanDisplay';
 import { Catalog } from './components/Catalog';
@@ -173,6 +173,7 @@ function App() {
   });
 
   useEffect(() => {
+    if (isWebApp()) clearWebLocalOperationalData();
     const config = getAppConfig();
     setAppConfig(config);
     // Annotations
@@ -1488,7 +1489,8 @@ function App() {
                     </label>
                 </div>
 
-                {/* Backup/Restore de progressão por jovem */}
+                {/* Backup/Restore de progressão por jovem — só desktop. No site o grupo vive no Firestore. */}
+                {!isWebApp() && (
                 <div className="mt-4 p-4 bg-slate-50 border border-slate-200 rounded-lg">
                     <p className="text-sm font-bold text-slate-700 mb-2">📦 Backup do app local</p>
                     <p className="text-[11px] text-slate-600 mb-3">
@@ -1558,6 +1560,7 @@ function App() {
                         </label>
                     </div>
                 </div>
+                )}
                 </>
                 )}
 

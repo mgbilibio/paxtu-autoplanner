@@ -9,13 +9,9 @@ import { CONFIG_KEY } from './configStorage';
 import { DATA_EVENTS, dispatchDataEvent } from './events';
 import { saveMemberReconhecimento } from './reconhecimentoStorage';
 import { saveMemberSpecialtyState } from './specialtyStateStorage';
-import {
-  isLocalAppBackup,
-  isProgressBackup,
-  isSafeStorageEntry,
-  isValidBlocoStateEntry,
-  isValidReconhecimentoEntry,
-} from './backupValidation';
+import { isLocalAppBackup, isProgressBackup, isSafeStorageEntry, isValidBlocoStateEntry, isValidReconhecimentoEntry } from './backupValidation';
+import { isWebFirebaseMode } from './dualBackend';
+import { isOperationalLocalKey } from './localDataPolicy';
 
 export interface ProgressBackup {
   version: number;
@@ -159,6 +155,7 @@ export const exportLocalAppBackup = (): LocalAppBackup => {
   const payload: Record<string, string> = {};
   Object.keys(localStorage)
     .filter(key => key.startsWith('PAXTU_'))
+    .filter(key => !(isWebFirebaseMode() && isOperationalLocalKey(key)))
     .sort()
     .forEach(key => {
       const value = localStorage.getItem(key);
@@ -183,6 +180,7 @@ export const importLocalAppBackup = (backup: LocalAppBackup): number => {
   let imported = 0;
   Object.entries(backup.localStorage || {}).forEach(([key, value]) => {
     if (!isSafeStorageEntry(key, value)) return;
+    if (isWebFirebaseMode() && isOperationalLocalKey(key)) return;
     // Reaplica a limpeza de segredos na importacao: um backup adulterado (ou de
     // terceiro) nao deve reintroduzir uma apiKey na config local.
     localStorage.setItem(key, backupValueWithoutSecrets(key, value));

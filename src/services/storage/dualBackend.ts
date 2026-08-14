@@ -1,10 +1,11 @@
-import { isFirestoreBacked } from '../firebase/session';
+import { isFirestoreBacked, isWebFirebaseMode } from '../firebase/session';
 import { getAppConfig } from './configStorage';
 import { readLayoutFile, writeLayoutFile } from './layoutStorage';
 
-export { isFirestoreBacked };
+export { isFirestoreBacked, isWebFirebaseMode };
 
 export const isFileBacked = (): boolean => {
+  if (isWebFirebaseMode()) return false;
   const config = getAppConfig();
   return Boolean(config?.dataFolder && typeof window !== 'undefined' && window.fileSystem);
 };
@@ -14,6 +15,7 @@ export const readJsonDoc = async <T>(
   localStorageKey: string | null,
   defaultValue: T,
 ): Promise<T> => {
+  if (isWebFirebaseMode()) return defaultValue;
   const config = getAppConfig();
   if (config?.dataFolder && window.fileSystem) {
     try {
@@ -33,6 +35,7 @@ export const writeJsonDoc = async <T>(
   localStorageKey: string | null,
   value: T,
 ): Promise<void> => {
+  if (isWebFirebaseMode()) return;
   const config = getAppConfig();
   if (config?.dataFolder && window.fileSystem) {
     await window.fileSystem.writeData(
@@ -57,13 +60,13 @@ export const readCachedEntity = async <T>(
   resolvePaths: () => Promise<EntityPaths | null>,
   migrate?: (raw: any) => T,
 ): Promise<T | null> => {
+  if (isWebFirebaseMode()) return null;
   // Em sharedFolder (Drive/OneDrive/Dropbox) o estado pode ter sido alterado por
   // outra maquina; o cache do localStorage fica defasado e a comparacao de
   // conflito (saveMemberBlocoStateOptimistic) usaria um snapshot velho. Nesse
   // modo, ignora o cache de leitura e vai direto ao FS, que e a fonte da verdade.
   const config = getAppConfig();
-  const bypassCache = isFirestoreBacked()
-    || (config?.syncMode === 'sharedFolder' && Boolean(config?.dataFolder));
+  const bypassCache = config?.syncMode === 'sharedFolder' && Boolean(config?.dataFolder);
   const cached = bypassCache ? null : localStorage.getItem(cacheKey);
   if (cached) {
     try {
@@ -104,6 +107,7 @@ export const writeCachedEntity = async <T>(
   value: T,
   resolvePaths: () => Promise<EntityPaths | null>,
 ): Promise<void> => {
+  if (isWebFirebaseMode()) return;
   const config = getAppConfig();
   if (config?.dataFolder && window.fileSystem) {
     // resolvePaths pode chamar assertCanWriteSection (lock de secao): roda ANTES
