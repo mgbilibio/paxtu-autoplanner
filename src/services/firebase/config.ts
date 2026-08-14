@@ -1,4 +1,5 @@
 import { initializeApp, type FirebaseApp } from 'firebase/app';
+import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check';
 import { getAuth, type Auth } from 'firebase/auth';
 import { getFirestore, type Firestore } from 'firebase/firestore';
 
@@ -25,6 +26,9 @@ export const PENDING_ACCESS_MESSAGE =
 export const REJECTED_ACCESS_MESSAGE =
   'Cadastro recusado pelo administrador.';
 
+export const REGISTRATION_CLOSED_MESSAGE =
+  'Novos cadastros estão fechados. Peça ao administrador para te convidar.';
+
 export const getFirebaseWebConfig = (): FirebaseWebConfig | null => {
   const apiKey = env('VITE_FIREBASE_API_KEY');
   const authDomain = env('VITE_FIREBASE_AUTH_DOMAIN');
@@ -45,9 +49,12 @@ export const isXSignInEnabled = (): boolean => {
   return flag === '1' || flag === 'true' || flag === 'yes';
 };
 
+export const getAppCheckSiteKey = (): string => env('VITE_FIREBASE_APPCHECK_SITE_KEY');
+
 let app: FirebaseApp | null = null;
 let auth: Auth | null = null;
 let db: Firestore | null = null;
+let appCheckStarted = false;
 
 const requireConfig = (): FirebaseWebConfig => {
   const config = getFirebaseWebConfig();
@@ -55,9 +62,21 @@ const requireConfig = (): FirebaseWebConfig => {
   return config;
 };
 
+const startAppCheck = (firebaseApp: FirebaseApp): void => {
+  if (appCheckStarted || typeof window === 'undefined') return;
+  const siteKey = getAppCheckSiteKey();
+  if (!siteKey) return;
+  initializeAppCheck(firebaseApp, {
+    provider: new ReCaptchaV3Provider(siteKey),
+    isTokenAutoRefreshEnabled: true,
+  });
+  appCheckStarted = true;
+};
+
 export const getFirebaseApp = (): FirebaseApp => {
   if (!app) {
     app = initializeApp(requireConfig());
+    startAppCheck(app);
   }
   return app;
 };

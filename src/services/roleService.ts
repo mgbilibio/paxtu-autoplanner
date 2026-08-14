@@ -54,7 +54,7 @@ export const getPermissions = (user?: UserProfile | null): RolePermissions => {
     canHomologate: isAdmin || isChief,
     canViewReports: true,
     canExport: true,
-    isGlobal: isAdmin || isBoard,
+    isGlobal: isAdmin,
     isReadOnly,
   };
 };

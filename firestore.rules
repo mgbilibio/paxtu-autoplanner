@@ -46,7 +46,6 @@ service cloud.firestore {
 
     function hasSection(sectionId) {
       return isAdmin()
-        || isBoard()
         || (isActiveUser() && sectionId in sectionIdsOf(userDoc()));
     }
 
@@ -56,6 +55,10 @@ service cloud.firestore {
 
     function bootstrapRef() {
       return /databases/$(database)/documents/meta/bootstrap;
+    }
+
+    function settingsRef() {
+      return /databases/$(database)/documents/meta/settings;
     }
 
     function inviteRef() {
@@ -82,20 +85,39 @@ service cloud.firestore {
         || (data.sectionIds is list && data.sectionIds.size() == 0);
     }
 
+    function registrationOpen() {
+      return !exists(settingsRef())
+        || get(settingsRef()).data.openRegistration != false;
+    }
+
     function isPendingSelfPayload() {
-      return request.resource.data.email == authEmail()
+      return registrationOpen()
+        && request.resource.data.email == authEmail()
         && request.resource.data.active == false
         && request.resource.data.isAdmin == false
+        && request.resource.data.pendingApproval == true
+        && request.resource.data.rejected == false
+        && request.resource.data.role == ''
         && emptySectionIds(request.resource.data);
+    }
+
+    function isSelfAdminLock() {
+      return request.auth.uid == uid
+        && resource.data.isAdmin == true
+        && (
+          request.resource.data.isAdmin != true
+          || request.resource.data.active != true
+        );
     }
 
     match /meta/{docId} {
       allow read: if signedIn();
-      allow create: if docId == 'bootstrap'
-        && isBootstrapClaim()
-        && request.resource.data.uid == request.auth.uid
-        && request.resource.data.email == authEmail();
-      allow update, delete: if isAdmin();
+      allow create: if (docId == 'bootstrap'
+          && isBootstrapClaim()
+          && request.resource.data.uid == request.auth.uid)
+        || (docId == 'settings' && isAdmin());
+      allow update: if docId == 'settings' && isAdmin();
+      allow delete: if false;
     }
 
     match /invites/{emailKey} {
@@ -128,7 +150,10 @@ service cloud.firestore {
           )
         );
 
-      allow update: if isAdmin()
+      allow update: if (
+          isAdmin()
+          && !isSelfAdminLock()
+        )
         || (
           signedIn()
           && request.auth.uid == uid
@@ -138,7 +163,7 @@ service cloud.firestore {
           && isPendingSelfPayload()
         );
 
-      allow delete: if isAdmin();
+      allow delete: if isAdmin() && request.auth.uid != uid;
     }
 
     match /groups/{groupId} {

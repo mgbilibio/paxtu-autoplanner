@@ -17,6 +17,7 @@ import {
   deletePersonAccess,
   inviteGroupPerson,
   listGroupPeople,
+  MIN_PASSWORD_LENGTH,
   rejectPendingPerson,
   sendPersonPasswordReset,
   setPersonActive,
@@ -24,6 +25,7 @@ import {
 } from '../../services/firebase/groupAuth';
 import { GroupBackupPanel } from './GroupBackupPanel';
 import { SectionPackPanel } from './SectionPackPanel';
+import { readGroupWebSettings, writeGroupWebSettings } from '../../services/firebase/groupSettings';
 
 interface Props {
   currentAccountId?: string;
@@ -137,6 +139,7 @@ export const WebAccountsPanel: React.FC<Props> = ({
   const [editName, setEditName] = useState('');
   const [editEmail, setEditEmail] = useState('');
   const [personToDelete, setPersonToDelete] = useState<GroupPerson | null>(null);
+  const [openRegistration, setOpenRegistration] = useState(true);
 
   const refresh = async (detail?: SectionsUpdatedDetail) => {
     const [sectionData, groupPeople] = await Promise.all([
@@ -155,6 +158,7 @@ export const WebAccountsPanel: React.FC<Props> = ({
 
   useEffect(() => {
     void refresh();
+    void readGroupWebSettings().then(settings => setOpenRegistration(settings.openRegistration));
     const onSections = (event: Event) => {
       const detail = (event as CustomEvent<SectionsUpdatedDetail>).detail;
       if (detail?.upsert || detail?.removedId) {
@@ -210,10 +214,34 @@ export const WebAccountsPanel: React.FC<Props> = ({
   return (
     <div className="space-y-4">
       <div className="bg-sky-50 border border-sky-200 rounded-lg p-3 text-[11px] text-sky-950 leading-relaxed">
-        Quem tem o link do site cria a própria conta (Google ou e-mail e senha). Os pedidos aparecem abaixo para você
-        <strong> Liberar</strong> (seção + papel) ou <strong> Recusar</strong>.
-        Convite prévio continua opcional — não é mais obrigatório cadastrar cada e-mail antes.
+        {openRegistration
+          ? 'Com cadastro aberto, quem tem o link cria a própria conta e aparece abaixo para Liberar ou Recusar.'
+          : 'Cadastro aberto está desligado. Só entra quem você convidar (e-mail) ou quem já tem acesso.'}
+        {' '}Convite prévio continua disponível.
       </div>
+
+      {isAdmin && (
+        <label className="flex items-start gap-2 text-xs text-slate-700 bg-white border rounded-lg p-3">
+          <input
+            type="checkbox"
+            className="mt-0.5"
+            checked={openRegistration}
+            onChange={event => {
+              const next = event.target.checked;
+              setOpenRegistration(next);
+              void writeGroupWebSettings({ openRegistration: next })
+                .then(() => showOk(next ? 'Cadastro aberto: pedidos voltam a aparecer.' : 'Cadastro fechado: só entra com convite.'))
+                .catch(showErr);
+            }}
+          />
+          <span>
+            <strong>Permitir auto-cadastro</strong>
+            <span className="block text-[11px] text-slate-500 mt-0.5">
+              Desmarque para exigir convite. Quem já está pendente continua na lista.
+            </span>
+          </span>
+        </label>
+      )}
 
       {isAdmin && (
         <>
@@ -270,11 +298,12 @@ export const WebAccountsPanel: React.FC<Props> = ({
                 autoComplete="off"
               />
               <PasswordField
-                placeholder="Senha inicial (opcional)"
+                placeholder={`Senha inicial (opcional, mín. ${MIN_PASSWORD_LENGTH})`}
                 className="p-2 border rounded w-full"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 autoComplete="new-password"
+                minLength={MIN_PASSWORD_LENGTH}
               />
               <select className="p-2 border rounded bg-white" value={role} onChange={e => setRole(e.target.value)}>
                 {WEB_ROLE_OPTIONS.map(item => (

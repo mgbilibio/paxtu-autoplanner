@@ -10,12 +10,26 @@ export const resolveFolder = (folderPath: unknown): string | null => {
   return path.resolve(trimmed)
 }
 
+/** True se `folder` é exatamente `allowed` ou um filho (sem sair via `..`). */
+export const isSameOrInsideFolder = (folder: string, allowed: string): boolean => {
+  const root = path.resolve(allowed)
+  const target = path.resolve(folder)
+  if (target === root) return true
+  const relative = path.relative(root, target)
+  return relative !== '' && !relative.startsWith('..') && !path.isAbsolute(relative)
+}
+
 export const resolveDataFile = (
   folderPath: unknown,
   fileName: unknown,
+  allowedFolder?: string | null,
 ): string | null => {
   const folder = resolveFolder(folderPath)
   if (!folder || typeof fileName !== 'string') return null
+  if (allowedFolder) {
+    const allowed = resolveFolder(allowedFolder)
+    if (!allowed || !isSameOrInsideFolder(folder, allowed)) return null
+  }
 
   const normalized = path.normalize(fileName.trim())
   const portable = normalized.replace(/\\/g, '/')
@@ -85,3 +99,12 @@ export const clampLimit = (value: unknown, fallback = 20): number => {
 export const normalizeSearchQuery = (value: unknown): string => (
   typeof value === 'string' ? value.trim().slice(0, 200) : ''
 )
+
+export const isSafePdfSubfolder = (raw: unknown): boolean => {
+  if (typeof raw !== 'string') return false
+  const portable = raw.trim().replace(/\\/g, '/')
+  if (!portable || portable === '.' || portable === '/') return false
+  if (path.isAbsolute(raw) || portable.includes('\0')) return false
+  if (portable === '..' || portable.startsWith('../') || portable.includes('/../')) return false
+  return true
+}

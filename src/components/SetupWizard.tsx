@@ -342,8 +342,8 @@ export const SetupWizard: React.FC<Props> = ({ onComplete }) => {
                 </button>
               </div>
               {syncMode === 'sharedFolder' && (
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4 text-[11px] text-blue-900 leading-relaxed">
-                  Use uma pasta sincronizada do Google Drive e aguarde o Drive concluir a sincronização antes de outra chefia editar. Esta versão não garante edição simultânea livre.
+                <div className="bg-amber-50 border border-amber-300 rounded-lg p-3 mb-4 text-[11px] text-amber-950 leading-relaxed">
+                  A pasta sincronizada fica no Drive/OneDrive com nomes e dados de jovens. Restrinja o compartilhamento à chefia e espere a sincronização terminar antes de outra pessoa editar.
                 </div>
               )}
               <div className="flex gap-2">

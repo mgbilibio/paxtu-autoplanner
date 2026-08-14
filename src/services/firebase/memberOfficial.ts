@@ -1,4 +1,5 @@
 import { MemberOfficialRecord, ScoutMember } from '../../types';
+import { stripSensitiveOfficialFields } from './sanitizeFirestoreMember';
 
 export const OFFICIAL_COLLECTION = 'official';
 export const OFFICIAL_PAXTU_DOC = 'paxtu';
@@ -117,16 +118,20 @@ export const splitOfficialDocs = (
 } => {
   const asRecord = { ...official } as Record<string, unknown>;
   if (officialPayloadBytes(asRecord) <= OFFICIAL_DOC_SOFT_LIMIT) {
-    return { paxtu: asRecord };
+    return { paxtu: stripSensitiveOfficialFields(asRecord) as Record<string, unknown> };
   }
   const { competencias, vidaEscoteira, ...rest } = asRecord;
   const shards: {
     paxtu: Record<string, unknown>;
     competencias?: Record<string, unknown>;
     vida?: Record<string, unknown>;
-  } = { paxtu: rest };
-  if (competencias !== undefined) shards.competencias = { competencias };
-  if (vidaEscoteira !== undefined) shards.vida = { vidaEscoteira };
+  } = { paxtu: stripSensitiveOfficialFields(rest) as Record<string, unknown> };
+  if (competencias !== undefined) {
+    shards.competencias = stripSensitiveOfficialFields({ competencias }) as Record<string, unknown>;
+  }
+  if (vidaEscoteira !== undefined) {
+    shards.vida = stripSensitiveOfficialFields({ vidaEscoteira }) as Record<string, unknown>;
+  }
   return shards;
 };
 

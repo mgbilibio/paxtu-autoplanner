@@ -93,11 +93,7 @@ export const stripHtmlToReadableText = (html: string): string => {
     .replace(/\s+/g, ' ')
     .trim();
   if (stripped) return stripped;
-  const truncated = html
-    .replace(/<script\b[\s\S]*?<\/script>/gi, '')
-    .replace(/<style\b[\s\S]*?<\/style>/gi, '')
-    .slice(0, 20_000);
-  return truncated;
+  return '[HTML sem texto extraível]';
 };
 
 const bytesToLatin1 = (bytes: Uint8Array): string => {

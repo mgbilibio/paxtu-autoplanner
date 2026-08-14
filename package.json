@@ -12,6 +12,7 @@
     "build": "tsc && vite build",
     "build:web": "tsc && vite build --mode web",
     "preview": "vite preview",
+    "test": "node --experimental-strip-types --test electron/securityGuards.test.ts src/services/firebase/groupBackupCrypto.test.ts src/services/storage/sectionList.test.ts src/services/firebase/sectionPackMatch.test.ts",
     "electron:build": "vite build && electron-builder",
     "dist": "npm run electron:build"
   },

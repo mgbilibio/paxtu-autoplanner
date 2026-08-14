@@ -68,7 +68,7 @@ export const TELA_HELP: Record<string, ScreenHelp> = {
     corpo: 'Visão da seção: frequência, progresso, pendências e leitura para diretoria.',
     dicas: [
       'A ficha lado a lado (oficial + blocos) abre no Efetivo, não aqui.',
-      'Diretoria e leitura costumam cair nesta tela.',
+      'Diretoria e leitura veem só as seções em que foram liberados, em modo consulta.',
     ],
   },
   GENERATOR: {

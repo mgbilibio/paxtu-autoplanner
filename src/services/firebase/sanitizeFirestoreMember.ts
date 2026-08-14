@@ -1,6 +1,9 @@
 const HISTORICO_KEYS = new Set(['historico', 'historicoescoteiro', 'registros']);
 const HISTORICO_FIELDS = ['dataInicio', 'dataFim', 'atividade', 'local', 'certificado'] as const;
 
+const SENSITIVE_OFFICIAL_KEY =
+  /^(cpf|rg|cnpj|ssn|passaporte|endereco|address|telefone|celular|phone|email|mae|pai|responsavel|alergia|saude|health|medical|doenca|restricao.?alimentar|foto|photo|imagem|documento)$/i;
+
 const isPlainObject = (value: unknown): value is Record<string, unknown> =>
   Object.prototype.toString.call(value) === '[object Object]';
 
@@ -105,8 +108,28 @@ export const sanitizeNestedArrays = (value: unknown, key?: string): unknown => {
   return out;
 };
 
-export const sanitizeMemberForFirestore = <T>(member: T): T =>
-  sanitizeNestedArrays(member) as T;
+/** Remove PII extra (CPF, telefone, saúde…) de blobs oficiais, não do cadastro da seção. */
+export const stripSensitiveOfficialFields = (value: unknown): unknown => {
+  if (Array.isArray(value)) return value.map(stripSensitiveOfficialFields);
+  if (!isPlainObject(value)) return value;
+  const out: Record<string, unknown> = {};
+  for (const [key, nested] of Object.entries(value)) {
+    if (SENSITIVE_OFFICIAL_KEY.test(key)) continue;
+    out[key] = stripSensitiveOfficialFields(nested);
+  }
+  return out;
+};
+
+export const sanitizeMemberForFirestore = <T>(member: T): T => {
+  const nested = sanitizeNestedArrays(member);
+  if (isPlainObject(nested) && nested.official != null) {
+    return {
+      ...nested,
+      official: stripSensitiveOfficialFields(nested.official),
+    } as T;
+  }
+  return nested as T;
+};
 
 const alreadyPortuguese = (message: string): boolean =>
   /[À-ú]|seção|secao|recusad|não conseg|nao conseg|ScoutsAuto/i.test(message);

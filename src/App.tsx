@@ -1424,7 +1424,34 @@ function App() {
                 <>
                 <div className="space-y-2">
                     <label className="text-xs font-bold text-slate-700 block">Pasta de dados</label>
-                    <input type="text" value={folderInput} onChange={(e) => setFolderInput(e.target.value)} className="w-full p-3 border rounded-lg text-sm bg-gray-50" placeholder="Pasta de dados" />
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={folderInput}
+                        onChange={(e) => { if (!window.fileSystem) setFolderInput(e.target.value); }}
+                        readOnly={Boolean(window.fileSystem)}
+                        className={`w-full p-3 border rounded-lg text-sm ${window.fileSystem ? 'bg-gray-100 text-gray-500' : 'bg-gray-50'}`}
+                        placeholder="Pasta de dados"
+                      />
+                      {window.fileSystem && (
+                        <button
+                          type="button"
+                          className="px-3 py-2 bg-slate-800 text-white rounded-lg text-xs font-bold shrink-0"
+                          onClick={() => {
+                            void window.fileSystem?.selectFolder().then(path => {
+                              if (path) setFolderInput(path);
+                            });
+                          }}
+                        >
+                          Escolher
+                        </button>
+                      )}
+                    </div>
+                    {window.fileSystem && (
+                      <p className="text-[11px] text-slate-500">
+                        Só a pasta confirmada no diálogo do sistema é gravada. Depois de atualizar o app, escolha de novo uma vez.
+                      </p>
+                    )}
                 </div>
                 <div className="mt-4 space-y-2">
                     <label className="text-xs font-bold text-slate-700 block">Modo de compartilhamento</label>
@@ -1437,8 +1464,8 @@ function App() {
                         <option value="sharedFolder">Pasta compartilhada em nuvem</option>
                     </select>
                     {syncModeInput === 'sharedFolder' && (
-                        <p className="text-[11px] text-blue-800 bg-blue-50 border border-blue-200 rounded p-2 leading-relaxed">
-                            Indicado para Google Drive/OneDrive/Dropbox sem servidor. Evite duas chefias editando ao mesmo tempo; aguarde a sincronização concluir antes de trocar o operador.
+                        <p className="text-[11px] text-amber-950 bg-amber-50 border border-amber-300 rounded p-2 leading-relaxed">
+                            A pasta na nuvem (Drive/OneDrive/Dropbox) guarda nomes, progressão e dados de saúde dos jovens no provedor. Use só pasta com acesso restrito à chefia; evite duas pessoas editando ao mesmo tempo.
                         </p>
                     )}
                 </div>

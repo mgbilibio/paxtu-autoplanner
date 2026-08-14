@@ -33,8 +33,10 @@ import {
   isXSignInEnabled,
   NOT_INVITED_MESSAGE,
   PENDING_ACCESS_MESSAGE,
+  REGISTRATION_CLOSED_MESSAGE,
   REJECTED_ACCESS_MESSAGE,
 } from './config';
+import { readGroupWebSettings } from './groupSettings';
 import { setFirebaseSessionUid } from './session';
 
 export {
@@ -43,8 +45,11 @@ export {
   isXSignInEnabled,
   NOT_INVITED_MESSAGE,
   PENDING_ACCESS_MESSAGE,
+  REGISTRATION_CLOSED_MESSAGE,
   REJECTED_ACCESS_MESSAGE,
 };
+
+export const MIN_PASSWORD_LENGTH = 10;
 
 export const WEB_ROLE_OPTIONS: { value: UserRole; label: string }[] = [
   { value: 'Chefe de Seção', label: 'Chefe' },
@@ -78,6 +83,12 @@ export const normalizeEmail = (raw: string): string => emailKey(raw);
 
 const requireFirebase = (): void => {
   if (!isFirebaseConfigured()) throw new Error(BACKEND_NOT_CONFIGURED_MESSAGE);
+};
+
+const requirePasswordStrength = (password: string): void => {
+  if (password.length < MIN_PASSWORD_LENGTH) {
+    throw new Error(`A senha precisa ter pelo menos ${MIN_PASSWORD_LENGTH} caracteres.`);
+  }
 };
 
 const authEmailOf = (user: User): string => {
@@ -136,7 +147,7 @@ const inviteFromData = (email: string, data: Record<string, unknown>): GroupPers
   return {
     email,
     displayName: typeof data.displayName === 'string' ? data.displayName : email,
-    role: getRoleLabel(role),
+    role: awaitingApproval ? '' : getRoleLabel(role),
     sectionIds: isAdmin ? [] : sectionIds,
     isAdmin,
     active: !awaitingApproval && !rejected && data.active !== false,
@@ -196,7 +207,6 @@ const claimBootstrap = async (user: User, email: string): Promise<UserProfile> =
     }
     tx.set(bootstrapRef, {
       uid: user.uid,
-      email,
       at: serverTimestamp(),
     });
     tx.set(userRef, {
@@ -252,6 +262,10 @@ const claimInvite = async (user: User, email: string, invite: GroupPerson): Prom
 };
 
 const createPendingMembership = async (user: User, email: string): Promise<UserProfile> => {
+  const settings = await readGroupWebSettings();
+  if (!settings.openRegistration) {
+    throw new Error(REGISTRATION_CLOSED_MESSAGE);
+  }
   const db = getFirestoreDb();
   const userRef = doc(db, 'users', user.uid);
   const displayName = (user.displayName || email.split('@')[0]).trim();
@@ -336,11 +350,13 @@ const translateAuthError = (err: unknown, fallback: string): Error => {
     || err.message === BACKEND_NOT_CONFIGURED_MESSAGE
     || err.message === PENDING_ACCESS_MESSAGE
     || err.message === REJECTED_ACCESS_MESSAGE
+    || err.message === REGISTRATION_CLOSED_MESSAGE
     || err.message.startsWith('Esta conta')
     || err.message.startsWith('Peça ao administrador')
     || err.message.startsWith('O backend')
     || err.message.startsWith('Informe')
     || err.message.startsWith('A senha')
+    || err.message.startsWith('Novos cadastros')
     || err.message.startsWith('Este e-mail já tem conta')
   )) {
     return err;
@@ -368,7 +384,7 @@ const translateAuthError = (err: unknown, fallback: string): Error => {
     return new Error('Este e-mail já tem conta. Entre com a senha.');
   }
   if (code === 'auth/weak-password') {
-    return new Error('A senha precisa ter pelo menos 6 caracteres.');
+    return new Error(`A senha precisa ter pelo menos ${MIN_PASSWORD_LENGTH} caracteres.`);
   }
   if (code === 'auth/too-many-requests') {
     return new Error('Muitas tentativas. Aguarde um pouco e tente de novo.');
@@ -435,7 +451,7 @@ export const registerWithEmailPassword = async (
   if (!displayName) throw new Error('Informe o nome de exibição.');
   if (!isValidEmail(email)) throw new Error('Informe um e-mail válido.');
   if (!password) throw new Error('Informe a senha.');
-  if (password.length < 6) throw new Error('A senha precisa ter pelo menos 6 caracteres.');
+  requirePasswordStrength(password);
   try {
     const created = await createUserWithEmailAndPassword(getFirebaseAuth(), email, password);
     try {
@@ -540,6 +556,7 @@ export const listGroupPeople = async (): Promise<GroupPerson[]> => {
 };
 
 const createAuthUserViaRest = async (email: string, password: string): Promise<string | undefined> => {
+  requirePasswordStrength(password);
   const config = getFirebaseWebConfig();
   if (!config) throw new Error(BACKEND_NOT_CONFIGURED_MESSAGE);
   const response = await fetch(
@@ -554,8 +571,8 @@ const createAuthUserViaRest = async (email: string, password: string): Promise<s
   if (payload.localId) return payload.localId;
   const message = payload.error?.message || '';
   if (message === 'EMAIL_EXISTS') return undefined;
-  if (message === 'WEAK_PASSWORD : Password should be at least 6 characters') {
-    throw new Error('A senha inicial precisa ter pelo menos 6 caracteres (exigência do Firebase).');
+  if (message.startsWith('WEAK_PASSWORD')) {
+    throw new Error(`A senha inicial precisa ter pelo menos ${MIN_PASSWORD_LENGTH} caracteres.`);
   }
   throw new Error('Não foi possível criar o acesso por e-mail e senha.');
 };
@@ -693,6 +710,10 @@ export const setPersonActive = async (emailRaw: string, active: boolean): Promis
     const admins = people.filter(item => item.isAdmin && item.active);
     if (admins.length <= 1) throw new Error('Não é possível desativar o último administrador.');
   }
+  const currentUid = getFirebaseAuth().currentUser?.uid;
+  if (!active && person.uid && currentUid && person.uid === currentUid) {
+    throw new Error('Não dá para desativar o próprio acesso de administrador.');
+  }
   await setDoc(doc(db, 'invites', email), { email, active }, { merge: true });
   if (person.uid) {
     await updateDoc(doc(db, 'users', person.uid), { active });
@@ -726,6 +747,10 @@ export const updatePersonProfile = async (
   if (person.isAdmin && !isAdmin) {
     const admins = people.filter(item => item.isAdmin && item.active);
     if (admins.length <= 1) throw new Error('Não é possível rebaixar o último administrador.');
+  }
+  const currentUid = getFirebaseAuth().currentUser?.uid;
+  if (person.isAdmin && !isAdmin && person.uid && currentUid && person.uid === currentUid) {
+    throw new Error('Não dá para rebaixar o próprio acesso de administrador.');
   }
   const sectionIds = isAdmin ? [] : (patch.sectionIds ?? person.sectionIds);
   const displayName = patch.displayName?.trim() || person.displayName;

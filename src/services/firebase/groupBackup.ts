@@ -7,6 +7,11 @@ import {
 import { isWebApp } from '../platform';
 import { DATA_EVENTS, dispatchDataEvent } from '../storage/events';
 import { getFirebaseAuth, getFirebaseWebConfig, getFirestoreDb } from './config';
+import {
+  decryptJsonWithPassword,
+  encryptJsonWithPassword,
+  isEncryptedGroupBackup,
+} from './groupBackupCrypto';
 import { MEMBER_SUBCOLLECTIONS, listNamedSubcollection } from './sectionData';
 
 export const GROUP_BACKUP_KIND = 'scoutsauto-firestore-backup';
@@ -36,6 +41,11 @@ export interface GroupBackupSummary {
   sections: number;
   sectionDocs: number;
   memberDocs: number;
+}
+
+export interface ParsedGroupBackup {
+  backup: GroupFirestoreBackup;
+  encrypted: boolean;
 }
 
 const SECRET_KEY_PATTERN =
@@ -152,7 +162,7 @@ const requireWebFirebase = (): void => {
   getFirestoreDb();
 };
 
-const assertCurrentUserIsAdmin = async (): Promise<void> => {
+const assertCurrentUserIsAdmin = async (): Promise<{ uid: string; email: string }> => {
   requireWebFirebase();
   const user = getFirebaseAuth().currentUser;
   if (!user) throw new Error('Entre como administrador para fazer backup.');
@@ -161,6 +171,7 @@ const assertCurrentUserIsAdmin = async (): Promise<void> => {
   if (!snap.exists() || data?.isAdmin !== true) {
     throw new Error('Só o administrador pode exportar ou restaurar o backup do grupo.');
   }
+  return { uid: user.uid, email: (user.email || '').trim().toLowerCase() };
 };
 
 const memberIdsFromSectionDocs = (docs: FirestoreDocMap): string[] => {
@@ -261,22 +272,45 @@ export const exportGroupFirestoreBackup = async (): Promise<GroupFirestoreBackup
   return backup;
 };
 
-export const downloadGroupFirestoreBackup = async (): Promise<GroupBackupSummary> => {
+export const downloadGroupFirestoreBackup = async (password: string): Promise<GroupBackupSummary> => {
   const backup = await exportGroupFirestoreBackup();
+  const envelope = await encryptJsonWithPassword(backup, password);
   const date = new Date().toISOString().slice(0, 10);
-  downloadJson(`scoutsauto_grupo_backup_${date}.json`, backup);
+  downloadJson(`scoutsauto_grupo_backup_${date}.json`, envelope);
   return summarizeGroupBackup(backup);
 };
 
 const isSafeDocId = (id: string): boolean =>
   Boolean(id.trim()) && !id.includes('/') && !id.includes('..');
 
-const collectWriteOps = (backup: GroupFirestoreBackup): Array<{ path: string[]; data: Record<string, unknown> }> => {
+const protectCurrentAdmin = (
+  data: Record<string, unknown>,
+  current: { uid: string; email: string },
+  path: string[],
+): Record<string, unknown> => {
+  const isCurrentUserDoc = path[0] === 'users' && path[1] === current.uid;
+  const email = typeof data.email === 'string' ? data.email.trim().toLowerCase() : '';
+  const isCurrentInvite = path[0] === 'invites' && (path[1] === current.email || email === current.email);
+  if (!isCurrentUserDoc && !isCurrentInvite) return data;
+  return {
+    ...data,
+    isAdmin: true,
+    active: true,
+    role: 'ADMINISTRADOR',
+    pendingApproval: false,
+    rejected: false,
+  };
+};
+
+const collectWriteOps = (
+  backup: GroupFirestoreBackup,
+  current: { uid: string; email: string },
+): Array<{ path: string[]; data: Record<string, unknown> }> => {
   const ops: Array<{ path: string[]; data: Record<string, unknown> }> = [];
   const pushMap = (collectionName: string, docs: FirestoreDocMap) => {
     for (const [id, data] of Object.entries(docs)) {
       if (!isSafeDocId(id)) continue;
-      ops.push({ path: [collectionName, id], data });
+      ops.push({ path: [collectionName, id], data: protectCurrentAdmin(data, current, [collectionName, id]) });
     }
   };
   pushMap('groups', asDocMap(backup.groups));
@@ -334,7 +368,10 @@ const commitWrites = async (ops: Array<{ path: string[]; data: Record<string, un
   return written;
 };
 
-export const parseGroupFirestoreBackupFile = async (file: File): Promise<GroupFirestoreBackup> => {
+export const parseGroupFirestoreBackupFile = async (
+  file: File,
+  password?: string,
+): Promise<ParsedGroupBackup> => {
   if (file.size > GROUP_BACKUP_MAX_BYTES) {
     throw new Error('Backup recusado: arquivo muito grande (limite 20 MB).');
   }
@@ -344,14 +381,24 @@ export const parseGroupFirestoreBackupFile = async (file: File): Promise<GroupFi
   } catch {
     throw new Error('Backup recusado: JSON inválido.');
   }
+  if (isEncryptedGroupBackup(parsed)) {
+    if (!password?.trim()) {
+      throw new Error('Este backup está criptografado. Informe a senha.');
+    }
+    const opened = await decryptJsonWithPassword<unknown>(parsed, password);
+    if (!isGroupFirestoreBackup(opened)) {
+      throw new Error('Backup recusado: conteúdo descriptografado inválido.');
+    }
+    return { backup: opened, encrypted: true };
+  }
   if (!isGroupFirestoreBackup(parsed)) {
     throw new Error('Backup recusado: não é um backup do grupo ScoutsAuto.');
   }
-  return parsed;
+  return { backup: parsed, encrypted: false };
 };
 
 export const importGroupFirestoreBackup = async (backup: GroupFirestoreBackup): Promise<GroupBackupSummary> => {
-  await assertCurrentUserIsAdmin();
+  const current = await assertCurrentUserIsAdmin();
   if (!isGroupFirestoreBackup(backup)) {
     throw new Error('Backup recusado: formato não reconhecido.');
   }
@@ -378,7 +425,18 @@ export const importGroupFirestoreBackup = async (backup: GroupFirestoreBackup): 
       ]),
     ),
   };
-  const ops = collectWriteOps(sanitized);
+  if (!sanitized.users[current.uid]) {
+    sanitized.users[current.uid] = {
+      email: current.email,
+      role: 'ADMINISTRADOR',
+      isAdmin: true,
+      active: true,
+      pendingApproval: false,
+      rejected: false,
+      sectionIds: [],
+    };
+  }
+  const ops = collectWriteOps(sanitized, current);
   await commitWrites(ops);
   Object.values(DATA_EVENTS).forEach(eventName => dispatchDataEvent(eventName));
   return summarizeGroupBackup(sanitized);

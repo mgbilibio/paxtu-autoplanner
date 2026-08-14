@@ -5,6 +5,7 @@ import {
   BACKEND_NOT_CONFIGURED_MESSAGE,
   isFirebaseConfigured,
   isXSignInEnabled,
+  MIN_PASSWORD_LENGTH,
   registerWithEmailPassword,
   sendPersonPasswordReset,
   signInWithEmailPassword,
@@ -152,7 +153,7 @@ export const WebAuthGate: React.FC<Props> = ({ onAuthenticated }) => {
             value={password}
             onChange={e => setPassword(e.target.value)}
             autoComplete={registering ? 'new-password' : 'current-password'}
-            minLength={registering ? 6 : undefined}
+            minLength={registering ? MIN_PASSWORD_LENGTH : undefined}
             required
           />
           {error && <p role="alert" className="text-sm text-red-300 mb-3">{error}</p>}

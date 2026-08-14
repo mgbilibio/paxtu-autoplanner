@@ -8,6 +8,8 @@ import {
   isAllowedOllamaRequest,
   isExternalWebUrl,
   isOllamaCloudUrl,
+  isSafePdfSubfolder,
+  isSameOrInsideFolder,
   normalizeSearchQuery,
   resolveDataFile,
   resolveFolder,
@@ -29,6 +31,33 @@ process.env.VITE_PUBLIC = app.isPackaged ? process.env.DIST : path.join(process.
 
 let win: BrowserWindow | null
 const activeOllamaControllers = new Set<AbortController>()
+let allowedDataFolder: string | null = null
+
+const allowedFolderFile = (): string => path.join(app.getPath('userData'), 'allowed-data-folder')
+
+const loadAllowedFolder = async (): Promise<void> => {
+  try {
+    const raw = (await fs.readFile(allowedFolderFile(), 'utf8')).trim()
+    allowedDataFolder = resolveFolder(raw)
+  } catch {
+    allowedDataFolder = null
+  }
+}
+
+const persistAllowedFolder = async (folder: string): Promise<void> => {
+  allowedDataFolder = folder
+  await fs.mkdir(path.dirname(allowedFolderFile()), { recursive: true })
+  await fs.writeFile(allowedFolderFile(), folder, 'utf8')
+}
+
+const trustedFolder = (folderPath: unknown): string | null => {
+  const folder = resolveFolder(folderPath)
+  if (!folder || !allowedDataFolder) return null
+  return isSameOrInsideFolder(folder, allowedDataFolder) ? folder : null
+}
+
+const trustedDataFile = (folderPath: unknown, fileName: unknown): string | null =>
+  resolveDataFile(folderPath, fileName, allowedDataFolder)
 
 // 🚧 Use ['ENV_NAME'] avoid vite:define plugin - Vite@2.x
 const VITE_DEV_SERVER_URL = process.env['VITE_DEV_SERVER_URL']
@@ -113,12 +142,15 @@ ipcMain.handle('dialog:selectFolder', async () => {
     properties: ['openDirectory']
   })
   if (result.canceled) return null
-  return result.filePaths[0]
+  const chosen = resolveFolder(result.filePaths[0])
+  if (!chosen) return null
+  await persistAllowedFolder(chosen)
+  return chosen
 })
 
 ipcMain.handle('fs:readData', async (_, folderPath, fileName) => {
   try {
-    const filePath = resolveDataFile(folderPath, fileName)
+    const filePath = trustedDataFile(folderPath, fileName)
     if (!filePath) return null
     const content = await fs.readFile(filePath, 'utf-8')
     return content
@@ -129,7 +161,7 @@ ipcMain.handle('fs:readData', async (_, folderPath, fileName) => {
 
 ipcMain.handle('fs:writeData', async (_, folderPath, fileName, content) => {
   try {
-    const filePath = resolveDataFile(folderPath, fileName)
+    const filePath = trustedDataFile(folderPath, fileName)
     if (!filePath || typeof content !== 'string') return false
     await fs.mkdir(path.dirname(filePath), { recursive: true });
     await fs.writeFile(filePath, content, 'utf-8')
@@ -142,7 +174,7 @@ ipcMain.handle('fs:writeData', async (_, folderPath, fileName, content) => {
 
 ipcMain.handle('fs:checkExists', async (_, folderPath, fileName) => {
   try {
-    const filePath = resolveDataFile(folderPath, fileName)
+    const filePath = trustedDataFile(folderPath, fileName)
     if (!filePath) return false
     await fs.access(filePath)
     return true
@@ -153,7 +185,7 @@ ipcMain.handle('fs:checkExists', async (_, folderPath, fileName) => {
 
 ipcMain.handle('fs:listFiles', async (_, folderPath) => {
   try {
-    const folder = resolveFolder(folderPath);
+    const folder = trustedFolder(folderPath);
     if (!folder) return [];
     const files = await fs.readdir(folder);
     return files;
@@ -167,7 +199,7 @@ ipcMain.handle('fs:listFiles', async (_, folderPath) => {
 // guard de path-traversal do resolveDataFile (rejeita absoluto, '..', null byte).
 ipcMain.handle('fs:deletePath', async (_, folderPath, relativePath) => {
   try {
-    const target = resolveDataFile(folderPath, relativePath);
+    const target = trustedDataFile(folderPath, relativePath);
     if (!target) return false;
     await fs.rm(target, { recursive: true, force: true });
     return true;
@@ -270,7 +302,7 @@ const openPdfWindow = async (url: string, title: string): Promise<void> => {
       height: 820,
       title,
       autoHideMenuBar: true,
-      webPreferences: { plugins: true, contextIsolation: true, nodeIntegration: false },
+      webPreferences: { plugins: true, contextIsolation: true, nodeIntegration: false, sandbox: true },
     });
     // Guards: a janela de PDF nunca abre janelas-filhas e so navega para file://.
     // http(s) sai pelo navegador externo (mesma politica da janela principal).
@@ -318,9 +350,9 @@ ipcMain.handle('pdf:openAtPage', async (_, relativePath: string, page: number) =
   // Subpasta do pdf_path (ex.: 'manuais_essenciais') preservada para resolver o
   // arquivo; a whitelist ALLOWED_PDFS continua validando apenas pelo basename.
   const subpasta = path.dirname(relativePath || '');
-  const temSubpasta = subpasta && subpasta !== '.' && subpasta !== '/';
+  const temSubpasta = isSafePdfSubfolder(subpasta);
 
-  // Candidatos em ordem de prioridade
+  // Candidatos em ordem de prioridade — nunca o relativePath cru (evita ../).
   const candidatos = [
     // Producao: pasta `manuais` ao lado do executavel (extraResources)
     path.join(process.resourcesPath || '', 'manuais', filename),
@@ -330,8 +362,6 @@ ipcMain.handle('pdf:openAtPage', async (_, relativePath: string, page: number) =
     ...(temSubpasta ? [path.join(process.resourcesPath || '', 'manuais', subpasta, filename)] : []),
     // Dev com subpasta: docs/biblioteca/<subpasta>/<arquivo>
     ...(temSubpasta ? [path.join(__dirname, '..', 'docs', 'biblioteca', subpasta, filename)] : []),
-    // Fallback: tentativa com relativePath completo
-    path.join(__dirname, '..', relativePath),
   ];
 
   let resolved: string | null = null;
@@ -426,14 +456,15 @@ app.on('before-quit', () => {
 });
 
 app.on('activate', () => {
-  // On OS X it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
+  // On OS X it's common to re-create a window in the app when the dock icon is
+  // clicked and there are no other windows open.
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow()
   }
 })
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
+  await loadAllowedFolder();
   createWindow();
   console.log('====================================');
   console.log('PAXTU AUTOPLANNER INICIADO');
