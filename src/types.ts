@@ -40,6 +40,10 @@ export interface Activity {
   manualReferencia?: string;     // Ex: "Manual do Escotista 2025, p.275 (Vida ao Ar Livre)"
   preparacaoPrevia?: string[];   // Lista de itens que a chefia precisa preparar ANTES (imprimir, montar etc.)
   evaluation?: ActivityEvaluation;
+  /** Letra, cartões de caso, falas da cerimônia — texto pronto para usar em campo. */
+  conteudoPronto?: string;
+  /** Roteiro cronometrado dentro da faixa (ex.: "0–3 min"). */
+  passos?: { minuto: string; acao: string }[];
   _uid?: string;                 // Chave estavel de UI (nao vem da IA; atribuido na normalizacao)
 }
 
@@ -89,6 +93,11 @@ export interface MeetingPlan {
   technicalContent?: string;
   /** Relógio de início da reunião (ex.: 15:30). Recalcula scheduledStart/End de cada item. */
   meetingStartTime?: string;
+  /**
+   * Pedido que gerou este roteiro (JSON puro, sem binários).
+   * Permite regenerar sem redigitar. Anexos: só nome + tipo.
+   */
+  generationSeed?: GenerationSeed;
 }
 
 export interface ObjectiveItem {
@@ -109,6 +118,49 @@ export interface ObjectiveItem {
  *  auto_link: inventa atividades (tema/instrução) e amarra códigos do catálogo depois. */
 export type PlanningMode = 'from_selection' | 'auto_link';
 
+export type GenerationSeedScheduleKind = 'opening' | 'break' | 'closing' | 'fixed' | 'core';
+
+export interface GenerationSeedObjective {
+  code?: string;
+  description: string;
+}
+
+export interface GenerationSeedAttachment {
+  name: string;
+  type: string;
+}
+
+export interface GenerationSeedScheduleItem {
+  title: string;
+  durationMinutes: number;
+  responsible?: string;
+  kind?: GenerationSeedScheduleKind;
+}
+
+/**
+ * Entrada do chefe no momento da geração. Sem chaves de IA, sem binários.
+ * Persistido no MeetingPlan (catálogo/Firestore) e no HTML exportado.
+ */
+export interface GenerationSeed {
+  narrativeTheme?: string;
+  customInstruction?: string;
+  activityBriefs?: string[];
+  planningMode?: PlanningMode;
+  activityCount?: number;
+  totalDuration?: number;
+  participantsCount?: number;
+  meetingDate?: string;
+  cycleLabel?: string;
+  meetingType?: string;
+  objectives?: string;
+  technicalContent?: string;
+  meetingStartTime?: string;
+  unitName?: string;
+  selectedObjectives?: GenerationSeedObjective[];
+  attachments?: GenerationSeedAttachment[];
+  scheduleDraft?: GenerationSeedScheduleItem[];
+}
+
 export interface GeneratorParams {
   branch: ScoutBranch;
   totalDuration: number;
@@ -127,7 +179,8 @@ export interface GeneratorParams {
   attachments?: import('./services/planAttachments').PlanAttachment[];
   /**
    * Sementes opcionais por faixa (índice = posição da atividade de miolo).
-   * String vazia = a IA inventa essa posição. Não persistir.
+   * String vazia = a IA inventa essa posição.
+   * Não persistir no raiz do MeetingPlan; vai em generationSeed.
    */
   activityBriefs?: string[];
 }

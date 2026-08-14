@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ScoutBranch, MeetingPlan, Activity, ObjectiveItem, CatalogAnnotation, AppConfig, UserProfile, ScoutSection, CatalogItem, PlanningMode, LlmProviderId } from './types';
+import { ScoutBranch, MeetingPlan, Activity, ObjectiveItem, CatalogAnnotation, AppConfig, UserProfile, ScoutSection, CatalogItem, PlanningMode, LlmProviderId, GenerationSeed } from './types';
 import { BRANCHES } from './constants';
 import { getPlanningCatalog, buildCatalogDigest } from './services/catalogService';
 import { generateScoutPlanRouted as generateScoutPlan, generateScoutActivityRouted as generateScoutActivity, listAvailableModels as getAvailableModels, getActiveProvider, getProviderById, normalizeProviderId, GEMINI_STUDIO_URL, GEMINI_KEY_HELP } from './services/llmProvider';
@@ -30,6 +30,7 @@ import { normalizeOllamaBaseUrl } from './services/ollamaUrlSecurity';
 import { buildCustomObjective } from './services/customObjectiveMatcher';
 import { applyMeetingHeader, applyOperationalSchedule, briefsFromCronograma, buildDefaultCronograma, cycleLabelFromDate, defaultScheduleOptions, estimateOperationalMinutes, isCoreScheduleSlot, mergeGeneratedIntoCronograma, stampActivities, stampScheduleTimes, syncCoreSlotCount, tomorrowISODate } from './services/meetingScheduleService';
 import { hasAnyActivityBrief, trimActivityBriefs } from './services/activityBriefs';
+import { activityFromSeedRow, buildGenerationSeed, objectivesFromSeed } from './services/generationSeed';
 import { CronogramaBlock } from './components/CronogramaBlock';
 import { forceDownloadHtml } from './services/htmlExportCommon';
 import { useGlobalEvents } from './hooks/useGlobalEvents';
@@ -657,12 +658,71 @@ function App() {
     window.setTimeout(() => setLlmProgress(null), 5000);
   };
 
-  const handleGenerate = async () => {
+  const applySeedToPlanner = (seed: GenerationSeed) => {
+    setNarrativeTheme(seed.narrativeTheme || '');
+    setCustomInstruction(seed.customInstruction || '');
+    const count = clampSettingNumber(seed.activityCount || seed.activityBriefs?.length || activityCount, 3, 1, 10);
+    setActivityCount(count);
+    setActivityBriefs(trimActivityBriefs(seed.activityBriefs, count));
+    if (seed.planningMode === 'from_selection' || seed.planningMode === 'auto_link') {
+      setPlanningMode(seed.planningMode);
+    }
+    if (seed.totalDuration != null) setTotalDuration(clampSettingNumber(seed.totalDuration, 120, 30, 600));
+    if (seed.participantsCount != null) setParticipantsCount(clampSettingNumber(seed.participantsCount, 20, 1, 500));
+    if (seed.meetingDate) setMeetingDate(seed.meetingDate);
+    if (seed.cycleLabel !== undefined) setCycleLabel(seed.cycleLabel);
+    if (seed.meetingType !== undefined) setMeetingType(seed.meetingType || 'Normal');
+    if (seed.objectives !== undefined) setMeetingObjectives(seed.objectives);
+    if (seed.technicalContent !== undefined) setTechnicalContent(seed.technicalContent);
+    if (seed.meetingStartTime) setScheduleStartTime(seed.meetingStartTime);
+    setSelectedObjectives(objectivesFromSeed(seed));
+    if (seed.scheduleDraft?.length) {
+      setScheduleDraft(stampActivities(
+        seed.scheduleDraft.map(activityFromSeedRow),
+        seed.meetingStartTime || scheduleStartTime,
+      ));
+    }
+  };
+
+  const handleUseSeedInPlanner = (seed: GenerationSeed) => {
+    applySeedToPlanner(seed);
+    setStep(2);
+    showToast('Pedido carregado no painel. Ajuste e gere de novo.', 'info');
+  };
+
+  const handleGenerate = async (fromSeed?: GenerationSeed) => {
     if (!selectedBranch) {
       showToast('Escolha o ramo antes de gerar.', 'error');
       setError('Escolha o ramo antes de gerar.');
       return;
     }
+    if (fromSeed) applySeedToPlanner(fromSeed);
+    const narrativeThemeUse = fromSeed?.narrativeTheme ?? narrativeTheme;
+    const customInstructionUse = fromSeed?.customInstruction ?? customInstruction;
+    const activityBriefsUse = fromSeed?.activityBriefs ?? activityBriefs;
+    const planningModeUse: PlanningMode =
+      fromSeed?.planningMode === 'from_selection' || fromSeed?.planningMode === 'auto_link'
+        ? fromSeed.planningMode
+        : (planningMode === 'from_selection' || planningMode === 'auto_link'
+          ? planningMode
+          : (selectedObjectives.length > 0 ? 'from_selection' : 'auto_link'));
+    const selectedObjectivesUse = fromSeed?.selectedObjectives?.length
+      ? objectivesFromSeed(fromSeed)
+      : selectedObjectives;
+    const totalDurationUse = fromSeed?.totalDuration ?? totalDuration;
+    const activityCountUse = fromSeed?.activityCount ?? activityCount;
+    const participantsCountUse = fromSeed?.participantsCount ?? participantsCount;
+    const scheduleStartTimeUse = fromSeed?.meetingStartTime || scheduleStartTime;
+    const meetingDateUse = fromSeed?.meetingDate ?? meetingDate;
+    const cycleLabelUse = fromSeed?.cycleLabel ?? cycleLabel;
+    const meetingTypeUse = fromSeed?.meetingType ?? meetingType;
+    const meetingObjectivesUse = fromSeed?.objectives ?? meetingObjectives;
+    const technicalContentUse = fromSeed?.technicalContent ?? technicalContent;
+    const unitNameUse = fromSeed?.unitName || currentSection?.name;
+    const scheduleDraftUse = fromSeed?.scheduleDraft?.length
+      ? stampActivities(fromSeed.scheduleDraft.map(activityFromSeedRow), scheduleStartTimeUse)
+      : scheduleDraft;
+
     const runId = Date.now();
     generationRef.current = { id: runId, cancelled: false };
     const activeProvider = normalizeProviderId(appConfig?.llmProvider);
@@ -697,32 +757,30 @@ function App() {
       return;
     }
     const effectiveMode: PlanningMode =
-      planningMode === 'from_selection' || planningMode === 'auto_link'
-        ? planningMode
-        : (selectedObjectives.length > 0 ? 'from_selection' : 'auto_link');
+      planningModeUse === 'from_selection' || planningModeUse === 'auto_link'
+        ? planningModeUse
+        : (selectedObjectivesUse.length > 0 ? 'from_selection' : 'auto_link');
 
-    if (effectiveMode === 'from_selection' && selectedObjectives.length === 0) {
+    if (effectiveMode === 'from_selection' && selectedObjectivesUse.length === 0) {
       setError('No modo "A partir da seleção", marque ao menos um item do catálogo — ou mude para "Tema livre + amarra".');
       showToast('Selecione itens ou mude o modo de geração.', 'error');
       return;
     }
-    if (effectiveMode === 'auto_link' && !narrativeTheme.trim() && !customInstruction.trim() && selectedObjectives.length === 0) {
-      // Ainda permite gerar (tema livre), mas avisa que tema ajuda
+    if (effectiveMode === 'auto_link' && !narrativeThemeUse.trim() && !customInstructionUse.trim() && selectedObjectivesUse.length === 0) {
       showToast('Dica: informe um tema ou instrução para guiar a IA.', 'info');
     }
-    // Guarda final: nunca enviar valores vazios/0/negativos/NaN ao prompt da IA.
-    const safeTotalDuration = clampSettingNumber(totalDuration, 120, 30, 600);
-    const safeActivityCount = clampSettingNumber(activityCount, 3, 1, 10);
-    const safeParticipantsCount = clampSettingNumber(participantsCount, 20, 1, 500);
+    const safeTotalDuration = clampSettingNumber(totalDurationUse, 120, 30, 600);
+    const safeActivityCount = clampSettingNumber(activityCountUse, 3, 1, 10);
+    const safeParticipantsCount = clampSettingNumber(participantsCountUse, 20, 1, 500);
     const scheduleOptions = {
       ...defaultScheduleOptions,
-      startTime: scheduleStartTime,
+      startTime: scheduleStartTimeUse,
       includeOpening,
       includeBreaks,
       includeClosing,
     };
-    const draft = scheduleDraft.length
-      ? scheduleDraft
+    const draft = scheduleDraftUse.length
+      ? scheduleDraftUse
       : buildDefaultCronograma(
           safeActivityCount,
           Math.max(30, safeTotalDuration - estimateOperationalMinutes(safeActivityCount, scheduleOptions)),
@@ -738,11 +796,30 @@ function App() {
       effectiveMode === 'auto_link'
         ? buildCatalogDigest(getPlanningCatalog(selectedBranch, activeGeneratorSystem))
         : undefined;
-    const trimmedBriefs = trimActivityBriefs(briefsFromCronograma(draft, activityBriefs), effectiveActivityCount);
+    const trimmedBriefs = trimActivityBriefs(briefsFromCronograma(draft, activityBriefsUse), effectiveActivityCount);
     const briefsForPrompt = hasAnyActivityBrief(trimmedBriefs) ? trimmedBriefs : undefined;
+    const generationSeed = buildGenerationSeed({
+      narrativeTheme: narrativeThemeUse,
+      customInstruction: customInstructionUse,
+      activityBriefs: trimmedBriefs,
+      planningMode: effectiveMode,
+      activityCount: effectiveActivityCount,
+      totalDuration: safeTotalDuration,
+      participantsCount: safeParticipantsCount,
+      meetingDate: meetingDateUse,
+      cycleLabel: cycleLabelUse,
+      meetingType: meetingTypeUse,
+      objectives: meetingObjectivesUse,
+      technicalContent: technicalContentUse,
+      meetingStartTime: scheduleStartTimeUse,
+      unitName: unitNameUse,
+      selectedObjectives: selectedObjectivesUse,
+      attachments: planAttachments,
+      scheduleDraft: draft,
+    });
     setLoading(true);
     setError(null);
-    setCatalogPersist({ saved: false, error: null });
+    setCatalogPersist(prev => (fromSeed ? prev : { saved: false, error: null }));
     setLlmStartedAt(Date.now());
     const isOllama = activeProvider === 'ollama-local' || activeProvider === 'ollama-cloud';
     setLlmProgress(
@@ -756,13 +833,13 @@ function App() {
     );
     try {
       const context = currentSection ? { sectionName: currentSection.name, groupName: appConfig?.profile?.groupName || "Grupo Escoteiro" } : undefined;
-      const generatedPlan = await generateScoutPlan({ 
-          branch: selectedBranch, 
-          totalDuration: coreDuration, 
-          narrativeTheme, 
-          objectives: selectedObjectives, 
+      const generatedPlan = await generateScoutPlan({
+          branch: selectedBranch,
+          totalDuration: coreDuration,
+          narrativeTheme: narrativeThemeUse,
+          objectives: selectedObjectivesUse,
           modelId: selectedModel,
-          customInstruction,
+          customInstruction: customInstructionUse,
           referenceUrls,
           activityCount: effectiveActivityCount,
           participantsCount: safeParticipantsCount,
@@ -774,21 +851,22 @@ function App() {
       });
       if (!isActiveGeneration(runId)) return;
       const mergedActivities = coreSlots.length
-        ? mergeGeneratedIntoCronograma(draft, generatedPlan.activities || [], scheduleStartTime)
+        ? mergeGeneratedIntoCronograma(draft, generatedPlan.activities || [], scheduleStartTimeUse)
         : applyOperationalSchedule(generatedPlan, scheduleOptions).activities;
       const scheduledPlan = applyMeetingHeader(
-        stampScheduleTimes({ ...generatedPlan, activities: mergedActivities }, scheduleStartTime),
+        stampScheduleTimes({ ...generatedPlan, activities: mergedActivities }, scheduleStartTimeUse),
         {
-          unitName: currentSection?.name,
-          meetingDate,
-          cycleLabel,
-          meetingType,
-          objectives: meetingObjectives,
-          technicalContent,
-          meetingStartTime: scheduleStartTime,
-          theme: narrativeTheme,
+          unitName: unitNameUse,
+          meetingDate: meetingDateUse,
+          cycleLabel: cycleLabelUse,
+          meetingType: meetingTypeUse,
+          objectives: meetingObjectivesUse,
+          technicalContent: technicalContentUse,
+          meetingStartTime: scheduleStartTimeUse,
+          theme: narrativeThemeUse,
         },
       );
+      scheduledPlan.generationSeed = generationSeed;
       if (currentUser) { scheduledPlan.authorId = currentUser.id; scheduledPlan.authorName = currentUser.name; }
       if (currentSection) scheduledPlan.sectionId = currentSection.id;
       try {
@@ -882,7 +960,29 @@ function App() {
       };
       const nextActivities = currentPlan.activities.map((item, i) => (i === index ? replaced : item));
       const nextPlan = stampScheduleTimes(
-        { ...currentPlan, activities: nextActivities },
+        {
+          ...currentPlan,
+          activities: nextActivities,
+          generationSeed: currentPlan.generationSeed || buildGenerationSeed({
+            narrativeTheme,
+            customInstruction,
+            activityBriefs: briefsForPrompt,
+            planningMode: effectiveMode,
+            activityCount: safeActivityCount,
+            totalDuration: coreDuration,
+            participantsCount: safeParticipantsCount,
+            meetingDate,
+            cycleLabel,
+            meetingType,
+            objectives: meetingObjectives,
+            technicalContent,
+            meetingStartTime: currentPlan.meetingStartTime || scheduleStartTime,
+            unitName: currentPlan.unitName || currentSection?.name,
+            selectedObjectives,
+            attachments: planAttachments,
+            scheduleDraft: currentPlan.activities,
+          }),
+        },
         currentPlan.meetingStartTime || scheduleStartTime,
       );
       setPlan(nextPlan);
@@ -954,6 +1054,7 @@ function App() {
 
   const loadFromCatalog = (savedPlan: MeetingPlan) => {
     setPlan(savedPlan);
+    if (savedPlan.branch) setSelectedBranch(savedPlan.branch);
     setCatalogPersist({ saved: true, error: null });
     navigateTo('GENERATOR');
     setStep(3);
@@ -1826,7 +1927,7 @@ function App() {
                             )}
                             <button
                               type="button"
-                              onClick={handleGenerate}
+                              onClick={() => { void handleGenerate(); }}
                               disabled={loading}
                               className={`w-full py-3 rounded-xl font-bold text-white uppercase text-xs shadow-md ${loading ? 'bg-slate-400 cursor-wait' : 'bg-green-600 hover:bg-green-700'}`}
                             >
@@ -1843,11 +1944,19 @@ function App() {
                 </div>
               )}
               {step === 3 && plan && (
+                <>
+                {error && (
+                  <div className="mb-3 bg-red-50 border border-red-200 text-red-800 text-xs rounded-lg p-3 whitespace-pre-wrap" role="alert">
+                    {error}
+                  </div>
+                )}
                 <PlanDisplay
                   key={plan.id}
                   plan={plan}
                   onReset={reset}
-                  onRegenerate={handleGenerate}
+                  onRegenerate={() => { void handleGenerate(); }}
+                  onRegenerateFromSeed={seed => { void handleGenerate(seed); }}
+                  onUseSeedInPlanner={handleUseSeedInPlanner}
                   onRegenerateActivity={handleRegenerateActivity}
                   isGenerating={loading}
                   fallbackSectionId={currentSection?.id}
@@ -1855,6 +1964,7 @@ function App() {
                   initiallySaved={catalogPersist.saved}
                   initialSaveError={catalogPersist.error}
                 />
+                </>
               )}
             </>
           )}

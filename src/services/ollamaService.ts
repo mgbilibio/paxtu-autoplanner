@@ -11,7 +11,7 @@ import { normalizeActivityForUse, normalizePlanForUse } from './planNormalizatio
 import { normalizeOllamaBaseUrl } from './ollamaUrlSecurity';
 import { extractJson } from './llmJson';
 import { attachmentsToPromptBlock } from './planAttachments';
-import { activityBriefsPromptBlock, buildSingleActivityPrompt } from './activityBriefs';
+import { activityBriefsPromptBlock, buildSingleActivityPrompt, PRACTICAL_CONTENT_RULES } from './activityBriefs';
 import type { PlanAttachment } from './planAttachments';
 
 const DEFAULT_BASE_URL = 'http://localhost:11434';
@@ -252,6 +252,8 @@ interface ActivityDetailPayload {
   objetivoEspecifico?: string;
   manualReferencia?: string;
   preparacaoPrevia?: string[];
+  conteudoPronto?: string;
+  passos?: { minuto: string; acao: string }[];
   evaluation?: ActivityEvaluation;
 }
 
@@ -336,7 +338,7 @@ const commonBrief = (params: GeneratorParams & { context?: { sectionName: string
 };
 
 const SYSTEM_BASE = [
-  'Você é um Chefe Escoteiro Sênior experiente, atuando no sistema PAXTU da UEB.',
+  'Você é um Chefe Escoteiro Sênior experiente, atuando no ScoutsAuto (planejador da chefia). Paxtu é só a fonte oficial da UEB.',
   'Responda SEMPRE em português brasileiro.',
   'Retorne APENAS um objeto JSON válido. Sem markdown, sem texto antes ou depois, sem comentários.',
 ].join('\n');
@@ -545,6 +547,7 @@ const buildActivityDetailPrompt = (
     SYSTEM_BASE,
     `Você está na FASE 2: detalhar a atividade ${index + 1} de ${total} do roteiro.`,
     'Não invente outras atividades. Foque só nesta. Seja rico e prático para a chefia conduzir.',
+    PRACTICAL_CONTENT_RULES,
   ].join('\n');
 
   const user = [
@@ -564,21 +567,23 @@ const buildActivityDetailPrompt = (
     `  "title": ${JSON.stringify(activity.title)},`,
     `  "durationMinutes": ${activity.durationMinutes},`,
     `  "educationalArea": ${JSON.stringify(activity.educationalArea)},`,
-    '  "description": "regras detalhadas, mínimo 4 linhas",',
-    '  "fundoDeCena": "como encaixa na narrativa global",',
+    '  "description": "como a atividade RODA: regras, papéis, espaço",',
+    '  "fundoDeCena": "uma frase única desta faixa, sem slogan repetido",',
     '  "materials": ["item com quantidade", "..."],',
     `  "progressionObjective": ${JSON.stringify(activity.progressionObjective)},`,
-    '  "instrucaoChefia": "passo-a-passo com dicas de tempo e segurança",',
+    '  "instrucaoChefia": "0–3 min: … / 3–8 min: … cobrindo durationMinutes",',
+    '  "conteudoPronto": "letra / cartões / script falado",',
+    '  "passos": [{"minuto": "0–3 min", "acao": "o que acontece"}],',
     '  "objetivoEspecifico": "Ao final, o jovem será capaz de...",',
     '  "manualReferencia": "Manual X, cap/seção",',
     '  "preparacaoPrevia": ["preparar ..."],',
     '  "evaluation": {',
-    '    "acompanhamento": "...",',
-    '    "avaliacaoJovens": "...",',
-    '    "avaliacaoChefia": "...",',
-    '    "requisitosObservaveis": ["..."],',
-    '    "criteriosDeAceite": ["..."],',
-    '    "evidenciasSugeridas": ["..."]',
+    '    "acompanhamento": "o que observar NESTA atividade (omitir se operacional)",',
+    '    "avaliacaoJovens": "pergunta específica",',
+    '    "avaliacaoChefia": "critério desta faixa",',
+    '    "requisitosObservaveis": ["no máximo 2 itens específicos"],',
+    '    "criteriosDeAceite": [],',
+    '    "evidenciasSugeridas": []',
     '  }',
     '}',
   ].join('\n');
@@ -645,6 +650,8 @@ const mergeActivity = (skel: PlanSkeletonActivity, detail: ActivityDetailPayload
     objetivoEspecifico: detail?.objetivoEspecifico,
     manualReferencia: detail?.manualReferencia,
     preparacaoPrevia: detail?.preparacaoPrevia,
+    conteudoPronto: detail?.conteudoPronto,
+    passos: detail?.passos,
     evaluation,
   };
 };
@@ -901,7 +908,7 @@ export const generateScoutPlan = async (
           system: actPrompt.system,
           user: actPrompt.user,
           numPredict: outputTokens,
-          temperature: 0.4,
+          temperature: 0.65,
         },
         `Fase 2/3 — atividade ${i + 1}/${skeleton.activities.length} (${sk.title})`,
         notifyProgress
@@ -983,7 +990,7 @@ export const generateScoutActivity = async (params: GenerateScoutActivityParams)
       system: SYSTEM_BASE,
       user,
       numPredict: getGenerationOutputTokens(model),
-      temperature: 0.4,
+      temperature: 0.65,
     },
     'Refazer uma atividade',
   );

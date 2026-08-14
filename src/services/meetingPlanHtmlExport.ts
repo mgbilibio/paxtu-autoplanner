@@ -1,10 +1,25 @@
 import { MeetingPlan } from '../types';
+import { formatGenerationSeedReadable, hasGenerationSeed } from './generationSeed';
 import { downloadHtml, escapeHtml, htmlShell, renderList, renderText, safeFileName } from './htmlExportCommon';
 import { formatDateBR, formatPaperDuration, resolveMeetingStartTime } from './meetingScheduleService';
+import { hasMeaningfulEvaluation, isBoilerplateEvaluation } from './planNormalizationService';
+
+const renderPassos = (activity: MeetingPlan['activities'][number]): string => {
+  const passos = activity.passos || [];
+  if (!passos.length) return '';
+  const rows = passos.map(step =>
+    `<tr><td class="clock-cell">${escapeHtml(step.minuto)}</td><td>${renderText(step.acao)}</td></tr>`
+  ).join('');
+  return `<div class="box">
+    <h3>Roteiro cronometrado</h3>
+    <table class="steps"><tbody>${rows}</tbody></table>
+  </div>`;
+};
 
 const renderEvaluation = (activity: MeetingPlan['activities'][number]): string => {
   const evaluation = activity.evaluation;
-  if (!evaluation) return '';
+  if (!evaluation || !hasMeaningfulEvaluation(evaluation) || isBoilerplateEvaluation(evaluation)) return '';
+  if (activity.operationalType) return '';
   return `<div class="box">
     <h3>Acompanhamento e avaliação</h3>
     <p><strong>Acompanhamento:</strong> ${renderText(evaluation.acompanhamento)}</p>
@@ -66,6 +81,8 @@ const renderActivity = (activity: MeetingPlan['activities'][number], index: numb
       ${activity.isOperational ? '<span class="tag warn">Rotina da reunião</span>' : ''}
     </div>
     <p>${renderText(activity.description)}</p>
+    ${activity.conteudoPronto ? `<div class="box ready"><strong>Conteúdo pronto</strong><p>${renderText(activity.conteudoPronto)}</p></div>` : ''}
+    ${renderPassos(activity)}
     ${activity.fundoDeCena ? `<div class="box"><strong>Fundo de cena</strong><p>${renderText(activity.fundoDeCena)}</p></div>` : ''}
     ${activity.instrucaoChefia ? `<div class="box"><strong>Instrução para chefia</strong><p>${renderText(activity.instrucaoChefia)}</p></div>` : ''}
     ${activity.objetivoEspecifico ? `<p><span class="tag">Objetivo</span> ${renderText(activity.objetivoEspecifico)}</p>` : ''}
@@ -111,6 +128,11 @@ export const buildMeetingPlanHtml = (plan: MeetingPlan): string => {
     </div>
     <h2>Atividades</h2><div class="content">${activities}</div>
     <h2>Guia da chefia</h2><div class="content">${study || '<p class="muted">Sem guia de estudo registrado.</p>'}</div>
+    ${hasGenerationSeed(plan) ? `<section class="seed">
+      <h2>Pedido original (para regenerar)</h2>
+      <p class="small muted">Guarde este bloco: é a entrada da chefia. Dá para regenerar no ScoutsAuto sem redigitar. Anexos: só o nome — os arquivos ficam na sessão.</p>
+      <pre>${escapeHtml(formatGenerationSeedReadable(plan.generationSeed!))}</pre>
+    </section>` : ''}
   `);
 };
 
