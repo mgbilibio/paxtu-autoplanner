@@ -5,7 +5,7 @@ import { getPlanningCatalog, buildCatalogDigest } from './services/catalogServic
 import { generateScoutPlanRouted as generateScoutPlan, generateScoutActivityRouted as generateScoutActivity, listAvailableModels as getAvailableModels, getActiveProvider, getProviderById, normalizeProviderId, GEMINI_STUDIO_URL, GEMINI_KEY_HELP } from './services/llmProvider';
 import { getDefaultGeminiModel, pickPreferredGeminiModel, hasGeminiCredentials, curatedGeminiModelIds } from './services/geminiService';
 import { pickXaiFastModel } from './services/xaiService';
-import { getAnnotations, saveAnnotation, getAppConfig, saveAppConfig, normalizePath, downloadProgressBackup, importProgressBackup, saveSectionAsync, getAllMemberBlocoStates, downloadLocalAppBackup, importLocalAppBackup, ensureWorkspaceMetadata, acquireSectionEditLock, releaseSectionEditLock, renewSectionEditLock, EditLock, getSectionsAsync } from './services/storageService';
+import { getAnnotations, saveAnnotation, getAppConfig, saveAppConfig, normalizePath, downloadProgressBackup, importProgressBackup, saveSectionAsync, getAllMemberBlocoStates, downloadLocalAppBackup, importLocalAppBackup, ensureWorkspaceMetadata, acquireSectionEditLock, releaseSectionEditLock, renewSectionEditLock, EditLock, getSectionsAsync, savePlanToCatalog } from './services/storageService';
 import { getProgressionDetail } from './services/progressionDetailService';
 import { PlanDisplay } from './components/PlanDisplay';
 import { Catalog } from './components/Catalog';
@@ -86,6 +86,7 @@ function App() {
   const [loading, setLoading] = useState<boolean>(false);
   const [plan, setPlan] = useState<MeetingPlan | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [catalogPersist, setCatalogPersist] = useState<{ saved: boolean; error: string | null }>({ saved: false, error: null });
   
   const [levelSelectorTarget, setLevelSelectorTarget] = useState<{ item: CatalogItem, catName: string } | null>(null);
   const [showSearch, setShowSearch] = useState<boolean>(false);
@@ -721,6 +722,7 @@ function App() {
     const briefsForPrompt = hasAnyActivityBrief(trimmedBriefs) ? trimmedBriefs : undefined;
     setLoading(true);
     setError(null);
+    setCatalogPersist({ saved: false, error: null });
     setLlmStartedAt(Date.now());
     const isOllama = activeProvider === 'ollama-local' || activeProvider === 'ollama-cloud';
     setLlmProgress(
@@ -754,11 +756,23 @@ function App() {
       const scheduledPlan = applyOperationalSchedule(generatedPlan, scheduleOptions);
       if (currentUser) { scheduledPlan.authorId = currentUser.id; scheduledPlan.authorName = currentUser.name; }
       if (currentSection) scheduledPlan.sectionId = currentSection.id;
-      setPlan(scheduledPlan);
-      setStep(3);
-      // Reset unico do banner: reutiliza finishProcessFeedback (mostra a mensagem e
-      // limpa progresso/cronometro apos 4s). Evita o timer duplicado anterior.
-      finishProcessFeedback('Roteiro gerado e normalizado.');
+      try {
+        const saved = await savePlanToCatalog(scheduledPlan, currentSection?.id);
+        if (!isActiveGeneration(runId)) return;
+        setPlan(saved);
+        setCatalogPersist({ saved: true, error: null });
+        setStep(3);
+        finishProcessFeedback('Roteiro gerado e salvo no catálogo.');
+      } catch (saveErr: unknown) {
+        if (!isActiveGeneration(runId)) return;
+        const saveMsg = (saveErr instanceof Error && saveErr.message) || String(saveErr) || 'Falha ao salvar no catálogo.';
+        setPlan(scheduledPlan);
+        setCatalogPersist({ saved: false, error: saveMsg });
+        setError(`Roteiro gerado, mas não foi salvo no catálogo: ${saveMsg}`);
+        showToast('Falha ao salvar no catálogo. Veja o aviso na tela.', 'error');
+        setStep(3);
+        finishProcessFeedback('Roteiro gerado. Falha ao salvar no catálogo.');
+      }
     } catch (err: any) {
       if (!isActiveGeneration(runId)) return;
       const msg = err?.message || String(err) || 'Falha desconhecida na geração.';
@@ -861,7 +875,7 @@ function App() {
       setLevelSelectorTarget(null);
   };
 
-  const reset = () => { setStep(1); setPlan(null); setError(null); setSelectedObjectives([]); setNarrativeTheme(''); setSearchTerm(''); setCustomInstruction(''); setPlanAttachments([]); setActivityBriefs(Array(clampSettingNumber(activityCount, 3, 1, 10)).fill('')); };
+  const reset = () => { setStep(1); setPlan(null); setError(null); setCatalogPersist({ saved: false, error: null }); setSelectedObjectives([]); setNarrativeTheme(''); setSearchTerm(''); setCustomInstruction(''); setPlanAttachments([]); setActivityBriefs(Array(clampSettingNumber(activityCount, 3, 1, 10)).fill('')); };
 
   // Guarda central de navegacao: (1) bloqueia o GERADOR quando a secao esta travada
   // por outro adulto (editLockConflict) e redireciona para consulta; (2) fecha overlays
@@ -876,7 +890,12 @@ function App() {
     setView(next);
   };
 
-  const loadFromCatalog = (savedPlan: MeetingPlan) => { setPlan(savedPlan); navigateTo('GENERATOR'); setStep(3); };
+  const loadFromCatalog = (savedPlan: MeetingPlan) => {
+    setPlan(savedPlan);
+    setCatalogPersist({ saved: true, error: null });
+    navigateTo('GENERATOR');
+    setStep(3);
+  };
 
   if (isWebApp() && !webAuthReady) {
     return <div className="min-h-screen flex items-center justify-center bg-slate-900 text-white">Carregando…</div>;
@@ -1738,6 +1757,9 @@ function App() {
                   onRegenerate={handleGenerate}
                   onRegenerateActivity={handleRegenerateActivity}
                   isGenerating={loading}
+                  fallbackSectionId={currentSection?.id}
+                  initiallySaved={catalogPersist.saved}
+                  initialSaveError={catalogPersist.error}
                 />
               )}
             </>

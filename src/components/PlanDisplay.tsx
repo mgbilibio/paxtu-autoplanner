@@ -12,11 +12,27 @@ interface Props {
   onRegenerate: () => void;
   onRegenerateActivity?: (index: number, activity: Activity, currentPlan: MeetingPlan) => Promise<MeetingPlan>;
   isGenerating?: boolean;
+  fallbackSectionId?: string;
+  initiallySaved?: boolean;
+  initialSaveError?: string | null;
 }
 
-export const PlanDisplay: React.FC<Props> = ({ plan: initialPlan, onReset, onRegenerate, onRegenerateActivity, isGenerating }) => {
+const saveErrorMessage = (err: unknown): string =>
+  (err instanceof Error && err.message) || String(err) || 'Falha ao salvar o roteiro no catálogo.';
+
+export const PlanDisplay: React.FC<Props> = ({
+  plan: initialPlan,
+  onReset,
+  onRegenerate,
+  onRegenerateActivity,
+  isGenerating,
+  fallbackSectionId,
+  initiallySaved,
+  initialSaveError,
+}) => {
   const [plan, setPlan] = useState<MeetingPlan>(normalizePlanForUse(initialPlan));
-  const [isSaved, setIsSaved] = useState(false);
+  const [isSaved, setIsSaved] = useState(!!initiallySaved);
+  const [saveError, setSaveError] = useState<string | null>(initialSaveError || null);
   const [isEditing, setIsEditing] = useState(false);
   const [confirmRegenerate, setConfirmRegenerate] = useState(false);
   const [confirmActivityIndex, setConfirmActivityIndex] = useState<number | null>(null);
@@ -29,11 +45,46 @@ export const PlanDisplay: React.FC<Props> = ({ plan: initialPlan, onReset, onReg
   // em vez da closure do primeiro render (que descartaria edicoes recentes).
   const planRef = useRef(plan);
   planRef.current = plan;
+  const fallbackSectionIdRef = useRef(fallbackSectionId);
+  fallbackSectionIdRef.current = fallbackSectionId;
+
+  const applySavedMeta = (saved: MeetingPlan) => {
+    setPlan(prev => ({
+      ...prev,
+      id: saved.id,
+      sectionId: saved.sectionId,
+      createdAt: saved.createdAt,
+      authorId: saved.authorId,
+      authorName: saved.authorName,
+    }));
+  };
+
+  const persistPlan = async (): Promise<MeetingPlan | null> => {
+    try {
+      const saved = await savePlanToCatalog(planRef.current, fallbackSectionIdRef.current);
+      applySavedMeta(saved);
+      planRef.current = { ...planRef.current, ...saved, activities: planRef.current.activities };
+      setSaveError(null);
+      dirtyRef.current = false;
+      return saved;
+    } catch (err) {
+      const msg = saveErrorMessage(err);
+      setSaveError(msg);
+      setIsSaved(false);
+      return null;
+    }
+  };
 
   const handleSave = async () => {
-    await savePlanToCatalog(plan);
-    setIsSaved(true);
-    dirtyRef.current = false;
+    const saved = await persistPlan();
+    if (saved) setIsSaved(true);
+  };
+
+  const handleExportHtml = async () => {
+    exportMeetingPlanHtml(plan);
+    if (isSaved) return;
+    const saved = await persistPlan();
+    if (saved) setIsSaved(true);
   };
 
   // Persiste automaticamente quando o plano muda — debounce 2s
@@ -41,9 +92,15 @@ export const PlanDisplay: React.FC<Props> = ({ plan: initialPlan, onReset, onReg
     if (!dirtyRef.current) return;
     if (autosaveTimerRef.current) clearTimeout(autosaveTimerRef.current);
     autosaveTimerRef.current = setTimeout(async () => {
-      await savePlanToCatalog(plan);
-      setAutoSavedAt(new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }));
-      dirtyRef.current = false;
+      try {
+        const saved = await savePlanToCatalog(plan, fallbackSectionIdRef.current);
+        applySavedMeta(saved);
+        setAutoSavedAt(new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }));
+        setSaveError(null);
+        dirtyRef.current = false;
+      } catch (err) {
+        setSaveError(saveErrorMessage(err));
+      }
     }, 2000);
     return () => {
       if (autosaveTimerRef.current) clearTimeout(autosaveTimerRef.current);
@@ -55,7 +112,9 @@ export const PlanDisplay: React.FC<Props> = ({ plan: initialPlan, onReset, onReg
     return () => {
       if (dirtyRef.current && autosaveTimerRef.current) {
         clearTimeout(autosaveTimerRef.current);
-        savePlanToCatalog(planRef.current).catch(() => {});
+        savePlanToCatalog(planRef.current, fallbackSectionIdRef.current).catch(err => {
+          console.error('Falha ao salvar roteiro ao sair:', err);
+        });
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -226,9 +285,9 @@ export const PlanDisplay: React.FC<Props> = ({ plan: initialPlan, onReset, onReg
                 🖨️ Imprimir / PDF
             </button>
             <button
-                onClick={() => exportMeetingPlanHtml(plan)}
+                onClick={() => { void handleExportHtml(); }}
                 className="px-3 py-2 rounded-lg text-xs font-bold bg-blue-600 text-white hover:bg-blue-500 transition-all"
-                title="Salva uma página HTML responsiva para uso em campo"
+                title="Baixa HTML para campo e grava o roteiro no catálogo da seção"
             >
                 🌐 Exportar HTML
             </button>
@@ -247,6 +306,11 @@ export const PlanDisplay: React.FC<Props> = ({ plan: initialPlan, onReset, onReg
             </button>
         </div>
       </div>
+      {saveError && (
+        <div className="bg-red-50 border-b border-red-200 text-red-800 text-xs px-4 py-2 whitespace-pre-wrap" role="alert">
+          Não foi possível salvar no catálogo: {saveError}
+        </div>
+      )}
 
       <div className="p-8 max-w-4xl mx-auto">
         {/* Title Section */}
