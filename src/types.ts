@@ -44,6 +44,8 @@ export interface Activity {
   conteudoPronto?: string;
   /** Roteiro cronometrado dentro da faixa (ex.: "0–3 min"). */
   passos?: { minuto: string; acao: string }[];
+  /** Pedido da chefia só deste quadro, usado em “Refazer esta”. */
+  redoNote?: string;
   _uid?: string;                 // Chave estavel de UI (nao vem da IA; atribuido na normalizacao)
 }
 
@@ -135,6 +137,7 @@ export interface GenerationSeedScheduleItem {
   durationMinutes: number;
   responsible?: string;
   kind?: GenerationSeedScheduleKind;
+  redoNote?: string;
 }
 
 /**
@@ -191,6 +194,8 @@ export interface GenerateScoutActivityParams extends GeneratorParams {
   currentPlan: MeetingPlan;
   slotIndex: number;
   oldActivity: Activity;
+  /** Instrução extra só desta faixa (“O que mudar neste quadro”). */
+  redoNote?: string;
 }
 
 export interface GroupProfile {

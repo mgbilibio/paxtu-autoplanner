@@ -80,6 +80,7 @@ export const buildGenerationSeed = (input: BuildGenerationSeedInput): Generation
     durationMinutes: Math.max(0, Number(row.durationMinutes) || 0),
     responsible: String(row.responsible || '').trim(),
     kind: scheduleKindOf(row),
+    redoNote: String(row.redoNote || '').trim() || undefined,
   })),
 });
 
@@ -121,6 +122,7 @@ export const activityFromSeedRow = (item: GenerationSeedScheduleItem, index: num
     responsible: item.responsible || '',
     isOperational: kind !== 'core',
     operationalType,
+    redoNote: String(item.redoNote || '').trim() || undefined,
   };
 };
 
@@ -152,7 +154,8 @@ export const formatGenerationSeedReadable = (seed: GenerationSeed): string => {
     .map(row => {
       const who = row.responsible ? ` · ${row.responsible}` : '';
       const kind = row.kind ? ` (${kindLabel[row.kind]})` : '';
-      return `  - ${row.durationMinutes || 0} min · ${row.title || '—'}${who}${kind}`;
+      const note = row.redoNote ? ` — o que mudar: ${row.redoNote}` : '';
+      return `  - ${row.durationMinutes || 0} min · ${row.title || '—'}${who}${kind}${note}`;
     })
     .join('\n');
   const anexos = (seed.attachments || [])

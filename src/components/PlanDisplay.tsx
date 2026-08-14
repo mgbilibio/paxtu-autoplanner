@@ -270,7 +270,11 @@ export const PlanDisplay: React.FC<Props> = ({
       {confirmActivityIndex !== null && (
         <ConfirmDialog
           title="Refazer esta atividade"
-          message="Refazer só esta atividade? As outras ficam."
+          message={
+            confirmActivityIndex !== null && plan.activities[confirmActivityIndex]?.redoNote?.trim()
+              ? `Refazer só esta atividade com o pedido do quadro? As outras ficam. A nota permanece para ajustar e clicar de novo.`
+              : 'Refazer só esta atividade? As outras ficam.'
+          }
           confirmText="Refazer"
           onCancel={() => setConfirmActivityIndex(null)}
           onConfirm={() => {
@@ -470,30 +474,8 @@ export const PlanDisplay: React.FC<Props> = ({
 
                     {/* Card */}
                     <div className={`border rounded-xl p-6 hover:shadow-md transition-shadow relative ${cardTone(act)}`}>
-                        <div className="absolute top-2 right-2 flex items-center gap-1">
-                            {onRegenerateActivity && !isCeremonialActivity(act) && (
-                                <button
-                                    type="button"
-                                    onClick={() => setConfirmActivityIndex(i)}
-                                    disabled={regeneratingIndex !== null}
-                                    className="text-[10px] font-bold px-2 py-1 rounded-lg bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100 disabled:opacity-60 disabled:cursor-wait"
-                                    title="Gera de novo só esta atividade"
-                                >
-                                    {regeneratingIndex === i ? 'Gerando…' : '🔄 Refazer esta'}
-                                </button>
-                            )}
-                            {isEditing && (
-                                <button 
-                                    onClick={() => removeActivity(i)}
-                                    className="text-red-300 hover:text-red-500 font-bold px-2"
-                                >
-                                    🗑️
-                                </button>
-                            )}
-                        </div>
-
-                        <div className="flex justify-between items-start mb-3">
-                            <div className="flex-1 pr-28">
+                        <div className="flex flex-wrap justify-between items-start gap-2 mb-3">
+                            <div className="flex-1 min-w-0">
                                 {isEditing ? (
                                     <>
                                     <input 
@@ -531,6 +513,42 @@ export const PlanDisplay: React.FC<Props> = ({
                                     )}
                                 </div>
                             </div>
+                            {(onRegenerateActivity && !isCeremonialActivity(act) || isEditing) && (
+                                <div className="flex items-start gap-1 no-print shrink-0 w-[min(20rem,46%)]">
+                                    {onRegenerateActivity && !isCeremonialActivity(act) && (
+                                        <>
+                                            <label className="flex-1 min-w-0">
+                                                <span className="block text-[9px] font-bold uppercase tracking-wide text-slate-400 mb-0.5">O que mudar neste quadro</span>
+                                                <textarea
+                                                    value={act.redoNote || ''}
+                                                    onChange={e => updateActivity(i, 'redoNote', e.target.value)}
+                                                    placeholder="Ex.: trazer a letra da canção X; incluir o roteiro falado da Pagmejera; cortar a avaliação genérica"
+                                                    rows={2}
+                                                    className="w-full text-[10px] leading-snug p-1.5 border border-slate-200 rounded-lg bg-white outline-none focus:border-amber-400 resize-y min-h-[2.5rem]"
+                                                />
+                                            </label>
+                                            <button
+                                                type="button"
+                                                onClick={() => setConfirmActivityIndex(i)}
+                                                disabled={regeneratingIndex !== null}
+                                                className="text-[10px] font-bold px-2 py-1 rounded-lg bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100 disabled:opacity-60 disabled:cursor-wait whitespace-nowrap mt-4"
+                                                title="Gera de novo só esta atividade, usando a nota ao lado"
+                                            >
+                                                {regeneratingIndex === i ? 'Gerando…' : '🔄 Refazer esta'}
+                                            </button>
+                                        </>
+                                    )}
+                                    {isEditing && (
+                                        <button
+                                            onClick={() => removeActivity(i)}
+                                            className="text-red-300 hover:text-red-500 font-bold px-1 mt-4"
+                                            title="Remover atividade"
+                                        >
+                                            🗑️
+                                        </button>
+                                    )}
+                                </div>
+                            )}
                         </div>
 
                         {isEditing ? (

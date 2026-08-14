@@ -59,11 +59,13 @@ export const normalizeActivityForUse = (activity: Activity, index: number): Acti
   const operational = isCeremonialActivity(activity);
   const passos = asPassos(activity.passos);
   const conteudoPronto = String(activity.conteudoPronto || '').trim();
+  const redoNote = String(activity.redoNote || '').trim();
   return {
     ...activity,
     _uid: activity._uid || `act-${index}`,
     conteudoPronto: conteudoPronto || undefined,
     passos: passos.length ? passos : undefined,
+    redoNote: redoNote || undefined,
     evaluation: operational ? undefined : normalizeEvaluation(activity.evaluation),
   };
 };

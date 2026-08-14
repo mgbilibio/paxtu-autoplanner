@@ -30,7 +30,7 @@ import { normalizeOllamaBaseUrl } from './services/ollamaUrlSecurity';
 import { buildCustomObjective } from './services/customObjectiveMatcher';
 import { applyMeetingHeader, applyOperationalSchedule, briefsFromCronograma, buildDefaultCronograma, cycleLabelFromDate, defaultScheduleOptions, estimateOperationalMinutes, isCoreScheduleSlot, mergeGeneratedIntoCronograma, stampActivities, stampScheduleTimes, syncCoreSlotCount, tomorrowISODate } from './services/meetingScheduleService';
 import { hasAnyActivityBrief, trimActivityBriefs } from './services/activityBriefs';
-import { activityFromSeedRow, buildGenerationSeed, objectivesFromSeed } from './services/generationSeed';
+import { activityFromSeedRow, buildGenerationSeed, objectivesFromSeed, scheduleKindOf } from './services/generationSeed';
 import { CronogramaBlock } from './components/CronogramaBlock';
 import { forceDownloadHtml } from './services/htmlExportCommon';
 import { useGlobalEvents } from './hooks/useGlobalEvents';
@@ -932,6 +932,7 @@ function App() {
     const briefsForPrompt = hasAnyActivityBrief(trimmedBriefs) ? trimmedBriefs : undefined;
     const context = currentSection ? { sectionName: currentSection.name, groupName: appConfig?.profile?.groupName || 'Grupo Escoteiro' } : undefined;
     try {
+      const redoNote = String(activity.redoNote || '').trim();
       const generated = await generateScoutActivity({
         branch: selectedBranch,
         totalDuration: coreDuration,
@@ -950,38 +951,50 @@ function App() {
         currentPlan,
         slotIndex: index,
         oldActivity: activity,
+        redoNote: redoNote || undefined,
       });
-      const { isOperational: _isOp, operationalType: _opType, ...generatedCore } = generated;
+      const { isOperational: _isOp, operationalType: _opType, redoNote: _modelNote, ...generatedCore } = generated;
       const replaced: Activity = {
         ...generatedCore,
         _uid: activity._uid || generated._uid,
         responsible: activity.responsible,
         durationMinutes: activity.durationMinutes || generated.durationMinutes,
+        redoNote: redoNote || undefined,
       };
       const nextActivities = currentPlan.activities.map((item, i) => (i === index ? replaced : item));
+      const baseSeed = currentPlan.generationSeed || buildGenerationSeed({
+        narrativeTheme,
+        customInstruction,
+        activityBriefs: briefsForPrompt,
+        planningMode: effectiveMode,
+        activityCount: safeActivityCount,
+        totalDuration: coreDuration,
+        participantsCount: safeParticipantsCount,
+        meetingDate,
+        cycleLabel,
+        meetingType,
+        objectives: meetingObjectives,
+        technicalContent,
+        meetingStartTime: currentPlan.meetingStartTime || scheduleStartTime,
+        unitName: currentPlan.unitName || currentSection?.name,
+        selectedObjectives,
+        attachments: planAttachments,
+        scheduleDraft: currentPlan.activities,
+      });
       const nextPlan = stampScheduleTimes(
         {
           ...currentPlan,
           activities: nextActivities,
-          generationSeed: currentPlan.generationSeed || buildGenerationSeed({
-            narrativeTheme,
-            customInstruction,
-            activityBriefs: briefsForPrompt,
-            planningMode: effectiveMode,
-            activityCount: safeActivityCount,
-            totalDuration: coreDuration,
-            participantsCount: safeParticipantsCount,
-            meetingDate,
-            cycleLabel,
-            meetingType,
-            objectives: meetingObjectives,
-            technicalContent,
-            meetingStartTime: currentPlan.meetingStartTime || scheduleStartTime,
-            unitName: currentPlan.unitName || currentSection?.name,
-            selectedObjectives,
-            attachments: planAttachments,
-            scheduleDraft: currentPlan.activities,
-          }),
+          generationSeed: {
+            ...baseSeed,
+            scheduleDraft: nextActivities.map(row => ({
+              title: row.title,
+              durationMinutes: row.durationMinutes || 0,
+              responsible: row.responsible || '',
+              kind: scheduleKindOf(row),
+              redoNote: row.redoNote,
+            })),
+          },
         },
         currentPlan.meetingStartTime || scheduleStartTime,
       );

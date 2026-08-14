@@ -135,6 +135,9 @@ export const buildSingleActivityPrompt = (params: GenerateScoutActivityParams): 
     seed
       ? `SEMENTE DESTA FAIXA (obrigatório usar como ponto de partida): ${seed}`
       : 'Sem semente nesta faixa — invente uma atividade nova, coerente com o tema, sem copiar as outras.',
+    (params.redoNote || oldActivity.redoNote || '').trim()
+      ? `PEDIDO DESTE QUADRO (obrigatório cumprir — só esta faixa):\n${String(params.redoNote || oldActivity.redoNote).trim()}\nAplique com conteúdo prático (letra, cartões, script falado). Não ignore este pedido.`
+      : '',
     '',
     `Índice da faixa no plano (0-based): ${slotIndex}.`,
     'Atividade atual a substituir:',

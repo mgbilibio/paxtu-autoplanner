@@ -317,6 +317,7 @@ export const mergeGeneratedIntoCronograma = (
       isOperational: false,
       operationalType: undefined,
       _uid: row._uid || generated._uid,
+      redoNote: row.redoNote,
     };
   });
   while (coreIdx < generatedCore.length) {
@@ -334,10 +335,12 @@ export const briefsFromCronograma = (draft: Activity[], existingBriefs: string[]
   const cores = draft.filter(isCoreScheduleSlot);
   return cores.map((activity, i) => {
     const existing = String(existingBriefs[i] || '').trim();
-    if (existing) return existing;
     const title = String(activity.title || '').trim();
-    if (title && !/^atividade\s+\d+$/i.test(title)) return title;
-    return '';
+    const named = title && !/^atividade\s+\d+$/i.test(title) ? title : '';
+    const base = existing || named;
+    const redo = String(activity.redoNote || '').trim();
+    if (redo) return base ? `${base}\nPedido deste quadro: ${redo}` : redo;
+    return base;
   });
 };
 
