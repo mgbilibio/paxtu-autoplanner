@@ -266,12 +266,17 @@ export interface OfficialSpecialtyRecord {
   titulo?: string;
   nivel?: number | string;
   level?: number | string;
+  date?: string;
+  data?: string;
 }
 
 export interface OfficialEtapaRecord {
   nome?: string;
   name?: string;
   etapa?: string;
+  status?: string;
+  situacao?: string;
+  estado?: string;
   data?: string;
   date?: string;
 }

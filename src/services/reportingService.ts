@@ -14,6 +14,14 @@ import {
   UPDATED_SPECIALTY_PREFIX,
 } from '../data/updatedSpecialtyCatalog';
 import { getOfficialSpecialtyLevel } from '../data/officialSpecialtyCatalog';
+import {
+  formatOfficialDate,
+  hasOfficialLayer,
+  listOfficialEtapaTrail,
+  listOfficialSpecialties,
+  officialEtapaEscoteiro,
+  PAXTU_HISTORICO_AVISO,
+} from './equivalenciaService';
 
 export interface ProgressionHit {
   code: string;
@@ -200,7 +208,32 @@ export const generatePrintableHistory = (
         <div><span class="data-label">Patrulha</span><span class="data-value">${escapeHtml(member.patrol || '---')}</span></div>
         <div><span class="data-label">Registro</span><span class="data-value">${escapeHtml(member.registerNumber || '---')}</span></div>
         <div><span class="data-label">Status</span><span class="data-value">${achievements.length} itens conquistados</span></div>
+        <div><span class="data-label">Etapa oficial</span><span class="data-value">${escapeHtml(officialEtapaEscoteiro(member) || '—')}</span></div>
     </div>
+    ${hasOfficialLayer(member) ? `
+    <div class="section-title">Oficial (Paxtu / POR antigo)</div>
+    <p style="font-size:11px;margin:0 0 10px">${escapeHtml(PAXTU_HISTORICO_AVISO)}</p>
+    <div class="grid">
+      ${listOfficialEtapaTrail(member).map(item => `
+        <div class="item ${item.conquistado ? 'completed' : ''}">
+          <div class="check">${item.conquistado ? '✓' : ''}</div>
+          <div><strong>${escapeHtml(item.etapa)}</strong> ${item.conquistado ? 'Conquistado' : 'Pendente'}${item.date ? ` · ${escapeHtml(formatOfficialDate(item.date) || '')}` : ''}</div>
+        </div>
+      `).join('')}
+    </div>
+    <div class="section-title">Especialidades oficiais (N1+)</div>
+    <div class="grid">
+      ${listOfficialSpecialties(member).filter(item => (item.nivelOficial ?? 0) >= 1).map(item => `
+        <div class="item completed">
+          <div class="check">✓</div>
+          <div><strong>${escapeHtml(item.nome)}</strong> N${item.nivelOficial || ''}${item.nivel2025 ? ` → N${item.nivel2025} (2025+)` : ''}</div>
+        </div>
+      `).join('') || '<div class="item"><div>Nenhuma especialidade N1+ no histórico Paxtu.</div></div>'}
+    </div>
+    ` : `
+    <div class="section-title">Oficial (Paxtu / POR antigo)</div>
+    <p style="font-size:12px">Sem histórico Paxtu neste jovem</p>
+    `}
     ${catalog.map(cat => `
         <div class="section-title">${escapeHtml(cat.name)}</div>
         <div class="grid">

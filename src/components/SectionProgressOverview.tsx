@@ -5,6 +5,7 @@ import { isYouthMember } from '../utils/memberQuickAdd';
 import { RAMOS_2025, ETAPAS_2025, RECONHECIMENTOS_2025 } from '../data/generated/progressao_2025';
 import { StatusBadge } from './StatusBadge';
 import { BatchProgressMarker } from './BatchProgressMarker';
+import { officialEtapaEscoteiro } from '../services/equivalenciaService';
 
 interface Props {
   sectionId?: string;
@@ -16,6 +17,7 @@ interface Row {
   member: ScoutMember;
   concluidos: number;
   etapaNome: string;
+  etapaOficial: string;
   reconhecido: boolean;
   dataConquista?: string;
   idade: number | null;
@@ -87,6 +89,7 @@ export const SectionProgressOverview: React.FC<Props> = ({ sectionId, branch, on
           member: m,
           concluidos,
           etapaNome: etapaAtual?.nome || '—',
+          etapaOficial: officialEtapaEscoteiro(m) || '—',
           reconhecido: !!recState?.dataConquista,
           dataConquista: recState?.dataConquista,
           idade,
@@ -127,11 +130,12 @@ export const SectionProgressOverview: React.FC<Props> = ({ sectionId, branch, on
 
   // U9: Exportar tabela como CSV
   const handleExportCsv = () => {
-    const header = ['Membro', 'Idade', 'Ramo', 'Etapa', 'Blocos', 'Reconhecimento', 'Alerta'];
+    const header = ['Membro', 'Idade', 'Ramo', 'Etapa oficial', 'Etapa blocos', 'Blocos', 'Reconhecimento', 'Alerta'];
     const csvRows = rows.map(r => [
       `"${r.member.name}"`,
       r.idade ?? '',
       r.member.branch,
+      `"${r.etapaOficial}"`,
       `"${r.etapaNome}"`,
       `${r.concluidos}/18`,
       r.reconhecido ? `Conquistado em ${r.dataConquista}` : (r.concluidos >= 18 ? 'Apto' : `${18 - r.concluidos} a faltar`),
@@ -154,7 +158,7 @@ export const SectionProgressOverview: React.FC<Props> = ({ sectionId, branch, on
       )}
       <div className="bg-gradient-to-r from-indigo-700 to-purple-700 text-white p-4">
         <div className="flex justify-between items-start">
-          <h3 className="text-lg font-bold">📊 Progresso da Seção (POR 2025+)</h3>
+          <h3 className="text-lg font-bold">📊 Progresso da Seção (Paxtu + blocos 2025+)</h3>
           <div className="flex gap-2">
             {branch && (
               <button onClick={() => setShowBatch(true)} className="text-xs bg-yellow-300 text-yellow-900 hover:bg-yellow-200 px-3 py-1 rounded font-bold" title="Marcar mesma ação para múltiplos membros">✏️ Marcar em lote</button>
@@ -192,7 +196,8 @@ export const SectionProgressOverview: React.FC<Props> = ({ sectionId, branch, on
           <tr>
             <th scope="col" className="p-3">Membro</th>
             <th scope="col" className="p-3">Ramo</th>
-            <th scope="col" className="p-3">Etapa atual</th>
+            <th scope="col" className="p-3">Etapa oficial</th>
+            <th scope="col" className="p-3">Etapa pelos blocos</th>
             <th scope="col" className="p-3 text-center">Blocos</th>
             <th scope="col" className="p-3">Reconhecimento</th>
             <th scope="col" className="p-3"><span className="sr-only">Ações</span></th>
@@ -220,6 +225,7 @@ export const SectionProgressOverview: React.FC<Props> = ({ sectionId, branch, on
                   {r.member.branch === ScoutBranch.LOBINHO ? '🐺 Lobinho' : '⚜️ Escoteiro'}
                   {r.idade !== null && <span className="text-[10px] text-gray-500 block">{r.idade} anos</span>}
                 </td>
+                <td className="p-3 text-xs font-semibold text-amber-900">{r.etapaOficial}</td>
                 <td className="p-3 text-xs">{r.etapaNome}</td>
                 <td className="p-3 text-center">
                   <div className="flex flex-col items-center gap-1">

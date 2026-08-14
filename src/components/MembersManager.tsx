@@ -137,7 +137,9 @@ export const MembersManager: React.FC<Props> = ({ sectionId, isAdmin }) => {
     setFormError(null);
     setFormOk(null);
 
+    const existing = editId ? members.find(item => item.id === editId) : undefined;
     const newMember: ScoutMember = {
+      ...(existing || {}),
       id: editId || (typeof crypto !== 'undefined' && crypto.randomUUID
         ? crypto.randomUUID()
         : Date.now().toString()),
