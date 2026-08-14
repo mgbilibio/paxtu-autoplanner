@@ -9,6 +9,7 @@ import {
 import { ScoutGroup, ScoutSection } from '../../types';
 import { getFirestoreDb } from './config';
 import { withSectionKind } from './sectionKind';
+import { getFirebaseSessionUid } from './session';
 
 const ITEMS_FIELD = 'items';
 
@@ -24,9 +25,61 @@ export const writeGroupDocument = async (group: ScoutGroup): Promise<void> => {
   await setDoc(doc(getFirestoreDb(), 'groups', group.id), stripUndefined({ ...group }));
 };
 
+const uniqueIds = (ids: Array<string | undefined | null>): string[] => {
+  const seen = new Set<string>();
+  const result: string[] = [];
+  for (const id of ids) {
+    if (!id || id === 'ADMIN_GLOBAL' || id === 'GLOBAL' || seen.has(id)) continue;
+    seen.add(id);
+    result.push(id);
+  }
+  return result;
+};
+
+/** IDs que as regras já permitem ler: users/{uid}.sectionIds (getDoc pontual). */
+export const readSignedInSectionIds = async (): Promise<string[]> => {
+  const uid = getFirebaseSessionUid();
+  if (!uid) return [];
+  try {
+    const snap = await getDoc(doc(getFirestoreDb(), 'users', uid));
+    if (!snap.exists()) return [];
+    const data = snap.data() as Record<string, unknown>;
+    const fromList = Array.isArray(data.sectionIds)
+      ? (data.sectionIds as unknown[]).filter((id): id is string => typeof id === 'string')
+      : [];
+    const single = typeof data.sectionId === 'string' ? data.sectionId : undefined;
+    return uniqueIds([...fromList, single]);
+  } catch {
+    return [];
+  }
+};
+
+const readSectionDocument = async (sectionId: string): Promise<ScoutSection | null> => {
+  try {
+    const snap = await getDoc(doc(getFirestoreDb(), 'sections', sectionId));
+    if (!snap.exists()) return null;
+    return withSectionKind({ id: snap.id, ...snap.data() } as ScoutSection);
+  } catch {
+    return null;
+  }
+};
+
+const listSectionsByIds = async (ids: string[]): Promise<ScoutSection[]> => {
+  const docs = await Promise.all(ids.map(readSectionDocument));
+  return docs.filter((section): section is ScoutSection => section !== null);
+};
+
 export const listSectionDocuments = async (): Promise<ScoutSection[]> => {
-  const snap = await getDocs(collection(getFirestoreDb(), 'sections'));
-  return snap.docs.map(item => withSectionKind({ id: item.id, ...item.data() } as ScoutSection));
+  // getDocs na coleção inteira falha para chefia: as regras só liberam
+  // sections/{id} em sectionIds. Não enfraquecer as regras — ler por id.
+  try {
+    const snap = await getDocs(collection(getFirestoreDb(), 'sections'));
+    const listed = snap.docs.map(item => withSectionKind({ id: item.id, ...item.data() } as ScoutSection));
+    if (listed.length > 0) return listed;
+  } catch {
+    // query da coleção negada ou vazia: cai nos ids do usuário autenticado
+  }
+  return listSectionsByIds(await readSignedInSectionIds());
 };
 
 export const writeSectionDocument = async (section: ScoutSection, groupName?: string): Promise<void> => {
@@ -49,18 +102,43 @@ export const writeSectionItems = async <T>(sectionId: string, docId: string, ite
   if (!sectionId) {
     throw new Error('Seção não definida para gravar os dados.');
   }
-  // Firestore rejeita `undefined` em qualquer campo (inclusive itens do array).
-  // buildMinimalMember e outros payloads usam campos opcionais omitidos como undefined.
+  // Firestore rejeita `undefined` em qualquer campo (inclusive aninhados em
+  // Activity.evaluation). JSON.stringify em stripUndefined remove esses campos.
   await setDoc(
     doc(getFirestoreDb(), 'sections', sectionId, 'docs', docId),
     stripUndefined({ items }),
   );
 };
 
-export const readAccessibleItems = async <T>(docId: string): Promise<T[]> => {
+export const readAccessibleItems = async <T>(
+  docId: string,
+  fallbackSectionIds?: string[],
+): Promise<T[]> => {
   const sections = await listSectionDocuments();
-  const batches = await Promise.all(sections.map(section => readSectionItems<T>(section.id, docId)));
-  return batches.flat();
+  const seen = new Set<string>();
+  const ids: string[] = [];
+  const add = (id?: string) => {
+    if (!id || id === 'ADMIN_GLOBAL' || id === 'GLOBAL' || seen.has(id)) return;
+    seen.add(id);
+    ids.push(id);
+  };
+  sections.forEach(section => add(section.id));
+  (fallbackSectionIds || []).forEach(add);
+  if (ids.length === 0) {
+    (await readSignedInSectionIds()).forEach(add);
+  }
+  if (ids.length === 0) return [];
+  const batches = await Promise.all(ids.map(id => readSectionItems<T>(id, docId)));
+  const items = batches.flat();
+  if (items.length > 0) return items;
+  // Lista agregada vazia: ainda tenta a seção atual / sectionIds do login.
+  const extra = uniqueIds([
+    ...(fallbackSectionIds || []),
+    ...(await readSignedInSectionIds()),
+  ]).filter(id => !seen.has(id));
+  if (extra.length === 0) return items;
+  const extraBatches = await Promise.all(extra.map(id => readSectionItems<T>(id, docId)));
+  return extraBatches.flat();
 };
 
 export const readMemberSubdoc = async <T>(

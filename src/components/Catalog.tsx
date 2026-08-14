@@ -41,10 +41,16 @@ export const Catalog: React.FC<Props> = ({ onLoadPlan, onBack }) => {
 
   const loadPlans = async () => {
       setLoading(true);
-      const [data, secData] = await Promise.all([getCatalogAsync(), getSectionsAsync()]);
-      setPlans(data);
-      setSections(secData);
-      setLoading(false);
+      try {
+        const [data, secData] = await Promise.all([getCatalogAsync(), getSectionsAsync()]);
+        setPlans(data);
+        setSections(secData);
+      } catch (err) {
+        console.error('Falha ao carregar o catálogo de roteiros:', err);
+        setPlans([]);
+      } finally {
+        setLoading(false);
+      }
   };
 
   const handleRebuild = async () => {

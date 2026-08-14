@@ -1,10 +1,12 @@
 import { CatalogAnnotation, MeetingPlan } from '../../types';
+import { isWebApp } from '../platform';
 import { listSectionDocuments, readAccessibleItems, readSectionItems, writeSectionItems } from '../firebase/sectionData';
 import { getAppConfig } from './configStorage';
 import { isFileBacked, isFirestoreBacked, readJsonDoc, writeJsonDoc } from './dualBackend';
 import { DATA_EVENTS, dispatchDataEvent } from './events';
 import { CATALOG_FILENAME, STORAGE_KEY, TRACKER_KEY } from './names';
 import { assertCanWriteSection } from './sectionLockStorage';
+import { runExclusive } from './writeQueue';
 
 // Parse tolerante: descarta a chave corrompida e devolve o default em vez de
 // derrubar a leitura inteira (padrao de readCachedEntity).
@@ -22,9 +24,17 @@ const parseOrDefault = <T>(key: string, fallback: T): T => {
 export const getCatalogSync = (): MeetingPlan[] =>
   parseOrDefault<MeetingPlan[]>(STORAGE_KEY, []);
 
-export const getCatalogAsync = async (): Promise<MeetingPlan[]> => {
+const isPersistableSectionId = (id?: string): id is string =>
+  !!id && id !== 'GLOBAL' && id !== 'ADMIN_GLOBAL';
+
+export const getCatalogAsync = async (preferredSectionId?: string): Promise<MeetingPlan[]> => {
   if (isFirestoreBacked()) {
-    return readAccessibleItems<MeetingPlan>('catalog');
+    const knownId = isPersistableSectionId(preferredSectionId) ? preferredSectionId : undefined;
+    const items = await readAccessibleItems<MeetingPlan>('catalog', knownId ? [knownId] : undefined);
+    if (items.length === 0 && knownId) {
+      return readSectionItems<MeetingPlan>(knownId, 'catalog');
+    }
+    return items;
   }
   if (isFileBacked()) {
     try {
@@ -45,24 +55,42 @@ const upsertCatalog = (current: MeetingPlan[], toSave: MeetingPlan): MeetingPlan
     : [toSave, ...current];
 };
 
-export const savePlanToCatalog = async (plan: MeetingPlan): Promise<void> => {
-  assertCanWriteSection(plan.sectionId);
-  const toSave: MeetingPlan = {
-    ...plan,
-    activities: (plan.activities || []).map(({ _uid, ...rest }) => rest),
+const sanitizePlanForCatalog = (plan: MeetingPlan): MeetingPlan => {
+  const raw = { ...plan } as MeetingPlan & { attachments?: unknown; activityBriefs?: unknown };
+  delete raw.attachments;
+  delete raw.activityBriefs;
+  return {
+    ...raw,
+    id: raw.id || `${Date.now()}`,
+    createdAt: raw.createdAt || new Date().toISOString(),
+    activities: (raw.activities || []).map(({ _uid, ...activity }) => activity),
   };
+};
+
+export const savePlanToCatalog = async (
+  plan: MeetingPlan,
+  fallbackSectionId?: string,
+): Promise<MeetingPlan> => {
+  const toSave = sanitizePlanForCatalog(plan);
+  let sectionId = isPersistableSectionId(toSave.sectionId)
+    ? toSave.sectionId
+    : (isPersistableSectionId(fallbackSectionId) ? fallbackSectionId : undefined);
+  if (!sectionId && isFirestoreBacked()) {
+    const sections = await listSectionDocuments();
+    sectionId = sections.find(section => isPersistableSectionId(section.id))?.id;
+  }
+  if (!sectionId && (isFirestoreBacked() || isWebApp())) {
+    throw new Error('Selecione uma seção antes de salvar o roteiro.');
+  }
+  if (sectionId) toSave.sectionId = sectionId;
+  assertCanWriteSection(toSave.sectionId);
   if (isFirestoreBacked()) {
-    let sectionId = toSave.sectionId;
-    if (!sectionId) {
-      const sections = await listSectionDocuments();
-      sectionId = sections[0]?.id;
-      if (!sectionId) throw new Error('Crie uma seção antes de salvar o roteiro.');
-      toSave.sectionId = sectionId;
-    }
-    const current = await readSectionItems<MeetingPlan>(sectionId, 'catalog');
-    await writeSectionItems(sectionId, 'catalog', upsertCatalog(current, toSave));
+    await runExclusive(`firestore-catalog-${sectionId}`, async () => {
+      const current = await readSectionItems<MeetingPlan>(sectionId!, 'catalog');
+      await writeSectionItems(sectionId!, 'catalog', upsertCatalog(current, toSave));
+    });
     dispatchDataEvent(DATA_EVENTS.CATALOG_UPDATED);
-    return;
+    return toSave;
   }
   const currentCatalog = await getCatalogAsync();
   const updatedCatalog = upsertCatalog(currentCatalog, toSave);
@@ -76,6 +104,7 @@ export const savePlanToCatalog = async (plan: MeetingPlan): Promise<void> => {
     await writeJsonDoc(CATALOG_FILENAME, STORAGE_KEY, updatedCatalog);
   }
   dispatchDataEvent(DATA_EVENTS.CATALOG_UPDATED);
+  return toSave;
 };
 
 export const clonePlan = (orig: MeetingPlan): MeetingPlan => ({

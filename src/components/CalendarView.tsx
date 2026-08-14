@@ -87,17 +87,20 @@ export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin }) =>
   }, [sectionId]);
 
   const loadData = async () => {
-    const [evtData, planData, memData, secData] = await Promise.all([
+    const [evtData, planResult, memData, secData] = await Promise.all([
         getCalendarEventsAsync(sectionId),
-        getCatalogAsync(),
+        getCatalogAsync(sectionId).catch(err => {
+          console.error('Falha ao carregar roteiros do catálogo:', err);
+          return [] as MeetingPlan[];
+        }),
         getMembersAsync(sectionId), 
         getSectionsAsync()
     ]);
     setEvents(evtData);
-    setPlans(planData);
+    setPlans(planResult);
     setMembers(memData);
     setSections(secData);
-    if (secData.length > 0) setTargetSectionId(secData[0].id);
+    if (secData.length > 0) setTargetSectionId(prev => prev || sectionId || secData[0].id);
   };
 
   const getDaysInMonth = (year: number, month: number) => new Date(year, month + 1, 0).getDate();
@@ -165,6 +168,11 @@ export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin }) =>
 
   // Eventos do dia atualmente aberto no modal (usado para listar/escolher).
   const dayEventsForModal = selectedDate ? events.filter(e => e.date === selectedDate) : [];
+  const catalogSectionId = isAdmin ? targetSectionId : sectionId;
+  const catalogPlans = plans.filter(p => {
+    if (!catalogSectionId) return true;
+    return !p.sectionId || p.sectionId === catalogSectionId;
+  });
 
   const handleSaveEvent = async () => {
     if (!selectedDate) return;
@@ -531,10 +539,15 @@ export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin }) =>
                             className="w-full p-3 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-slate-200 outline-none"
                         >
                             <option value="">-- Selecione um roteiro salvo --</option>
-                            {plans.map(p => (
-                                <option key={p.id} value={p.id}>[{p.branch}] {p.theme} ({p.totalDuration} min)</option>
+                            {catalogPlans.map(p => (
+                                <option key={p.id} value={p.id}>
+                                    {p.branch ? `[${p.branch}] ` : ''}{p.theme || 'Roteiro sem tema'}{p.totalDuration ? ` (${p.totalDuration} min)` : ''}
+                                </option>
                             ))}
                         </select>
+                        {catalogPlans.length === 0 && (
+                            <p className="text-xs text-slate-500 mt-2">Nenhum roteiro salvo nesta seção. Gere e use Salvar roteiro.</p>
+                        )}
                         {selectedPlanId && !eventLaunch && (
                             <div className="mt-2">
                                 <button 
