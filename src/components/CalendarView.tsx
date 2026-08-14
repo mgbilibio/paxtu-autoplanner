@@ -11,6 +11,7 @@ import {
   DATA_EVENTS,
 } from '../services/storageService';
 import { exportCalendarEventHtml } from '../services/calendarHtmlExport';
+import { formatDateBR, formatPaperDuration } from '../services/meetingScheduleService';
 import { emitProcessDone, emitProcessProgress } from '../services/processFeedbackService';
 import { ConfirmDialog } from './ConfirmDialog';
 import {
@@ -541,13 +542,31 @@ export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin }) =>
                             <option value="">-- Selecione um roteiro salvo --</option>
                             {catalogPlans.map(p => (
                                 <option key={p.id} value={p.id}>
-                                    {p.branch ? `[${p.branch}] ` : ''}{p.theme || 'Roteiro sem tema'}{p.totalDuration ? ` (${p.totalDuration} min)` : ''}
+                                    {p.branch ? `[${p.branch}] ` : ''}{p.theme || 'Roteiro sem tema'}{p.totalDuration ? ` (${p.totalDuration} min)` : ''}{p.meetingDate ? ` · ${formatDateBR(p.meetingDate)}` : ''}{p.cycleLabel ? ` · ${p.cycleLabel}` : ''}
                                 </option>
                             ))}
                         </select>
                         {catalogPlans.length === 0 && (
                             <p className="text-xs text-slate-500 mt-2">Nenhum roteiro salvo nesta seção. Gere e use Salvar roteiro.</p>
                         )}
+                        {selectedPlanId && (() => {
+                          const selectedPlan = catalogPlans.find(p => p.id === selectedPlanId);
+                          if (!selectedPlan?.activities?.length) return null;
+                          return (
+                            <div className="mt-2 rounded-lg border border-slate-200 bg-slate-50 p-2 text-[11px] text-slate-600">
+                              <p className="font-black uppercase text-slate-500 mb-1">Cronograma</p>
+                              {selectedPlan.activities.slice(0, 6).map((activity, index) => (
+                                <p key={activity._uid || index}>
+                                  {formatPaperDuration(activity.scheduledStartTime, activity.durationMinutes)} · {activity.title}
+                                  {activity.responsible ? ` — ${activity.responsible}` : ''}
+                                </p>
+                              ))}
+                              {selectedPlan.activities.length > 6 && (
+                                <p>+{selectedPlan.activities.length - 6} item(ns)</p>
+                              )}
+                            </div>
+                          );
+                        })()}
                         {selectedPlanId && !eventLaunch && (
                             <div className="mt-2">
                                 <button 

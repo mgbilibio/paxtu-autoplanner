@@ -31,6 +31,8 @@ export interface Activity {
   scheduledEndTime?: string;
   isOperational?: boolean;
   operationalType?: 'opening' | 'break' | 'closing';
+  /** Patrulha, chefia ou pessoa responsável pelo item no cronograma. */
+  responsible?: string;
   // Campos enriquecidos (opcionais — preenchidos pela IA quando suportado pelo modelo)
   fundoDeCena?: string;          // Narrativa específica que conecta a atividade ao tema
   instrucaoChefia?: string;      // Passo-a-passo de execução para a chefia, dicas, alertas de segurança
@@ -78,6 +80,15 @@ export interface MeetingPlan {
   activities: Activity[];
   studyGuide: StudyItem[];
   sources?: GroundingSource[];
+  /** Cabeçalho da programação semanal (formulário de papel). */
+  unitName?: string;
+  meetingDate?: string;
+  cycleLabel?: string;
+  meetingType?: string;
+  objectives?: string;
+  technicalContent?: string;
+  /** Relógio de início da reunião (ex.: 15:30). Recalcula scheduledStart/End de cada item. */
+  meetingStartTime?: string;
 }
 
 export interface ObjectiveItem {

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { MeetingPlan, getBranchIcon, ScoutSection, ScoutBranch } from '../types';
+import { formatDateBR } from '../services/meetingScheduleService';
 import { getCatalogAsync, deleteFromCatalog, exportCatalogBackup, rebuildCatalogFromFolder, getSectionsAsync, clonePlan, DATA_EVENTS } from '../services/storageService';
 import { exportMeetingPlanHtml } from '../services/meetingPlanHtmlExport';
 import { ConfirmDialog } from './ConfirmDialog';
@@ -93,15 +94,18 @@ export const Catalog: React.FC<Props> = ({ onLoadPlan, onBack }) => {
 
       const term = searchTerm.toLowerCase();
       const inTheme = p.theme.toLowerCase().includes(term);
+      const inHeader = [p.cycleLabel, p.meetingType, p.objectives, p.technicalContent, p.unitName]
+        .some(value => (value || '').toLowerCase().includes(term));
       const inActivities = p.activities.some(a => 
           a.title.toLowerCase().includes(term) || 
-          a.progressionObjective.toLowerCase().includes(term)
+          a.progressionObjective.toLowerCase().includes(term) ||
+          (a.responsible || '').toLowerCase().includes(term)
       );
       
       // If searching, ignore branch filter unless explicitly set? 
       // Better: Apply both. If I want to search "P-01" in "Lobinho", I select Lobinho.
       // If I want global, I select "Todos".
-      return matchesBranch && (inTheme || inActivities);
+      return matchesBranch && (inTheme || inHeader || inActivities);
   });
 
   if (loading) {
@@ -224,6 +228,8 @@ export const Catalog: React.FC<Props> = ({ onLoadPlan, onBack }) => {
                         </h3>
                         <p className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-4">
                             {plan.branch} • {plan.totalDuration} min
+                            {plan.meetingDate ? ` • ${formatDateBR(plan.meetingDate)}` : ''}
+                            {plan.cycleLabel ? ` • ciclo ${plan.cycleLabel}` : ''}
                         </p>
                         <div className="flex gap-1 flex-wrap mb-3">
                              {plan.activities.slice(0, 3).map((a, i) => (

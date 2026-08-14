@@ -5,6 +5,8 @@ import { normalizePlanForUse } from '../services/planNormalizationService';
 import { exportMeetingPlanHtml } from '../services/meetingPlanHtmlExport';
 import { ConfirmDialog } from './ConfirmDialog';
 import { isCeremonialActivity } from '../services/activityBriefs';
+import { CronogramaBlock, headerFromPlan } from './CronogramaBlock';
+import { formatPaperDuration, resolveMeetingStartTime, stampScheduleTimes } from '../services/meetingScheduleService';
 
 interface Props {
   plan: MeetingPlan;
@@ -13,6 +15,7 @@ interface Props {
   onRegenerateActivity?: (index: number, activity: Activity, currentPlan: MeetingPlan) => Promise<MeetingPlan>;
   isGenerating?: boolean;
   fallbackSectionId?: string;
+  fallbackUnitName?: string;
   initiallySaved?: boolean;
   initialSaveError?: string | null;
 }
@@ -27,6 +30,7 @@ export const PlanDisplay: React.FC<Props> = ({
   onRegenerateActivity,
   isGenerating,
   fallbackSectionId,
+  fallbackUnitName,
   initiallySaved,
   initialSaveError,
 }) => {
@@ -131,12 +135,16 @@ export const PlanDisplay: React.FC<Props> = ({
     markDirty();
   };
 
+  const restampPlan = (next: MeetingPlan, startTime?: string): MeetingPlan =>
+      stampScheduleTimes(next, startTime || resolveMeetingStartTime(next));
+
   const updateActivity = (index: number, field: keyof Activity, value: any) => {
       // Forma funcional: lê o estado mais recente, não a closure do render.
       setPlan(prev => {
           const newActivities = [...prev.activities];
           newActivities[index] = { ...newActivities[index], [field]: value };
-          return { ...prev, activities: newActivities };
+          const next = { ...prev, activities: newActivities };
+          return field === 'durationMinutes' ? restampPlan(next) : next;
       });
       markDirty();
   };
@@ -166,9 +174,7 @@ export const PlanDisplay: React.FC<Props> = ({
       value.split('\n').map(v => v.trim()).filter(Boolean);
 
   const removeActivity = (index: number) => {
-      const newActivities = plan.activities.filter((_, i) => i !== index);
-      setPlan({ ...plan, activities: newActivities });
-      markDirty();
+      mutatePlan(prev => restampPlan({ ...prev, activities: prev.activities.filter((_, i) => i !== index) }));
   };
 
   const addActivity = () => {
@@ -180,6 +186,7 @@ export const PlanDisplay: React.FC<Props> = ({
           materials: [],
           educationalArea: EducationalArea.CARATER,
           progressionObjective: "",
+          responsible: "",
           evaluation: {
               acompanhamento: '',
               avaliacaoJovens: '',
@@ -189,24 +196,36 @@ export const PlanDisplay: React.FC<Props> = ({
               evidenciasSugeridas: [],
           },
       };
-      setPlan({ ...plan, activities: [...plan.activities, newActivity] });
-      markDirty();
+      mutatePlan(prev => restampPlan({ ...prev, activities: [...prev.activities, newActivity] }));
   };
 
-  // V23: timestamp acumulado por atividade ("00:00 → 00:15")
+  const meetingStart = resolveMeetingStartTime(plan);
   const formatHHMM = (mins: number) => {
     const h = Math.floor(mins / 60), m = mins % 60;
     return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
   };
   const activityRanges = (() => {
-    let acc = 0;
+    const hasClock = !!(plan.meetingStartTime || plan.activities.some(a => a.scheduledStartTime));
+    let clockMins = 0;
+    if (hasClock) {
+      const [hh, mm] = meetingStart.split(':').map(Number);
+      clockMins = ((hh || 0) * 60) + (mm || 0);
+    }
+    let fallbackMins = 0;
     return plan.activities.map(a => {
-      if (a.scheduledStartTime && a.scheduledEndTime) {
-        return `${a.scheduledStartTime} → ${a.scheduledEndTime}`;
+      if (a.scheduledStartTime) {
+        return formatPaperDuration(a.scheduledStartTime, a.durationMinutes);
       }
-      const start = acc, end = acc + (a.durationMinutes || 0);
-      acc = end;
-      return `${formatHHMM(start)} → ${formatHHMM(end)}`;
+      if (hasClock) {
+        const start = clockMins;
+        clockMins += a.durationMinutes || 0;
+        const hh = String(Math.floor(start / 60) % 24).padStart(2, '0');
+        const mm = String(start % 60).padStart(2, '0');
+        return formatPaperDuration(`${hh}:${mm}`, a.durationMinutes);
+      }
+      const start = fallbackMins;
+      fallbackMins += a.durationMinutes || 0;
+      return `${formatHHMM(start)} → ${formatHHMM(fallbackMins)}`;
     });
   })();
 
@@ -332,7 +351,7 @@ export const PlanDisplay: React.FC<Props> = ({
             {isEditing ? (
                 <textarea 
                     value={plan.generalNotes} 
-                    onChange={e => { setPlan({...plan, generalNotes: e.target.value}); markDirty(); }}
+                    onChange={e => { mutatePlan(p => ({...p, generalNotes: e.target.value})); }}
                     className="w-full mt-4 p-2 border rounded text-sm text-slate-600 text-center"
                     rows={2}
                 />
@@ -362,6 +381,40 @@ export const PlanDisplay: React.FC<Props> = ({
                     )}
                 </div>
             )}
+        </div>
+
+        <div className="mb-10">
+            <CronogramaBlock
+                header={{
+                    ...headerFromPlan({ ...plan, unitName: plan.unitName || fallbackUnitName }),
+                }}
+                activities={plan.activities}
+                startTime={meetingStart}
+                editable={isEditing}
+                onHeaderChange={patch => {
+                    mutatePlan(prev => ({
+                        ...prev,
+                        unitName: prev.unitName || fallbackUnitName,
+                        meetingDate: patch.meetingDate ?? prev.meetingDate,
+                        cycleLabel: patch.cycleLabel ?? prev.cycleLabel,
+                        meetingType: patch.meetingType ?? prev.meetingType,
+                        theme: patch.theme ?? prev.theme,
+                        objectives: patch.objectives ?? prev.objectives,
+                        technicalContent: patch.technicalContent ?? prev.technicalContent,
+                    }));
+                }}
+                onStartTimeChange={clock => {
+                    mutatePlan(prev => restampPlan({ ...prev, meetingStartTime: clock }, clock));
+                }}
+                onActivitiesChange={next => {
+                    mutatePlan(prev => ({
+                        ...prev,
+                        activities: next,
+                        meetingStartTime: next[0]?.scheduledStartTime || prev.meetingStartTime,
+                        totalDuration: next.reduce((sum, row) => sum + (row.durationMinutes || 0), 0),
+                    }));
+                }}
+            />
         </div>
 
         {/* Activities Timeline */}
@@ -400,11 +453,19 @@ export const PlanDisplay: React.FC<Props> = ({
                         <div className="flex justify-between items-start mb-3">
                             <div className="flex-1 pr-28">
                                 {isEditing ? (
+                                    <>
                                     <input 
                                         value={act.title}
                                         onChange={e => updateActivity(i, 'title', e.target.value)}
                                         className="font-bold text-lg text-slate-800 w-full mb-1 border-b border-dashed outline-none"
                                     />
+                                    <input
+                                        value={act.responsible || ''}
+                                        onChange={e => updateActivity(i, 'responsible', e.target.value)}
+                                        placeholder="Responsável (patrulha / chefia)"
+                                        className="w-full text-xs text-slate-600 border-b border-dashed outline-none mb-1"
+                                    />
+                                    </>
                                 ) : (
                                     <h3 className="font-bold text-lg text-slate-800">{act.title}</h3>
                                 )}
@@ -418,7 +479,10 @@ export const PlanDisplay: React.FC<Props> = ({
                                             className="w-16 bg-slate-100 text-slate-600 px-2 py-0.5 rounded text-[10px] font-bold border"
                                         />
                                     ) : (
-                                        <span className="bg-slate-100 text-slate-600 px-2 py-0.5 rounded text-[10px] font-bold">⏱️ {act.durationMinutes} min · {activityRanges[i]}</span>
+                                        <span className="bg-slate-100 text-slate-600 px-2 py-0.5 rounded text-[10px] font-bold">⏱️ {activityRanges[i]}</span>
+                                    )}
+                                    {act.responsible && (
+                                        <span className="bg-amber-50 text-amber-800 px-2 py-0.5 rounded text-[10px] font-bold">{act.responsible}</span>
                                     )}
                                     {act.isOperational && (
                                         <span className="bg-white/80 text-slate-700 px-2 py-0.5 rounded text-[10px] font-black uppercase border">Rotina</span>
