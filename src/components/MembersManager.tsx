@@ -288,32 +288,35 @@ export const MembersManager: React.FC<Props> = ({ sectionId, isAdmin }) => {
             Cadastre só com o primeiro nome e complete depois. Use lista para patrulha ou chefia inteira.
           </p>
         </div>
-        <div className="flex flex-wrap gap-2">
-          {isEditing ? (
-            <button
-              onClick={resetForm}
-              className="px-4 py-2 rounded-lg font-bold bg-red-100 text-red-600"
-            >
-              Fechar
-            </button>
-          ) : (
-            <>
-              <button
-                onClick={() => openNew('single')}
-                className="px-4 py-2 rounded-lg font-bold bg-slate-800 text-white"
-              >
-                + Um nome
-              </button>
-              <button
-                onClick={() => openNew('bulk')}
-                className="px-4 py-2 rounded-lg font-bold bg-indigo-600 text-white"
-              >
-                + Lista rápida
-              </button>
-            </>
-          )}
-        </div>
+        {isEditing && (
+          <button
+            onClick={resetForm}
+            className="px-4 py-2 rounded-lg font-bold bg-red-100 text-red-600"
+          >
+            Fechar
+          </button>
+        )}
       </div>
+
+      {!isEditing && (
+        <div className="mb-6 bg-white p-4 rounded-xl border border-slate-200">
+          <h3 className="font-bold text-gray-800 mb-3">Adicionar novos membros</h3>
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={() => openNew('single')}
+              className="px-4 py-2 rounded-lg font-bold bg-slate-800 text-white"
+            >
+              + Um nome
+            </button>
+            <button
+              onClick={() => openNew('bulk')}
+              className="px-4 py-2 rounded-lg font-bold bg-indigo-600 text-white"
+            >
+              + Lista rápida
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
         {isEditing && (
@@ -547,10 +550,6 @@ export const MembersManager: React.FC<Props> = ({ sectionId, isAdmin }) => {
             <div className="text-center py-12 bg-white rounded-xl border-2 border-dashed">
               <span className="text-4xl grayscale opacity-50">⛺</span>
               <p className="text-gray-500 mt-2">Nenhum membro cadastrado.</p>
-              <div className="mt-4 flex justify-center gap-2">
-                <button onClick={() => openNew('single')} className="px-3 py-1.5 bg-slate-800 text-white text-sm rounded-lg font-bold">+ Um nome</button>
-                <button onClick={() => openNew('bulk')} className="px-3 py-1.5 bg-indigo-600 text-white text-sm rounded-lg font-bold">+ Lista rápida</button>
-              </div>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-4">
