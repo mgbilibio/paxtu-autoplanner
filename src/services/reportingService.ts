@@ -17,9 +17,13 @@ import { getOfficialSpecialtyLevel } from '../data/officialSpecialtyCatalog';
 import {
   formatOfficialDate,
   hasOfficialLayer,
+  listOfficialConquistas,
   listOfficialEtapaTrail,
   listOfficialSpecialties,
+  listOfficialVidaEscoteira,
+  listOtherOfficialEtapas,
   officialEtapaEscoteiro,
+  officialStatusLabel,
   PAXTU_HISTORICO_AVISO,
 } from './equivalenciaService';
 
@@ -213,23 +217,53 @@ export const generatePrintableHistory = (
     ${hasOfficialLayer(member) ? `
     <div class="section-title">Oficial (Paxtu / POR antigo)</div>
     <p style="font-size:11px;margin:0 0 10px">${escapeHtml(PAXTU_HISTORICO_AVISO)}</p>
+    <div class="section-title" style="font-size:12px">Progressão — Ramo escoteiro</div>
     <div class="grid">
       ${listOfficialEtapaTrail(member).map(item => `
         <div class="item ${item.conquistado ? 'completed' : ''}">
           <div class="check">${item.conquistado ? '✓' : ''}</div>
-          <div><strong>${escapeHtml(item.etapa)}</strong> ${item.conquistado ? 'Conquistado' : 'Pendente'}${item.date ? ` · ${escapeHtml(formatOfficialDate(item.date) || '')}` : ''}</div>
+          <div><strong>${escapeHtml(item.etapa)}</strong> ${escapeHtml(officialStatusLabel(item.status, item.conquistado))}${item.date ? ` · ${escapeHtml(formatOfficialDate(item.date) || '')}` : ''}</div>
         </div>
       `).join('')}
     </div>
-    <div class="section-title">Especialidades oficiais (N1+)</div>
+    ${listOtherOfficialEtapas(member).length ? `
+    <div class="section-title" style="font-size:12px">Outros ramos e passagens</div>
+    <p style="font-size:10px;margin:0 0 8px">Pendente aqui não significa que o jovem falhou — muitas etapas são de outro ramo.</p>
     <div class="grid">
-      ${listOfficialSpecialties(member).filter(item => (item.nivelOficial ?? 0) >= 1).map(item => `
+      ${listOtherOfficialEtapas(member).map(item => `
+        <div class="item ${item.conquistado ? 'completed' : ''}">
+          <div class="check">${item.conquistado ? '✓' : ''}</div>
+          <div>${escapeHtml(item.nome)} · ${escapeHtml(officialStatusLabel(undefined, item.conquistado))}${item.date ? ` · ${escapeHtml(formatOfficialDate(item.date) || '')}` : ''}</div>
+        </div>
+      `).join('')}
+    </div>` : ''}
+    <div class="section-title" style="font-size:12px">Conquistas e certificações</div>
+    <div class="grid">
+      ${listOfficialConquistas(member).map(item => `
         <div class="item completed">
           <div class="check">✓</div>
-          <div><strong>${escapeHtml(item.nome)}</strong> N${item.nivelOficial || ''}${item.nivel2025 ? ` → N${item.nivel2025} (2025+)` : ''}</div>
+          <div>${escapeHtml(item.nome)}${item.date ? ` · ${escapeHtml(formatOfficialDate(item.date) || '')}` : ''}</div>
         </div>
-      `).join('') || '<div class="item"><div>Nenhuma especialidade N1+ no histórico Paxtu.</div></div>'}
+      `).join('') || '<div class="item"><div>Nenhuma conquista no histórico Paxtu.</div></div>'}
     </div>
+    <div class="section-title" style="font-size:12px">Especialidades oficiais</div>
+    <div class="grid">
+      ${listOfficialSpecialties(member).map(item => `
+        <div class="item completed">
+          <div class="check">✓</div>
+          <div><strong>${escapeHtml(item.nome)}</strong>${item.nivelOficial != null ? ` N${item.nivelOficial}` : ''}${item.date ? ` · ${escapeHtml(formatOfficialDate(item.date) || '')}` : ''}</div>
+        </div>
+      `).join('') || '<div class="item"><div>Nenhuma especialidade no histórico Paxtu.</div></div>'}
+    </div>
+    ${listOfficialVidaEscoteira(member).length ? `
+    <div class="section-title" style="font-size:12px">Vida escoteira</div>
+    <div class="grid">
+      ${listOfficialVidaEscoteira(member).map(row => `
+        <div class="item">
+          <div><strong>${escapeHtml(row.data || '—')}</strong> ${escapeHtml(row.atividade)}${row.local ? ` · ${escapeHtml(row.local)}` : ''}</div>
+        </div>
+      `).join('')}
+    </div>` : ''}
     ` : `
     <div class="section-title">Oficial (Paxtu / POR antigo)</div>
     <p style="font-size:12px">Sem histórico Paxtu neste jovem</p>

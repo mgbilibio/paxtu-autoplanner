@@ -270,6 +270,20 @@ export interface OfficialSpecialtyRecord {
   data?: string;
 }
 
+/** Item de etapa oficial, se um import futuro trouxer a lista. Não inventar códigos. */
+export interface OfficialEtapaItemRecord {
+  codigo?: string;
+  code?: string;
+  nome?: string;
+  name?: string;
+  titulo?: string;
+  status?: string;
+  situacao?: string;
+  estado?: string;
+  date?: string;
+  data?: string;
+}
+
 export interface OfficialEtapaRecord {
   nome?: string;
   name?: string;
@@ -279,6 +293,8 @@ export interface OfficialEtapaRecord {
   estado?: string;
   data?: string;
   date?: string;
+  itens?: OfficialEtapaItemRecord[];
+  items?: OfficialEtapaItemRecord[];
 }
 
 /**
@@ -290,7 +306,7 @@ export interface MemberOfficialRecord {
   etapas?: OfficialEtapaRecord[] | string[] | string | Record<string, unknown>;
   especialidades?: OfficialSpecialtyRecord[] | string[];
   conquistas?: Array<string | Record<string, unknown>>;
-  condecoracoes?: Array<string | Record<string, unknown>>;
+  condecoracoes?: Array<string | Record<string, unknown>> | string;
   vidaEscoteira?: Record<string, unknown> | string;
   items?: OfficialProgressItem[];
 }
