@@ -21,12 +21,19 @@ import {
   saveMemberReconhecimento,
 } from '../services/storageService';
 import {
+  formatOfficialDate,
   hasOfficialLayer,
+  listOfficialEtapaTrail,
+  listOfficialSpecialties,
+  listOtherOfficialEtapas,
   officialEtapaEscoteiro,
+  PAXTU_HISTORICO_AVISO,
   suggestEquivalencia,
 } from '../services/equivalenciaService';
 import { ConfirmDialog } from './ConfirmDialog';
 import { OfficialEquivalenciaPanel } from './OfficialEquivalenciaPanel';
+import { FichaViewToggle, ProgressViewLayout } from './ProgressViewLayout';
+import { readFichaViewMode, type FichaViewMode } from '../utils/fichaViewMode';
 
 const calcAge = (birthDate?: string): number | null => {
   if (!birthDate) return null;
@@ -69,6 +76,7 @@ export const BlocoTracker: React.FC<Props> = ({ member, onClose }) => {
     danger?: boolean;
     onConfirm: () => void;
   } | null>(null);
+  const [viewMode, setViewMode] = useState<FichaViewMode>(() => readFichaViewMode());
 
   const reconhecimento = useMemo(
     () => RECONHECIMENTOS_2025.find(r => r.ramoId === ramoId),
@@ -104,7 +112,6 @@ export const BlocoTracker: React.FC<Props> = ({ member, onClose }) => {
   );
   const oficialEtapa = equivalencia.officialEtapa || officialEtapaEscoteiro(member);
   const manterEtapaOficial = equivalencia.keepOfficialEtapa;
-  const etapaLabel = manterEtapaOficial && oficialEtapa ? oficialEtapa : (etapaAtual?.nome || '—');
   const showOfficial = hasOfficialLayer(member);
 
   const recRequisitos = useMemo(
@@ -411,19 +418,58 @@ export const BlocoTracker: React.FC<Props> = ({ member, onClose }) => {
         <td>${escapeHtml(row.dataConclusao)}</td>
       </tr>
     `).join('');
+    const trail = listOfficialEtapaTrail(member);
+    const outras = listOtherOfficialEtapas(member);
+    const especialidades = listOfficialSpecialties(member).filter(item => (item.nivelOficial ?? 0) >= 1);
+    const trailHtml = trail.map(item => `
+      <tr>
+        <td>${escapeHtml(item.etapa)}</td>
+        <td>${item.conquistado ? 'Conquistado' : 'Pendente'}</td>
+        <td>${escapeHtml(formatOfficialDate(item.date) || '')}</td>
+      </tr>
+    `).join('');
+    const outrasHtml = outras.length
+      ? `<p><strong>Outras etapas:</strong> ${outras.map(item =>
+          `${escapeHtml(item.nome)} (${item.conquistado ? 'conquistado' : 'pendente'}${item.date ? ` · ${escapeHtml(formatOfficialDate(item.date) || '')}` : ''})`
+        ).join('; ')}</p>`
+      : '';
+    const specHtml = especialidades.length
+      ? especialidades.map(item => `
+          <tr>
+            <td>${escapeHtml(item.nome)}</td>
+            <td>${item.nivelOficial ? `N${item.nivelOficial}` : ''}</td>
+            <td>${item.nivel2025 ? `N${item.nivel2025}` : ''}</td>
+            <td>${escapeHtml(formatOfficialDate(item.date) || '')}</td>
+          </tr>
+        `).join('')
+      : '<tr><td colspan="4">Nenhuma especialidade N1+ no historico Paxtu.</td></tr>';
+    const officialBlock = showOfficial
+      ? `
+      <h2>Oficial (Paxtu / POR antigo)</h2>
+      <p>Etapa oficial: <strong>${escapeHtml(oficialEtapa || 'nao informada')}</strong></p>
+      <table><thead><tr><th>Etapa</th><th>Status</th><th>Data</th></tr></thead><tbody>${trailHtml}</tbody></table>
+      ${outrasHtml}
+      <h2>Especialidades oficiais (N1+)</h2>
+      <table><thead><tr><th>Nome</th><th>Nivel antigo</th><th>Nivel 2025+</th><th>Data</th></tr></thead><tbody>${specHtml}</tbody></table>
+      <p>${escapeHtml(PAXTU_HISTORICO_AVISO)}</p>
+      `
+      : `<h2>Oficial (Paxtu / POR antigo)</h2><p>Sem historico Paxtu neste jovem</p>`;
     const html = `
       <!doctype html><html><head><meta charset="utf-8">
       <title>Ficha de Progressao - ${escapeHtml(member.name)}</title>
       <style>
         body{font-family:Arial,sans-serif;margin:24px;color:#111827}
-        h1{font-size:20px;margin:0 0 4px} p{margin:4px 0 16px;color:#4b5563}
-        table{width:100%;border-collapse:collapse;font-size:11px}
+        h1{font-size:20px;margin:0 0 4px} h2{font-size:14px;margin:20px 0 8px}
+        p{margin:4px 0 16px;color:#4b5563}
+        table{width:100%;border-collapse:collapse;font-size:11px;margin-bottom:12px}
         th,td{border:1px solid #d1d5db;padding:6px;text-align:left;vertical-align:top}
         th{background:#f3f4f6}
         .ok{font-weight:700}
       </style></head><body>
-      <h1>Ficha de Progressao POR 2025+</h1>
-      <p><strong>Jovem:</strong> ${escapeHtml(member.name)} · <strong>Ramo:</strong> ${escapeHtml(member.branch)} · <strong>Blocos:</strong> ${concluidos}/18 · <strong>Etapa:</strong> ${escapeHtml(etapaAtual?.nome || '')}</p>
+      <h1>Ficha de Progressao</h1>
+      <p><strong>Jovem:</strong> ${escapeHtml(member.name)} · <strong>Ramo:</strong> ${escapeHtml(member.branch)} · <strong>Oficial:</strong> ${escapeHtml(oficialEtapa || '—')} · <strong>Blocos:</strong> ${concluidos}/18 · <strong>Etapa pelos blocos:</strong> ${escapeHtml(etapaAtual?.nome || '')}</p>
+      ${officialBlock}
+      <h2>Blocos POR 2025+</h2>
       <table><thead><tr><th>Bloco</th><th>Nome</th><th>Eixo</th><th>Tipo</th><th>Modalidade</th><th>Descricao</th><th>Status</th><th>Data</th></tr></thead><tbody>${htmlRows}</tbody></table>
       </body></html>
     `;
@@ -456,13 +502,16 @@ export const BlocoTracker: React.FC<Props> = ({ member, onClose }) => {
       <div className="bg-gradient-to-r from-indigo-700 to-purple-700 text-white px-4 py-3 flex-shrink-0">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex-1 min-w-0">
-            <div className="text-[10px] uppercase tracking-wider opacity-80">Acompanhamento POR 2025+</div>
+            <div className="text-[10px] uppercase tracking-wider opacity-80">Ficha do jovem</div>
             <div className="flex items-baseline gap-2 flex-wrap">
               <h3 className="text-xl font-bold truncate">{member.name}</h3>
               <span className="text-xs opacity-80">
-                {member.branch} · {etapaLabel}
-                {manterEtapaOficial && oficialEtapa ? ' (oficial)' : ''}
-                {' '}· <strong>{concluidos}/18</strong>
+                {member.branch}
+                {' · Oficial: '}
+                <strong>{oficialEtapa || (showOfficial ? 'etapa não informada' : 'sem Paxtu')}</strong>
+                {manterEtapaOficial ? ' (manter)' : ''}
+                {' · blocos '}
+                <strong>{concluidos}/18</strong>
               </span>
             </div>
           </div>
@@ -515,13 +564,17 @@ export const BlocoTracker: React.FC<Props> = ({ member, onClose }) => {
             <span className="font-bold text-yellow-300">🏆 Apto a {reconhecimento.nome}!</span>
           )}
         </div>
+        <div className="mt-2">
+          <FichaViewToggle mode={viewMode} onChange={setViewMode} />
+        </div>
       </div>
 
-      {/* Lista de blocos — flex-1 ocupa todo espaço disponível */}
-      <div className="flex-1 min-h-0 overflow-y-auto p-2 md:p-4 space-y-2 bg-gray-50">
-        {showOfficial && (
-          <OfficialEquivalenciaPanel member={member} concludedBlocos={concluidos} />
-        )}
+      <ProgressViewLayout
+        mode={viewMode}
+        official={<OfficialEquivalenciaPanel member={member} concludedBlocos={concluidos} variant="column" />}
+        strip={<OfficialEquivalenciaPanel member={member} concludedBlocos={concluidos} variant="strip" />}
+        blocos={(
+          <>
         {BLOCOS_2025.map(bloco => {
           const eixo = EIXOS_2025.find(e => e.id === bloco.eixoId)!;
           const meta = BLOCO_RAMO_META_2025.find(m => m.blocoId === bloco.id && m.ramoId === ramoId);
@@ -840,7 +893,9 @@ export const BlocoTracker: React.FC<Props> = ({ member, onClose }) => {
             )}
           </div>
         )}
-      </div>
+          </>
+        )}
+      />
     </div>
   );
 };

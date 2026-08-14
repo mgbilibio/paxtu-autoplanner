@@ -34,7 +34,23 @@ export interface OfficialSpecialtyView {
   nome: string;
   nivelOficial?: number;
   nivel2025?: 1 | 2 | null;
+  date?: string;
 }
+
+export interface OfficialEtapaTrailItem {
+  etapa: EtapaEscoteiro;
+  conquistado: boolean;
+  date?: string;
+}
+
+export interface OfficialEtapaOtherItem {
+  nome: string;
+  conquistado: boolean;
+  date?: string;
+}
+
+export const PAXTU_HISTORICO_AVISO =
+  'O Paxtu trouxe etapa e especialidade, não o item a item (I22…). Equivalência de bloco é sugestão; a chefia confirma.';
 
 const CONCLUDED_STATUS = new Set([
   'concluido',
@@ -105,41 +121,85 @@ const officialFrom = (
   return memberOrOfficial as MemberOfficialRecord;
 };
 
-const collectEtapaNames = (official?: MemberOfficialRecord): string[] => {
+/** Conquistado/concluído conta; Pendente (e afins) não. Sem status = legado, conta. */
+export const isOfficialStatusConcluded = (status?: string | null): boolean => {
+  if (!status || !String(status).trim()) return true;
+  const key = normalizeKey(status);
+  if (PENDING_STATUS.has(key)) return false;
+  return CONCLUDED_STATUS.has(key) || key.includes('conclu') || key.includes('conquist');
+};
+
+interface CollectedOfficialEtapa {
+  nome: string;
+  status?: string;
+  date?: string;
+}
+
+const collectEtapaRecords = (official?: MemberOfficialRecord): CollectedOfficialEtapa[] => {
   if (!official) return [];
-  const names: string[] = [];
-  const push = (raw: unknown) => {
+  const records: CollectedOfficialEtapa[] = [];
+
+  const push = (raw: unknown, fallbackNome?: string) => {
     if (typeof raw === 'string' && raw.trim()) {
-      names.push(raw.trim());
+      records.push({ nome: raw.trim() });
       return;
     }
     const rec = asRecord(raw);
     if (!rec) return;
-    const nome = pickString(rec.nome, rec.name, rec.etapa, rec.atual, rec.current, rec.titulo);
-    if (nome) names.push(nome);
+    const nome = pickString(rec.nome, rec.name, rec.etapa, rec.atual, rec.current, rec.titulo, rec.etapaAtual)
+      || fallbackNome;
+    if (!nome) return;
+    records.push({
+      nome,
+      status: pickString(rec.status, rec.situacao, rec.estado),
+      date: pickString(rec.date, rec.data, rec.dataConquista, rec.conquistadoEm),
+    });
   };
 
   const etapas = official.etapas;
-  if (typeof etapas === 'string') push(etapas);
-  else if (Array.isArray(etapas)) etapas.forEach(push);
-  else if (asRecord(etapas)) {
+  if (typeof etapas === 'string') {
+    push(etapas);
+  } else if (Array.isArray(etapas)) {
+    etapas.forEach(item => push(item));
+  } else if (asRecord(etapas)) {
     const rec = asRecord(etapas)!;
-    push(rec.atual || rec.current || rec.nome || rec.name);
+    const skipKeys = new Set(['atual', 'current', 'nome', 'name', 'etapa', 'status', 'situacao', 'estado']);
     for (const [key, value] of Object.entries(rec)) {
-      if (etapaOrdem(key) > 0 && value) names.push(key);
-      else push(value);
+      if (etapaOrdem(key) > 0) {
+        if (value === true || value === 1) {
+          records.push({ nome: key });
+        } else if (typeof value === 'string') {
+          const keyNorm = normalizeKey(value);
+          const looksStatus = PENDING_STATUS.has(keyNorm)
+            || CONCLUDED_STATUS.has(keyNorm)
+            || keyNorm.includes('conclu')
+            || keyNorm.includes('conquist')
+            || keyNorm.includes('pendente');
+          records.push(looksStatus ? { nome: key, status: value } : { nome: key, date: value });
+        } else if (asRecord(value) || value) {
+          push(value, key);
+        }
+      } else if (!skipKeys.has(normalizeKey(key))) {
+        push(value);
+      }
+    }
+    if (records.length === 0) {
+      push(rec.atual || rec.current || rec.nome || rec.name);
     }
   }
 
   const vida = official.vidaEscoteira;
   if (typeof vida === 'string') push(vida);
-  else if (asRecord(vida)) {
-    const rec = asRecord(vida)!;
-    push(pickString(rec.etapa, rec.etapaAtual, rec.atual, rec.nome));
-  }
+  else if (asRecord(vida)) push(vida);
 
-  return names;
+  return records;
 };
+
+/** Só nomes de etapas com status conquistado/concluído (Pendente não entra). */
+const collectEtapaNames = (official?: MemberOfficialRecord): string[] =>
+  collectEtapaRecords(official)
+    .filter(item => isOfficialStatusConcluded(item.status))
+    .map(item => item.nome);
 
 export const listOfficialEtapas = (
   memberOrOfficial?: ScoutMember | MemberOfficialRecord | null,
@@ -168,6 +228,53 @@ export const officialEtapaEscoteiro = (
     }
   }
   return best;
+};
+
+export const formatOfficialDate = (raw?: string): string | undefined => {
+  if (!raw?.trim()) return undefined;
+  const text = raw.trim();
+  if (/^\d{4}-\d{2}-\d{2}/.test(text)) {
+    const [year, month, day] = text.slice(0, 10).split('-');
+    return `${day}/${month}/${year}`;
+  }
+  return text;
+};
+
+/** Trilha Pistas → Travessia. Outras etapas do dump ficam de fora (ver listOtherOfficialEtapas). */
+export const listOfficialEtapaTrail = (
+  memberOrOfficial?: ScoutMember | MemberOfficialRecord | null,
+): OfficialEtapaTrailItem[] => {
+  const official = officialFrom(memberOrOfficial);
+  const records = collectEtapaRecords(official);
+  return ETAPA_ORDEM.map(etapa => {
+    const matches = records.filter(item => etapaOrdem(item.nome) === etapaOrdem(etapa));
+    const done = matches.find(item => isOfficialStatusConcluded(item.status));
+    return {
+      etapa,
+      conquistado: !!done,
+      date: done?.date || matches.find(item => item.date)?.date,
+    };
+  });
+};
+
+export const listOtherOfficialEtapas = (
+  memberOrOfficial?: ScoutMember | MemberOfficialRecord | null,
+): OfficialEtapaOtherItem[] => {
+  const official = officialFrom(memberOrOfficial);
+  const seen = new Set<string>();
+  const others: OfficialEtapaOtherItem[] = [];
+  for (const item of collectEtapaRecords(official)) {
+    if (etapaOrdem(item.nome) > 0) continue;
+    const key = normalizeKey(item.nome);
+    if (!key || seen.has(key)) continue;
+    seen.add(key);
+    others.push({
+      nome: item.nome,
+      conquistado: isOfficialStatusConcluded(item.status),
+      date: item.date,
+    });
+  }
+  return others;
 };
 
 /** Só compara quando há etapa derivada. derived nulo/ausente nunca mantém etapa. */
@@ -209,6 +316,11 @@ const specialtyNivel = (item: OfficialSpecialtyRecord | string): number | undefi
   return undefined;
 };
 
+const specialtyDate = (item: OfficialSpecialtyRecord | string): string | undefined => {
+  if (typeof item === 'string') return undefined;
+  return pickString(item.date, item.data);
+};
+
 export const listOfficialSpecialties = (member?: ScoutMember | null): OfficialSpecialtyView[] => {
   const list = member?.official?.especialidades;
   if (!Array.isArray(list)) return [];
@@ -221,6 +333,7 @@ export const listOfficialSpecialties = (member?: ScoutMember | null): OfficialSp
         nome,
         nivelOficial,
         nivel2025: nivelOficial === undefined ? null : mapSpecialtyLevel(nivelOficial),
+        date: specialtyDate(item),
       } as OfficialSpecialtyView;
     })
     .filter((item): item is OfficialSpecialtyView => !!item);
