@@ -5,7 +5,7 @@ import { normalizeActivityForUse, normalizePlanForUse } from './planNormalizatio
 import { getProgressionDetail } from './progressionDetailService';
 import type { MeetingCycle } from './geminiService';
 import { attachmentsToPromptBlock } from './planAttachments';
-import { activityBriefsPromptBlock, buildSingleActivityPrompt } from './activityBriefs';
+import { activityBriefsPromptBlock, buildSingleActivityPrompt, PRACTICAL_CONTENT_RULES } from './activityBriefs';
 import type { PlanAttachment } from './planAttachments';
 
 const XAI_API = 'https://api.x.ai/v1';
@@ -50,7 +50,7 @@ export const isReachable = async (): Promise<{ ok: boolean; error?: string }> =>
   return { ok: true };
 };
 
-const chat = async (userPrompt: string, modelId?: string): Promise<string> => {
+const chat = async (userPrompt: string, modelId?: string, temperature = 0.5): Promise<string> => {
   const apiKey = resolveXaiKey();
   if (!apiKey) throw new Error(NO_KEY);
   const model = modelId || getAppConfig()?.xaiOAuthModel || DEFAULT_MODEL;
@@ -62,7 +62,7 @@ const chat = async (userPrompt: string, modelId?: string): Promise<string> => {
     },
     body: JSON.stringify({
       model,
-      temperature: 0.5,
+      temperature,
       messages: [
         {
           role: 'system',
@@ -81,13 +81,14 @@ const chat = async (userPrompt: string, modelId?: string): Promise<string> => {
   return data.choices?.[0]?.message?.content || '';
 };
 
-const callJson = async <T,>(prompt: string, etapa: string, modelId?: string): Promise<T> => {
-  let text = await chat(prompt, modelId);
+const callJson = async <T,>(prompt: string, etapa: string, modelId?: string, temperature = 0.5): Promise<T> => {
+  let text = await chat(prompt, modelId, temperature);
   let parsed = extractJson<T>(text);
   if (parsed === null) {
     text = await chat(
       `${prompt}\n\nIMPORTANTE: responda SOMENTE com o JSON pedido, sem texto extra nem markdown.`,
       modelId,
+      Math.min(temperature, 0.3),
     );
     parsed = extractJson<T>(text);
   }
@@ -200,9 +201,10 @@ CONTEXTO:\n${userPromptBase}
   window.dispatchEvent(new CustomEvent('paxtu:llm-progress', { detail: { message: 'Etapa 2/3: Detalhando atividades...' } }));
   const detailsArr = await callJson<any[]>(`
 Estrutura: ${JSON.stringify(planStructure)}
-Para CADA atividade, devolva um array JSON com description, materials, instrucaoChefia, objetivoEspecifico, fundoDeCena, evaluation.
+Para CADA atividade, devolva um array JSON com description, materials, instrucaoChefia, conteudoPronto, passos, objetivoEspecifico, fundoDeCena, evaluation.
+${PRACTICAL_CONTENT_RULES}
 CONTEXTO:\n${userPromptBase}
-`, 'detalhamento', params.modelId);
+`, 'detalhamento', params.modelId, 0.65);
   const details = Array.isArray(detailsArr) ? detailsArr : [];
   planStructure.activities = (planStructure.activities || []).map((act: any, idx: number) => ({
     ...act,
@@ -228,7 +230,7 @@ export const generateScoutActivity = async (params: GenerateScoutActivityParams)
   if (!resolveXaiKey()) throw new Error(NO_KEY);
   const attachmentBlock = attachmentsToPromptBlock(params.attachments);
   const prompt = `${buildSingleActivityPrompt(params)}${attachmentBlock ? `\n\n${attachmentBlock}` : ''}`;
-  const parsed = await callJson<Activity>(prompt, 'refazer atividade', params.modelId);
+  const parsed = await callJson<Activity>(prompt, 'refazer atividade', params.modelId, 0.65);
   const { isOperational: _op, operationalType: _type, ...safe } = parsed;
   return normalizeActivityForUse(safe, params.slotIndex);
 };

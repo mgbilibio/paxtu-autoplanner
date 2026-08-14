@@ -85,15 +85,6 @@ export const resolveMeetingStartTime = (plan: Pick<MeetingPlan, 'meetingStartTim
 export const isCoreScheduleSlot = (activity: Activity): boolean =>
   !isCeremonialActivity(activity);
 
-const emptyEvaluation = () => ({
-  acompanhamento: 'Chefia acompanha organização, segurança, pontualidade e participação.',
-  avaliacaoJovens: 'Jovens avaliam rapidamente postura, prontidão e cuidado coletivo.',
-  avaliacaoChefia: 'Registrar apenas observações relevantes para condução da reunião.',
-  requisitosObservaveis: ['Participação organizada', 'Respeito aos combinados', 'Segurança mantida'],
-  criteriosDeAceite: ['Bloco executado no tempo previsto e sem perda de controle da seção'],
-  evidenciasSugeridas: ['Anotação de ocorrência se houver'],
-});
-
 export const scheduleRow = (
   title: string,
   minutes: number,
@@ -104,10 +95,9 @@ export const scheduleRow = (
     educationalArea: EducationalArea.CARATER,
     description: '',
     materials: [],
-    progressionObjective: rest.isOperational ? 'Operacional' : '',
+    progressionObjective: rest.operationalType || rest.isOperational ? 'Operacional' : '',
     responsible: '',
     _uid: `act-${Date.now()}-${Math.floor(Math.random() * 1e6)}`,
-    evaluation: rest.isOperational ? emptyEvaluation() : undefined,
     ...rest,
     title,
     durationMinutes: minutes,
@@ -233,23 +223,18 @@ export const buildPaperShapedCronograma = (
       'Inspeção, bandeira, espiritualidade, avisos e grito.',
     ),
     scheduleRow('Quebra gelo / canção', 15, {
-      isOperational: true,
       description: 'Aquecimento e canção para abrir o clima da reunião.',
     }),
     scheduleRow('Cerimônia', 15, {
-      isOperational: true,
       description: 'Cerimônia prevista para esta reunião.',
     }),
     scheduleRow('Avaliação do ciclo', 30, {
-      isOperational: true,
       description: 'Avaliação do ciclo, ênfase e combinados da seção.',
     }),
     scheduleRow('Entrega de cordões', 15, {
-      isOperational: true,
       description: 'Entrega de cordões ou distintivos, se houver.',
     }),
     scheduleRow('Recepção', 15, {
-      isOperational: true,
       description: 'Acolhida de novos integrantes, se houver.',
     }),
     operationalActivity(
@@ -320,8 +305,11 @@ export const mergeGeneratedIntoCronograma = (
     if (!isCoreScheduleSlot(row)) return row;
     const generated = generatedCore[coreIdx++];
     if (!generated) return row;
+    const namedTitle = String(row.title || '').trim();
+    const keepTitle = namedTitle && !/^atividade\s+\d+$/i.test(namedTitle);
     return {
       ...generated,
+      title: keepTitle ? namedTitle : generated.title,
       durationMinutes: row.durationMinutes || generated.durationMinutes,
       responsible: row.responsible || generated.responsible,
       scheduledStartTime: undefined,
@@ -329,6 +317,7 @@ export const mergeGeneratedIntoCronograma = (
       isOperational: false,
       operationalType: undefined,
       _uid: row._uid || generated._uid,
+      redoNote: row.redoNote,
     };
   });
   while (coreIdx < generatedCore.length) {
@@ -346,10 +335,12 @@ export const briefsFromCronograma = (draft: Activity[], existingBriefs: string[]
   const cores = draft.filter(isCoreScheduleSlot);
   return cores.map((activity, i) => {
     const existing = String(existingBriefs[i] || '').trim();
-    if (existing) return existing;
     const title = String(activity.title || '').trim();
-    if (title && !/^atividade\s+\d+$/i.test(title)) return title;
-    return '';
+    const named = title && !/^atividade\s+\d+$/i.test(title) ? title : '';
+    const base = existing || named;
+    const redo = String(activity.redoNote || '').trim();
+    if (redo) return base ? `${base}\nPedido deste quadro: ${redo}` : redo;
+    return base;
   });
 };
 

@@ -59,6 +59,7 @@ const sanitizePlanForCatalog = (plan: MeetingPlan): MeetingPlan => {
   const raw = { ...plan } as MeetingPlan & { attachments?: unknown; activityBriefs?: unknown };
   delete raw.attachments;
   delete raw.activityBriefs;
+  // generationSeed permanece: é JSON puro (sem binários nem chaves de IA).
   return {
     ...raw,
     id: raw.id || `${Date.now()}`,

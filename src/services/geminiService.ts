@@ -9,7 +9,7 @@ import { extractJson } from './llmJson';
 import { isWebApp } from './platform';
 import { getGeminiOAuthAccessToken } from './googleAuth';
 import { attachmentsToGeminiParts, attachmentsToPromptBlock, GeminiInlinePart } from './planAttachments';
-import { activityBriefsPromptBlock, buildSingleActivityPrompt } from './activityBriefs';
+import { activityBriefsPromptBlock, buildSingleActivityPrompt, PRACTICAL_CONTENT_RULES } from './activityBriefs';
 
 // Remove possiveis segredos (api key) de mensagens de erro da SDK antes de
 // exibir/logar — a SDK as vezes ecoa a URL da request com a chave.
@@ -536,13 +536,13 @@ MODO AUTO_LINK:
     }
   };
 
-  const callJson = async <T,>(prompt: string, etapa: string): Promise<T> => {
-    let res = await generateGeminiText(selectedModel, prompt, 0.5, extraParts);
+  const callJson = async <T,>(prompt: string, etapa: string, temperature = 0.5): Promise<T> => {
+    let res = await generateGeminiText(selectedModel, prompt, temperature, extraParts);
     checkFinishReason(res.finishReason, etapa);
     let parsed = extractJson<T>(res.text || '');
     if (parsed === null) {
       const retryPrompt = `${prompt}\n\nIMPORTANTE: sua resposta anterior NAO era um JSON valido. Responda SOMENTE com o JSON pedido, sem texto extra nem markdown.`;
-      res = await generateGeminiText(selectedModel, retryPrompt, 0.3, extraParts);
+      res = await generateGeminiText(selectedModel, retryPrompt, Math.min(temperature, 0.3), extraParts);
       checkFinishReason(res.finishReason, etapa);
       parsed = extractJson<T>(res.text || '');
     }
@@ -555,7 +555,7 @@ MODO AUTO_LINK:
     window.dispatchEvent(new CustomEvent('paxtu:llm-progress', { detail: { message: 'Etapa 1/3: Gerando estrutura...' } }));
     
     const promptStep1 = `
-      Você é um Chefe Escoteiro Sênior e Mentor no sistema PAXTU da UEB.
+      Você é um Chefe Escoteiro Sênior e Mentor no ScoutsAuto (planejador da chefia). Paxtu é só a fonte oficial da UEB.
       Crie a ESTRUTURA de um roteiro de reunião.
       Retorne APENAS JSON puro no formato:
       {
@@ -587,31 +587,34 @@ MODO AUTO_LINK:
       
       Para CADA atividade na lista "activities", preencha os detalhes que faltam.
       Use a BIBLIOTECA INTERNA se houver.
-      Retorne APENAS um JSON sendo um array de atividades detalhadas:
+      ${PRACTICAL_CONTENT_RULES}
+      Retorne APENAS um JSON (array) de atividades detalhadas, sem markdown e sem texto extra:
       [
         {
           "title": "DEVE SER O MESMO TÍTULO",
-          "description": "Regras detalhadas",
-          "fundoDeCena": "Conexão com tema",
+          "description": "Como a atividade RODA: regras, papéis, espaço",
+          "fundoDeCena": "Uma frase única desta faixa",
           "materials": ["item 1 com qtde"],
-          "instrucaoChefia": "Passo-a-passo numerado",
+          "instrucaoChefia": "0–3 min: … / 3–8 min: … cobrindo durationMinutes",
+          "conteudoPronto": "Letra / cartões / script falado (texto pronto)",
+          "passos": [{"minuto": "0–3 min", "acao": "o que acontece"}],
           "objetivoEspecifico": "Ao final o jovem será capaz de...",
           "manualReferencia": "Nome do manual/fonte",
           "preparacaoPrevia": ["imprimir X"],
           "evaluation": {
-            "acompanhamento": "como observar",
-            "avaliacaoJovens": "perguntas",
-            "avaliacaoChefia": "critério da chefia",
-            "requisitosObservaveis": ["req 1"],
-            "criteriosDeAceite": ["critério 1"],
-            "evidenciasSugeridas": ["foto"]
+            "acompanhamento": "o que observar NESTA atividade (omitir em IBEAGU/hidratação/IBOAGUCL)",
+            "avaliacaoJovens": "pergunta específica",
+            "avaliacaoChefia": "critério desta faixa",
+            "requisitosObservaveis": ["no máximo 2 itens específicos"],
+            "criteriosDeAceite": [],
+            "evidenciasSugeridas": []
           }
         }
       ]
       \n\nCONTEXTO:\n${userPromptBase}
     `;
 
-    const activitiesDetails = await callJson<any[]>(promptStep2, 'detalhamento');
+    const activitiesDetails = await callJson<any[]>(promptStep2, 'detalhamento', 0.65);
     const detailsArr = Array.isArray(activitiesDetails) ? activitiesDetails : [];
 
     // Mesclar etapa 2 na 1: casa por titulo; se o modelo renomeou, tenta casar
@@ -688,7 +691,7 @@ export const generateScoutActivity = async (params: GenerateScoutActivityParams)
     }
   };
 
-  let res = await generateGeminiText(selectedModel, prompt, 0.5, extraParts);
+  let res = await generateGeminiText(selectedModel, prompt, 0.65, extraParts);
   checkFinishReason(res.finishReason);
   let parsed = extractJson<Activity>(res.text || '');
   if (parsed === null) {

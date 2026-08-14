@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { MeetingPlan, Activity, EducationalArea } from '../types';
+import { MeetingPlan, Activity, EducationalArea, GenerationSeed } from '../types';
 import { savePlanToCatalog } from '../services/storageService';
-import { normalizePlanForUse } from '../services/planNormalizationService';
+import { hasMeaningfulEvaluation, isBoilerplateEvaluation, normalizePlanForUse } from '../services/planNormalizationService';
 import { exportMeetingPlanHtml } from '../services/meetingPlanHtmlExport';
 import { ConfirmDialog } from './ConfirmDialog';
 import { isCeremonialActivity } from '../services/activityBriefs';
+import { hasGenerationSeed } from '../services/generationSeed';
 import { CronogramaBlock, headerFromPlan } from './CronogramaBlock';
 import { formatPaperDuration, resolveMeetingStartTime, stampScheduleTimes } from '../services/meetingScheduleService';
 
@@ -12,6 +13,8 @@ interface Props {
   plan: MeetingPlan;
   onReset: () => void;
   onRegenerate: () => void;
+  onRegenerateFromSeed?: (seed: GenerationSeed) => void;
+  onUseSeedInPlanner?: (seed: GenerationSeed) => void;
   onRegenerateActivity?: (index: number, activity: Activity, currentPlan: MeetingPlan) => Promise<MeetingPlan>;
   isGenerating?: boolean;
   fallbackSectionId?: string;
@@ -27,6 +30,8 @@ export const PlanDisplay: React.FC<Props> = ({
   plan: initialPlan,
   onReset,
   onRegenerate,
+  onRegenerateFromSeed,
+  onUseSeedInPlanner,
   onRegenerateActivity,
   isGenerating,
   fallbackSectionId,
@@ -248,20 +253,28 @@ export const PlanDisplay: React.FC<Props> = ({
       {confirmRegenerate && (
         <ConfirmDialog
           title="Gerar novamente"
-          message="Gerar novamente preservando os mesmos objetivos e tema? O plano atual sera descartado."
+          message="Gerar de novo com o pedido salvo? O roteiro atual fica na tela até o novo chegar. Se a geração falhar, o atual permanece."
           confirmText="Gerar"
           danger
           onCancel={() => setConfirmRegenerate(false)}
           onConfirm={() => {
             setConfirmRegenerate(false);
-            onRegenerate();
+            if (plan.generationSeed && onRegenerateFromSeed) {
+              onRegenerateFromSeed(plan.generationSeed);
+            } else {
+              onRegenerate();
+            }
           }}
         />
       )}
       {confirmActivityIndex !== null && (
         <ConfirmDialog
           title="Refazer esta atividade"
-          message="Refazer só esta atividade? As outras ficam."
+          message={
+            confirmActivityIndex !== null && plan.activities[confirmActivityIndex]?.redoNote?.trim()
+              ? `Refazer só esta atividade com o pedido do quadro? As outras ficam. A nota permanece para ajustar e clicar de novo.`
+              : 'Refazer só esta atividade? As outras ficam.'
+          }
           confirmText="Refazer"
           onCancel={() => setConfirmActivityIndex(null)}
           onConfirm={() => {
@@ -292,7 +305,7 @@ export const PlanDisplay: React.FC<Props> = ({
                 onClick={() => setConfirmRegenerate(true)}
                 disabled={isGenerating}
                 className="px-3 py-2 rounded-lg text-xs font-bold bg-amber-500 text-amber-900 hover:bg-amber-400 transition-all"
-                title="Re-dispara a IA com a mesma configuração (sem perder objetivos)"
+                title="Re-dispara a IA com o pedido salvo neste roteiro"
             >
                 {isGenerating ? 'Gerando...' : '🔄 Gerar de novo'}
             </button>
@@ -328,6 +341,39 @@ export const PlanDisplay: React.FC<Props> = ({
       {saveError && (
         <div className="bg-red-50 border-b border-red-200 text-red-800 text-xs px-4 py-2 whitespace-pre-wrap" role="alert">
           Não foi possível salvar no catálogo: {saveError}
+        </div>
+      )}
+      {hasGenerationSeed(plan) && (
+        <div className="bg-amber-50 border-b border-amber-200 px-4 py-2.5 flex flex-wrap items-center justify-between gap-2 no-print">
+          <p className="text-xs text-amber-950">
+            <strong className="uppercase tracking-wide text-[10px] text-amber-800">Pedido salvo</strong>
+            {' · '}
+            {plan.generationSeed?.narrativeTheme || plan.theme || 'sem tema'}
+            {' · '}
+            {plan.generationSeed?.scheduleDraft?.length || 0} item(ns) do cronograma
+          </p>
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() => plan.generationSeed && onRegenerateFromSeed
+                ? onRegenerateFromSeed(plan.generationSeed)
+                : onRegenerate()}
+              disabled={isGenerating}
+              className="px-3 py-1.5 rounded-lg text-[11px] font-bold bg-amber-500 text-amber-950 hover:bg-amber-400 disabled:opacity-60"
+            >
+              {isGenerating ? 'Gerando…' : 'Gerar de novo com o mesmo pedido'}
+            </button>
+            {onUseSeedInPlanner && plan.generationSeed && (
+              <button
+                type="button"
+                onClick={() => onUseSeedInPlanner(plan.generationSeed!)}
+                disabled={isGenerating}
+                className="px-3 py-1.5 rounded-lg text-[11px] font-bold bg-white text-amber-900 border border-amber-300 hover:bg-amber-100 disabled:opacity-60"
+              >
+                Usar este pedido no painel
+              </button>
+            )}
+          </div>
         </div>
       )}
 
@@ -428,30 +474,8 @@ export const PlanDisplay: React.FC<Props> = ({
 
                     {/* Card */}
                     <div className={`border rounded-xl p-6 hover:shadow-md transition-shadow relative ${cardTone(act)}`}>
-                        <div className="absolute top-2 right-2 flex items-center gap-1">
-                            {onRegenerateActivity && !isCeremonialActivity(act) && (
-                                <button
-                                    type="button"
-                                    onClick={() => setConfirmActivityIndex(i)}
-                                    disabled={regeneratingIndex !== null}
-                                    className="text-[10px] font-bold px-2 py-1 rounded-lg bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100 disabled:opacity-60 disabled:cursor-wait"
-                                    title="Gera de novo só esta atividade"
-                                >
-                                    {regeneratingIndex === i ? 'Gerando…' : '🔄 Refazer esta'}
-                                </button>
-                            )}
-                            {isEditing && (
-                                <button 
-                                    onClick={() => removeActivity(i)}
-                                    className="text-red-300 hover:text-red-500 font-bold px-2"
-                                >
-                                    🗑️
-                                </button>
-                            )}
-                        </div>
-
-                        <div className="flex justify-between items-start mb-3">
-                            <div className="flex-1 pr-28">
+                        <div className="flex flex-wrap justify-between items-start gap-2 mb-3">
+                            <div className="flex-1 min-w-0">
                                 {isEditing ? (
                                     <>
                                     <input 
@@ -489,6 +513,42 @@ export const PlanDisplay: React.FC<Props> = ({
                                     )}
                                 </div>
                             </div>
+                            {(onRegenerateActivity && !isCeremonialActivity(act) || isEditing) && (
+                                <div className="flex items-start gap-1 no-print shrink-0 w-[min(20rem,46%)]">
+                                    {onRegenerateActivity && !isCeremonialActivity(act) && (
+                                        <>
+                                            <label className="flex-1 min-w-0">
+                                                <span className="block text-[9px] font-bold uppercase tracking-wide text-slate-400 mb-0.5">O que mudar neste quadro</span>
+                                                <textarea
+                                                    value={act.redoNote || ''}
+                                                    onChange={e => updateActivity(i, 'redoNote', e.target.value)}
+                                                    placeholder="Ex.: trazer a letra da canção X; incluir o roteiro falado da Pagmejera; cortar a avaliação genérica"
+                                                    rows={2}
+                                                    className="w-full text-[10px] leading-snug p-1.5 border border-slate-200 rounded-lg bg-white outline-none focus:border-amber-400 resize-y min-h-[2.5rem]"
+                                                />
+                                            </label>
+                                            <button
+                                                type="button"
+                                                onClick={() => setConfirmActivityIndex(i)}
+                                                disabled={regeneratingIndex !== null}
+                                                className="text-[10px] font-bold px-2 py-1 rounded-lg bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100 disabled:opacity-60 disabled:cursor-wait whitespace-nowrap mt-4"
+                                                title="Gera de novo só esta atividade, usando a nota ao lado"
+                                            >
+                                                {regeneratingIndex === i ? 'Gerando…' : '🔄 Refazer esta'}
+                                            </button>
+                                        </>
+                                    )}
+                                    {isEditing && (
+                                        <button
+                                            onClick={() => removeActivity(i)}
+                                            className="text-red-300 hover:text-red-500 font-bold px-1 mt-4"
+                                            title="Remover atividade"
+                                        >
+                                            🗑️
+                                        </button>
+                                    )}
+                                </div>
+                            )}
                         </div>
 
                         {isEditing ? (
@@ -499,6 +559,50 @@ export const PlanDisplay: React.FC<Props> = ({
                             />
                         ) : (
                             <p className="text-sm text-slate-600 leading-relaxed whitespace-pre-line">{act.description}</p>
+                        )}
+
+                        {(act.conteudoPronto || isEditing) && (
+                            <div className="mt-3 p-3 bg-orange-50 border border-orange-200 rounded text-xs">
+                                <strong className="text-orange-950 uppercase text-[10px] block mb-1">📝 Conteúdo pronto</strong>
+                                {isEditing ? (
+                                    <textarea
+                                        value={act.conteudoPronto || ''}
+                                        onChange={e => updateActivity(i, 'conteudoPronto', e.target.value)}
+                                        placeholder="Letra da canção, cartões de caso ou falas da cerimônia…"
+                                        className="w-full p-1 border rounded text-xs"
+                                        rows={6}
+                                    />
+                                ) : (
+                                    <p className="text-orange-950 whitespace-pre-line leading-relaxed">{act.conteudoPronto}</p>
+                                )}
+                            </div>
+                        )}
+
+                        {((act.passos && act.passos.length > 0) || isEditing) && (
+                            <div className="mt-3 p-3 bg-sky-50 border border-sky-200 rounded text-xs">
+                                <strong className="text-sky-900 uppercase text-[10px] block mb-1">⏱️ Passos cronometrados</strong>
+                                {isEditing ? (
+                                    <textarea
+                                        value={(act.passos || []).map(step => `${step.minuto} | ${step.acao}`).join('\n')}
+                                        onChange={e => updateActivity(i, 'passos', e.target.value.split('\n').map(line => {
+                                            const [minuto, ...rest] = line.split('|');
+                                            return { minuto: (minuto || '').trim(), acao: rest.join('|').trim() };
+                                        }).filter(step => step.minuto || step.acao))}
+                                        placeholder={"0–3 min | Abrir a formação\n3–8 min | Cantar o refrão"}
+                                        className="w-full p-1 border rounded text-xs font-mono"
+                                        rows={4}
+                                    />
+                                ) : (
+                                    <ol className="space-y-1 text-sky-950">
+                                        {(act.passos || []).map((step, idx) => (
+                                            <li key={idx} className="flex gap-2">
+                                                <span className="font-black whitespace-nowrap">{step.minuto}</span>
+                                                <span className="whitespace-pre-line">{step.acao}</span>
+                                            </li>
+                                        ))}
+                                    </ol>
+                                )}
+                            </div>
                         )}
 
                         {/* Fundo de cena específico da atividade */}
@@ -555,7 +659,7 @@ export const PlanDisplay: React.FC<Props> = ({
                             </div>
                         )}
 
-                        {(act.evaluation || isEditing) && (
+                        {((!isCeremonialActivity(act) && hasMeaningfulEvaluation(act.evaluation) && !isBoilerplateEvaluation(act.evaluation)) || (isEditing && !isCeremonialActivity(act))) && (
                             <div className="mt-3 p-3 bg-emerald-50 border border-emerald-200 rounded text-xs">
                                 <strong className="text-emerald-900 uppercase text-[10px] block mb-2">✅ Acompanhamento e avaliação</strong>
                                 {isEditing ? (
