@@ -21,6 +21,33 @@ export const defaultScheduleOptions: ScheduleOptions = {
   closingMinutes: 15,
 };
 
+/** Teto do campo "Atividades" / sync pelo número. O cronograma editado pode ter mais miolos. */
+export const MIN_CORE_SLOTS = 1;
+export const DEFAULT_CORE_SLOTS = 3;
+export const MAX_CORE_SLOTS = 20;
+
+export const newActivityUid = (): string =>
+  `act-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+
+/** Garante Activity válida para stamp/normalize (item novo ou intervalo). */
+export const ensureScheduleRow = (activity: Partial<Activity>, index = 0): Activity => {
+  const operationalType = activity.operationalType;
+  const ceremonial = operationalType === 'opening' || operationalType === 'break' || operationalType === 'closing';
+  return {
+    educationalArea: EducationalArea.CARATER,
+    description: '',
+    materials: [],
+    progressionObjective: ceremonial ? 'Operacional' : '',
+    responsible: '',
+    title: `Item ${index + 1}`,
+    ...activity,
+    _uid: activity._uid || newActivityUid(),
+    durationMinutes: Math.max(0, Number(activity.durationMinutes) || 0),
+    isOperational: Boolean(activity.isOperational || ceremonial),
+    operationalType,
+  };
+};
+
 export const OPENING_TITLE = 'IBEAGU (Inspeção, Bandeira, Espiritualidade, Avisos, Grito)';
 export const BREAK_TITLE = 'Hidratação / banheiro';
 export const CLOSING_TITLE = 'IBOAGUCL (Inspeção, Oração, Bandeira)';
@@ -97,7 +124,7 @@ export const scheduleRow = (
     materials: [],
     progressionObjective: rest.operationalType || rest.isOperational ? 'Operacional' : '',
     responsible: '',
-    _uid: `act-${Date.now()}-${Math.floor(Math.random() * 1e6)}`,
+    _uid: newActivityUid(),
     ...rest,
     title,
     durationMinutes: minutes,
@@ -169,11 +196,12 @@ export const stampScheduleTimes = (
 
 export const stampActivities = (activities: Activity[], startTime: string): Activity[] => {
   let cursor = timeToMinutes(startTime || defaultScheduleOptions.startTime);
-  return activities.map(activity => {
+  return activities.map((activity, index) => {
+    const row = ensureScheduleRow(activity, index);
     const start = cursor;
-    cursor += Math.max(0, activity.durationMinutes || 0);
+    cursor += Math.max(0, row.durationMinutes || 0);
     return {
-      ...activity,
+      ...row,
       scheduledStartTime: minutesToTime(start),
       scheduledEndTime: minutesToTime(cursor),
     };
@@ -264,7 +292,7 @@ export const buildPaperShapedCronograma = (
 };
 
 export const syncCoreSlotCount = (activities: Activity[], activityCount: number): Activity[] => {
-  const count = Math.max(1, Math.min(10, activityCount));
+  const count = Math.max(MIN_CORE_SLOTS, Math.min(MAX_CORE_SLOTS, activityCount));
   const next = [...activities];
   const coreIndexes = next
     .map((activity, index) => (isCoreScheduleSlot(activity) ? index : -1))
@@ -320,14 +348,7 @@ export const mergeGeneratedIntoCronograma = (
       redoNote: row.redoNote,
     };
   });
-  while (coreIdx < generatedCore.length) {
-    merged.push({
-      ...generatedCore[coreIdx],
-      isOperational: false,
-      operationalType: undefined,
-    });
-    coreIdx += 1;
-  }
+  // Não acrescentar miolos extras da IA depois do encerramento — o cronograma do chefe manda.
   return stampActivities(merged, startTime);
 };
 

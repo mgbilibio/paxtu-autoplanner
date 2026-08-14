@@ -10,6 +10,7 @@ import { isWebApp } from './platform';
 import { getGeminiOAuthAccessToken } from './googleAuth';
 import { attachmentsToGeminiParts, attachmentsToPromptBlock, GeminiInlinePart } from './planAttachments';
 import { activityBriefsPromptBlock, buildSingleActivityPrompt, PRACTICAL_CONTENT_RULES } from './activityBriefs';
+import { chunkArray, DETAIL_BATCH_SIZE, mergeActivityDetails, STUDY_GUIDE_BATCH_SIZE } from './llmPlanBatches';
 
 // Remove possiveis segredos (api key) de mensagens de erro da SDK antes de
 // exibir/logar — a SDK as vezes ecoa a URL da request com a chave.
@@ -484,7 +485,8 @@ export const generateScoutPlan = async (params: GeneratorParams & { context?: { 
     ${contextStr}
     Modo: ${planningMode === 'from_selection' ? 'FROM_SELECTION (partir dos itens marcados)' : 'AUTO_LINK (criar atividades e amarrar códigos do catálogo)'}.
     Duração total: ${params.totalDuration} min.
-    Quantidade sugerida de atividades: ${params.activityCount || 3}.
+    Quantidade sugerida de atividades de MIOLO: ${params.activityCount || 3}.
+    NÃO inclua abertura (IBEAGU), intervalos/hidratação nem encerramento (IBOAGUCL) — o cronograma do chefe já tem esses itens. Detalhe só as faixas de miolo.
     Quantidade de jovens (estimativa): ${params.participantsCount || 20}.
     Tema: ${params.narrativeTheme || (planningMode === 'auto_link' ? 'livre — invente tema criativo' : 'Padrão')}.
   `;
@@ -578,14 +580,28 @@ MODO AUTO_LINK:
 
     const planStructure = await callJson<any>(promptStep1, 'estrutura');
 
-    // === ETAPA 2: DETALHAMENTO ===
-    window.dispatchEvent(new CustomEvent('paxtu:llm-progress', { detail: { message: 'Etapa 2/3: Detalhando atividades...' } }));
-    
-    const promptStep2 = `
-      Aqui está a estrutura de uma reunião escoteira:
-      ${JSON.stringify(planStructure, null, 2)}
+    // === ETAPA 2: DETALHAMENTO (lotes — JSON único com 8–12 faixas estoura MAX_TOKENS) ===
+    const structureActs = Array.isArray(planStructure.activities) ? planStructure.activities : [];
+    const detailBatches = chunkArray(structureActs, DETAIL_BATCH_SIZE);
+    const detailsArr: any[] = [];
+    for (let b = 0; b < detailBatches.length; b += 1) {
+      const batch = detailBatches[b];
+      const from = b * DETAIL_BATCH_SIZE + 1;
+      const to = from + batch.length - 1;
+      const etapa = detailBatches.length === 1
+        ? 'detalhamento'
+        : `detalhamento (${b + 1}/${detailBatches.length})`;
+      window.dispatchEvent(new CustomEvent('paxtu:llm-progress', {
+        detail: { message: detailBatches.length === 1
+          ? 'Etapa 2/3: Detalhando atividades...'
+          : `Etapa 2/3: Detalhando atividades ${from}–${to} (${b + 1}/${detailBatches.length})...` },
+      }));
+      const promptStep2 = `
+      Aqui está a estrutura de uma reunião escoteira (lote ${b + 1}/${detailBatches.length}):
+      ${JSON.stringify({ ...planStructure, activities: batch }, null, 2)}
       
-      Para CADA atividade na lista "activities", preencha os detalhes que faltam.
+      Para CADA atividade na lista "activities" DESTE LOTE, preencha os detalhes que faltam.
+      Detalhe SOMENTE estas ${batch.length} atividades. Não invente faixas extras.
       Use a BIBLIOTECA INTERNA se houver.
       ${PRACTICAL_CONTENT_RULES}
       Retorne APENAS um JSON (array) de atividades detalhadas, sem markdown e sem texto extra:
@@ -613,35 +629,28 @@ MODO AUTO_LINK:
       ]
       \n\nCONTEXTO:\n${userPromptBase}
     `;
-
-    const activitiesDetails = await callJson<any[]>(promptStep2, 'detalhamento', 0.65);
-    const detailsArr = Array.isArray(activitiesDetails) ? activitiesDetails : [];
-
-    // Mesclar etapa 2 na 1: casa por titulo; se o modelo renomeou, tenta casar
-    // pelo progressionObjective/codigo. So cai no indice como ultimo recurso, e
-    // loga quando isso acontece (pode casar a atividade errada).
-    const usedDetails = new Set<number>();
-    planStructure.activities = (planStructure.activities || []).map((act: any, idx: number) => {
-       let detailIdx = detailsArr.findIndex((d: any, i: number) => !usedDetails.has(i) && d?.title === act.title);
-       if (detailIdx < 0) {
-         detailIdx = detailsArr.findIndex((d: any, i: number) =>
-           !usedDetails.has(i) && d?.progressionObjective && d.progressionObjective === act.progressionObjective);
-       }
-       if (detailIdx < 0 && !usedDetails.has(idx) && detailsArr[idx]) {
-         console.warn(`Merge etapa 2: fallback por indice para atividade "${act.title}" (titulo/objetivo nao casaram).`);
-         detailIdx = idx;
-       }
-       if (detailIdx < 0) return act;
-       usedDetails.add(detailIdx);
-       return { ...act, ...detailsArr[detailIdx] };
-    });
+      const chunk = await callJson<any[]>(promptStep2, etapa, 0.65);
+      detailsArr.push(...(Array.isArray(chunk) ? chunk : []));
+    }
+    planStructure.activities = mergeActivityDetails(structureActs, detailsArr);
 
     // === ETAPA 3: GUIA DE ESTUDO ===
-    window.dispatchEvent(new CustomEvent('paxtu:llm-progress', { detail: { message: 'Etapa 3/3: Gerando guia de estudo...' } }));
-    
-    const promptStep3 = `
-      Crie o GUIA DE ESTUDO para a chefia baseado nas atividades geradas:
-      ${JSON.stringify(planStructure.activities.map((a: any) => a.title))}
+    const studyTitles = (planStructure.activities || []).map((a: any) => a.title);
+    const studyBatches = chunkArray(studyTitles, STUDY_GUIDE_BATCH_SIZE);
+    const studyGuide: any[] = [];
+    for (let b = 0; b < studyBatches.length; b += 1) {
+      const batch = studyBatches[b];
+      const etapa = studyBatches.length === 1
+        ? 'guia de estudo'
+        : `guia de estudo (${b + 1}/${studyBatches.length})`;
+      window.dispatchEvent(new CustomEvent('paxtu:llm-progress', {
+        detail: { message: studyBatches.length === 1
+          ? 'Etapa 3/3: Gerando guia de estudo...'
+          : `Etapa 3/3: Guia de estudo ${b + 1}/${studyBatches.length}...` },
+      }));
+      const promptStep3 = `
+      Crie o GUIA DE ESTUDO para a chefia baseado nestas atividades (lote ${b + 1}/${studyBatches.length}):
+      ${JSON.stringify(batch)}
       
       Retorne APENAS um JSON sendo um array:
       [
@@ -654,8 +663,10 @@ MODO AUTO_LINK:
       ]
       \n\nCONTEXTO:\n${userPromptBase}
     `;
-
-    planStructure.studyGuide = await callJson<any[]>(promptStep3, 'guia de estudo');
+      const chunk = await callJson<any[]>(promptStep3, etapa);
+      studyGuide.push(...(Array.isArray(chunk) ? chunk : []));
+    }
+    planStructure.studyGuide = studyGuide;
 
     window.dispatchEvent(new CustomEvent('paxtu:llm-progress', { detail: { message: 'Plano gerado com sucesso!' } }));
 

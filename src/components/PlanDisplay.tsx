@@ -253,7 +253,7 @@ export const PlanDisplay: React.FC<Props> = ({
       {confirmRegenerate && (
         <ConfirmDialog
           title="Gerar novamente"
-          message="Gerar de novo com o pedido salvo? O roteiro atual fica na tela até o novo chegar. Se a geração falhar, o atual permanece."
+          message="Gerar de novo com o pedido salvo? Se você já carregou o pedido no painel e editou o cronograma, usamos o que está no painel agora. O roteiro atual fica na tela até o novo chegar. Se a geração falhar, o atual permanece."
           confirmText="Gerar"
           danger
           onCancel={() => setConfirmRegenerate(false)}
