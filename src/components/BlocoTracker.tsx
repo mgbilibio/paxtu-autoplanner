@@ -23,10 +23,13 @@ import {
 import {
   formatOfficialDate,
   hasOfficialLayer,
+  listOfficialConquistas,
   listOfficialEtapaTrail,
   listOfficialSpecialties,
+  listOfficialVidaEscoteira,
   listOtherOfficialEtapas,
   officialEtapaEscoteiro,
+  officialStatusLabel,
   PAXTU_HISTORICO_AVISO,
   suggestEquivalencia,
 } from '../services/equivalenciaService';
@@ -420,37 +423,70 @@ export const BlocoTracker: React.FC<Props> = ({ member, onClose }) => {
     `).join('');
     const trail = listOfficialEtapaTrail(member);
     const outras = listOtherOfficialEtapas(member);
-    const especialidades = listOfficialSpecialties(member).filter(item => (item.nivelOficial ?? 0) >= 1);
+    const conquistas = listOfficialConquistas(member);
+    const especialidades = listOfficialSpecialties(member);
+    const vida = listOfficialVidaEscoteira(member);
     const trailHtml = trail.map(item => `
       <tr>
         <td>${escapeHtml(item.etapa)}</td>
-        <td>${item.conquistado ? 'Conquistado' : 'Pendente'}</td>
+        <td>${escapeHtml(officialStatusLabel(item.status, item.conquistado))}</td>
         <td>${escapeHtml(formatOfficialDate(item.date) || '')}</td>
       </tr>
     `).join('');
     const outrasHtml = outras.length
-      ? `<p><strong>Outras etapas:</strong> ${outras.map(item =>
-          `${escapeHtml(item.nome)} (${item.conquistado ? 'conquistado' : 'pendente'}${item.date ? ` · ${escapeHtml(formatOfficialDate(item.date) || '')}` : ''})`
-        ).join('; ')}</p>`
+      ? `<h2>Outros ramos e passagens</h2>
+         <p>Pendente aqui nao significa que o jovem falhou — muitas etapas sao de outro ramo.</p>
+         <table><thead><tr><th>Etapa</th><th>Situacao</th><th>Data</th></tr></thead><tbody>${
+           outras.map(item => `
+             <tr>
+               <td>${escapeHtml(item.nome)}</td>
+               <td>${escapeHtml(officialStatusLabel(undefined, item.conquistado))}</td>
+               <td>${escapeHtml(formatOfficialDate(item.date) || '')}</td>
+             </tr>
+           `).join('')
+         }</tbody></table>`
       : '';
+    const conquistasHtml = conquistas.length
+      ? conquistas.map(item => `
+          <tr>
+            <td>${escapeHtml(item.nome)}</td>
+            <td>${escapeHtml(formatOfficialDate(item.date) || '')}</td>
+          </tr>
+        `).join('')
+      : '<tr><td colspan="2">Nenhuma conquista no historico Paxtu.</td></tr>';
     const specHtml = especialidades.length
       ? especialidades.map(item => `
           <tr>
             <td>${escapeHtml(item.nome)}</td>
-            <td>${item.nivelOficial ? `N${item.nivelOficial}` : ''}</td>
-            <td>${item.nivel2025 ? `N${item.nivel2025}` : ''}</td>
+            <td>${item.nivelOficial != null ? `N${item.nivelOficial}` : ''}</td>
             <td>${escapeHtml(formatOfficialDate(item.date) || '')}</td>
           </tr>
         `).join('')
-      : '<tr><td colspan="4">Nenhuma especialidade N1+ no historico Paxtu.</td></tr>';
+      : '<tr><td colspan="3">Nenhuma especialidade no historico Paxtu.</td></tr>';
+    const vidaHtml = vida.length
+      ? `<h2>Vida escoteira</h2>
+         <table><thead><tr><th>Data</th><th>Atividade</th><th>Local</th></tr></thead><tbody>${
+           vida.map(row => `
+             <tr>
+               <td>${escapeHtml(row.data || '')}</td>
+               <td>${escapeHtml(row.atividade)}</td>
+               <td>${escapeHtml(row.local || '')}</td>
+             </tr>
+           `).join('')
+         }</tbody></table>`
+      : '';
     const officialBlock = showOfficial
       ? `
       <h2>Oficial (Paxtu / POR antigo)</h2>
       <p>Etapa oficial: <strong>${escapeHtml(oficialEtapa || 'nao informada')}</strong></p>
-      <table><thead><tr><th>Etapa</th><th>Status</th><th>Data</th></tr></thead><tbody>${trailHtml}</tbody></table>
+      <h2>Progressao — Ramo escoteiro</h2>
+      <table><thead><tr><th>Etapa</th><th>Situacao</th><th>Data</th></tr></thead><tbody>${trailHtml}</tbody></table>
       ${outrasHtml}
-      <h2>Especialidades oficiais (N1+)</h2>
-      <table><thead><tr><th>Nome</th><th>Nivel antigo</th><th>Nivel 2025+</th><th>Data</th></tr></thead><tbody>${specHtml}</tbody></table>
+      <h2>Conquistas e certificacoes</h2>
+      <table><thead><tr><th>Conquista</th><th>Data</th></tr></thead><tbody>${conquistasHtml}</tbody></table>
+      <h2>Especialidades oficiais</h2>
+      <table><thead><tr><th>Nome</th><th>Nivel</th><th>Data</th></tr></thead><tbody>${specHtml}</tbody></table>
+      ${vidaHtml}
       <p>${escapeHtml(PAXTU_HISTORICO_AVISO)}</p>
       `
       : `<h2>Oficial (Paxtu / POR antigo)</h2><p>Sem historico Paxtu neste jovem</p>`;

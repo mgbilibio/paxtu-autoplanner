@@ -70,7 +70,11 @@ export const ProgressViewLayout: React.FC<LayoutProps> = ({
       }
     >
       {(mode === 'oficial' || mode === 'lado-a-lado') && (
-        <div className="min-h-0 lg:overflow-y-auto p-2 md:p-3">
+        <div className={
+          mode === 'oficial'
+            ? 'min-h-0 flex-1 overflow-y-auto p-2 md:p-3'
+            : 'min-h-0 lg:overflow-y-auto p-2 md:p-3'
+        }>
           {official}
         </div>
       )}
