@@ -28,9 +28,9 @@ import { getPermissions, getRoleLabel, isOperationalProfile } from './services/r
 import { SectionProgressOverview } from './components/SectionProgressOverview';
 import { normalizeOllamaBaseUrl } from './services/ollamaUrlSecurity';
 import { buildCustomObjective } from './services/customObjectiveMatcher';
-import { applyMeetingHeader, applyOperationalSchedule, briefsFromCronograma, buildDefaultCronograma, cycleLabelFromDate, defaultScheduleOptions, estimateOperationalMinutes, isCoreScheduleSlot, mergeGeneratedIntoCronograma, stampActivities, stampScheduleTimes, syncCoreSlotCount, tomorrowISODate } from './services/meetingScheduleService';
+import { applyMeetingHeader, applyOperationalSchedule, briefsFromCronograma, buildDefaultCronograma, cycleLabelFromDate, DEFAULT_CORE_SLOTS, defaultScheduleOptions, estimateOperationalMinutes, isCoreScheduleSlot, MAX_CORE_SLOTS, mergeGeneratedIntoCronograma, MIN_CORE_SLOTS, stampActivities, stampScheduleTimes, syncCoreSlotCount, tomorrowISODate } from './services/meetingScheduleService';
 import { hasAnyActivityBrief, trimActivityBriefs } from './services/activityBriefs';
-import { activityFromSeedRow, buildGenerationSeed, objectivesFromSeed, scheduleKindOf } from './services/generationSeed';
+import { activityFromSeedRow, buildGenerationSeed, coreCountFromSeed, objectivesFromSeed, plannerDiffersFromSeed, scheduleKindOf } from './services/generationSeed';
 import { CronogramaBlock } from './components/CronogramaBlock';
 import { forceDownloadHtml } from './services/htmlExportCommon';
 import { useGlobalEvents } from './hooks/useGlobalEvents';
@@ -72,6 +72,8 @@ function App() {
   const [scheduleDraft, setScheduleDraft] = useState<Activity[]>(() =>
     buildDefaultCronograma(3, 90, defaultScheduleOptions),
   );
+  /** Seed carregado em “Usar este pedido no painel”. Se o chefe editar depois, Gerar usa o painel. */
+  const [appliedPlannerSeed, setAppliedPlannerSeed] = useState<GenerationSeed | null>(null);
   const [narrativeTheme, setNarrativeTheme] = useState<string>('');
   const [customInstruction, setCustomInstruction] = useState<string>('');
   const [planAttachments, setPlanAttachments] = useState<PlanAttachment[]>([]);
@@ -218,7 +220,7 @@ function App() {
   }, [llmStartedAt]);
 
   useEffect(() => {
-    const n = clampSettingNumber(activityCount, 3, 1, 10);
+    const n = Math.max(MIN_CORE_SLOTS, Math.round(Number.isFinite(activityCount) ? activityCount : DEFAULT_CORE_SLOTS));
     setActivityBriefs(prev => {
       if (prev.length === n) return prev;
       return Array.from({ length: n }, (_, i) => prev[i] ?? '');
@@ -661,11 +663,13 @@ function App() {
   const applySeedToPlanner = (seed: GenerationSeed) => {
     setNarrativeTheme(seed.narrativeTheme || '');
     setCustomInstruction(seed.customInstruction || '');
-    const count = clampSettingNumber(seed.activityCount || seed.activityBriefs?.length || activityCount, 3, 1, 10);
+    const count = Math.max(MIN_CORE_SLOTS, coreCountFromSeed(seed) || activityCount);
     setActivityCount(count);
     setActivityBriefs(trimActivityBriefs(seed.activityBriefs, count));
     if (seed.planningMode === 'from_selection' || seed.planningMode === 'auto_link') {
       setPlanningMode(seed.planningMode);
+    } else {
+      setPlanningMode('auto_link');
     }
     if (seed.totalDuration != null) setTotalDuration(clampSettingNumber(seed.totalDuration, 120, 30, 600));
     if (seed.participantsCount != null) setParticipantsCount(clampSettingNumber(seed.participantsCount, 20, 1, 500));
@@ -686,8 +690,15 @@ function App() {
 
   const handleUseSeedInPlanner = (seed: GenerationSeed) => {
     applySeedToPlanner(seed);
+    setAppliedPlannerSeed(seed);
     setStep(2);
     showToast('Pedido carregado no painel. Ajuste e gere de novo.', 'info');
+  };
+
+  const resolvePlanningMode = (explicit?: PlanningMode, fallback?: PlanningMode): PlanningMode => {
+    if (explicit === 'from_selection' || explicit === 'auto_link') return explicit;
+    if (fallback === 'from_selection' || fallback === 'auto_link') return fallback;
+    return 'auto_link';
   };
 
   const handleGenerate = async (fromSeed?: GenerationSeed) => {
@@ -696,31 +707,42 @@ function App() {
       setError('Escolha o ramo antes de gerar.');
       return;
     }
-    if (fromSeed) applySeedToPlanner(fromSeed);
-    const narrativeThemeUse = fromSeed?.narrativeTheme ?? narrativeTheme;
-    const customInstructionUse = fromSeed?.customInstruction ?? customInstruction;
-    const activityBriefsUse = fromSeed?.activityBriefs ?? activityBriefs;
-    const planningModeUse: PlanningMode =
-      fromSeed?.planningMode === 'from_selection' || fromSeed?.planningMode === 'auto_link'
-        ? fromSeed.planningMode
-        : (planningMode === 'from_selection' || planningMode === 'auto_link'
-          ? planningMode
-          : (selectedObjectives.length > 0 ? 'from_selection' : 'auto_link'));
-    const selectedObjectivesUse = fromSeed?.selectedObjectives?.length
-      ? objectivesFromSeed(fromSeed)
+    const useCurrentPanel = Boolean(
+      fromSeed
+      && appliedPlannerSeed
+      && scheduleDraft.length
+      && plannerDiffersFromSeed(fromSeed, {
+        scheduleDraft,
+        narrativeTheme,
+        customInstruction,
+        activityBriefs,
+        meetingObjectives,
+        technicalContent,
+      }),
+    );
+    if (fromSeed && !useCurrentPanel) applySeedToPlanner(fromSeed);
+    const seedForGen = useCurrentPanel ? undefined : fromSeed;
+    const narrativeThemeUse = seedForGen?.narrativeTheme ?? narrativeTheme;
+    const customInstructionUse = seedForGen?.customInstruction ?? customInstruction;
+    const activityBriefsUse = seedForGen?.activityBriefs ?? activityBriefs;
+    const planningModeUse = resolvePlanningMode(seedForGen?.planningMode, planningMode);
+    const selectedObjectivesUse = !useCurrentPanel && seedForGen?.selectedObjectives?.length
+      ? objectivesFromSeed(seedForGen)
       : selectedObjectives;
-    const totalDurationUse = fromSeed?.totalDuration ?? totalDuration;
-    const activityCountUse = fromSeed?.activityCount ?? activityCount;
-    const participantsCountUse = fromSeed?.participantsCount ?? participantsCount;
-    const scheduleStartTimeUse = fromSeed?.meetingStartTime || scheduleStartTime;
-    const meetingDateUse = fromSeed?.meetingDate ?? meetingDate;
-    const cycleLabelUse = fromSeed?.cycleLabel ?? cycleLabel;
-    const meetingTypeUse = fromSeed?.meetingType ?? meetingType;
-    const meetingObjectivesUse = fromSeed?.objectives ?? meetingObjectives;
-    const technicalContentUse = fromSeed?.technicalContent ?? technicalContent;
-    const unitNameUse = fromSeed?.unitName || currentSection?.name;
-    const scheduleDraftUse = fromSeed?.scheduleDraft?.length
-      ? stampActivities(fromSeed.scheduleDraft.map(activityFromSeedRow), scheduleStartTimeUse)
+    const totalDurationUse = seedForGen?.totalDuration ?? totalDuration;
+    const activityCountUse = seedForGen
+      ? (coreCountFromSeed(seedForGen) || seedForGen.activityCount || activityCount)
+      : activityCount;
+    const participantsCountUse = seedForGen?.participantsCount ?? participantsCount;
+    const scheduleStartTimeUse = seedForGen?.meetingStartTime || scheduleStartTime;
+    const meetingDateUse = seedForGen?.meetingDate ?? meetingDate;
+    const cycleLabelUse = seedForGen?.cycleLabel ?? cycleLabel;
+    const meetingTypeUse = seedForGen?.meetingType ?? meetingType;
+    const meetingObjectivesUse = seedForGen?.objectives ?? meetingObjectives;
+    const technicalContentUse = seedForGen?.technicalContent ?? technicalContent;
+    const unitNameUse = seedForGen?.unitName || currentSection?.name;
+    const scheduleDraftUse = seedForGen?.scheduleDraft?.length && !useCurrentPanel
+      ? stampActivities(seedForGen.scheduleDraft.map(activityFromSeedRow), scheduleStartTimeUse)
       : scheduleDraft;
 
     const runId = Date.now();
@@ -756,10 +778,7 @@ function App() {
       setShowSettings(true);
       return;
     }
-    const effectiveMode: PlanningMode =
-      planningModeUse === 'from_selection' || planningModeUse === 'auto_link'
-        ? planningModeUse
-        : (selectedObjectivesUse.length > 0 ? 'from_selection' : 'auto_link');
+    const effectiveMode = resolvePlanningMode(planningModeUse);
 
     if (effectiveMode === 'from_selection' && selectedObjectivesUse.length === 0) {
       setError('No modo "A partir da seleção", marque ao menos um item do catálogo — ou mude para "Tema livre + amarra".');
@@ -770,7 +789,7 @@ function App() {
       showToast('Dica: informe um tema ou instrução para guiar a IA.', 'info');
     }
     const safeTotalDuration = clampSettingNumber(totalDurationUse, 120, 30, 600);
-    const safeActivityCount = clampSettingNumber(activityCountUse, 3, 1, 10);
+    const safeActivityCount = clampSettingNumber(activityCountUse, DEFAULT_CORE_SLOTS, MIN_CORE_SLOTS, MAX_CORE_SLOTS);
     const safeParticipantsCount = clampSettingNumber(participantsCountUse, 20, 1, 500);
     const scheduleOptions = {
       ...defaultScheduleOptions,
@@ -787,7 +806,7 @@ function App() {
           scheduleOptions,
         );
     const coreSlots = draft.filter(isCoreScheduleSlot);
-    const effectiveActivityCount = clampSettingNumber(coreSlots.length || safeActivityCount, 3, 1, 10);
+    const effectiveActivityCount = Math.max(MIN_CORE_SLOTS, coreSlots.length || safeActivityCount);
     const draftCoreMinutes = coreSlots.reduce((sum, row) => sum + (row.durationMinutes || 0), 0);
     const draftOpMinutes = draft.filter(row => !isCoreScheduleSlot(row)).reduce((sum, row) => sum + (row.durationMinutes || 0), 0);
     const reservedMinutes = draftOpMinutes || estimateOperationalMinutes(effectiveActivityCount, scheduleOptions);
@@ -850,7 +869,7 @@ function App() {
           context
       });
       if (!isActiveGeneration(runId)) return;
-      const mergedActivities = coreSlots.length
+      const mergedActivities = draft.length
         ? mergeGeneratedIntoCronograma(draft, generatedPlan.activities || [], scheduleStartTimeUse)
         : applyOperationalSchedule(generatedPlan, scheduleOptions).activities;
       const scheduledPlan = applyMeetingHeader(
@@ -908,12 +927,10 @@ function App() {
       showToast('Configure a chave do Gemini.', 'error');
       throw new Error('Configure a chave do Gemini.');
     }
-    const effectiveMode: PlanningMode =
-      planningMode === 'from_selection' || planningMode === 'auto_link'
-        ? planningMode
-        : (selectedObjectives.length > 0 ? 'from_selection' : 'auto_link');
+    const effectiveMode = resolvePlanningMode(planningMode);
     const safeTotalDuration = clampSettingNumber(totalDuration, 120, 30, 600);
-    const safeActivityCount = clampSettingNumber(activityCount, 3, 1, 10);
+    const planCores = (currentPlan.activities || []).filter(isCoreScheduleSlot).length;
+    const safeActivityCount = Math.max(MIN_CORE_SLOTS, planCores || clampSettingNumber(activityCount, DEFAULT_CORE_SLOTS, MIN_CORE_SLOTS, MAX_CORE_SLOTS));
     const safeParticipantsCount = clampSettingNumber(participantsCount, 20, 1, 500);
     const scheduleOptions = {
       ...defaultScheduleOptions,
@@ -1038,15 +1055,16 @@ function App() {
     setSearchTerm('');
     setCustomInstruction('');
     setPlanAttachments([]);
-    setActivityBriefs(Array(clampSettingNumber(activityCount, 3, 1, 10)).fill(''));
+    setActivityBriefs(Array(Math.max(MIN_CORE_SLOTS, activityCount || DEFAULT_CORE_SLOTS)).fill(''));
     setMeetingDate(tomorrowISODate());
     setCycleLabel(cycleLabelFromDate(tomorrowISODate()));
     setMeetingType('Normal');
     setMeetingObjectives('');
     setTechnicalContent('');
     setScheduleStartTime(defaultScheduleOptions.startTime);
+    setAppliedPlannerSeed(null);
     setScheduleDraft(buildDefaultCronograma(
-      clampSettingNumber(activityCount, 3, 1, 10),
+      clampSettingNumber(activityCount, DEFAULT_CORE_SLOTS, MIN_CORE_SLOTS, MAX_CORE_SLOTS),
       90,
       { ...defaultScheduleOptions, startTime: defaultScheduleOptions.startTime },
     ));
@@ -1132,7 +1150,7 @@ function App() {
   // Valores clampados apenas para EXIBIR (a reserva e o miolo). O estado bruto dos
   // inputs continua livre para edicao; o clamp definitivo ocorre no onBlur e no handleGenerate.
   const displayTotalDuration = clampSettingNumber(totalDuration, 120, 30, 600);
-  const displayActivityCount = clampSettingNumber(activityCount, 3, 1, 10);
+  const displayActivityCount = Math.max(MIN_CORE_SLOTS, Math.round(Number.isFinite(activityCount) ? activityCount : DEFAULT_CORE_SLOTS));
   const draftCoreCount = scheduleDraft.filter(isCoreScheduleSlot).length;
   const reservedFromDraft = scheduleDraft
     .filter(row => !isCoreScheduleSlot(row))
@@ -1141,7 +1159,7 @@ function App() {
   const handleScheduleDraftChange = (next: Activity[]) => {
     setScheduleDraft(next);
     const cores = next.filter(isCoreScheduleSlot).length;
-    if (cores >= 1 && cores <= 10 && cores !== activityCount) {
+    if (cores >= MIN_CORE_SLOTS && cores !== activityCount) {
       setActivityCount(cores);
     }
     const total = next.reduce((sum, row) => sum + (row.durationMinutes || 0), 0);
@@ -1149,8 +1167,11 @@ function App() {
   };
   const handleActivityCountChange = (value: number) => {
     setActivityCount(value);
-    const safe = clampSettingNumber(value, 3, 1, 10);
-    setScheduleDraft(prev => stampActivities(syncCoreSlotCount(prev, safe), scheduleStartTime));
+    if (!Number.isFinite(value)) return;
+    const rounded = Math.round(value);
+    if (rounded >= MIN_CORE_SLOTS && rounded <= MAX_CORE_SLOTS) {
+      setScheduleDraft(prev => stampActivities(syncCoreSlotCount(prev, rounded), scheduleStartTime));
+    }
   };
 
   return (
@@ -1867,7 +1888,7 @@ function App() {
                                 </div>
                                 <div>
                                     <label className="text-[10px] font-bold text-slate-500 uppercase">Atividades</label>
-                                    <input type="number" min="1" max="10" value={activityCount} onChange={(e) => handleActivityCountChange(Number(e.target.value))} onBlur={() => handleActivityCountChange(clampSettingNumber(activityCount, 3, 1, 10))} className="w-full p-2 border rounded-lg text-xs bg-slate-50 outline-none" />
+                                    <input type="number" min={MIN_CORE_SLOTS} max={MAX_CORE_SLOTS} value={activityCount} onChange={(e) => handleActivityCountChange(Number(e.target.value))} onBlur={() => { if (activityCount < MIN_CORE_SLOTS) handleActivityCountChange(MIN_CORE_SLOTS); }} className="w-full p-2 border rounded-lg text-xs bg-slate-50 outline-none" />
                                 </div>
                                 <div>
                                     <label className="text-[10px] font-bold text-slate-500 uppercase">Jovens</label>
@@ -1908,7 +1929,7 @@ function App() {
                                 onActivitiesChange={handleScheduleDraftChange}
                               />
                               <p className="text-[10px] text-indigo-700 px-3 pb-2">
-                                Unidade: {currentSection?.name || 'seção atual'} · {draftCoreCount} item(ns) de miolo para a IA · rotina {reservedOperationalMinutes} min
+                                Unidade: {currentSection?.name || 'seção atual'} · {draftCoreCount} item(ns) de miolo para a IA · rotina {reservedOperationalMinutes} min. Intervalos e itens extras que você adicionar entram no roteiro nos horários do cronograma.
                               </p>
                             </div>
                             <div className="space-y-2">

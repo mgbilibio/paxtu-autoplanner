@@ -7,8 +7,10 @@ import {
   buildDefaultCronograma,
   buildPaperShapedCronograma,
   defaultScheduleOptions,
+  ensureScheduleRow,
   formatDateBR,
   formatPaperDuration,
+  newActivityUid,
   stampActivities,
 } from '../services/meetingScheduleService';
 
@@ -92,16 +94,16 @@ const applyKind = (activity: Activity, kind: RowKind): Activity => {
   return { ...activity, isOperational: false, operationalType: undefined };
 };
 
-const blankRow = (): Activity => ({
-  _uid: `act-new-${Date.now()}-${Math.floor(Math.random() * 1e6)}`,
-  title: 'Novo item',
-  durationMinutes: 15,
+const blankRow = (kind: RowKind = 'core'): Activity => ensureScheduleRow(applyKind({
+  _uid: newActivityUid(),
+  title: kind === 'break' ? BREAK_TITLE : 'Novo item',
+  durationMinutes: kind === 'break' ? defaultScheduleOptions.breakMinutes : 15,
   educationalArea: EducationalArea.CARATER,
   description: '',
   materials: [],
   progressionObjective: '',
   responsible: '',
-});
+}, kind));
 
 export const CronogramaBlock: React.FC<Props> = ({
   header,
@@ -116,7 +118,8 @@ export const CronogramaBlock: React.FC<Props> = ({
   coreDuration = 90,
 }) => {
   const emitActivities = (next: Activity[], clock = startTime) => {
-    onActivitiesChange?.(stampActivities(next, clock || defaultScheduleOptions.startTime));
+    const normalized = next.map((row, i) => ensureScheduleRow(applyKind(row, rowKind(row)), i));
+    onActivitiesChange?.(stampActivities(normalized, clock || defaultScheduleOptions.startTime));
   };
 
   const updateRow = (index: number, patch: Partial<Activity>) => {

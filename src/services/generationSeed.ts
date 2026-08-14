@@ -8,7 +8,7 @@ import {
   ObjectiveItem,
   PlanningMode,
 } from '../types';
-import { formatDateBR } from './meetingScheduleService';
+import { formatDateBR, newActivityUid } from './meetingScheduleService';
 import type { PlanAttachment } from './planAttachments';
 
 export const scheduleKindOf = (activity: Activity): GenerationSeedScheduleKind => {
@@ -17,6 +17,51 @@ export const scheduleKindOf = (activity: Activity): GenerationSeedScheduleKind =
   if (activity.operationalType === 'closing') return 'closing';
   if (activity.isOperational) return 'fixed';
   return 'core';
+};
+
+export const isCoreSeedKind = (kind?: GenerationSeedScheduleKind): boolean =>
+  kind !== 'opening' && kind !== 'break' && kind !== 'closing';
+
+/** Contagem de miolo do cronograma restaurado — não usar activityCount se o draft tiver mais faixas. */
+export const coreCountFromSeed = (seed: GenerationSeed): number => {
+  const rows = seed.scheduleDraft || [];
+  if (rows.length) return rows.filter(row => isCoreSeedKind(row.kind)).length;
+  return seed.activityCount || (seed.activityBriefs || []).filter(brief => String(brief || '').trim()).length || 0;
+};
+
+export const plannerDiffersFromSeed = (
+  seed: GenerationSeed,
+  panel: {
+    scheduleDraft: Activity[];
+    narrativeTheme: string;
+    customInstruction: string;
+    activityBriefs: string[];
+    meetingObjectives: string;
+    technicalContent: string;
+  },
+): boolean => {
+  const seedRows = seed.scheduleDraft || [];
+  const draft = panel.scheduleDraft || [];
+  if (draft.length !== seedRows.length) return draft.length > 0;
+  if (draft.some((row, i) => {
+    const saved = seedRows[i];
+    if (!saved) return true;
+    return String(row.title || '').trim() !== String(saved.title || '').trim()
+      || (row.durationMinutes || 0) !== (saved.durationMinutes || 0)
+      || String(row.responsible || '').trim() !== String(saved.responsible || '').trim()
+      || scheduleKindOf(row) !== (saved.kind || 'core');
+  })) return true;
+  if (String(panel.narrativeTheme || '').trim() !== String(seed.narrativeTheme || '').trim()) return true;
+  if (String(panel.customInstruction || '').trim() !== String(seed.customInstruction || '').trim()) return true;
+  if (String(panel.meetingObjectives || '').trim() !== String(seed.objectives || '').trim()) return true;
+  if (String(panel.technicalContent || '').trim() !== String(seed.technicalContent || '').trim()) return true;
+  const seedBriefs = seed.activityBriefs || [];
+  const panelBriefs = panel.activityBriefs || [];
+  const max = Math.max(seedBriefs.length, panelBriefs.length);
+  for (let i = 0; i < max; i += 1) {
+    if (String(seedBriefs[i] || '').trim() !== String(panelBriefs[i] || '').trim()) return true;
+  }
+  return false;
 };
 
 const kindLabel: Record<GenerationSeedScheduleKind, string> = {
@@ -112,7 +157,7 @@ export const activityFromSeedRow = (item: GenerationSeedScheduleItem, index: num
   const operationalType =
     kind === 'opening' || kind === 'break' || kind === 'closing' ? kind : undefined;
   return {
-    _uid: `seed-row-${index}`,
+    _uid: newActivityUid() || `seed-row-${index}`,
     title: item.title || `Item ${index + 1}`,
     durationMinutes: Math.max(0, item.durationMinutes || 0),
     educationalArea: EducationalArea.CARATER,

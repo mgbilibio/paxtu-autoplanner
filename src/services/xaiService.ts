@@ -6,6 +6,7 @@ import { getProgressionDetail } from './progressionDetailService';
 import type { MeetingCycle } from './geminiService';
 import { attachmentsToPromptBlock } from './planAttachments';
 import { activityBriefsPromptBlock, buildSingleActivityPrompt, PRACTICAL_CONTENT_RULES } from './activityBriefs';
+import { chunkArray, DETAIL_BATCH_SIZE, mergeActivityDetails, STUDY_GUIDE_BATCH_SIZE } from './llmPlanBatches';
 import type { PlanAttachment } from './planAttachments';
 
 const XAI_API = 'https://api.x.ai/v1';
@@ -174,7 +175,7 @@ export const generateScoutPlan = async (
 Planeje para o Ramo ${params.branch}.
 ${params.context ? `Seção "${params.context.sectionName}" do Grupo "${params.context.groupName}".` : ''}
 Modo: ${planningMode}.
-Duração total: ${params.totalDuration} min. Atividades: ${params.activityCount || 3}. Jovens: ${params.participantsCount || 20}.
+Duração total: ${params.totalDuration} min. Atividades de miolo: ${params.activityCount || 3} (sem IBEAGU/intervalos/IBOAGUCL). Jovens: ${params.participantsCount || 20}.
 Tema: ${params.narrativeTheme || 'livre'}.
 `;
   const briefsBlock = activityBriefsPromptBlock(params.activityBriefs, params.activityCount || 3);
@@ -198,24 +199,48 @@ Retorne APENAS JSON:
 CONTEXTO:\n${userPromptBase}
 `, 'estrutura', params.modelId);
 
-  window.dispatchEvent(new CustomEvent('paxtu:llm-progress', { detail: { message: 'Etapa 2/3: Detalhando atividades...' } }));
-  const detailsArr = await callJson<any[]>(`
-Estrutura: ${JSON.stringify(planStructure)}
-Para CADA atividade, devolva um array JSON com description, materials, instrucaoChefia, conteudoPronto, passos, objetivoEspecifico, fundoDeCena, evaluation.
+  const structureActs = Array.isArray(planStructure.activities) ? planStructure.activities : [];
+  const detailBatches = chunkArray(structureActs, DETAIL_BATCH_SIZE);
+  const detailsArr: any[] = [];
+  for (let b = 0; b < detailBatches.length; b += 1) {
+    const batch = detailBatches[b];
+    const from = b * DETAIL_BATCH_SIZE + 1;
+    const to = from + batch.length - 1;
+    const etapa = detailBatches.length === 1 ? 'detalhamento' : `detalhamento (${b + 1}/${detailBatches.length})`;
+    window.dispatchEvent(new CustomEvent('paxtu:llm-progress', {
+      detail: { message: detailBatches.length === 1
+        ? 'Etapa 2/3: Detalhando atividades...'
+        : `Etapa 2/3: Detalhando atividades ${from}–${to} (${b + 1}/${detailBatches.length})...` },
+    }));
+    const chunk = await callJson<any[]>(`
+Estrutura (lote ${b + 1}/${detailBatches.length}): ${JSON.stringify({ ...planStructure, activities: batch })}
+Para CADA atividade DESTE LOTE, devolva um array JSON com description, materials, instrucaoChefia, conteudoPronto, passos, objetivoEspecifico, fundoDeCena, evaluation.
+Detalhe SOMENTE estas ${batch.length} atividades. Não invente faixas extras.
 ${PRACTICAL_CONTENT_RULES}
 CONTEXTO:\n${userPromptBase}
-`, 'detalhamento', params.modelId, 0.65);
-  const details = Array.isArray(detailsArr) ? detailsArr : [];
-  planStructure.activities = (planStructure.activities || []).map((act: any, idx: number) => ({
-    ...act,
-    ...(details.find((d: any) => d?.title === act.title) || details[idx] || {}),
-  }));
+`, etapa, params.modelId, 0.65);
+    detailsArr.push(...(Array.isArray(chunk) ? chunk : []));
+  }
+  planStructure.activities = mergeActivityDetails(structureActs, detailsArr);
 
-  window.dispatchEvent(new CustomEvent('paxtu:llm-progress', { detail: { message: 'Etapa 3/3: Gerando guia de estudo...' } }));
-  planStructure.studyGuide = await callJson<any[]>(`
-Crie o GUIA DE ESTUDO para: ${JSON.stringify((planStructure.activities || []).map((a: any) => a.title))}
+  const studyTitles = (planStructure.activities || []).map((a: any) => a.title);
+  const studyBatches = chunkArray(studyTitles, STUDY_GUIDE_BATCH_SIZE);
+  const studyGuide: any[] = [];
+  for (let b = 0; b < studyBatches.length; b += 1) {
+    const batch = studyBatches[b];
+    const etapa = studyBatches.length === 1 ? 'guia de estudo' : `guia de estudo (${b + 1}/${studyBatches.length})`;
+    window.dispatchEvent(new CustomEvent('paxtu:llm-progress', {
+      detail: { message: studyBatches.length === 1
+        ? 'Etapa 3/3: Gerando guia de estudo...'
+        : `Etapa 3/3: Guia de estudo ${b + 1}/${studyBatches.length}...` },
+    }));
+    const chunk = await callJson<any[]>(`
+Crie o GUIA DE ESTUDO para: ${JSON.stringify(batch)}
 Array JSON: [{"activityTitle":"...","conceptExplainer":"...","teachingTips":"...","searchQueriesUsed":["..."]}]
-`, 'guia de estudo', params.modelId);
+`, etapa, params.modelId);
+    studyGuide.push(...(Array.isArray(chunk) ? chunk : []));
+  }
+  planStructure.studyGuide = studyGuide;
 
   window.dispatchEvent(new CustomEvent('paxtu:llm-progress', { detail: { message: 'Plano gerado com sucesso!' } }));
   planStructure.totalDuration = params.totalDuration;
