@@ -6,6 +6,7 @@ import {
   isFirebaseConfigured,
   isXSignInEnabled,
   registerWithEmailPassword,
+  sendPersonPasswordReset,
   signInWithEmailPassword,
   signInWithGoogle,
   signInWithX,
@@ -21,6 +22,7 @@ export const WebAuthGate: React.FC<Props> = ({ onAuthenticated }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [info, setInfo] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const configured = isFirebaseConfigured();
   const xOn = isXSignInEnabled();
@@ -28,6 +30,7 @@ export const WebAuthGate: React.FC<Props> = ({ onAuthenticated }) => {
 
   const run = async (action: () => Promise<UserProfile>) => {
     setError(null);
+    setInfo(null);
     if (!configured) {
       setError(BACKEND_NOT_CONFIGURED_MESSAGE);
       return;
@@ -50,6 +53,24 @@ export const WebAuthGate: React.FC<Props> = ({ onAuthenticated }) => {
       return;
     }
     await run(() => signInWithEmailPassword(email, password));
+  };
+
+  const sendReset = async () => {
+    setError(null);
+    setInfo(null);
+    if (!configured) {
+      setError(BACKEND_NOT_CONFIGURED_MESSAGE);
+      return;
+    }
+    setBusy(true);
+    try {
+      await sendPersonPasswordReset(email);
+      setInfo('Você vai receber um e-mail do ScoutsAuto. Clique no link, escolha a nova senha e volte a este site para entrar.');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Não foi possível enviar a redefinição.');
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (
@@ -135,6 +156,7 @@ export const WebAuthGate: React.FC<Props> = ({ onAuthenticated }) => {
             required
           />
           {error && <p role="alert" className="text-sm text-red-300 mb-3">{error}</p>}
+          {info && <p role="status" className="text-sm text-emerald-300 mb-3">{info}</p>}
           <button
             type="submit"
             disabled={busy}
@@ -146,11 +168,23 @@ export const WebAuthGate: React.FC<Props> = ({ onAuthenticated }) => {
           </button>
         </form>
 
+        {!registering && (
+          <button
+            type="button"
+            disabled={busy}
+            className="w-full mt-3 text-sm text-sky-300 hover:text-sky-200 disabled:opacity-50"
+            onClick={() => { void sendReset(); }}
+          >
+            Esqueci a senha
+          </button>
+        )}
+
         <button
           type="button"
           className="w-full mt-3 text-sm text-sky-300 hover:text-sky-200"
           onClick={() => {
             setError(null);
+            setInfo(null);
             setMode(registering ? 'entrar' : 'criar');
           }}
         >
