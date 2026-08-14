@@ -821,6 +821,8 @@ function App() {
             currentAccountId={currentUser?.id}
             isAdmin={getPermissions(currentUser).isGlobal}
             isGroupAdmin={!!currentUser?.isAdmin}
+            currentUser={currentUser}
+            currentSection={currentSection}
           />
         </div>
       </div>
@@ -1214,6 +1216,8 @@ function App() {
                     currentAccountId={currentUser?.id}
                     isAdmin={getPermissions(currentUser).isGlobal}
                     isGroupAdmin={!!currentUser?.isAdmin}
+                    currentUser={currentUser}
+                    currentSection={currentSection}
                   />
                 )}
                 <div className="flex justify-end gap-3 mt-6">

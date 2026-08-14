@@ -38,6 +38,7 @@ export const findMemberForLayout = async (memberId: string): Promise<ScoutMember
 };
 
 export const saveMemberAsync = async (member: ScoutMember): Promise<void> => {
+  // Espalha o registro inteiro: official e campos extras do Firestore não podem ser apagados.
   const toSave: ScoutMember = { ...member, role: resolveTroopRole(member.role) };
   assertCanWriteSection(toSave.sectionId);
   if (isFirestoreBacked()) {

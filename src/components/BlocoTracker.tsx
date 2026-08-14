@@ -14,12 +14,20 @@ import {
   RECONHECIMENTO_REQUISITOS_2025,
 } from '../data/generated/progressao_2025';
 import {
+  saveMemberBlocoState,
   saveMemberBlocoStateOptimistic,
   getAllMemberBlocoStates,
   getMemberReconhecimento,
   saveMemberReconhecimento,
 } from '../services/storageService';
+import {
+  hasOfficialLayer,
+  mustKeepOfficialEtapa,
+  officialEtapaEscoteiro,
+  suggestEquivalencia,
+} from '../services/equivalenciaService';
 import { ConfirmDialog } from './ConfirmDialog';
+import { OfficialEquivalenciaPanel } from './OfficialEquivalenciaPanel';
 
 const calcAge = (birthDate?: string): number | null => {
   if (!birthDate) return null;
@@ -91,6 +99,10 @@ export const BlocoTracker: React.FC<Props> = ({ member, onClose }) => {
     etapasRamo[0],
   );
   const proximaEtapa = etapasRamo.find(e => e.ordem === (etapaAtual?.ordem ?? 0) + 1);
+  const oficialEtapa = officialEtapaEscoteiro(member);
+  const manterEtapaOficial = mustKeepOfficialEtapa(member, concluidos);
+  const etapaLabel = manterEtapaOficial && oficialEtapa ? oficialEtapa : (etapaAtual?.nome || '—');
+  const showOfficial = hasOfficialLayer(member);
 
   const recRequisitos = useMemo(
     () => reconhecimento ? RECONHECIMENTO_REQUISITOS_2025.filter(r => r.reconhecimentoId === reconhecimento.id) : [],
@@ -127,7 +139,8 @@ export const BlocoTracker: React.FC<Props> = ({ member, onClose }) => {
     const meta = BLOCO_RAMO_META_2025.find(m => m.blocoId === blocoId && m.ramoId === ramoId);
     const minVar = meta?.variaveisMinimo || 0;
     const todasFixas = next.fixasConcluidas.length === fixas.length;
-    const variaveisOk = next.variaveisConcluidas.length >= minVar || !!next.substituidoPor;
+    const creditos = next.creditosEquivalencia || 0;
+    const variaveisOk = next.variaveisConcluidas.length + creditos >= minVar || !!next.substituidoPor;
     const blocoCompleto = todasFixas && variaveisOk && fixas.length + variaveis.length > 0;
     if (blocoCompleto && !next.dataConclusao) next.dataConclusao = new Date().toISOString().slice(0, 10);
     if (!blocoCompleto) next.dataConclusao = undefined;
@@ -173,6 +186,43 @@ export const BlocoTracker: React.FC<Props> = ({ member, onClose }) => {
         setConfirmacao(null);
       },
     });
+  };
+
+  const confirmEquivalenciaCredito = async (blocoId: number) => {
+    if (!ramoId) return;
+    const existing = estados[blocoId];
+    const next: MemberBlocoState = {
+      memberId: member.id,
+      blocoId,
+      ramoId,
+      fixasConcluidas: existing?.fixasConcluidas || [],
+      variaveisConcluidas: existing?.variaveisConcluidas || [],
+      ...existing,
+      creditosEquivalencia: (existing?.creditosEquivalencia || 0) + 1,
+      equivalenciaIgnorada: undefined,
+      lastUpdate: new Date().toISOString(),
+      dataConclusao: existing?.dataConclusao,
+    };
+    await saveMemberBlocoState(next);
+    setEstados(prev => ({ ...prev, [blocoId]: next }));
+  };
+
+  const ignoreEquivalencia = async (blocoId: number) => {
+    if (!ramoId) return;
+    const existing = estados[blocoId];
+    const next: MemberBlocoState = {
+      memberId: member.id,
+      blocoId,
+      ramoId,
+      fixasConcluidas: existing?.fixasConcluidas || [],
+      variaveisConcluidas: existing?.variaveisConcluidas || [],
+      ...existing,
+      equivalenciaIgnorada: true,
+      lastUpdate: new Date().toISOString(),
+      dataConclusao: existing?.dataConclusao,
+    };
+    await saveMemberBlocoState(next);
+    setEstados(prev => ({ ...prev, [blocoId]: next }));
   };
 
   const toggleFixa = (blocoId: number, idx: number) => {
@@ -407,7 +457,9 @@ export const BlocoTracker: React.FC<Props> = ({ member, onClose }) => {
             <div className="flex items-baseline gap-2 flex-wrap">
               <h3 className="text-xl font-bold truncate">{member.name}</h3>
               <span className="text-xs opacity-80">
-                {member.branch} · {etapaAtual?.nome || '—'} · <strong>{concluidos}/18</strong>
+                {member.branch} · {etapaLabel}
+                {manterEtapaOficial && oficialEtapa ? ' (oficial)' : ''}
+                {' '}· <strong>{concluidos}/18</strong>
               </span>
             </div>
           </div>
@@ -464,6 +516,9 @@ export const BlocoTracker: React.FC<Props> = ({ member, onClose }) => {
 
       {/* Lista de blocos — flex-1 ocupa todo espaço disponível */}
       <div className="flex-1 min-h-0 overflow-y-auto p-2 md:p-4 space-y-2 bg-gray-50">
+        {showOfficial && (
+          <OfficialEquivalenciaPanel member={member} concludedBlocos={concluidos} />
+        )}
         {BLOCOS_2025.map(bloco => {
           const eixo = EIXOS_2025.find(e => e.id === bloco.eixoId)!;
           const meta = BLOCO_RAMO_META_2025.find(m => m.blocoId === bloco.id && m.ramoId === ramoId);
@@ -472,9 +527,13 @@ export const BlocoTracker: React.FC<Props> = ({ member, onClose }) => {
           const estado = estados[bloco.id];
           const fixasOk = estado?.fixasConcluidas.length === fixas.length && fixas.length > 0;
           const minVar = meta?.variaveisMinimo || 0;
-          const variaveisOk = (estado?.variaveisConcluidas.length || 0) >= minVar || !!estado?.substituidoPor;
+          const creditos = estado?.creditosEquivalencia || 0;
+          const variaveisOk = (estado?.variaveisConcluidas.length || 0) + creditos >= minVar || !!estado?.substituidoPor;
           const concluido = !!estado?.dataConclusao;
           const aberto = blocoAberto === bloco.id;
+          const sugestao = showOfficial && member.branch === ScoutBranch.ESCOTEIRO
+            ? suggestEquivalencia(member, bloco.id)
+            : null;
 
           const especialidadesSubst = BLOCO_ESPECIALIDADES_2025.filter(
             e => e.blocoId === bloco.id && e.ramoId === ramoId && e.tipo === 'substitui',
@@ -511,19 +570,56 @@ export const BlocoTracker: React.FC<Props> = ({ member, onClose }) => {
                   </div>
                 </div>
                 <div className="text-xs text-gray-500 flex gap-2 ml-2 shrink-0 items-center">
+                  {sugestao?.suggested && !estado?.equivalenciaIgnorada && !concluido && (
+                    <span className="text-[10px] font-bold text-indigo-700 bg-indigo-50 border border-indigo-200 rounded px-1.5 py-0.5">
+                      Sugestão UEB
+                    </span>
+                  )}
                   <span className={`inline-flex items-center gap-1 ${fixasOk ? 'text-green-700 font-bold' : ''}`} title="Ações Fixas">
                     <span aria-hidden="true">{fixasOk ? '✓' : '○'}</span>
                     F {estado?.fixasConcluidas.length || 0}/{fixas.length}
                   </span>
                   <span className={`inline-flex items-center gap-1 ${variaveisOk ? 'text-green-700 font-bold' : ''}`} title="Ações Variáveis">
                     <span aria-hidden="true">{variaveisOk ? '✓' : '○'}</span>
-                    V {estado?.variaveisConcluidas.length || 0}/{minVar}
+                    V {(estado?.variaveisConcluidas.length || 0) + creditos}/{minVar}
                   </span>
                 </div>
               </button>
 
               {aberto && (
                 <div id={`bloco-body-${bloco.id}`} className="px-4 pb-4 border-t bg-white space-y-3 text-sm">
+                  {sugestao?.suggested && (
+                    <div className="mt-3 bg-indigo-50 border border-indigo-200 rounded p-2 space-y-2">
+                      <div className="text-[10px] uppercase font-bold text-indigo-800">Sugestão UEB</div>
+                      <p className="text-xs text-indigo-950 leading-relaxed">
+                        {sugestao.reasons.join(' · ')}. A chefia confirma um crédito variável; as ações educativas não são marcadas sozinhas.
+                      </p>
+                      {estado?.equivalenciaIgnorada ? (
+                        <p className="text-[11px] text-slate-600">Sugestão ignorada neste bloco.</p>
+                      ) : creditos > 0 ? (
+                        <p className="text-[11px] text-green-800 font-bold">
+                          Crédito variável UEB confirmado ({creditos}).
+                        </p>
+                      ) : (
+                        <div className="flex flex-wrap gap-2">
+                          <button
+                            type="button"
+                            onClick={() => { void confirmEquivalenciaCredito(bloco.id); }}
+                            className="px-2 py-1 bg-indigo-700 text-white rounded text-[11px] font-bold hover:bg-indigo-600"
+                          >
+                            Confirmar crédito variável
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => { void ignoreEquivalencia(bloco.id); }}
+                            className="px-2 py-1 bg-white border border-slate-300 text-slate-700 rounded text-[11px] font-bold hover:bg-slate-50"
+                          >
+                            Ignorar
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
                   {/* Em telas grandes, fixas e variáveis lado a lado */}
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-4 gap-y-3 mt-3">
                   {fixas.length > 0 && (
