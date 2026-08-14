@@ -12,6 +12,7 @@ import {
 } from 'firebase/auth';
 import {
   collection,
+  deleteDoc,
   doc,
   getDoc,
   getDocs,
@@ -698,10 +699,22 @@ export const setPersonActive = async (emailRaw: string, active: boolean): Promis
   }
 };
 
+export type PersonProfilePatch = {
+  displayName?: string;
+  email?: string;
+  role?: string;
+  sectionIds?: string[];
+};
+
+export type PersonProfileUpdateResult = {
+  emailChanged: boolean;
+  authEmailUnchanged: boolean;
+};
+
 export const updatePersonProfile = async (
   emailRaw: string,
-  patch: { displayName?: string; role?: string; sectionIds?: string[] },
-): Promise<void> => {
+  patch: PersonProfilePatch,
+): Promise<PersonProfileUpdateResult> => {
   requireFirebase();
   const email = normalizeEmail(emailRaw);
   const people = await listGroupPeople();
@@ -716,11 +729,67 @@ export const updatePersonProfile = async (
   }
   const sectionIds = isAdmin ? [] : (patch.sectionIds ?? person.sectionIds);
   const displayName = patch.displayName?.trim() || person.displayName;
+
+  let nextEmail = email;
+  if (patch.email !== undefined) {
+    nextEmail = normalizeEmail(patch.email);
+    if (!isValidEmail(nextEmail)) throw new Error('Informe um e-mail válido.');
+    if (nextEmail !== email) {
+      const taken = people.some(item => item.email === nextEmail);
+      if (taken) throw new Error('Este e-mail já pertence a outra pessoa.');
+    }
+  }
+
   const db = getFirestoreDb();
-  const payload = { email, displayName, role: nextRole, sectionIds, isAdmin };
-  await setDoc(doc(db, 'invites', email), payload, { merge: true });
+  const payload = { email: nextEmail, displayName, role: nextRole, sectionIds, isAdmin };
+  const emailChanged = nextEmail !== email;
+
+  if (emailChanged) {
+    const oldRef = doc(db, 'invites', email);
+    const newRef = doc(db, 'invites', nextEmail);
+    await runTransaction(db, async tx => {
+      const oldSnap = await tx.get(oldRef);
+      const newSnap = await tx.get(newRef);
+      if (newSnap.exists()) throw new Error('Este e-mail já pertence a outra pessoa.');
+      const previous = oldSnap.exists() ? oldSnap.data() : {};
+      tx.set(newRef, { ...previous, ...payload });
+      if (oldSnap.exists()) tx.delete(oldRef);
+    });
+  } else {
+    await setDoc(doc(db, 'invites', email), payload, { merge: true });
+  }
+
   if (person.uid) {
     await updateDoc(doc(db, 'users', person.uid), payload);
+  }
+
+  return { emailChanged, authEmailUnchanged: emailChanged && !!person.uid };
+};
+
+export const deletePersonAccess = async (emailRaw: string): Promise<void> => {
+  requireFirebase();
+  const email = normalizeEmail(emailRaw);
+  const currentUid = getFirebaseAuth().currentUser?.uid;
+  const currentEmail = normalizeEmail(getFirebaseAuth().currentUser?.email || '');
+  const people = await listGroupPeople();
+  const person = people.find(item => item.email === email);
+  if (!person) throw new Error('Pessoa não encontrada.');
+  const isSelf = (!!currentUid && person.uid === currentUid) || (!!currentEmail && person.email === currentEmail);
+  if (isSelf) {
+    throw new Error('Não dá para excluir o próprio acesso.');
+  }
+  if (person.isAdmin && person.active) {
+    const admins = people.filter(item => item.isAdmin && item.active);
+    if (admins.length <= 1) throw new Error('Não é possível excluir o último administrador.');
+  }
+  const db = getFirestoreDb();
+  const inviteRef = doc(db, 'invites', email);
+  const inviteSnap = await getDoc(inviteRef);
+  if (inviteSnap.exists()) {
+    await deleteDoc(inviteRef);
+  }
+  if (person.uid) {
+    await deleteDoc(doc(db, 'users', person.uid));
   }
 };
 

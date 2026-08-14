@@ -3,11 +3,13 @@ import { ScoutSection, UserProfile } from '../../types';
 import { getSectionsAsync, DATA_EVENTS } from '../../services/storageService';
 import { getRoleLabel } from '../../services/roleService';
 import { PasswordField } from '../PasswordField';
+import { ConfirmDialog } from '../ConfirmDialog';
 import {
   GroupPerson,
   WEB_ROLE_OPTIONS,
   approvePendingPerson,
   countActiveAdmins,
+  deletePersonAccess,
   inviteGroupPerson,
   listGroupPeople,
   rejectPendingPerson,
@@ -126,6 +128,10 @@ export const WebAccountsPanel: React.FC<Props> = ({
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('Chefe de Seção');
   const [sectionId, setSectionId] = useState('');
+  const [editingEmail, setEditingEmail] = useState<string | null>(null);
+  const [editName, setEditName] = useState('');
+  const [editEmail, setEditEmail] = useState('');
+  const [personToDelete, setPersonToDelete] = useState<GroupPerson | null>(null);
 
   const refresh = async () => {
     const [sectionData, groupPeople] = await Promise.all([
@@ -297,6 +303,21 @@ export const WebAccountsPanel: React.FC<Props> = ({
                   <div className="flex gap-2 flex-wrap">
                     <button
                       type="button"
+                      className="text-xs font-bold text-slate-700"
+                      onClick={() => {
+                        if (editingEmail === person.email) {
+                          setEditingEmail(null);
+                          return;
+                        }
+                        setEditingEmail(person.email);
+                        setEditName(person.displayName);
+                        setEditEmail(person.email);
+                      }}
+                    >
+                      Editar
+                    </button>
+                    <button
+                      type="button"
                       className="text-xs font-bold text-indigo-700"
                       onClick={() => {
                         sendPersonPasswordReset(person.email)
@@ -317,8 +338,66 @@ export const WebAccountsPanel: React.FC<Props> = ({
                     >
                       {person.active ? 'Desativar' : 'Reativar'}
                     </button>
+                    <button
+                      type="button"
+                      className="text-xs font-bold text-red-700"
+                      onClick={() => setPersonToDelete(person)}
+                    >
+                      Excluir
+                    </button>
                   </div>
                 </div>
+                {editingEmail === person.email && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2 p-2 bg-slate-50 border border-slate-200 rounded">
+                    <input
+                      placeholder="Nome de exibição"
+                      className="p-2 border rounded text-sm"
+                      value={editName}
+                      onChange={e => setEditName(e.target.value)}
+                    />
+                    <input
+                      type="email"
+                      placeholder="E-mail"
+                      className="p-2 border rounded text-sm"
+                      value={editEmail}
+                      onChange={e => setEditEmail(e.target.value)}
+                      autoComplete="off"
+                    />
+                    <div className="flex gap-2 md:col-span-2">
+                      <button
+                        type="button"
+                        className="text-xs font-bold px-3 py-1 bg-blue-600 text-white rounded"
+                        onClick={() => {
+                          updatePersonProfile(person.email, {
+                            displayName: editName,
+                            email: editEmail,
+                          })
+                            .then(result => {
+                              setEditingEmail(null);
+                              return refresh().then(() => result);
+                            })
+                            .then(result => {
+                              showOk(
+                                result.authEmailUnchanged
+                                  ? 'Perfil atualizado. Se a pessoa já entrou, o login do Firebase continua no e-mail antigo. Para trocar o login, exclua e convide de novo neste e-mail.'
+                                  : 'Perfil atualizado.',
+                              );
+                            })
+                            .catch(showErr);
+                        }}
+                      >
+                        Salvar
+                      </button>
+                      <button
+                        type="button"
+                        className="text-xs font-bold px-3 py-1 bg-white border rounded"
+                        onClick={() => setEditingEmail(null)}
+                      >
+                        Cancelar
+                      </button>
+                    </div>
+                  </div>
+                )}
                 <div className="flex flex-wrap gap-2">
                   <select
                     className="text-xs p-1 border rounded bg-white max-w-xs"
@@ -364,11 +443,29 @@ export const WebAccountsPanel: React.FC<Props> = ({
       />
 
       {!isAdmin && (
-        <p className="text-xs text-slate-600">Só o administrador libera, recusa e desativa acessos.</p>
+        <p className="text-xs text-slate-600">Só o administrador libera, recusa, edita e exclui acessos.</p>
       )}
 
       {feedback && <p className="text-xs text-green-700 font-bold">{feedback}</p>}
       {error && <p role="alert" className="text-xs text-red-700">{error}</p>}
+
+      {personToDelete && (
+        <ConfirmDialog
+          title="Excluir acesso"
+          message={`Excluir o acesso de ${personToDelete.displayName} (${personToDelete.email})? Some do ScoutsAuto. Desativar só bloqueia; isto apaga o perfil. A conta Google/Firebase pode continuar existindo e não entra mais no app.`}
+          confirmText="Excluir"
+          danger
+          onCancel={() => setPersonToDelete(null)}
+          onConfirm={() => {
+            const target = personToDelete;
+            setPersonToDelete(null);
+            deletePersonAccess(target.email)
+              .then(() => refresh())
+              .then(() => showOk(`Acesso de ${target.displayName} excluído.`))
+              .catch(showErr);
+          }}
+        />
+      )}
     </div>
   );
 };
