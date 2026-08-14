@@ -4,6 +4,7 @@ import { getRoleLabel } from '../roleService';
 import { getMembersAsync, saveMemberAsync } from '../storage/memberStorage';
 import { getSectionsAsync, saveSectionAsync } from '../storage/sectionStorage';
 import { stripBackupSecrets } from './groupBackup';
+import { firestoreWriteError, sanitizeMemberForFirestore } from './sanitizeFirestoreMember';
 
 export const SECTION_PACK_KIND = 'scoutsauto-section-pack';
 export const SECTION_PACK_VERSION = 2;
@@ -95,10 +96,12 @@ const asTeams = (value: unknown): ScoutTeam[] => {
 
 const asMembers = (value: unknown): ScoutMember[] => {
   if (!Array.isArray(value)) return [];
-  return value.filter((item): item is ScoutMember => {
-    if (!isPlainObject(item)) return false;
-    return typeof item.id === 'string' || typeof item.name === 'string';
-  });
+  return value
+    .filter((item): item is ScoutMember => {
+      if (!isPlainObject(item)) return false;
+      return typeof item.id === 'string' || typeof item.name === 'string';
+    })
+    .map(sanitizeMemberForFirestore);
 };
 
 export const isSectionPack = (value: unknown): value is SectionPack => {
@@ -315,11 +318,15 @@ export const importSectionPack = async (
 
   const currentMembers = await getMembersAsync(sectionId);
   const merged = mergeSectionPackMembers(currentMembers, parsed.members, sectionId);
-  for (const member of merged.members) {
-    const wasExisting = currentMembers.some(item => item.id === member.id);
-    if (!wasExisting || JSON.stringify(currentMembers.find(item => item.id === member.id)) !== JSON.stringify(member)) {
-      await saveMemberAsync(member);
+  try {
+    for (const member of merged.members) {
+      const wasExisting = currentMembers.some(item => item.id === member.id);
+      if (!wasExisting || JSON.stringify(currentMembers.find(item => item.id === member.id)) !== JSON.stringify(member)) {
+        await saveMemberAsync(sanitizeMemberForFirestore(member));
+      }
     }
+  } catch (error) {
+    throw firestoreWriteError(error, 'pacote da seção');
   }
 
   const teams = mergeSectionTeams(section.teams, parsed.section.teams);

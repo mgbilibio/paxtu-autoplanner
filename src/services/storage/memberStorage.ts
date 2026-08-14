@@ -1,6 +1,7 @@
 import { ScoutMember } from '../../types';
 import { resolveTroopRole } from '../../utils/memberQuickAdd';
 import { memberFolder, memberProfilePath } from '../dataLayoutService';
+import { firestoreWriteError, sanitizeMemberForFirestore } from '../firebase/sanitizeFirestoreMember';
 import { readAccessibleItems, readSectionItems, writeSectionItems } from '../firebase/sectionData';
 import { getAppConfig } from './configStorage';
 import { isFileBacked, isFirestoreBacked, readJsonDoc, writeJsonDoc } from './dualBackend';
@@ -39,17 +40,25 @@ export const findMemberForLayout = async (memberId: string): Promise<ScoutMember
 
 export const saveMemberAsync = async (member: ScoutMember): Promise<void> => {
   // Espalha o registro inteiro: official e campos extras do Firestore não podem ser apagados.
-  const toSave: ScoutMember = { ...member, role: resolveTroopRole(member.role) };
+  const toSave: ScoutMember = sanitizeMemberForFirestore({
+    ...member,
+    role: resolveTroopRole(member.role),
+  });
   assertCanWriteSection(toSave.sectionId);
   if (isFirestoreBacked()) {
     const sectionId = toSave.sectionId || '';
-    await runExclusive(`firestore-members-${sectionId}`, async () => {
-      const current = await readSectionItems<ScoutMember>(sectionId, 'members');
-      const index = current.findIndex(item => item.id === toSave.id);
-      const updated = index >= 0 ? [...current] : [...current, toSave];
-      if (index >= 0) updated[index] = toSave;
-      await writeSectionItems(sectionId, 'members', updated);
-    });
+    try {
+      await runExclusive(`firestore-members-${sectionId}`, async () => {
+        const current = await readSectionItems<ScoutMember>(sectionId, 'members');
+        const index = current.findIndex(item => item.id === toSave.id);
+        const updated = (index >= 0 ? [...current] : [...current, toSave])
+          .map(sanitizeMemberForFirestore);
+        if (index >= 0) updated[index] = toSave;
+        await writeSectionItems(sectionId, 'members', updated);
+      });
+    } catch (error) {
+      throw firestoreWriteError(error, 'efetivo');
+    }
     dispatchDataEvent(DATA_EVENTS.MEMBERS_UPDATED);
     return;
   }
