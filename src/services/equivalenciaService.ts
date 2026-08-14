@@ -119,6 +119,20 @@ const collectEtapaNames = (official?: MemberOfficialRecord): string[] => {
   return names;
 };
 
+export const listOfficialEtapas = (
+  memberOrOfficial?: ScoutMember | MemberOfficialRecord | null,
+): EtapaEscoteiroNome[] => {
+  const official = memberOrOfficial && 'official' in (memberOrOfficial || {})
+    ? (memberOrOfficial as ScoutMember).official
+    : memberOrOfficial as MemberOfficialRecord | undefined;
+  const seen = new Set<EtapaEscoteiroNome>();
+  for (const nome of collectEtapaNames(official)) {
+    const ordem = etapaOrdem(nome);
+    if (ordem > 0) seen.add(ETAPAS_ESCOTEIRO_ORDEM[ordem - 1]);
+  }
+  return ETAPAS_ESCOTEIRO_ORDEM.filter(item => seen.has(item));
+};
+
 export const officialEtapaEscoteiro = (
   memberOrOfficial?: ScoutMember | MemberOfficialRecord | null,
 ): EtapaEscoteiroNome | undefined => {

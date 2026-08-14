@@ -4,6 +4,7 @@ import { UEB_EQUIVALENCIA_CITA, UEB_EQUIVALENCIA_FONTE } from '../data/uebEquiva
 import {
   etapaFromBlocoCount,
   hasOfficialLayer,
+  listOfficialEtapas,
   listOfficialSpecialties,
   mustKeepOfficialEtapa,
   officialEtapaEscoteiro,
@@ -23,6 +24,7 @@ export const OfficialEquivalenciaPanel: React.FC<Props> = ({
   if (!hasOfficialLayer(member)) return null;
 
   const oficial = officialEtapaEscoteiro(member);
+  const etapas = listOfficialEtapas(member);
   const porEtapa = etapaFromBlocoCount(concludedBlocos);
   const keep = mustKeepOfficialEtapa(member, concludedBlocos);
   const specialties = listOfficialSpecialties(member);
@@ -31,7 +33,7 @@ export const OfficialEquivalenciaPanel: React.FC<Props> = ({
     return (
       <div className="text-[11px] text-slate-600">
         <span className="font-bold text-slate-700">Oficial UEB:</span>{' '}
-        {oficial || 'etapa não informada'}
+        {etapas.length > 0 ? etapas.join(' → ') : (oficial || 'etapa não informada')}
         {specialties.length > 0 && (
           <> · {specialties.length} especialidade(s)</>
         )}
@@ -51,6 +53,9 @@ export const OfficialEquivalenciaPanel: React.FC<Props> = ({
           </div>
           <p className="text-sm font-bold text-amber-950">
             Etapa oficial: {oficial || 'não informada'}
+            {etapas.length > 1 && (
+              <span className="font-normal"> ({etapas.join(' → ')})</span>
+            )}
             <span className="font-normal text-amber-800">
               {' '}· POR 2025+ pelos blocos: {porEtapa} ({concludedBlocos}/18)
             </span>
