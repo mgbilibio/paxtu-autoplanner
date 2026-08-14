@@ -65,6 +65,7 @@ export const getFirebaseApp = (): FirebaseApp => {
 export const getFirebaseAuth = (): Auth => {
   if (!auth) {
     auth = getAuth(getFirebaseApp());
+    auth.languageCode = 'pt';
   }
   return auth;
 };

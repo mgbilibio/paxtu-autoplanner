@@ -797,7 +797,16 @@ export const sendPersonPasswordReset = async (emailRaw: string): Promise<void> =
   requireFirebase();
   const email = normalizeEmail(emailRaw);
   if (!isValidEmail(email)) throw new Error('E-mail inválido.');
-  await sendPasswordResetEmail(getFirebaseAuth(), email);
+  const auth = getFirebaseAuth();
+  auth.languageCode = 'pt';
+  try {
+    await sendPasswordResetEmail(auth, email, {
+      url: 'https://mgbilibio.github.io/paxtu-autoplanner/',
+      handleCodeInApp: false,
+    });
+  } catch (err) {
+    throw translateAuthError(err, 'Não foi possível enviar a redefinição.');
+  }
 };
 
 export const countActiveAdmins = (people: GroupPerson[]): number =>

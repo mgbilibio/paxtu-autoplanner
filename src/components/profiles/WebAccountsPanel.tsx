@@ -321,7 +321,9 @@ export const WebAccountsPanel: React.FC<Props> = ({
                       className="text-xs font-bold text-indigo-700"
                       onClick={() => {
                         sendPersonPasswordReset(person.email)
-                          .then(() => showOk(`E-mail de redefinição enviado para ${person.email}.`))
+                          .then(() => showOk(
+                            `E-mail do ScoutsAuto enviado para ${person.email}. A pessoa clica no link, escolhe a nova senha e volta a este site para entrar.`,
+                          ))
                           .catch(showErr);
                       }}
                     >
