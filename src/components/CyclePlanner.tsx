@@ -7,6 +7,8 @@ import { saveCalendarEventAsync } from '../services/storageService';
 import { exportCycleHtml } from '../services/cycleHtmlExport';
 import { emitProcessDone, emitProcessProgress } from '../services/processFeedbackService';
 import { ConfirmDialog } from './ConfirmDialog';
+import { PlanAttachmentsControl } from './PlanAttachmentsControl';
+import { PlanAttachment } from '../services/planAttachments';
 import { isSpecialtyCode } from '../utils/specialtyCodes';
 
 const newId = (): string =>
@@ -32,6 +34,7 @@ export const CyclePlanner: React.FC<Props> = ({ branch, section }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState<'ALL' | 'PROG' | 'SPEC'>('ALL');
   const [customInstruction, setCustomInstruction] = useState('');
+  const [planAttachments, setPlanAttachments] = useState<PlanAttachment[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<string | null>(null);
   const [regeneratingIdx, setRegeneratingIdx] = useState<number | null>(null);
@@ -108,6 +111,7 @@ export const CyclePlanner: React.FC<Props> = ({ branch, section }) => {
         planningMode: selectedObjectives.length > 0 ? 'from_selection' : 'auto_link',
         catalogDigest: selectedObjectives.length === 0 ? buildCatalogDigest(catalog) : undefined,
         customInstruction: `${customInstruction || ''}\n\nGere apenas 1 reunião alternativa para a posição ${i + 1} do ciclo. NÃO repita estes temas/focos das outras semanas:\n${outras}`,
+        attachments: planAttachments,
       });
       if (result.meetings && result.meetings.length > 0) {
         const novo = result.meetings[0];
@@ -149,6 +153,7 @@ export const CyclePlanner: React.FC<Props> = ({ branch, section }) => {
             planningMode,
             catalogDigest:
               planningMode === 'auto_link' ? buildCatalogDigest(catalog) : undefined,
+            attachments: planAttachments,
         });
         setCycle(result);
         emitProcessDone('Ciclo gerado.');
@@ -383,6 +388,9 @@ export const CyclePlanner: React.FC<Props> = ({ branch, section }) => {
                 className="w-full p-2 border rounded-lg text-sm"
                 rows={2}
               />
+              <div className="mt-3">
+                <PlanAttachmentsControl attachments={planAttachments} onChange={setPlanAttachments} />
+              </div>
             </div>
 
             {error && <p role="alert" className="mt-4 text-sm text-red-700 bg-red-50 border border-red-200 rounded p-3">{error}</p>}

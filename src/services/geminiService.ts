@@ -8,6 +8,7 @@ import { getProgressionDetail } from './progressionDetailService';
 import { extractJson } from './llmJson';
 import { isWebApp } from './platform';
 import { getGeminiOAuthAccessToken } from './googleAuth';
+import { attachmentsToGeminiParts, attachmentsToPromptBlock, GeminiInlinePart } from './planAttachments';
 
 // Remove possiveis segredos (api key) de mensagens de erro da SDK antes de
 // exibir/logar — a SDK as vezes ecoa a URL da request com a chave.
@@ -99,42 +100,73 @@ export const pickPreferredGeminiModel = (models: string[], current?: string): st
 export const hasGeminiCredentials = (): boolean =>
   Boolean(resolveApiKey() || (isWebApp() && getGeminiOAuthAccessToken()));
 
-const generateGeminiText = async (modelId: string, prompt: string, temperature = 0.5): Promise<{ text: string; finishReason?: string }> => {
-  const apiKey = resolveApiKey();
-  if (apiKey) {
-    const ai = new GoogleGenAI({ apiKey });
-    const res = await ai.models.generateContent({
-      model: modelId,
-      contents: [{ role: 'user', parts: [{ text: prompt }] }],
-      config: { temperature },
-    });
-    return { text: res.text || '', finishReason: (res as { candidates?: Array<{ finishReason?: string }> })?.candidates?.[0]?.finishReason };
+const looksLikeUnsupportedMedia = (message: string): boolean =>
+  /unsupported (mime|media)|mime type|mimetype|inline_data|inlinedata|application\/pdf|unable to process input (image|pdf|file)/i.test(message);
+
+const mediaRejectMessage = (extraParts?: GeminiInlinePart[]): string | null => {
+  if (!extraParts?.length) return null;
+  const hasPdf = extraParts.some(p => p.inlineData.mimeType === 'application/pdf');
+  if (hasPdf) {
+    return 'Este modelo Gemini recusou o PDF em anexo. Troque o modelo (ex.: Flash) ou cole o texto do PDF na instrução.';
   }
-  const oauth = isWebApp() ? getGeminiOAuthAccessToken() : undefined;
-  if (oauth) {
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(modelId)}:generateContent`,
-      {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${oauth}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          contents: [{ role: 'user', parts: [{ text: prompt }] }],
-          generationConfig: { temperature },
-        }),
-      },
-    );
-    const body = await response.json() as {
-      error?: { message?: string };
-      candidates?: Array<{ finishReason?: string; content?: { parts?: Array<{ text?: string }> } }>;
-    };
-    if (!response.ok) {
-      throw new Error(body.error?.message || `Gemini OAuth HTTP ${response.status}. Cole uma chave do AI Studio em Configurações.`);
+  return 'Este modelo Gemini recusou a imagem em anexo. Troque o modelo ou descreva a imagem na instrução.';
+};
+
+const generateGeminiText = async (
+  modelId: string,
+  prompt: string,
+  temperature = 0.5,
+  extraParts?: GeminiInlinePart[],
+): Promise<{ text: string; finishReason?: string }> => {
+  const parts: Array<{ text: string } | GeminiInlinePart> = [{ text: prompt }, ...(extraParts || [])];
+  const apiKey = resolveApiKey();
+  try {
+    if (apiKey) {
+      const ai = new GoogleGenAI({ apiKey });
+      const res = await ai.models.generateContent({
+        model: modelId,
+        contents: [{ role: 'user', parts }],
+        config: { temperature },
+      });
+      return { text: res.text || '', finishReason: (res as { candidates?: Array<{ finishReason?: string }> })?.candidates?.[0]?.finishReason };
     }
-    const text = body.candidates?.[0]?.content?.parts?.map(part => part.text || '').join('') || '';
-    return { text, finishReason: body.candidates?.[0]?.finishReason };
+    const oauth = isWebApp() ? getGeminiOAuthAccessToken() : undefined;
+    if (oauth) {
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(modelId)}:generateContent`,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${oauth}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            contents: [{ role: 'user', parts }],
+            generationConfig: { temperature },
+          }),
+        },
+      );
+      const body = await response.json() as {
+        error?: { message?: string };
+        candidates?: Array<{ finishReason?: string; content?: { parts?: Array<{ text?: string }> } }>;
+      };
+      if (!response.ok) {
+        const apiMsg = body.error?.message || `Gemini OAuth HTTP ${response.status}. Cole uma chave do AI Studio em Configurações.`;
+        if (looksLikeUnsupportedMedia(apiMsg)) {
+          throw new Error(mediaRejectMessage(extraParts) || apiMsg);
+        }
+        throw new Error(apiMsg);
+      }
+      const text = body.candidates?.[0]?.content?.parts?.map(part => part.text || '').join('') || '';
+      return { text, finishReason: body.candidates?.[0]?.finishReason };
+    }
+  } catch (e) {
+    const safe = sanitizeLlmError(e);
+    if (e instanceof Error && /recusou o PDF|recusou a imagem/.test(e.message)) throw e;
+    if (looksLikeUnsupportedMedia(safe)) {
+      throw new Error(mediaRejectMessage(extraParts) || safe);
+    }
+    throw e;
   }
   throw new Error(GEMINI_MISSING_KEY);
 };
@@ -161,8 +193,14 @@ export const askGemini = async (question: string, context: string, modelId?: str
     }
 };
 
-const callGeminiSimple = async (_apiKey: string, modelId: string, systemPrompt: string, userPrompt: string): Promise<string> => {
-    const result = await generateGeminiText(modelId, systemPrompt ? `${systemPrompt}\n\n${userPrompt}` : userPrompt);
+const callGeminiSimple = async (
+    _apiKey: string,
+    modelId: string,
+    systemPrompt: string,
+    userPrompt: string,
+    extraParts?: GeminiInlinePart[],
+): Promise<string> => {
+    const result = await generateGeminiText(modelId, systemPrompt ? `${systemPrompt}\n\n${userPrompt}` : userPrompt, 0.5, extraParts);
     return result.text;
 };
 
@@ -346,6 +384,7 @@ export const generateScoutCycle = async (params: {
     customInstruction?: string,
     planningMode?: 'from_selection' | 'auto_link',
     catalogDigest?: string,
+    attachments?: import('./planAttachments').PlanAttachment[],
 }): Promise<MeetingCycle> => {
   if (!hasGeminiCredentials()) throw new Error(GEMINI_MISSING_KEY);
 
@@ -366,6 +405,7 @@ export const generateScoutCycle = async (params: {
     ${mode === 'from_selection' ? `OBJETIVOS A DISTRIBUIR:\n${objs || '(nenhum)'}` : `PREFERÊNCIAS (opcionais):\n${objs || '(nenhuma)'}`}
     ${mode === 'auto_link' && params.catalogDigest ? `\n${params.catalogDigest}\n` : ''}
     ${params.customInstruction ? `INSTRUÇÃO ESPECIAL: ${params.customInstruction}` : ''}
+    ${attachmentsToPromptBlock(params.attachments)}
 
     RETORNE APENAS JSON neste formato:
     {
@@ -388,7 +428,7 @@ export const generateScoutCycle = async (params: {
   `;
 
   try {
-    const text = await callGeminiSimple('', params.modelId || getDefaultGeminiModel(), "", prompt);
+    const text = await callGeminiSimple('', params.modelId || getDefaultGeminiModel(), "", prompt, attachmentsToGeminiParts(params.attachments));
     const parsed = extractJson<MeetingCycle>(text);
     if (!parsed) throw new Error("JSON invalido");
     parsed.id = Date.now().toString();
@@ -472,8 +512,14 @@ MODO AUTO_LINK:
   if (params.customInstruction) {
       userPromptBase += `\nINSTRUÇÃO ESPECIAL:\n${params.customInstruction}`;
   }
+
+  const attachmentBlock = attachmentsToPromptBlock(params.attachments);
+  if (attachmentBlock) {
+      userPromptBase += `\n\n${attachmentBlock}`;
+  }
   
   userPromptBase += bibliotecaContext;
+  const extraParts = attachmentsToGeminiParts(params.attachments);
 
   // Traduz finishReason problematico (MAX_TOKENS/SAFETY) em erro claro pro chefe.
   const checkFinishReason = (reason: string | undefined, etapa: string): void => {
@@ -486,12 +532,12 @@ MODO AUTO_LINK:
   };
 
   const callJson = async <T,>(prompt: string, etapa: string): Promise<T> => {
-    let res = await generateGeminiText(selectedModel, prompt, 0.5);
+    let res = await generateGeminiText(selectedModel, prompt, 0.5, extraParts);
     checkFinishReason(res.finishReason, etapa);
     let parsed = extractJson<T>(res.text || '');
     if (parsed === null) {
       const retryPrompt = `${prompt}\n\nIMPORTANTE: sua resposta anterior NAO era um JSON valido. Responda SOMENTE com o JSON pedido, sem texto extra nem markdown.`;
-      res = await generateGeminiText(selectedModel, retryPrompt, 0.3);
+      res = await generateGeminiText(selectedModel, retryPrompt, 0.3, extraParts);
       checkFinishReason(res.finishReason, etapa);
       parsed = extractJson<T>(res.text || '');
     }
