@@ -42,7 +42,7 @@ export const BatchProgressMarker: React.FC<Props> = ({ sectionId, branch, onClos
   }, [onClose]);
 
   useEffect(() => {
-    getMembersAsync().then(all => {
+    getMembersAsync(sectionId, { hydrateOfficial: false }).then(all => {
       const filtered = all.filter(m => {
         if (sectionId && m.sectionId !== sectionId) return false;
         return !m.isArchived && m.branch === branch && isYouthMember(m);

@@ -2,7 +2,13 @@ import { ScoutMember } from '../../types';
 import { resolveTroopRole } from '../../utils/memberQuickAdd';
 import { memberFolder, memberProfilePath } from '../dataLayoutService';
 import { firestoreWriteError, sanitizeMemberForFirestore } from '../firebase/sanitizeFirestoreMember';
-import { readAccessibleItems, readSectionItems, writeSectionItems } from '../firebase/sectionData';
+import {
+  hydrateMemberOfficialFromSection,
+  readAccessibleItems,
+  readSectionItems,
+  writeSectionItems,
+  type ReadSectionItemsOptions,
+} from '../firebase/sectionData';
 import { getAppConfig } from './configStorage';
 import { isFileBacked, isFirestoreBacked, readJsonDoc, writeJsonDoc } from './dualBackend';
 import { DATA_EVENTS, dispatchDataEvent } from './events';
@@ -23,19 +29,33 @@ const clearMemberCaches = (memberId: string): void => {
     .forEach(key => localStorage.removeItem(key));
 };
 
-export const getMembersAsync = async (sectionId?: string): Promise<ScoutMember[]> => {
+export type GetMembersOptions = ReadSectionItemsOptions;
+
+const LEAN_MEMBERS: GetMembersOptions = { hydrateOfficial: false };
+
+export const getMembersAsync = async (
+  sectionId?: string,
+  options?: GetMembersOptions,
+): Promise<ScoutMember[]> => {
   if (isFirestoreBacked()) {
-    if (sectionId) return readSectionItems<ScoutMember>(sectionId, 'members');
-    return readAccessibleItems<ScoutMember>('members');
+    if (sectionId) return readSectionItems<ScoutMember>(sectionId, 'members', options);
+    return readAccessibleItems<ScoutMember>('members', undefined, options);
   }
   const members = await readJsonDoc<ScoutMember[]>(MEMBERS_FILENAME, MEMBERS_KEY, []);
   if (sectionId) return members.filter(member => member.sectionId === sectionId);
   return members;
 };
 
+/** Só precisa de id/sectionId para achar o path. Nunca hidratar official aqui. */
 export const findMemberForLayout = async (memberId: string): Promise<ScoutMember | null> => {
-  const members = await getMembersAsync();
+  const members = await getMembersAsync(undefined, LEAN_MEMBERS);
   return members.find(member => member.id === memberId) || null;
+};
+
+/** Hidrata official de um jovem (ficha). No backend de arquivo o membro já vem completo. */
+export const hydrateMemberOfficialAsync = async (member: ScoutMember): Promise<ScoutMember> => {
+  if (!isFirestoreBacked() || !member.sectionId || !member.id) return member;
+  return hydrateMemberOfficialFromSection(member.sectionId, member);
 };
 
 export const saveMemberAsync = async (member: ScoutMember): Promise<void> => {
@@ -49,7 +69,7 @@ export const saveMemberAsync = async (member: ScoutMember): Promise<void> => {
     const sectionId = toSave.sectionId || '';
     try {
       await runExclusive(`firestore-members-${sectionId}`, async () => {
-        const current = await readSectionItems<ScoutMember>(sectionId, 'members');
+        const current = await readSectionItems<ScoutMember>(sectionId, 'members', LEAN_MEMBERS);
         const index = current.findIndex(item => item.id === toSave.id);
         const updated = (index >= 0 ? [...current] : [...current, toSave])
           .map(sanitizeMemberForFirestore);
@@ -78,7 +98,7 @@ export const saveMemberAsync = async (member: ScoutMember): Promise<void> => {
 
 export const purgeMembersOfSection = async (sectionId: string): Promise<void> => {
   if (isFirestoreBacked()) {
-    const ofSection = await readSectionItems<ScoutMember>(sectionId, 'members');
+    const ofSection = await readSectionItems<ScoutMember>(sectionId, 'members', LEAN_MEMBERS);
     await writeSectionItems(sectionId, 'members', []);
     ofSection.forEach(member => clearMemberCaches(member.id));
     if (ofSection.length > 0) dispatchDataEvent(DATA_EVENTS.MEMBERS_UPDATED);
@@ -102,7 +122,7 @@ export const deleteMemberAsync = async (id: string): Promise<void> => {
     assertCanWriteSection(member?.sectionId);
     if (member?.sectionId) {
       await runExclusive(`firestore-members-${member.sectionId}`, async () => {
-        const current = await readSectionItems<ScoutMember>(member.sectionId!, 'members');
+        const current = await readSectionItems<ScoutMember>(member.sectionId!, 'members', LEAN_MEMBERS);
         await writeSectionItems(member.sectionId!, 'members', current.filter(item => item.id !== id));
       });
     }

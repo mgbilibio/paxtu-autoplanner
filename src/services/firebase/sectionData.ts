@@ -102,10 +102,17 @@ export const deleteSectionDocument = async (sectionId: string): Promise<void> =>
   await deleteDoc(doc(getFirestoreDb(), 'sections', sectionId));
 };
 
-const hydrateMembersOfficial = async (
+export type ReadSectionItemsOptions = {
+  /** Default true: ficha / import still get the official tree. Lists/stats pass false. */
+  hydrateOfficial?: boolean;
+};
+
+const OFFICIAL_HYDRATE_BATCH = 6;
+
+const hydrateOneMemberOfficial = async (
   sectionId: string,
-  members: ScoutMember[],
-): Promise<ScoutMember[]> => Promise.all(members.map(async member => {
+  member: ScoutMember,
+): Promise<ScoutMember> => {
   if (!member?.id) return member;
   try {
     const docs = await listNamedSubcollection(
@@ -124,7 +131,25 @@ const hydrateMembersOfficial = async (
   } catch {
     return member;
   }
-}));
+};
+
+/** Hidrata o Paxtu oficial de um jovem (ficha 📜). Não usar em lista da tropa. */
+export const hydrateMemberOfficialFromSection = async (
+  sectionId: string,
+  member: ScoutMember,
+): Promise<ScoutMember> => hydrateOneMemberOfficial(sectionId, member);
+
+const hydrateMembersOfficial = async (
+  sectionId: string,
+  members: ScoutMember[],
+): Promise<ScoutMember[]> => {
+  const hydrated: ScoutMember[] = [];
+  for (let i = 0; i < members.length; i += OFFICIAL_HYDRATE_BATCH) {
+    const chunk = members.slice(i, i + OFFICIAL_HYDRATE_BATCH);
+    hydrated.push(...await Promise.all(chunk.map(member => hydrateOneMemberOfficial(sectionId, member))));
+  }
+  return hydrated;
+};
 
 const persistMembersOfficial = async (sectionId: string, members: ScoutMember[]): Promise<void> => {
   await Promise.all(members.map(async member => {
@@ -160,12 +185,17 @@ const persistMembersOfficial = async (sectionId: string, members: ScoutMember[])
   }));
 };
 
-export const readSectionItems = async <T>(sectionId: string, docId: string): Promise<T[]> => {
+export const readSectionItems = async <T>(
+  sectionId: string,
+  docId: string,
+  options?: ReadSectionItemsOptions,
+): Promise<T[]> => {
   const snap = await getDoc(doc(getFirestoreDb(), 'sections', sectionId, 'docs', docId));
   if (!snap.exists()) return [];
   const data = snap.data() as Record<string, unknown>;
   const items = Array.isArray(data[ITEMS_FIELD]) ? data[ITEMS_FIELD] as T[] : [];
   if (docId !== 'members') return items;
+  if (options?.hydrateOfficial === false) return items;
   return hydrateMembersOfficial(sectionId, items as ScoutMember[]) as Promise<T[]>;
 };
 
@@ -199,6 +229,7 @@ export const writeSectionItems = async <T>(sectionId: string, docId: string, ite
 export const readAccessibleItems = async <T>(
   docId: string,
   fallbackSectionIds?: string[],
+  options?: ReadSectionItemsOptions,
 ): Promise<T[]> => {
   const sections = await listSectionDocuments();
   const seen = new Set<string>();
@@ -214,7 +245,7 @@ export const readAccessibleItems = async <T>(
     (await readSignedInSectionIds()).forEach(add);
   }
   if (ids.length === 0) return [];
-  const batches = await Promise.all(ids.map(id => readSectionItems<T>(id, docId)));
+  const batches = await Promise.all(ids.map(id => readSectionItems<T>(id, docId, options)));
   const items = batches.flat();
   if (items.length > 0) return items;
   // Lista agregada vazia: ainda tenta a seção atual / sectionIds do login.
@@ -223,7 +254,7 @@ export const readAccessibleItems = async <T>(
     ...(await readSignedInSectionIds()),
   ]).filter(id => !seen.has(id));
   if (extra.length === 0) return items;
-  const extraBatches = await Promise.all(extra.map(id => readSectionItems<T>(id, docId)));
+  const extraBatches = await Promise.all(extra.map(id => readSectionItems<T>(id, docId, options)));
   return extraBatches.flat();
 };
 

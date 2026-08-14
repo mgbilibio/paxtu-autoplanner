@@ -62,46 +62,57 @@ export const SectionProgressOverview: React.FC<Props> = ({ sectionId, branch, on
     let cancelled = false;
     const load = async () => {
       setLoading(true);
-      const all = await getMembersAsync();
-      const filtered = all.filter(m => {
-        if (sectionId && m.sectionId !== sectionId) return false;
-        if (branch && m.branch !== branch) return false;
-        if (!isYouthMember(m)) return false;
-        return !m.isArchived && (m.branch === ScoutBranch.LOBINHO || m.branch === ScoutBranch.ESCOTEIRO);
-      });
+      try {
+        const all = await getMembersAsync(sectionId, { hydrateOfficial: false });
+        const filtered = all.filter(m => {
+          if (sectionId && m.sectionId !== sectionId) return false;
+          if (branch && m.branch !== branch) return false;
+          if (!isYouthMember(m)) return false;
+          return !m.isArchived && (m.branch === ScoutBranch.LOBINHO || m.branch === ScoutBranch.ESCOTEIRO);
+        });
 
-      const built: Row[] = await Promise.all(filtered.map(async m => {
-        const concluidos = await countConcludedBlocos(m.id);
-        const ramoId = ramoIdForBranch(m.branch);
-        const etapas = ramoId ? ETAPAS_2025.filter(e => e.ramoId === ramoId) : [];
-        const etapaAtual = etapas.reduce((acc, et) => (concluidos >= et.blocosCumulativos ? et : acc), etapas[0]);
-        const recDef = RECONHECIMENTOS_2025.find(r => r.ramoId === ramoId);
-        const recState = recDef ? await getMemberReconhecimento(m.id, recDef.id) : null;
-        const idade = calcIdade(m.birthDate);
-        const monthsLeft = calcMonthsToLimit(m.birthDate, recDef?.idadeLimiteAnos ?? null);
-        let alertaIdade: 'ok' | 'aproximando' | 'limite' | null = null;
-        if (!recState?.dataConquista && monthsLeft !== null) {
-          if (monthsLeft <= 0) alertaIdade = 'limite';
-          else if (monthsLeft <= 6) alertaIdade = 'aproximando';
-          else alertaIdade = 'ok';
+        const built: Row[] = [];
+        const batchSize = 6;
+        for (let i = 0; i < filtered.length; i += batchSize) {
+          const chunk = filtered.slice(i, i + batchSize);
+          const rowsChunk = await Promise.all(chunk.map(async m => {
+            const concluidos = await countConcludedBlocos(m.id);
+            const ramoId = ramoIdForBranch(m.branch);
+            const etapas = ramoId ? ETAPAS_2025.filter(e => e.ramoId === ramoId) : [];
+            const etapaAtual = etapas.reduce((acc, et) => (concluidos >= et.blocosCumulativos ? et : acc), etapas[0]);
+            const recDef = RECONHECIMENTOS_2025.find(r => r.ramoId === ramoId);
+            const recState = recDef ? await getMemberReconhecimento(m.id, recDef.id) : null;
+            const idade = calcIdade(m.birthDate);
+            const monthsLeft = calcMonthsToLimit(m.birthDate, recDef?.idadeLimiteAnos ?? null);
+            let alertaIdade: 'ok' | 'aproximando' | 'limite' | null = null;
+            if (!recState?.dataConquista && monthsLeft !== null) {
+              if (monthsLeft <= 0) alertaIdade = 'limite';
+              else if (monthsLeft <= 6) alertaIdade = 'aproximando';
+              else alertaIdade = 'ok';
+            }
+            return {
+              member: m,
+              concluidos,
+              etapaNome: etapaAtual?.nome || '—',
+              etapaOficial: officialEtapaEscoteiro(m) || '—',
+              reconhecido: !!recState?.dataConquista,
+              dataConquista: recState?.dataConquista,
+              idade,
+              alertaIdade,
+            };
+          }));
+          built.push(...rowsChunk);
         }
-        return {
-          member: m,
-          concluidos,
-          etapaNome: etapaAtual?.nome || '—',
-          etapaOficial: officialEtapaEscoteiro(m) || '—',
-          reconhecido: !!recState?.dataConquista,
-          dataConquista: recState?.dataConquista,
-          idade,
-          alertaIdade,
-        };
-      }));
 
-      if (!cancelled) {
-        // Ordena por blocos concluídos desc, depois por nome
-        built.sort((a, b) => b.concluidos - a.concluidos || a.member.name.localeCompare(b.member.name));
-        setRows(built);
-        setLoading(false);
+        if (!cancelled) {
+          // Ordena por blocos concluídos desc, depois por nome
+          built.sort((a, b) => b.concluidos - a.concluidos || a.member.name.localeCompare(b.member.name));
+          setRows(built);
+        }
+      } catch {
+        if (!cancelled) setRows([]);
+      } finally {
+        if (!cancelled) setLoading(false);
       }
     };
     load();

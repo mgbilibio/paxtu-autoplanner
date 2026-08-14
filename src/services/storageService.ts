@@ -62,8 +62,11 @@ export {
   deleteMemberAsync,
   findMemberForLayout,
   getMembersAsync,
+  hydrateMemberOfficialAsync,
   saveMemberAsync,
 } from './storage/memberStorage';
+
+export type { GetMembersOptions } from './storage/memberStorage';
 
 export {
   deleteCalendarEventAsync,

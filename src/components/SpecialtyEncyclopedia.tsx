@@ -99,7 +99,7 @@ export const SpecialtyEncyclopedia: React.FC<Props> = ({ onClose, member }) => {
   const [pendingMemberId, setPendingMemberId] = useState<string>('');
 
   useEffect(() => {
-    getMembersAsync().then(list => setMembers(list.filter(isYouthMember))).catch(() => setMembers([]));
+    getMembersAsync(undefined, { hydrateOfficial: false }).then(list => setMembers(list.filter(isYouthMember))).catch(() => setMembers([]));
   }, []);
 
   const toggleSelected = (id: number) => {

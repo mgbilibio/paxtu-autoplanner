@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { ScoutMember, TroopRole, ScoutBranch, ScoutSection } from '../types';
-import { getMembersAsync, saveMemberAsync, deleteMemberAsync, getSectionsAsync } from '../services/storageService';
+import { getMembersAsync, hydrateMemberOfficialAsync, saveMemberAsync, deleteMemberAsync, getSectionsAsync } from '../services/storageService';
 import { BRANCH_DOT_CLASS } from './profiles/StructureManager';
 
 import { MemberDashboard } from './MemberDashboard';
@@ -62,7 +62,7 @@ export const MembersManager: React.FC<Props> = ({ sectionId, isAdmin }) => {
   const loadMembers = async () => {
     setLoading(true);
     const [memData, secData] = await Promise.all([
-      getMembersAsync(sectionId),
+      getMembersAsync(sectionId, { hydrateOfficial: false }),
       getSectionsAsync(),
     ]);
     setMembers(memData);
@@ -226,6 +226,14 @@ export const MembersManager: React.FC<Props> = ({ sectionId, isAdmin }) => {
       window.dispatchEvent(new CustomEvent('paxtu:toast', { detail: { kind: 'error', message: msg } }));
     } finally {
       setBulkBusy(false);
+    }
+  };
+
+  const openFicha = async (m: ScoutMember) => {
+    try {
+      setHistoryMember(await hydrateMemberOfficialAsync(m));
+    } catch {
+      setHistoryMember(m);
     }
   };
 
@@ -598,7 +606,7 @@ export const MembersManager: React.FC<Props> = ({ sectionId, isAdmin }) => {
                     </div>
                     <div className="opacity-0 group-hover:opacity-100 transition-opacity flex flex-col gap-1">
                       {isYouthMember(m) && (
-                        <button onClick={() => setHistoryMember(m)} className="text-green-600 hover:bg-green-50 p-1 rounded" title="Ficha de Progressão">📜</button>
+                        <button onClick={() => { void openFicha(m); }} className="text-green-600 hover:bg-green-50 p-1 rounded" title="Ficha de Progressão">📜</button>
                       )}
                       <button onClick={() => handleEdit(m)} className="text-blue-500 hover:bg-blue-50 p-1 rounded" title="Editar / completar">✏️</button>
                       <button onClick={() => { setMoveId(m.id); setMoveTargetSection(sections[0]?.id || ''); }} className="text-orange-500 hover:bg-orange-50 p-1 rounded" title="Mover de Seção">➡️</button>

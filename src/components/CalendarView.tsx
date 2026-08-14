@@ -94,7 +94,7 @@ export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin }) =>
           console.error('Falha ao carregar roteiros do catálogo:', err);
           return [] as MeetingPlan[];
         }),
-        getMembersAsync(sectionId), 
+        getMembersAsync(sectionId, { hydrateOfficial: false }), 
         getSectionsAsync()
     ]);
     setEvents(evtData);

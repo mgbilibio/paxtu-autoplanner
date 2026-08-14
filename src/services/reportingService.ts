@@ -65,10 +65,26 @@ export const getMemberHomologatedCodes = async (memberId: string): Promise<Set<s
   return codes;
 };
 
+const MEMBER_STATS_BATCH = 6;
+
+const mapInBatches = async <T, R>(
+  items: T[],
+  batchSize: number,
+  mapper: (item: T) => Promise<R>,
+): Promise<R[]> => {
+  const out: R[] = [];
+  const size = Math.max(1, batchSize);
+  for (let i = 0; i < items.length; i += size) {
+    const chunk = items.slice(i, i + size);
+    out.push(...await Promise.all(chunk.map(mapper)));
+  }
+  return out;
+};
+
 export const getTroopProgressData = async (branchFilter?: ScoutBranch, sectionId?: string): Promise<ScoutProgressProfile[]> => {
   const [events, members] = await Promise.all([
     getCalendarEventsAsync(sectionId),
-    getMembersAsync(sectionId)
+    getMembersAsync(sectionId, { hydrateOfficial: false }),
   ]);
 
   const activeMembers = members.filter(m => {
@@ -76,7 +92,7 @@ export const getTroopProgressData = async (branchFilter?: ScoutBranch, sectionId
     return branchFilter ? m.branch === branchFilter : true;
   });
 
-  return Promise.all(activeMembers.map(async member => {
+  return mapInBatches(activeMembers, MEMBER_STATS_BATCH, async member => {
     // Frequencia: ignora eventos anteriores ao ingresso do membro (M14).
     const joined = member.admissionDate ? Date.parse(member.admissionDate) : NaN;
     let totalEvents = 0;
@@ -140,7 +156,7 @@ export const getTroopProgressData = async (branchFilter?: ScoutBranch, sectionId
         totalEvents,
         attendedEvents
     };
-  }));
+  });
 };
 
 export const getCatalogCodesForBranch = (branch: ScoutBranch, section?: ScoutSection | null): {code: string, category: string, desc: string}[] => {

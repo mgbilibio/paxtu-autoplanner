@@ -2,12 +2,12 @@
 // Caminho principal: BlocoTracker com vista padrão "lado a lado".
 // ProgressionMap (itens I22…) só se showLegacy estiver ligado — sem códigos, fica vazio.
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ScoutMember, ScoutSection, ScoutBranch } from '../types';
 import { BlocoTracker } from './BlocoTracker';
 import { ProgressionMap } from './ProgressionMap';
 import { SpecialtyEncyclopedia } from './SpecialtyEncyclopedia';
-import { getAppConfig } from '../services/storageService';
+import { getAppConfig, hydrateMemberOfficialAsync } from '../services/storageService';
 import { isYouthMember } from '../utils/memberQuickAdd';
 
 interface Props {
@@ -18,23 +18,33 @@ interface Props {
 }
 
 export const MemberDashboard: React.FC<Props> = ({ member, section, onClose, onPrint }) => {
+  const [resolved, setResolved] = useState(member);
+  useEffect(() => {
+    let cancelled = false;
+    setResolved(member);
+    hydrateMemberOfficialAsync(member)
+      .then(next => { if (!cancelled) setResolved(next); })
+      .catch(() => { if (!cancelled) setResolved(member); });
+    return () => { cancelled = true; };
+  }, [member]);
+
   const showLegacy = !!getAppConfig()?.showLegacy;
   const sectionSystem = section?.progressionSystem;
   const effectiveSystem = !showLegacy ? 'POR_2025' : (sectionSystem || 'POR_2025');
   const isPor2025 = effectiveSystem === 'POR_2025';
-  const isLobOrEsc = member.branch === ScoutBranch.LOBINHO || member.branch === ScoutBranch.ESCOTEIRO;
+  const isLobOrEsc = resolved.branch === ScoutBranch.LOBINHO || resolved.branch === ScoutBranch.ESCOTEIRO;
 
   const defaultMode: 'tracker' | 'legacy' = (isPor2025 && isLobOrEsc) ? 'tracker' : 'legacy';
   const [mode, setMode] = useState<'tracker' | 'legacy'>(defaultMode);
   const [showSpecialties, setShowSpecialties] = useState(false);
 
-  if (!isYouthMember(member)) {
+  if (!isYouthMember(resolved)) {
     return (
       <div className="fixed inset-0 z-[60] bg-slate-900/95 flex items-center justify-center p-4" onClick={onClose}>
         <div className="bg-white rounded-xl shadow-2xl p-6 max-w-md w-full" onClick={e => e.stopPropagation()}>
           <h3 className="text-lg font-bold text-slate-800 mb-2">Sem progressão de jovens</h3>
           <p className="text-sm text-slate-600 mb-4">
-            {member.name} está cadastrado(a) como <strong>{member.role || 'chefia'}</strong>.
+            {resolved.name} está cadastrado(a) como <strong>{resolved.role || 'chefia'}</strong>.
             Chefe e Assistente não acompanham blocos/POR de jovens.
           </p>
           <button onClick={onClose} className="px-4 py-2 bg-slate-800 text-white rounded-lg font-bold text-sm">
@@ -53,7 +63,7 @@ export const MemberDashboard: React.FC<Props> = ({ member, section, onClose, onP
       >
         {showSpecialties && (
           <SpecialtyEncyclopedia
-            member={member}
+            member={resolved}
             onClose={() => setShowSpecialties(false)}
           />
         )}
@@ -62,7 +72,7 @@ export const MemberDashboard: React.FC<Props> = ({ member, section, onClose, onP
           onClick={e => e.stopPropagation()}
         >
           <div className="flex-1 min-h-0">
-            <BlocoTracker member={member} onClose={onClose} />
+            <BlocoTracker member={resolved} onClose={onClose} />
           </div>
           <div className="bg-slate-100 border-t px-4 py-2 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 text-xs flex-shrink-0">
             <span className="text-slate-500">
@@ -90,5 +100,5 @@ export const MemberDashboard: React.FC<Props> = ({ member, section, onClose, onP
     );
   }
 
-  return <ProgressionMap member={member} section={section} onClose={onClose} onPrint={onPrint} />;
+  return <ProgressionMap member={resolved} section={section} onClose={onClose} onPrint={onPrint} />;
 };

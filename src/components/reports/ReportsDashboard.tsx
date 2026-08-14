@@ -20,6 +20,7 @@ interface Props {
 
 export const ReportsDashboard: React.FC<Props> = ({ sectionId, branch, isAdmin }) => {
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [profiles, setProfiles] = useState<ScoutProgressProfile[]>([]);
   const [currentSectionData, setCurrentSectionData] = useState<ScoutSection | null>(null);
   
@@ -33,19 +34,25 @@ export const ReportsDashboard: React.FC<Props> = ({ sectionId, branch, isAdmin }
 
   const loadData = async () => {
     setLoading(true);
-    
-    // Fetch Section Data to know progression system
-    if (sectionId) {
-        const sections = await getSectionsAsync();
-        const found = sections.find(s => s.id === sectionId);
-        setCurrentSectionData(found || null);
-    } else {
-        setCurrentSectionData(null); // Admin/Global View -> Uses Default Catalog
-    }
+    setError(null);
+    try {
+      // Fetch Section Data to know progression system
+      if (sectionId) {
+          const sections = await getSectionsAsync();
+          const found = sections.find(s => s.id === sectionId);
+          setCurrentSectionData(found || null);
+      } else {
+          setCurrentSectionData(null); // Admin/Global View -> Uses Default Catalog
+      }
 
-    const data = await getTroopProgressData(branch, sectionId);
-    setProfiles(data);
-    setLoading(false);
+      const data = await getTroopProgressData(branch, sectionId);
+      setProfiles(data);
+    } catch {
+      setProfiles([]);
+      setError('Não foi possível calcular as estatísticas. Tente de novo.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSelectProfile = (p: ScoutProgressProfile) => {
@@ -55,6 +62,21 @@ export const ReportsDashboard: React.FC<Props> = ({ sectionId, branch, isAdmin }
 
   // Render Logic
   if (loading) return <div className="p-10 text-center text-gray-400">Calculando estatísticas...</div>;
+
+  if (error) {
+    return (
+      <div className="p-10 text-center">
+        <p className="text-red-600 font-semibold">{error}</p>
+        <button
+          type="button"
+          onClick={() => { void loadData(); }}
+          className="mt-3 text-sm font-bold text-indigo-600 hover:text-indigo-800"
+        >
+          Tentar de novo
+        </button>
+      </div>
+    );
+  }
 
   if (viewMode === 'INDIVIDUAL' && selectedProfile) {
       return <IndividualReport profile={selectedProfile} section={currentSectionData} onBack={() => setViewMode('LIST')} />;
