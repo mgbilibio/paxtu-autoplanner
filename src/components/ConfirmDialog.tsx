@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 
 interface Props {
   title: string;
-  message: string;
+  message: React.ReactNode;
   confirmText?: string;
   cancelText?: string;
   danger?: boolean;
@@ -60,7 +60,7 @@ export const ConfirmDialog: React.FC<Props> = ({
         onClick={e => e.stopPropagation()}
       >
         <h3 id="confirm-title" className="text-lg font-black text-slate-800">{title}</h3>
-        <p id="confirm-message" className="text-sm text-slate-600 mt-2 whitespace-pre-line">{message}</p>
+        <div id="confirm-message" className="text-sm text-slate-600 mt-2 whitespace-pre-line">{message}</div>
         <div className="flex justify-end gap-2 mt-5">
           <button
             ref={cancelRef}

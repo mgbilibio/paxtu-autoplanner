@@ -1,10 +1,21 @@
-import { ScoutMember, ScoutSection, ScoutTeam, UserProfile } from '../../types';
+import { ScoutMember, ScoutSection, ScoutTeam } from '../../types';
 import { newMemberId, resolveTroopRole } from '../../utils/memberQuickAdd';
-import { getRoleLabel } from '../roleService';
 import { getMembersAsync, saveMemberAsync } from '../storage/memberStorage';
 import { getSectionsAsync, saveSectionAsync } from '../storage/sectionStorage';
 import { stripBackupSecrets } from './groupBackup';
 import { firestoreWriteError, sanitizeMemberForFirestore } from './sanitizeFirestoreMember';
+import { membersOfTargetSection, normalizePackName, requireExplicitSectionId } from './sectionPackMatch';
+
+export {
+  canManageSectionPack,
+  canPickSectionForPack,
+  describeSectionPackMismatch,
+  normalizePackName,
+  packKindDiffersFromSection,
+  packNameDiffersFromSection,
+  requireExplicitSectionId,
+  sectionIdForPack,
+} from './sectionPackGuard';
 
 export const SECTION_PACK_KIND = 'scoutsauto-section-pack';
 export const SECTION_PACK_VERSION = 2;
@@ -43,35 +54,6 @@ export interface SectionPackMergeResult {
 
 const isPlainObject = (value: unknown): value is Record<string, unknown> =>
   Boolean(value) && typeof value === 'object' && !Array.isArray(value);
-
-export const canManageSectionPack = (user?: UserProfile | null): boolean => {
-  if (!user) return false;
-  if (user.isAdmin) return true;
-  const role = getRoleLabel(user.role);
-  return role === 'ADMINISTRADOR' || role === 'Chefe de Seção';
-};
-
-export const canPickSectionForPack = (user?: UserProfile | null): boolean => {
-  if (!user) return false;
-  if (user.isAdmin) return true;
-  return getRoleLabel(user.role) === 'ADMINISTRADOR';
-};
-
-export const sectionIdForPack = (
-  user?: UserProfile | null,
-  currentSection?: ScoutSection | null,
-): string => {
-  if (canPickSectionForPack(user)) return currentSection?.id || user?.sectionId || user?.sectionIds?.[0] || '';
-  return currentSection?.id || user?.sectionId || user?.sectionIds?.[0] || '';
-};
-
-export const normalizePackName = (value: string): string =>
-  value
-    .normalize('NFD')
-    .replace(/\p{M}/gu, '')
-    .toLowerCase()
-    .replace(/\s+/g, ' ')
-    .trim();
 
 const definedEntries = <T extends Record<string, unknown>>(value: T): Partial<T> => {
   const out: Record<string, unknown> = {};
@@ -130,6 +112,7 @@ export const parseSectionPack = (value: unknown): SectionPack => {
     version: value.version,
     exportedAt: typeof value.exportedAt === 'string' ? value.exportedAt : new Date().toISOString(),
     section: {
+      // id/name/kind are metadata for the confirm dialog only — never a write target.
       id: typeof sectionRaw.id === 'string' ? sectionRaw.id : undefined,
       name: typeof sectionRaw.name === 'string' ? sectionRaw.name : undefined,
       branch: sectionRaw.branch as ScoutSection['branch'] | undefined,
@@ -183,7 +166,12 @@ export const mergeSectionPackMembers = (
   incoming: ScoutMember[],
   sectionId: string,
 ): SectionPackMergeResult => {
-  const next = [...existing];
+  const targetId = requireExplicitSectionId(sectionId);
+  // Match only against the target section. Incoming pack.sectionId is ignored.
+  const next: ScoutMember[] = membersOfTargetSection(existing, targetId).map(item => ({
+    ...item,
+    sectionId: targetId,
+  }));
   let created = 0;
   let updated = 0;
   const used = new Set<string>();
@@ -201,7 +189,7 @@ export const mergeSectionPackMembers = (
         ...match,
         ...definedEntries(incomingMember as unknown as Record<string, unknown>),
         id: match.id,
-        sectionId,
+        sectionId: targetId,
         role: resolveTroopRole(incomingMember.role || match.role, match.role),
         official: mergeOfficial(match.official, incomingMember.official),
       };
@@ -214,13 +202,13 @@ export const mergeSectionPackMembers = (
     next.push({
       ...incomingMember,
       id,
-      sectionId,
+      sectionId: targetId,
       role: resolveTroopRole(incomingMember.role),
     });
     created += 1;
   }
 
-  return { members: next, created, updated };
+  return { members: next.map(member => ({ ...member, sectionId: targetId })), created, updated };
 };
 
 export const mergeSectionTeams = (existing: ScoutTeam[] | undefined, incoming: ScoutTeam[] | undefined): ScoutTeam[] => {
@@ -259,11 +247,11 @@ const sanitizeMember = (member: ScoutMember): ScoutMember => {
 };
 
 export const exportSectionPack = async (sectionId: string): Promise<SectionPack> => {
-  if (!sectionId) throw new Error('Selecione uma seção para exportar o pacote.');
+  const targetId = requireExplicitSectionId(sectionId, 'exportar');
   const sections = await getSectionsAsync();
-  const section = sections.find(item => item.id === sectionId);
+  const section = sections.find(item => item.id === targetId);
   if (!section) throw new Error('Seção não encontrada.');
-  const members = (await getMembersAsync(sectionId)).map(sanitizeMember);
+  const members = (await getMembersAsync(targetId)).map(sanitizeMember);
   return {
     kind: SECTION_PACK_KIND,
     version: SECTION_PACK_VERSION,
@@ -310,19 +298,27 @@ export const importSectionPack = async (
   pack: SectionPack,
   sectionId: string,
 ): Promise<SectionPackSummary> => {
-  if (!sectionId) throw new Error('Selecione uma seção para importar o pacote.');
+  // Writes go only to this id. pack.section.id / current section / first section are never used.
+  const targetId = requireExplicitSectionId(sectionId, 'importar');
   const parsed = parseSectionPack(pack);
   const sections = await getSectionsAsync();
-  const section = sections.find(item => item.id === sectionId);
+  const section = sections.find(item => item.id === targetId);
   if (!section) throw new Error('Seção não encontrada.');
 
-  const currentMembers = await getMembersAsync(sectionId);
-  const merged = mergeSectionPackMembers(currentMembers, parsed.members, sectionId);
+  const currentMembers = await getMembersAsync(targetId);
+  const merged = mergeSectionPackMembers(currentMembers, parsed.members, targetId);
+  if (merged.members.some(member => member.sectionId !== targetId)) {
+    throw new Error('Recusado: o pacote tentaria gravar jovens em outra seção.');
+  }
   try {
     for (const member of merged.members) {
-      const wasExisting = currentMembers.some(item => item.id === member.id);
-      if (!wasExisting || JSON.stringify(currentMembers.find(item => item.id === member.id)) !== JSON.stringify(member)) {
-        await saveMemberAsync(sanitizeMemberForFirestore(member));
+      const toSave = sanitizeMemberForFirestore({ ...member, sectionId: targetId });
+      if (toSave.sectionId !== targetId) {
+        throw new Error('Recusado: o pacote tentaria gravar jovens em outra seção.');
+      }
+      const wasExisting = currentMembers.some(item => item.id === toSave.id);
+      if (!wasExisting || JSON.stringify(currentMembers.find(item => item.id === toSave.id)) !== JSON.stringify(toSave)) {
+        await saveMemberAsync(toSave);
       }
     }
   } catch (error) {
@@ -331,7 +327,7 @@ export const importSectionPack = async (
 
   const teams = mergeSectionTeams(section.teams, parsed.section.teams);
   if (JSON.stringify(teams) !== JSON.stringify(section.teams || [])) {
-    await saveSectionAsync({ ...section, teams });
+    await saveSectionAsync({ ...section, id: targetId, teams });
   }
 
   return summarizeSectionPack(parsed, { created: merged.created, updated: merged.updated });

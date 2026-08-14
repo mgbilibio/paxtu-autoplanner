@@ -4,6 +4,7 @@ import { ConfirmDialog } from '../ConfirmDialog';
 import {
   canManageSectionPack,
   canPickSectionForPack,
+  describeSectionPackMismatch,
   downloadSectionPack,
   importSectionPack,
   parseSectionPackFile,
@@ -39,12 +40,12 @@ export const SectionPackPanel: React.FC<Props> = ({ user, currentSection, sectio
   const canPick = canPickSectionForPack(user);
 
   useEffect(() => {
-    const preferred = sectionIdForPack(user, currentSection);
+    const preferred = sectionIdForPack(user, currentSection, sections);
     setSectionId(prev => {
       if (canPick) {
         if (prev && sections.some(item => item.id === prev)) return prev;
         if (preferred && sections.some(item => item.id === preferred)) return preferred;
-        return sections[0]?.id || '';
+        return '';
       }
       return preferred;
     });
@@ -52,7 +53,8 @@ export const SectionPackPanel: React.FC<Props> = ({ user, currentSection, sectio
 
   if (!canManage) return null;
 
-  const selected = sections.find(item => item.id === sectionId) || currentSection || null;
+  const selected = sections.find(item => item.id === sectionId) || null;
+  const mismatchWarning = pending && selected ? describeSectionPackMismatch(pending, selected) : null;
 
   const showOk = (message: string) => {
     setError(null);
@@ -63,14 +65,21 @@ export const SectionPackPanel: React.FC<Props> = ({ user, currentSection, sectio
     setError(err instanceof Error ? err.message : 'Operação recusada.');
   };
 
-  const handleDownload = async () => {
-    if (!sectionId) {
-      showErr(new Error('Selecione uma seção para exportar.'));
-      return;
+  const requireSelectedSection = (action: 'exportar' | 'importar'): string | null => {
+    const targetId = sectionId.trim();
+    if (!targetId || !selected || selected.id !== targetId) {
+      showErr(new Error(`Selecione uma seção para ${action} o pacote.`));
+      return null;
     }
+    return targetId;
+  };
+
+  const handleDownload = async () => {
+    const targetId = requireSelectedSection('exportar');
+    if (!targetId) return;
     setBusy(true);
     try {
-      const summary = await downloadSectionPack(sectionId);
+      const summary = await downloadSectionPack(targetId);
       showOk(`Pacote baixado: ${formatSummary(summary)}.`);
     } catch (err) {
       showErr(err);
@@ -81,6 +90,7 @@ export const SectionPackPanel: React.FC<Props> = ({ user, currentSection, sectio
 
   const handlePickFile = async (file: File | undefined) => {
     if (!file) return;
+    if (!requireSelectedSection('importar')) return;
     setBusy(true);
     try {
       const pack = await parseSectionPackFile(file);
@@ -96,12 +106,17 @@ export const SectionPackPanel: React.FC<Props> = ({ user, currentSection, sectio
   };
 
   const handleImport = async () => {
-    if (!pending || !sectionId) return;
+    if (!pending) return;
+    const targetId = requireSelectedSection('importar');
+    if (!targetId) {
+      setPending(null);
+      return;
+    }
     const toImport = pending;
     setPending(null);
     setBusy(true);
     try {
-      const summary = await importSectionPack(toImport, sectionId);
+      const summary = await importSectionPack(toImport, targetId);
       showOk(`Pacote mesclado: ${formatSummary(summary)}. Progressão por blocos e legado não foram apagadas.`);
     } catch (err) {
       showErr(err);
@@ -111,16 +126,18 @@ export const SectionPackPanel: React.FC<Props> = ({ user, currentSection, sectio
   };
 
   const pendingSummary = pending ? summarizeSectionPack(pending) : null;
+  const targetName = selected?.name || 'a seção escolhida';
 
   return (
     <div className="border rounded-lg p-4 bg-indigo-50 space-y-3">
       <div>
         <h4 className="font-bold text-sm text-indigo-950">Pacote da seção (ScoutsAuto)</h4>
         <p className="text-[11px] text-indigo-900 mt-1 leading-relaxed">
-          JSON da seção atual: equipes, efetivo e histórico oficial UEB. Não inclui senhas nem chaves.
+          JSON da seção escolhida: equipes, efetivo e histórico oficial UEB. Não inclui senhas nem chaves.
           Importar <strong>mescla</strong> por registro UEB, depois id, depois nome — não apaga quem falta
           no arquivo e não limpa progressão POR 2025+ nem o mapa legado.
-          {canPick ? ' Administrador pode escolher a seção.' : ' Chefe exporta e importa só a própria seção.'}
+          Jovens e equipes vão só para a seção selecionada neste painel.
+          {canPick ? ' Administrador escolhe a seção; o arquivo não decide o destino.' : ' Chefe exporta e importa só a própria seção.'}
         </p>
       </div>
       {canPick && (
@@ -132,7 +149,7 @@ export const SectionPackPanel: React.FC<Props> = ({ user, currentSection, sectio
             onChange={e => setSectionId(e.target.value)}
             disabled={busy}
           >
-            {sections.length === 0 && <option value="">Nenhuma seção</option>}
+            <option value="">Selecione a seção…</option>
             {sections.map(section => (
               <option key={section.id} value={section.id}>{section.name}</option>
             ))}
@@ -142,10 +159,13 @@ export const SectionPackPanel: React.FC<Props> = ({ user, currentSection, sectio
       {!canPick && selected && (
         <p className="text-xs text-indigo-900">Seção: <strong>{selected.name}</strong></p>
       )}
+      {!canPick && !selected && (
+        <p role="alert" className="text-xs text-red-700">Nenhuma seção vinculada para exportar ou importar.</p>
+      )}
       <div className="flex flex-wrap gap-2">
         <button
           type="button"
-          disabled={busy || !sectionId}
+          disabled={busy || !selected}
           onClick={() => { void handleDownload(); }}
           className="px-3 py-2 bg-indigo-800 text-white rounded text-xs font-bold hover:bg-indigo-700 disabled:opacity-60"
         >
@@ -160,7 +180,7 @@ export const SectionPackPanel: React.FC<Props> = ({ user, currentSection, sectio
         />
         <button
           type="button"
-          disabled={busy || !sectionId}
+          disabled={busy || !selected}
           onClick={() => fileRef.current?.click()}
           className="px-3 py-2 bg-amber-700 text-white rounded text-xs font-bold hover:bg-amber-600 disabled:opacity-60"
         >
@@ -171,9 +191,23 @@ export const SectionPackPanel: React.FC<Props> = ({ user, currentSection, sectio
       {error && <p role="alert" className="text-xs text-red-700">{error}</p>}
       {pending && pendingSummary && (
         <ConfirmDialog
-          title="Mesclar pacote da seção?"
-          message={`Isto atualiza ${selected?.name || 'a seção'} com o arquivo (${formatSummary(pendingSummary)}).\n\nNinguém é excluído por estar ausente no JSON. A progressão por blocos e o histórico legado permanecem. Continuar?`}
-          confirmText="Mesclar"
+          title={mismatchWarning ? 'Pacote de outra seção. Mesclar mesmo assim?' : 'Mesclar pacote da seção?'}
+          message={(
+            <>
+              Isto atualiza <strong>{targetName}</strong> com o arquivo ({formatSummary(pendingSummary)}).
+              {mismatchWarning && (
+                <>
+                  {'\n\n'}
+                  <span className="text-amber-900 font-semibold">{mismatchWarning}</span>
+                </>
+              )}
+              {'\n\n'}
+              Ninguém é excluído por estar ausente no JSON. A progressão por blocos e o histórico legado permanecem. Continuar?
+            </>
+          )}
+          confirmText={mismatchWarning ? 'Mesclar na seção escolhida' : 'Mesclar'}
+          cancelText="Cancelar"
+          danger={!!mismatchWarning}
           onConfirm={() => { void handleImport(); }}
           onCancel={() => setPending(null)}
         />
