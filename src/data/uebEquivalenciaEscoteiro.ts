@@ -12,16 +12,18 @@ export const UEB_EQUIVALENCIA_FONTE =
 
 export const UEB_EQUIVALENCIA_CITA = 'Ferramenta de Equivalência UEB — Ramo Escoteiro (fev/2026)';
 
-export type EtapaEscoteiroNome = 'Pistas' | 'Trilha' | 'Rumo' | 'Travessia';
+export const TRANSICAO_LIMITE = '2027-06-30';
 
-export const ETAPAS_ESCOTEIRO_ORDEM: readonly EtapaEscoteiroNome[] = [
-  'Pistas',
-  'Trilha',
-  'Rumo',
-  'Travessia',
-] as const;
+export type EtapaEscoteiro = 'Pistas' | 'Trilha' | 'Rumo' | 'Travessia';
 
-export interface UebBlocoEquivalencia {
+export const ETAPA_POR_BLOCOS: ReadonlyArray<{ etapa: EtapaEscoteiro; min: number; max: number }> = [
+  { etapa: 'Pistas', min: 0, max: 3 },
+  { etapa: 'Trilha', min: 4, max: 7 },
+  { etapa: 'Rumo', min: 8, max: 12 },
+  { etapa: 'Travessia', min: 13, max: 18 },
+];
+
+export interface EquivalenciaBloco {
   blocoId: number;
   nome: string;
   variaveisMinimo: number;
@@ -33,7 +35,17 @@ export interface UebBlocoEquivalencia {
   insignias: readonly string[];
 }
 
-export const UEB_EQUIVALENCIA_ESCOTEIRO: readonly UebBlocoEquivalencia[] = [
+const CODE_RE = /(?:\b(pt|rt)\b[\s-]*)?([ficsae])\s*-?\s*(\d{1,3})\b/i;
+
+/** Normaliza item oficial (I22, PT I22, i-22) para o token da tabela (I22). */
+export const normalizeCode = (raw: string): string => {
+  const text = String(raw || '').trim();
+  const match = text.match(CODE_RE);
+  if (!match) return text.toUpperCase().replace(/[\s-]/g, '');
+  return `${match[2].toUpperCase()}${Number.parseInt(match[3], 10)}`;
+};
+
+export const EQUIVALENCIA_BLOCOS: readonly EquivalenciaBloco[] = [
   {
     blocoId: 1,
     nome: 'Aprendizagem Contínua e Desenvolvimento Vocacional',
@@ -108,8 +120,8 @@ export const UEB_EQUIVALENCIA_ESCOTEIRO: readonly UebBlocoEquivalencia[] = [
       pt: [],
       rt: ['I39', 'I40'],
     },
-    especialidades: ['Horticultura'],
-    insignias: ['Reduzir Reciclar e Reutilizar'],
+    especialidades: ['Horticultura', 'Reduzir Reciclar e Reutilizar'],
+    insignias: [],
   },
   {
     blocoId: 6,
@@ -259,10 +271,7 @@ export const UEB_EQUIVALENCIA_ESCOTEIRO: readonly UebBlocoEquivalencia[] = [
     especialidades: ['Prevenção ao Bullying'],
     insignias: [],
   },
-] as const;
-
-export const getUebBlocoEquivalencia = (blocoId: number): UebBlocoEquivalencia | undefined =>
-  UEB_EQUIVALENCIA_ESCOTEIRO.find(item => item.blocoId === blocoId);
+];
 
 /** Aliases só para casar nomes oficiais/Marechal — não geram códigos. */
 export const UEB_NOME_ALIASES: Record<string, readonly string[]> = {

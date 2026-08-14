@@ -1,8 +1,10 @@
 import {
-  ETAPAS_ESCOTEIRO_ORDEM,
+  EQUIVALENCIA_BLOCOS,
+  ETAPA_POR_BLOCOS,
   UEB_NOME_ALIASES,
-  getUebBlocoEquivalencia,
-  type EtapaEscoteiroNome,
+  normalizeCode,
+  type EquivalenciaBloco,
+  type EtapaEscoteiro,
 } from '../data/uebEquivalenciaEscoteiro';
 import {
   MemberOfficialRecord,
@@ -11,7 +13,7 @@ import {
   ScoutMember,
 } from '../types';
 
-export interface EquivalenciaSuggestion {
+export interface EquivalenciaBlocoSugestao {
   blocoId: number;
   suggested: boolean;
   reasons: string[];
@@ -20,10 +22,18 @@ export interface EquivalenciaSuggestion {
   matchedCodes: string[];
 }
 
+export interface EquivalenciaSuggestion {
+  officialEtapa: EtapaEscoteiro | null;
+  derivedEtapaFromBlocos: EtapaEscoteiro | null;
+  keepOfficialEtapa: boolean;
+  canAutoClose: false;
+  blocos: EquivalenciaBlocoSugestao[];
+}
+
 export interface OfficialSpecialtyView {
   nome: string;
   nivelOficial?: number;
-  nivel2025?: 1 | 2;
+  nivel2025?: 1 | 2 | null;
 }
 
 const CONCLUDED_STATUS = new Set([
@@ -48,6 +58,8 @@ const PENDING_STATUS = new Set([
   'ignorado',
 ]);
 
+const ETAPA_ORDEM: readonly EtapaEscoteiro[] = ETAPA_POR_BLOCOS.map(item => item.etapa);
+
 export const normalizeKey = (value: string): string =>
   value
     .normalize('NFD')
@@ -56,18 +68,17 @@ export const normalizeKey = (value: string): string =>
     .replace(/[^a-z0-9]+/g, ' ')
     .trim();
 
-export const etapaFromBlocoCount = (concluded: number): EtapaEscoteiroNome => {
+export const etapaFromBlocoCount = (concluded: number): EtapaEscoteiro => {
   const n = Number.isFinite(concluded) ? Math.max(0, Math.floor(concluded)) : 0;
-  if (n >= 13) return 'Travessia';
-  if (n >= 8) return 'Rumo';
-  if (n >= 4) return 'Trilha';
-  return 'Pistas';
+  const found = ETAPA_POR_BLOCOS.find(item => n >= item.min && n <= item.max);
+  if (found) return found.etapa;
+  return n > 18 ? 'Travessia' : 'Pistas';
 };
 
 export const etapaOrdem = (nome?: string | null): number => {
   if (!nome) return 0;
   const key = normalizeKey(nome);
-  const idx = ETAPAS_ESCOTEIRO_ORDEM.findIndex(item => normalizeKey(item) === key);
+  const idx = ETAPA_ORDEM.findIndex(item => normalizeKey(item) === key);
   return idx >= 0 ? idx + 1 : 0;
 };
 
@@ -81,6 +92,17 @@ const pickString = (...values: unknown[]): string | undefined => {
     if (typeof value === 'string' && value.trim()) return value.trim();
   }
   return undefined;
+};
+
+const isEtapaEscoteiro = (value: unknown): value is EtapaEscoteiro =>
+  typeof value === 'string' && etapaOrdem(value) > 0;
+
+const officialFrom = (
+  memberOrOfficial?: ScoutMember | MemberOfficialRecord | EtapaEscoteiro | null,
+): MemberOfficialRecord | undefined => {
+  if (!memberOrOfficial || typeof memberOrOfficial === 'string') return undefined;
+  if ('official' in memberOrOfficial) return memberOrOfficial.official;
+  return memberOrOfficial as MemberOfficialRecord;
 };
 
 const collectEtapaNames = (official?: MemberOfficialRecord): string[] => {
@@ -121,46 +143,46 @@ const collectEtapaNames = (official?: MemberOfficialRecord): string[] => {
 
 export const listOfficialEtapas = (
   memberOrOfficial?: ScoutMember | MemberOfficialRecord | null,
-): EtapaEscoteiroNome[] => {
-  const official = memberOrOfficial && 'official' in (memberOrOfficial || {})
-    ? (memberOrOfficial as ScoutMember).official
-    : memberOrOfficial as MemberOfficialRecord | undefined;
-  const seen = new Set<EtapaEscoteiroNome>();
+): EtapaEscoteiro[] => {
+  const official = officialFrom(memberOrOfficial);
+  const seen = new Set<EtapaEscoteiro>();
   for (const nome of collectEtapaNames(official)) {
     const ordem = etapaOrdem(nome);
-    if (ordem > 0) seen.add(ETAPAS_ESCOTEIRO_ORDEM[ordem - 1]);
+    if (ordem > 0) seen.add(ETAPA_ORDEM[ordem - 1]);
   }
-  return ETAPAS_ESCOTEIRO_ORDEM.filter(item => seen.has(item));
+  return ETAPA_ORDEM.filter(item => seen.has(item));
 };
 
 export const officialEtapaEscoteiro = (
-  memberOrOfficial?: ScoutMember | MemberOfficialRecord | null,
-): EtapaEscoteiroNome | undefined => {
-  const official = memberOrOfficial && 'official' in memberOrOfficial
-    ? memberOrOfficial.official
-    : memberOrOfficial as MemberOfficialRecord | undefined;
-  let best: EtapaEscoteiroNome | undefined;
+  memberOrOfficial?: ScoutMember | MemberOfficialRecord | EtapaEscoteiro | null,
+): EtapaEscoteiro | null => {
+  if (isEtapaEscoteiro(memberOrOfficial)) return memberOrOfficial;
+  const official = officialFrom(memberOrOfficial);
+  let best: EtapaEscoteiro | null = null;
   let bestOrdem = 0;
   for (const nome of collectEtapaNames(official)) {
     const ordem = etapaOrdem(nome);
     if (ordem > bestOrdem) {
       bestOrdem = ordem;
-      best = ETAPAS_ESCOTEIRO_ORDEM[ordem - 1];
+      best = ETAPA_ORDEM[ordem - 1];
     }
   }
   return best;
 };
 
+/** Só compara quando há etapa derivada. derived nulo/ausente nunca mantém etapa. */
 export const mustKeepOfficialEtapa = (
-  memberOrOfficial: ScoutMember | MemberOfficialRecord | null | undefined,
-  concludedBlocos: number,
+  official: ScoutMember | MemberOfficialRecord | EtapaEscoteiro | null | undefined,
+  derived?: EtapaEscoteiro | null,
 ): boolean => {
-  const official = officialEtapaEscoteiro(memberOrOfficial);
-  if (!official) return false;
-  return etapaOrdem(official) > etapaOrdem(etapaFromBlocoCount(concludedBlocos));
+  if (!derived) return false;
+  const officialEtapa = officialEtapaEscoteiro(official);
+  if (!officialEtapa) return false;
+  return etapaOrdem(officialEtapa) > etapaOrdem(derived);
 };
 
-export const mapSpecialtyLevel = (oldLevel: unknown): 1 | 2 | undefined => {
+/** N1 → 1; N2 ou N3 → 2; N0 ou inválido → null. */
+export const mapSpecialtyLevel = (oldLevel: unknown): 1 | 2 | null => {
   const n = typeof oldLevel === 'number'
     ? oldLevel
     : typeof oldLevel === 'string'
@@ -168,7 +190,7 @@ export const mapSpecialtyLevel = (oldLevel: unknown): 1 | 2 | undefined => {
       : NaN;
   if (n === 1) return 1;
   if (n === 2 || n === 3) return 2;
-  return undefined;
+  return null;
 };
 
 const specialtyNome = (item: OfficialSpecialtyRecord | string): string => {
@@ -179,10 +201,10 @@ const specialtyNome = (item: OfficialSpecialtyRecord | string): string => {
 const specialtyNivel = (item: OfficialSpecialtyRecord | string): number | undefined => {
   if (typeof item === 'string') return undefined;
   const raw = item.nivel ?? item.level;
-  if (typeof raw === 'number' && raw > 0) return raw;
+  if (typeof raw === 'number' && Number.isFinite(raw)) return raw;
   if (typeof raw === 'string') {
     const n = Number.parseInt(raw.replace(/\D/g, ''), 10);
-    return Number.isFinite(n) && n > 0 ? n : undefined;
+    return Number.isFinite(n) ? n : undefined;
   }
   return undefined;
 };
@@ -198,7 +220,7 @@ export const listOfficialSpecialties = (member?: ScoutMember | null): OfficialSp
       return {
         nome,
         nivelOficial,
-        nivel2025: mapSpecialtyLevel(nivelOficial),
+        nivel2025: nivelOficial === undefined ? null : mapSpecialtyLevel(nivelOficial),
       } as OfficialSpecialtyView;
     })
     .filter((item): item is OfficialSpecialtyView => !!item);
@@ -222,32 +244,21 @@ const isItemConcluded = (item: OfficialProgressItem): boolean => {
   return CONCLUDED_STATUS.has(status) || status.includes('conclu');
 };
 
-const CODE_RE = /(?:\b(pt|rt)\b[\s-]*)?([ficsae])\s*-?\s*(\d{1,3})\b/i;
-
-export const parseOfficialCode = (
-  raw: string,
-): { group?: 'PT' | 'RT'; token: string } | null => {
-  const match = raw.trim().match(CODE_RE);
-  if (!match) return null;
-  const group = match[1] ? match[1].toUpperCase() as 'PT' | 'RT' : undefined;
-  const token = `${match[2].toUpperCase()}${Number.parseInt(match[3], 10)}`;
-  return { group, token };
-};
-
 const officialItemCodes = (official?: MemberOfficialRecord): Array<{ group?: 'PT' | 'RT'; token: string; raw: string }> => {
   if (!Array.isArray(official?.items)) return [];
   const out: Array<{ group?: 'PT' | 'RT'; token: string; raw: string }> = [];
   for (const item of official.items) {
     if (!item?.code || !isItemConcluded(item)) continue;
-    const parsed = parseOfficialCode(item.code);
-    if (!parsed) continue;
+    const token = normalizeCode(item.code);
+    if (!/^[FICSAE]\d+$/.test(token)) continue;
     const area = normalizeKey(item.area || '');
-    let group = parsed.group;
+    const prefix = item.code.trim().match(/^\s*(pt|rt)\b/i)?.[1]?.toUpperCase() as 'PT' | 'RT' | undefined;
+    let group = prefix;
     if (!group) {
       if (area.includes('rumo') || area.includes('travessia') || area === 'rt') group = 'RT';
       else if (area.includes('pista') || area.includes('trilha') || area === 'pt') group = 'PT';
     }
-    out.push({ group, token: parsed.token, raw: item.code.trim() });
+    out.push({ group, token, raw: item.code.trim() });
   }
   return out;
 };
@@ -284,32 +295,25 @@ const matchNames = (owned: string[], catalog: readonly string[]): string[] => {
   return matched;
 };
 
-export const suggestEquivalencia = (
-  member: ScoutMember | null | undefined,
-  blocoId: number,
-): EquivalenciaSuggestion => {
-  const empty: EquivalenciaSuggestion = {
-    blocoId,
-    suggested: false,
-    reasons: [],
-    matchedSpecialties: [],
-    matchedInsignias: [],
-    matchedCodes: [],
-  };
-  const mapping = getUebBlocoEquivalencia(blocoId);
-  const official = member?.official;
-  if (!mapping || !official) return empty;
-
-  const specialties = listOfficialSpecialties(member).map(item => item.nome);
-  const badges = [
-    ...namedEntries(official.conquistas),
-    ...namedEntries(official.condecoracoes),
-    ...specialties,
-  ];
+const suggestBloco = (
+  official: MemberOfficialRecord | undefined,
+  mapping: EquivalenciaBloco,
+  specialties: string[],
+  badges: string[],
+): EquivalenciaBlocoSugestao => {
+  if (!official) {
+    return {
+      blocoId: mapping.blocoId,
+      suggested: false,
+      reasons: [],
+      matchedSpecialties: [],
+      matchedInsignias: [],
+      matchedCodes: [],
+    };
+  }
 
   const matchedSpecialties = matchNames(specialties, mapping.especialidades);
   const matchedInsignias = matchNames(badges, mapping.insignias);
-
   const codes = officialItemCodes(official);
   const matchedCodes: string[] = [];
   for (const item of codes) {
@@ -331,12 +335,45 @@ export const suggestEquivalencia = (
   }
 
   return {
-    blocoId,
+    blocoId: mapping.blocoId,
     suggested: reasons.length > 0,
     reasons,
     matchedSpecialties,
     matchedInsignias,
     matchedCodes,
+  };
+};
+
+/**
+ * Sugestões por bloco + comparação de etapa.
+ * Sem `blocosConcluidos`, derivedEtapaFromBlocos = null e keepOfficialEtapa = false
+ * (não tratar etapa derivada ausente como motivo para manter a oficial).
+ * Nunca fecha bloco: canAutoClose é sempre false; o chamador não deve gravar dataConclusao.
+ */
+export const suggestEquivalencia = (
+  member: ScoutMember | null | undefined,
+  blocosConcluidos?: number,
+): EquivalenciaSuggestion => {
+  const official = member?.official;
+  const officialEtapa = officialEtapaEscoteiro(member);
+  const derivedEtapaFromBlocos = blocosConcluidos === undefined
+    ? null
+    : etapaFromBlocoCount(blocosConcluidos);
+  const keepOfficialEtapa = derivedEtapaFromBlocos
+    ? mustKeepOfficialEtapa(official || member, derivedEtapaFromBlocos)
+    : false;
+
+  const specialties = listOfficialSpecialties(member).map(item => item.nome);
+  const badges = official
+    ? [...namedEntries(official.conquistas), ...namedEntries(official.condecoracoes), ...specialties]
+    : [];
+
+  return {
+    officialEtapa,
+    derivedEtapaFromBlocos,
+    keepOfficialEtapa,
+    canAutoClose: false,
+    blocos: EQUIVALENCIA_BLOCOS.map(mapping => suggestBloco(official, mapping, specialties, badges)),
   };
 };
 

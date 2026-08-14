@@ -22,7 +22,6 @@ import {
 } from '../services/storageService';
 import {
   hasOfficialLayer,
-  mustKeepOfficialEtapa,
   officialEtapaEscoteiro,
   suggestEquivalencia,
 } from '../services/equivalenciaService';
@@ -99,8 +98,12 @@ export const BlocoTracker: React.FC<Props> = ({ member, onClose }) => {
     etapasRamo[0],
   );
   const proximaEtapa = etapasRamo.find(e => e.ordem === (etapaAtual?.ordem ?? 0) + 1);
-  const oficialEtapa = officialEtapaEscoteiro(member);
-  const manterEtapaOficial = mustKeepOfficialEtapa(member, concluidos);
+  const equivalencia = useMemo(
+    () => suggestEquivalencia(member, concluidos),
+    [member, concluidos],
+  );
+  const oficialEtapa = equivalencia.officialEtapa || officialEtapaEscoteiro(member);
+  const manterEtapaOficial = equivalencia.keepOfficialEtapa;
   const etapaLabel = manterEtapaOficial && oficialEtapa ? oficialEtapa : (etapaAtual?.nome || '—');
   const showOfficial = hasOfficialLayer(member);
 
@@ -532,7 +535,7 @@ export const BlocoTracker: React.FC<Props> = ({ member, onClose }) => {
           const concluido = !!estado?.dataConclusao;
           const aberto = blocoAberto === bloco.id;
           const sugestao = showOfficial && member.branch === ScoutBranch.ESCOTEIRO
-            ? suggestEquivalencia(member, bloco.id)
+            ? equivalencia.blocos.find(item => item.blocoId === bloco.id)
             : null;
 
           const especialidadesSubst = BLOCO_ESPECIALIDADES_2025.filter(

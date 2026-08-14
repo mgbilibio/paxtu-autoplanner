@@ -18,15 +18,17 @@ interface Props {
 
 export const OfficialEquivalenciaPanel: React.FC<Props> = ({
   member,
-  concludedBlocos = 0,
+  concludedBlocos,
   compact = false,
 }) => {
   if (!hasOfficialLayer(member)) return null;
 
   const oficial = officialEtapaEscoteiro(member);
   const etapas = listOfficialEtapas(member);
-  const porEtapa = etapaFromBlocoCount(concludedBlocos);
-  const keep = mustKeepOfficialEtapa(member, concludedBlocos);
+  const porEtapa = concludedBlocos === undefined ? null : etapaFromBlocoCount(concludedBlocos);
+  const keep = concludedBlocos === undefined
+    ? false
+    : mustKeepOfficialEtapa(member.official, porEtapa);
   const specialties = listOfficialSpecialties(member);
 
   if (compact) {
@@ -56,9 +58,11 @@ export const OfficialEquivalenciaPanel: React.FC<Props> = ({
             {etapas.length > 1 && (
               <span className="font-normal"> ({etapas.join(' → ')})</span>
             )}
-            <span className="font-normal text-amber-800">
-              {' '}· POR 2025+ pelos blocos: {porEtapa} ({concludedBlocos}/18)
-            </span>
+            {porEtapa && concludedBlocos !== undefined && (
+              <span className="font-normal text-amber-800">
+                {' '}· POR 2025+ pelos blocos: {porEtapa} ({concludedBlocos}/18)
+              </span>
+            )}
           </p>
         </div>
         <a
