@@ -297,6 +297,35 @@ export interface OfficialEtapaRecord {
   items?: OfficialEtapaItemRecord[];
 }
 
+/** Atividade de competência no dump Paxtu (sem códigos I22). */
+export interface OfficialAtividadeRecord {
+  id?: string | number;
+  descricao?: string;
+  description?: string;
+  nome?: string;
+  name?: string;
+  status?: string;
+  situacao?: string;
+  estado?: string;
+  date?: string;
+  data?: string;
+  conquistado?: boolean;
+}
+
+/** Competência Paxtu agrupada por caminho (Período introdutório, Pista e trilha, Rumo e travessia). */
+export interface OfficialCompetenciaRecord {
+  id?: string | number;
+  nome?: string;
+  name?: string;
+  caminho?: string;
+  path?: string;
+  date?: string;
+  data?: string;
+  status?: string;
+  situacao?: string;
+  atividades?: OfficialAtividadeRecord[];
+}
+
 /**
  * Histórico oficial já persistido no Firestore em membros existentes.
  * Nunca apagar ao gravar o jovem — campos extras desconhecidos devem permanecer.
@@ -304,6 +333,7 @@ export interface OfficialEtapaRecord {
 export interface MemberOfficialRecord {
   source?: string;
   etapas?: OfficialEtapaRecord[] | string[] | string | Record<string, unknown>;
+  competencias?: OfficialCompetenciaRecord[];
   especialidades?: OfficialSpecialtyRecord[] | string[];
   conquistas?: Array<string | Record<string, unknown>>;
   condecoracoes?: Array<string | Record<string, unknown>> | string;

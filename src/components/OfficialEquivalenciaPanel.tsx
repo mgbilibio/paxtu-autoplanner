@@ -23,6 +23,14 @@ import {
   type OfficialSpecialtyView,
   type OfficialVidaRow,
 } from '../services/equivalenciaService';
+import {
+  competenciaCountLabel,
+  listOfficialCompetenciaTree,
+  officialAtividadeStatusLabel,
+  type OfficialAtividadeView,
+  type OfficialCaminhoSection,
+  type OfficialCompetenciaView,
+} from '../services/officialPaxtuView';
 
 interface Props {
   member: ScoutMember;
@@ -103,38 +111,142 @@ const EtapaBody: React.FC<{ item: OfficialEtapaTrailItem }> = ({ item }) => {
   );
 };
 
-const ProgressaoEscoteiro: React.FC<{ trail: OfficialEtapaTrailItem[] }> = ({ trail }) => (
-  <section>
-    <SectionTitle>Progressão — Ramo escoteiro</SectionTitle>
-    <div className="rounded-md border border-amber-200 bg-white overflow-hidden">
-      <div className="grid grid-cols-[1fr_7rem_6rem] gap-2 px-2 py-1 text-[10px] uppercase font-bold text-slate-500 bg-amber-50/80">
-        <span>Etapa</span>
-        <span>Situação</span>
-        <span>Data</span>
-      </div>
-      <ol>
-        {trail.map(item => (
-          <li key={item.etapa} className="border-t border-amber-100">
-            <details>
-              <summary className="cursor-pointer px-2 py-1.5 hover:bg-amber-50/60">
-                <div className="grid grid-cols-[1fr_7rem_6rem] gap-2 items-center text-xs">
-                  <span className="font-bold text-amber-950">{item.etapa}</span>
-                  <span className={situacaoClass(item.conquistado)}>
-                    {officialStatusLabel(item.status, item.conquistado)}
-                  </span>
-                  <span className="tabular-nums text-slate-600">
-                    {formatOfficialDate(item.date) || '—'}
-                  </span>
-                </div>
-              </summary>
-              <EtapaBody item={item} />
-            </details>
-          </li>
-        ))}
-      </ol>
-    </div>
-  </section>
+const EtapaSummaryRow: React.FC<{ item: OfficialEtapaTrailItem }> = ({ item }) => (
+  <li className="grid grid-cols-[1fr_7rem_6rem] gap-2 px-2 py-1.5 text-xs border-t border-amber-100">
+    <span className="font-bold text-amber-950">{item.etapa}</span>
+    <span className={situacaoClass(item.conquistado)}>
+      {officialStatusLabel(item.status, item.conquistado)}
+    </span>
+    <span className="tabular-nums text-slate-600">
+      {formatOfficialDate(item.date) || '—'}
+    </span>
+  </li>
 );
+
+const AtividadeList: React.FC<{ atividades: OfficialAtividadeView[] }> = ({ atividades }) => {
+  if (atividades.length === 0) {
+    return (
+      <p className="text-[11px] text-slate-500 italic px-2 py-1">
+        Nenhuma atividade nesta competência.
+      </p>
+    );
+  }
+  return (
+    <ul className="mt-1 space-y-0.5">
+      {atividades.map((item, index) => (
+        <li
+          key={item.id != null ? `C${item.id}` : `${item.descricao}-${index}`}
+          className="grid grid-cols-[1fr_5.5rem_5.5rem] gap-x-2 text-[11px] text-slate-700"
+        >
+          <span>{item.descricao}</span>
+          <span className={situacaoClass(item.conquistado)}>
+            {officialAtividadeStatusLabel(item.status, item.conquistado, item.date)}
+          </span>
+          <span className="tabular-nums text-slate-500">{formatOfficialDate(item.date) || ''}</span>
+        </li>
+      ))}
+    </ul>
+  );
+};
+
+const CompetenciaRow: React.FC<{ item: OfficialCompetenciaView }> = ({ item }) => {
+  const situacao = item.status || item.conquistado
+    ? officialStatusLabel(item.status, item.conquistado)
+    : '';
+  const data = formatOfficialDate(item.date);
+  return (
+    <li className="border-t border-amber-100">
+      <details>
+        <summary className="cursor-pointer px-2 py-1.5 hover:bg-amber-50/60">
+          <div className="grid grid-cols-[1fr_auto] gap-2 items-start text-xs">
+            <span className="font-semibold text-amber-950">{item.nome}</span>
+            <span className="text-[11px] text-slate-600 text-right shrink-0">
+              {situacao ? <span className={situacaoClass(item.conquistado)}>{situacao}</span> : null}
+              {data ? <span className="tabular-nums text-slate-500"> · {data}</span> : null}
+              <span className="text-slate-500"> · {competenciaCountLabel(item)}</span>
+            </span>
+          </div>
+        </summary>
+        <div className="px-2 pb-2 pt-1 border-t border-amber-100 bg-white/70">
+          <div className="grid grid-cols-[1fr_5.5rem_5.5rem] gap-x-2 text-[10px] uppercase font-bold text-slate-400 mb-0.5">
+            <span>Descrição</span>
+            <span>Status</span>
+            <span>Data</span>
+          </div>
+          <AtividadeList atividades={item.atividades} />
+        </div>
+      </details>
+    </li>
+  );
+};
+
+const CompetenciaTree: React.FC<{ sections: OfficialCaminhoSection[] }> = ({ sections }) => (
+  <div className="space-y-2">
+    {sections.map(section => (
+      <section key={section.caminho}>
+        <h4 className="text-[10px] uppercase font-bold tracking-wider text-amber-800 mb-1">
+          {section.caminho}
+        </h4>
+        <ol className="rounded-md border border-amber-200 bg-white overflow-hidden">
+          {section.competencias.map((item, index) => (
+            <CompetenciaRow
+              key={item.id != null ? `C${item.id}` : `${item.nome}-${index}`}
+              item={item}
+            />
+          ))}
+        </ol>
+      </section>
+    ))}
+  </div>
+);
+
+const ProgressaoEscoteiro: React.FC<{
+  trail: OfficialEtapaTrailItem[];
+  tree: OfficialCaminhoSection[];
+}> = ({ trail, tree }) => {
+  const useTree = tree.length > 0;
+  return (
+    <section className="space-y-2">
+      <SectionTitle>Progressão — Ramo escoteiro</SectionTitle>
+      <div className="rounded-md border border-amber-200 bg-white overflow-hidden">
+        <div className="grid grid-cols-[1fr_7rem_6rem] gap-2 px-2 py-1 text-[10px] uppercase font-bold text-slate-500 bg-amber-50/80">
+          <span>Etapa</span>
+          <span>Situação</span>
+          <span>Data</span>
+        </div>
+        {useTree ? (
+          <ol>
+            {trail.map(item => (
+              <EtapaSummaryRow key={item.etapa} item={item} />
+            ))}
+          </ol>
+        ) : (
+          <ol>
+            {trail.map(item => (
+              <li key={item.etapa} className="border-t border-amber-100">
+                <details>
+                  <summary className="cursor-pointer px-2 py-1.5 hover:bg-amber-50/60">
+                    <div className="grid grid-cols-[1fr_7rem_6rem] gap-2 items-center text-xs">
+                      <span className="font-bold text-amber-950">{item.etapa}</span>
+                      <span className={situacaoClass(item.conquistado)}>
+                        {officialStatusLabel(item.status, item.conquistado)}
+                      </span>
+                      <span className="tabular-nums text-slate-600">
+                        {formatOfficialDate(item.date) || '—'}
+                      </span>
+                    </div>
+                  </summary>
+                  <EtapaBody item={item} />
+                </details>
+              </li>
+            ))}
+          </ol>
+        )}
+      </div>
+      {useTree && <CompetenciaTree sections={tree} />}
+    </section>
+  );
+};
 
 const OutrosRamos: React.FC<{ outras: OfficialEtapaOtherItem[] }> = ({ outras }) => {
   if (outras.length === 0) return null;
@@ -268,6 +380,7 @@ const VidaEscoteira: React.FC<{ rows: OfficialVidaRow[] }> = ({ rows }) => {
 
 const OfficialLists: React.FC<{ member: ScoutMember }> = ({ member }) => {
   const trail = listOfficialEtapaTrail(member);
+  const tree = listOfficialCompetenciaTree(member);
   const outras = listOtherOfficialEtapas(member);
   const conquistas = listOfficialConquistas(member);
   const condecoracoes = listOfficialCondecoracoes(member);
@@ -275,7 +388,7 @@ const OfficialLists: React.FC<{ member: ScoutMember }> = ({ member }) => {
   const vida = listOfficialVidaEscoteira(member);
   return (
     <div className="space-y-3">
-      <ProgressaoEscoteiro trail={trail} />
+      <ProgressaoEscoteiro trail={trail} tree={tree} />
       <OutrosRamos outras={outras} />
       <ConquistaList title="Conquistas e certificações" items={conquistas} />
       <ConquistaList title="Condecorações" items={condecoracoes} />

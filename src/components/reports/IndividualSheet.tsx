@@ -22,6 +22,11 @@ import {
   officialStatusLabel,
   PAXTU_HISTORICO_AVISO,
 } from '../../services/equivalenciaService';
+import {
+  competenciaCountLabel,
+  listOfficialCompetenciaTree,
+  officialAtividadeStatusLabel,
+} from '../../services/officialPaxtuView';
 
 interface Props {
   member: ScoutMember;
@@ -38,6 +43,7 @@ export const IndividualSheet: React.FC<Props> = ({
 }) => {
   const catalog = getMemberCatalog(member, section);
   const officialTrail = listOfficialEtapaTrail(member);
+  const officialTree = listOfficialCompetenciaTree(member);
   const officialOther = listOtherOfficialEtapas(member);
   const officialConquistas = listOfficialConquistas(member);
   const officialSpecs = listOfficialSpecialties(member);
@@ -89,6 +95,83 @@ export const IndividualSheet: React.FC<Props> = ({
                 ))}
               </tbody>
             </table>
+            {officialTree.length > 0 ? officialTree.map(section => (
+              <div key={section.caminho} className="mb-3">
+                <h4 className="font-bold text-xs uppercase mb-1">{section.caminho}</h4>
+                {section.competencias.map((comp, index) => (
+                  <div key={comp.id != null ? `C${comp.id}` : `${comp.nome}-${index}`} className="mb-2">
+                    <p className="text-xs mb-1">
+                      <strong>{comp.nome}</strong>
+                      {(comp.status || comp.conquistado)
+                        ? ` · ${officialStatusLabel(comp.status, comp.conquistado)}`
+                        : ''}
+                      {comp.date ? ` · ${formatOfficialDate(comp.date) || ''}` : ''}
+                      {' · '}{competenciaCountLabel(comp)}
+                    </p>
+                    <table className="w-full text-xs border-collapse">
+                      <thead>
+                        <tr>
+                          <th className="border border-black p-1 text-left bg-gray-100">Descrição</th>
+                          <th className="border border-black p-1 text-center bg-gray-100 w-24">Status</th>
+                          <th className="border border-black p-1 text-center bg-gray-100 w-24">Data</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {comp.atividades.length === 0 ? (
+                          <tr>
+                            <td className="border border-black p-1" colSpan={3}>
+                              Nenhuma atividade nesta competência.
+                            </td>
+                          </tr>
+                        ) : (
+                          comp.atividades.map((atividade, atividadeIndex) => (
+                            <tr key={atividade.id != null ? `C${atividade.id}` : `${atividade.descricao}-${atividadeIndex}`}>
+                              <td className="border border-black p-1">{atividade.descricao}</td>
+                              <td className="border border-black p-1 text-center">
+                                {officialAtividadeStatusLabel(atividade.status, atividade.conquistado, atividade.date)}
+                              </td>
+                              <td className="border border-black p-1 text-center">
+                                {formatOfficialDate(atividade.date) || ''}
+                              </td>
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                ))}
+              </div>
+            )) : officialTrail.some(item => item.itens.length > 0) && officialTrail.map(item => (
+              item.itens.length === 0 ? null : (
+                <div key={`${item.etapa}-itens`} className="mb-3">
+                  <h4 className="font-bold text-xs uppercase mb-1">{item.etapa}</h4>
+                  <table className="w-full text-xs border-collapse">
+                    <thead>
+                      <tr>
+                        <th className="border border-black p-1 text-left bg-gray-100 w-16"></th>
+                        <th className="border border-black p-1 text-left bg-gray-100">Item</th>
+                        <th className="border border-black p-1 text-center bg-gray-100 w-24">Situação</th>
+                        <th className="border border-black p-1 text-center bg-gray-100 w-24">Data</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {item.itens.map((linha, linhaIndex) => (
+                        <tr key={`${linha.codigo || linha.nome}-${linhaIndex}`}>
+                          <td className="border border-black p-1 font-mono">{linha.codigo || ''}</td>
+                          <td className="border border-black p-1">{linha.nome}</td>
+                          <td className="border border-black p-1 text-center">
+                            {officialStatusLabel(linha.status, linha.conquistado)}
+                          </td>
+                          <td className="border border-black p-1 text-center">
+                            {formatOfficialDate(linha.date) || ''}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )
+            ))}
             {officialOther.length > 0 && (
               <>
                 <h4 className="font-bold text-xs uppercase mb-1">Outros ramos e passagens</h4>
