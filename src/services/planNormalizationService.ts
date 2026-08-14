@@ -1,4 +1,5 @@
 import { Activity, ActivityEvaluation, MeetingPlan } from '../types';
+import { resolveMeetingStartTime, stampScheduleTimes } from './meetingScheduleService';
 
 const emptyEvaluation = (): ActivityEvaluation => ({
   acompanhamento: '',
@@ -30,8 +31,14 @@ export const normalizeActivityForUse = (activity: Activity, index: number): Acti
   };
 };
 
-export const normalizePlanForUse = (plan: MeetingPlan): MeetingPlan => ({
-  ...plan,
-  activities: (plan.activities || []).map((a, i) => normalizeActivityForUse(a, i)),
-  studyGuide: plan.studyGuide || [],
-});
+export const normalizePlanForUse = (plan: MeetingPlan): MeetingPlan => {
+  const normalized: MeetingPlan = {
+    ...plan,
+    activities: (plan.activities || []).map((a, i) => normalizeActivityForUse(a, i)),
+    studyGuide: plan.studyGuide || [],
+  };
+  if (normalized.meetingStartTime || normalized.activities.some(activity => activity.scheduledStartTime)) {
+    return stampScheduleTimes(normalized, resolveMeetingStartTime(normalized));
+  }
+  return normalized;
+};

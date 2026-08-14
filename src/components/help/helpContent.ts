@@ -67,6 +67,7 @@ export const TELA_HELP: Record<string, ScreenHelp> = {
     dicas: [
       'Modo "Tema livre + amarra": informe o tema e gere — sem marcar catálogo.',
       'Modo "A partir da seleção": marque poucos objetivos e a IA parte deles.',
+      'No cronograma, defina data, ciclo, início (ex.: 15:30), itens e responsáveis. A IA preenche só o miolo; IBEAGU/intervalos/IBOAGUCL permanecem.',
       'O padrão da IA é Gemini Flash-Lite (mais barato/rápido). 3.7 Flash é o mais capaz. “Ver cota / uso” abre o AI Studio.',
       'Com Ollama cloud use contexto ≥256k; a geração roda em partes.',
     ],
@@ -77,6 +78,7 @@ export const TELA_HELP: Record<string, ScreenHelp> = {
     dicas: [
       'Tema livre: a IA propõe o arco e códigos do catálogo.',
       'Ajuste o esqueleto antes de agendar na Agenda.',
+      'O cronograma detalhado (horários e responsáveis) fica no roteiro semanal, não neste esqueleto de ciclo.',
     ],
   },
   ENCYCLOPEDIA: {

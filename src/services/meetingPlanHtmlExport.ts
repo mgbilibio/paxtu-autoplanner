@@ -1,5 +1,6 @@
 import { MeetingPlan } from '../types';
 import { downloadHtml, escapeHtml, htmlShell, renderList, renderText, safeFileName } from './htmlExportCommon';
+import { formatDateBR, formatPaperDuration, resolveMeetingStartTime } from './meetingScheduleService';
 
 const renderEvaluation = (activity: MeetingPlan['activities'][number]): string => {
   const evaluation = activity.evaluation;
@@ -19,10 +20,38 @@ const renderEvaluation = (activity: MeetingPlan['activities'][number]): string =
   </div>`;
 };
 
+const rowClass = (activity: MeetingPlan['activities'][number]): string =>
+  activity.operationalType || (activity.isOperational ? 'fixed' : '');
+
+const renderCronograma = (plan: MeetingPlan): string => {
+  const rows = (plan.activities || []).map(activity => `<tr class="${rowClass(activity)}">
+    <td>${escapeHtml(formatPaperDuration(activity.scheduledStartTime, activity.durationMinutes))}</td>
+    <td>${escapeHtml(activity.title)}</td>
+    <td>${escapeHtml(activity.responsible || '—')}</td>
+  </tr>`).join('');
+  return `<section class="paper">
+    <h2>Programação de reunião semanal</h2>
+    <div class="paper-grid">
+      <div><strong>Unidade</strong><p>${escapeHtml(plan.unitName || '—')}</p></div>
+      <div><strong>Data</strong><p>${escapeHtml(formatDateBR(plan.meetingDate) || '—')}</p></div>
+      <div><strong>Ciclo</strong><p>${escapeHtml(plan.cycleLabel || '—')}</p></div>
+      <div><strong>Reunião</strong><p>${escapeHtml(plan.meetingType || '—')}</p></div>
+      <div><strong>Início</strong><p>${escapeHtml(resolveMeetingStartTime(plan))}</p></div>
+      <div><strong>Tema</strong><p>${escapeHtml(plan.theme || '—')}</p></div>
+      <div class="full"><strong>Objetivos da reunião</strong><p>${renderText(plan.objectives)}</p></div>
+      <div class="full"><strong>Conteúdo técnico</strong><p>${renderText(plan.technicalContent)}</p></div>
+    </div>
+    <table>
+      <thead><tr><th>Duração</th><th>Itens da reunião</th><th>Responsável</th></tr></thead>
+      <tbody>${rows || '<tr><td colspan="3">Sem itens no cronograma.</td></tr>'}</tbody>
+    </table>
+  </section>`;
+};
+
 const renderActivity = (activity: MeetingPlan['activities'][number], index: number, start: number): string => {
   const end = start + (activity.durationMinutes || 0);
-  const clock = activity.scheduledStartTime && activity.scheduledEndTime
-    ? `${activity.scheduledStartTime} - ${activity.scheduledEndTime}`
+  const clock = activity.scheduledStartTime
+    ? formatPaperDuration(activity.scheduledStartTime, activity.durationMinutes)
     : `${start} a ${end} min`;
   return `<section class="activity ${activity.operationalType || ''}">
     <div class="activity-title">
@@ -33,6 +62,7 @@ const renderActivity = (activity: MeetingPlan['activities'][number], index: numb
       <span class="pill">${activity.durationMinutes || 0} min</span>
       <span class="pill">${escapeHtml(activity.educationalArea)}</span>
       <span class="pill">${escapeHtml(activity.progressionObjective || 'Geral')}</span>
+      ${activity.responsible ? `<span class="pill">${escapeHtml(activity.responsible)}</span>` : ''}
       ${activity.isOperational ? '<span class="tag warn">Rotina da reunião</span>' : ''}
     </div>
     <p>${renderText(activity.description)}</p>
@@ -68,9 +98,11 @@ export const buildMeetingPlanHtml = (plan: MeetingPlan): string => {
       <div class="meta">
         <span class="pill">${escapeHtml(plan.branch || '')}</span>
         <span class="pill">${escapeHtml(plan.totalDuration)} minutos</span>
+        <span class="pill">${escapeHtml(plan.meetingDate ? formatDateBR(plan.meetingDate) : '')}</span>
         <span class="pill">${escapeHtml(plan.createdAt ? new Date(plan.createdAt).toLocaleString('pt-BR') : '')}</span>
       </div>
     </section>
+    ${renderCronograma(plan)}
     <div class="content">
       <div class="box"><strong>Notas gerais</strong><p>${renderText(plan.generalNotes)}</p></div>
       ${plan.fundoDeCena ? `<div class="box"><strong>Fundo de cena</strong><p>${renderText(plan.fundoDeCena)}</p></div>` : ''}

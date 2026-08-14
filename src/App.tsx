@@ -28,8 +28,9 @@ import { getPermissions, getRoleLabel, isOperationalProfile } from './services/r
 import { SectionProgressOverview } from './components/SectionProgressOverview';
 import { normalizeOllamaBaseUrl } from './services/ollamaUrlSecurity';
 import { buildCustomObjective } from './services/customObjectiveMatcher';
-import { applyOperationalSchedule, defaultScheduleOptions, estimateOperationalMinutes, stampScheduleTimes } from './services/meetingScheduleService';
+import { applyMeetingHeader, applyOperationalSchedule, briefsFromCronograma, buildDefaultCronograma, cycleLabelFromDate, defaultScheduleOptions, estimateOperationalMinutes, isCoreScheduleSlot, mergeGeneratedIntoCronograma, stampActivities, stampScheduleTimes, syncCoreSlotCount, tomorrowISODate } from './services/meetingScheduleService';
 import { hasAnyActivityBrief, trimActivityBriefs } from './services/activityBriefs';
+import { CronogramaBlock } from './components/CronogramaBlock';
 import { forceDownloadHtml } from './services/htmlExportCommon';
 import { useGlobalEvents } from './hooks/useGlobalEvents';
 import { clampSettingNumber } from './utils/clamp';
@@ -62,6 +63,14 @@ function App() {
   const [includeOpening, setIncludeOpening] = useState(defaultScheduleOptions.includeOpening);
   const [includeBreaks, setIncludeBreaks] = useState(defaultScheduleOptions.includeBreaks);
   const [includeClosing, setIncludeClosing] = useState(defaultScheduleOptions.includeClosing);
+  const [meetingDate, setMeetingDate] = useState(tomorrowISODate);
+  const [cycleLabel, setCycleLabel] = useState(() => cycleLabelFromDate(tomorrowISODate()));
+  const [meetingType, setMeetingType] = useState('Normal');
+  const [meetingObjectives, setMeetingObjectives] = useState('');
+  const [technicalContent, setTechnicalContent] = useState('');
+  const [scheduleDraft, setScheduleDraft] = useState<Activity[]>(() =>
+    buildDefaultCronograma(3, 90, defaultScheduleOptions),
+  );
   const [narrativeTheme, setNarrativeTheme] = useState<string>('');
   const [customInstruction, setCustomInstruction] = useState<string>('');
   const [planAttachments, setPlanAttachments] = useState<PlanAttachment[]>([]);
@@ -712,13 +721,24 @@ function App() {
       includeBreaks,
       includeClosing,
     };
-    const reservedMinutes = estimateOperationalMinutes(safeActivityCount, scheduleOptions);
-    const coreDuration = Math.max(30, safeTotalDuration - reservedMinutes);
+    const draft = scheduleDraft.length
+      ? scheduleDraft
+      : buildDefaultCronograma(
+          safeActivityCount,
+          Math.max(30, safeTotalDuration - estimateOperationalMinutes(safeActivityCount, scheduleOptions)),
+          scheduleOptions,
+        );
+    const coreSlots = draft.filter(isCoreScheduleSlot);
+    const effectiveActivityCount = clampSettingNumber(coreSlots.length || safeActivityCount, 3, 1, 10);
+    const draftCoreMinutes = coreSlots.reduce((sum, row) => sum + (row.durationMinutes || 0), 0);
+    const draftOpMinutes = draft.filter(row => !isCoreScheduleSlot(row)).reduce((sum, row) => sum + (row.durationMinutes || 0), 0);
+    const reservedMinutes = draftOpMinutes || estimateOperationalMinutes(effectiveActivityCount, scheduleOptions);
+    const coreDuration = Math.max(30, draftCoreMinutes || (safeTotalDuration - reservedMinutes));
     const catalogDigest =
       effectiveMode === 'auto_link'
         ? buildCatalogDigest(getPlanningCatalog(selectedBranch, activeGeneratorSystem))
         : undefined;
-    const trimmedBriefs = trimActivityBriefs(activityBriefs, safeActivityCount);
+    const trimmedBriefs = trimActivityBriefs(briefsFromCronograma(draft, activityBriefs), effectiveActivityCount);
     const briefsForPrompt = hasAnyActivityBrief(trimmedBriefs) ? trimmedBriefs : undefined;
     setLoading(true);
     setError(null);
@@ -744,7 +764,7 @@ function App() {
           modelId: selectedModel,
           customInstruction,
           referenceUrls,
-          activityCount: safeActivityCount,
+          activityCount: effectiveActivityCount,
           participantsCount: safeParticipantsCount,
           planningMode: effectiveMode,
           catalogDigest,
@@ -753,7 +773,22 @@ function App() {
           context
       });
       if (!isActiveGeneration(runId)) return;
-      const scheduledPlan = applyOperationalSchedule(generatedPlan, scheduleOptions);
+      const mergedActivities = coreSlots.length
+        ? mergeGeneratedIntoCronograma(draft, generatedPlan.activities || [], scheduleStartTime)
+        : applyOperationalSchedule(generatedPlan, scheduleOptions).activities;
+      const scheduledPlan = applyMeetingHeader(
+        stampScheduleTimes({ ...generatedPlan, activities: mergedActivities }, scheduleStartTime),
+        {
+          unitName: currentSection?.name,
+          meetingDate,
+          cycleLabel,
+          meetingType,
+          objectives: meetingObjectives,
+          technicalContent,
+          meetingStartTime: scheduleStartTime,
+          theme: narrativeTheme,
+        },
+      );
       if (currentUser) { scheduledPlan.authorId = currentUser.id; scheduledPlan.authorName = currentUser.name; }
       if (currentSection) scheduledPlan.sectionId = currentSection.id;
       try {
@@ -842,9 +877,14 @@ function App() {
       const replaced: Activity = {
         ...generatedCore,
         _uid: activity._uid || generated._uid,
+        responsible: activity.responsible,
+        durationMinutes: activity.durationMinutes || generated.durationMinutes,
       };
       const nextActivities = currentPlan.activities.map((item, i) => (i === index ? replaced : item));
-      const nextPlan = stampScheduleTimes({ ...currentPlan, activities: nextActivities }, scheduleStartTime);
+      const nextPlan = stampScheduleTimes(
+        { ...currentPlan, activities: nextActivities },
+        currentPlan.meetingStartTime || scheduleStartTime,
+      );
       setPlan(nextPlan);
       showToast('Atividade refeita. As outras ficaram.', 'info');
       return nextPlan;
@@ -875,7 +915,29 @@ function App() {
       setLevelSelectorTarget(null);
   };
 
-  const reset = () => { setStep(1); setPlan(null); setError(null); setCatalogPersist({ saved: false, error: null }); setSelectedObjectives([]); setNarrativeTheme(''); setSearchTerm(''); setCustomInstruction(''); setPlanAttachments([]); setActivityBriefs(Array(clampSettingNumber(activityCount, 3, 1, 10)).fill('')); };
+  const reset = () => {
+    setStep(1);
+    setPlan(null);
+    setError(null);
+    setCatalogPersist({ saved: false, error: null });
+    setSelectedObjectives([]);
+    setNarrativeTheme('');
+    setSearchTerm('');
+    setCustomInstruction('');
+    setPlanAttachments([]);
+    setActivityBriefs(Array(clampSettingNumber(activityCount, 3, 1, 10)).fill(''));
+    setMeetingDate(tomorrowISODate());
+    setCycleLabel(cycleLabelFromDate(tomorrowISODate()));
+    setMeetingType('Normal');
+    setMeetingObjectives('');
+    setTechnicalContent('');
+    setScheduleStartTime(defaultScheduleOptions.startTime);
+    setScheduleDraft(buildDefaultCronograma(
+      clampSettingNumber(activityCount, 3, 1, 10),
+      90,
+      { ...defaultScheduleOptions, startTime: defaultScheduleOptions.startTime },
+    ));
+  };
 
   // Guarda central de navegacao: (1) bloqueia o GERADOR quando a secao esta travada
   // por outro adulto (editLockConflict) e redireciona para consulta; (2) fecha overlays
@@ -957,7 +1019,25 @@ function App() {
   // inputs continua livre para edicao; o clamp definitivo ocorre no onBlur e no handleGenerate.
   const displayTotalDuration = clampSettingNumber(totalDuration, 120, 30, 600);
   const displayActivityCount = clampSettingNumber(activityCount, 3, 1, 10);
-  const reservedOperationalMinutes = estimateOperationalMinutes(displayActivityCount, currentScheduleOptions);
+  const draftCoreCount = scheduleDraft.filter(isCoreScheduleSlot).length;
+  const reservedFromDraft = scheduleDraft
+    .filter(row => !isCoreScheduleSlot(row))
+    .reduce((sum, row) => sum + (row.durationMinutes || 0), 0);
+  const reservedOperationalMinutes = reservedFromDraft || estimateOperationalMinutes(displayActivityCount, currentScheduleOptions);
+  const handleScheduleDraftChange = (next: Activity[]) => {
+    setScheduleDraft(next);
+    const cores = next.filter(isCoreScheduleSlot).length;
+    if (cores >= 1 && cores <= 10 && cores !== activityCount) {
+      setActivityCount(cores);
+    }
+    const total = next.reduce((sum, row) => sum + (row.durationMinutes || 0), 0);
+    if (total >= 30 && total <= 600) setTotalDuration(total);
+  };
+  const handleActivityCountChange = (value: number) => {
+    setActivityCount(value);
+    const safe = clampSettingNumber(value, 3, 1, 10);
+    setScheduleDraft(prev => stampActivities(syncCoreSlotCount(prev, safe), scheduleStartTime));
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 text-gray-800 font-sans flex flex-col relative">
@@ -1673,37 +1753,50 @@ function App() {
                                 </div>
                                 <div>
                                     <label className="text-[10px] font-bold text-slate-500 uppercase">Atividades</label>
-                                    <input type="number" min="1" max="10" value={activityCount} onChange={(e) => setActivityCount(Number(e.target.value))} onBlur={() => setActivityCount(v => clampSettingNumber(v, 3, 1, 10))} className="w-full p-2 border rounded-lg text-xs bg-slate-50 outline-none" />
+                                    <input type="number" min="1" max="10" value={activityCount} onChange={(e) => handleActivityCountChange(Number(e.target.value))} onBlur={() => handleActivityCountChange(clampSettingNumber(activityCount, 3, 1, 10))} className="w-full p-2 border rounded-lg text-xs bg-slate-50 outline-none" />
                                 </div>
                                 <div>
                                     <label className="text-[10px] font-bold text-slate-500 uppercase">Jovens</label>
                                     <input type="number" min="1" value={participantsCount} onChange={(e) => setParticipantsCount(Number(e.target.value))} onBlur={() => setParticipantsCount(v => clampSettingNumber(v, 20, 1, 500))} className="w-full p-2 border rounded-lg text-xs bg-slate-50 outline-none" />
                                 </div>
                             </div>
-                            <details className="rounded-xl border border-indigo-100 bg-indigo-50/60 p-3">
-                              <summary className="text-[10px] font-black text-indigo-800 uppercase cursor-pointer">Horário e cerimonial</summary>
-                              <div className="mt-2 space-y-2">
-                                <div className="flex items-center justify-between gap-2">
-                                  <label className="text-[10px] font-bold text-indigo-800 uppercase">Início/bandeira</label>
-                                  <input type="time" value={scheduleStartTime} onChange={(e) => setScheduleStartTime(e.target.value || '15:30')} className="p-1 border border-indigo-200 rounded text-xs bg-white font-bold" />
-                                </div>
-                                <label className="flex items-center gap-2 text-[11px] text-slate-700 font-bold">
-                                  <input type="checkbox" checked={includeOpening} onChange={(e) => setIncludeOpening(e.target.checked)} />
-                                  IBOA e abertura da bandeira
-                                </label>
-                                <label className="flex items-center gap-2 text-[11px] text-slate-700 font-bold">
-                                  <input type="checkbox" checked={includeBreaks} onChange={(e) => setIncludeBreaks(e.target.checked)} />
-                                  Banheiro/hidratação entre atividades
-                                </label>
-                                <label className="flex items-center gap-2 text-[11px] text-slate-700 font-bold">
-                                  <input type="checkbox" checked={includeClosing} onChange={(e) => setIncludeClosing(e.target.checked)} />
-                                  Encerramento da bandeira
-                                </label>
-                                <p className="text-[10px] text-indigo-700">
-                                  Reserva: {reservedOperationalMinutes} min · miolo IA: {Math.max(30, displayTotalDuration - reservedOperationalMinutes)} min
-                                </p>
-                              </div>
-                            </details>
+                            <div className="rounded-xl border border-indigo-100 bg-indigo-50/40 p-1">
+                              <CronogramaBlock
+                                compact
+                                editable
+                                header={{
+                                  unitName: currentSection?.name,
+                                  meetingDate,
+                                  cycleLabel,
+                                  meetingType,
+                                  theme: narrativeTheme,
+                                  objectives: meetingObjectives,
+                                  technicalContent,
+                                }}
+                                activities={scheduleDraft}
+                                startTime={scheduleStartTime}
+                                activityCount={displayActivityCount}
+                                coreDuration={Math.max(30, displayTotalDuration - reservedOperationalMinutes)}
+                                onHeaderChange={patch => {
+                                  if (patch.meetingDate !== undefined) {
+                                    setMeetingDate(patch.meetingDate);
+                                    if (!cycleLabel || cycleLabel === cycleLabelFromDate(meetingDate)) {
+                                      setCycleLabel(cycleLabelFromDate(patch.meetingDate));
+                                    }
+                                  }
+                                  if (patch.cycleLabel !== undefined) setCycleLabel(patch.cycleLabel);
+                                  if (patch.meetingType !== undefined) setMeetingType(patch.meetingType);
+                                  if (patch.theme !== undefined) setNarrativeTheme(patch.theme);
+                                  if (patch.objectives !== undefined) setMeetingObjectives(patch.objectives);
+                                  if (patch.technicalContent !== undefined) setTechnicalContent(patch.technicalContent);
+                                }}
+                                onStartTimeChange={setScheduleStartTime}
+                                onActivitiesChange={handleScheduleDraftChange}
+                              />
+                              <p className="text-[10px] text-indigo-700 px-3 pb-2">
+                                Unidade: {currentSection?.name || 'seção atual'} · {draftCoreCount} item(ns) de miolo para a IA · rotina {reservedOperationalMinutes} min
+                              </p>
+                            </div>
                             <div className="space-y-2">
                               <p className="text-[10px] font-bold text-slate-500 uppercase">Sementes por atividade (opcional)</p>
                               {activityBriefs.map((brief, i) => (
@@ -1758,6 +1851,7 @@ function App() {
                   onRegenerateActivity={handleRegenerateActivity}
                   isGenerating={loading}
                   fallbackSectionId={currentSection?.id}
+                  fallbackUnitName={currentSection?.name}
                   initiallySaved={catalogPersist.saved}
                   initialSaveError={catalogPersist.error}
                 />
