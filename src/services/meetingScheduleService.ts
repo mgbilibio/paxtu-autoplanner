@@ -97,8 +97,16 @@ export const applyOperationalSchedule = (
       'Fechamento da reunião, avisos finais, agradecimentos, avaliação rápida e encerramento da bandeira.',
     ));
   }
-  let cursor = timeToMinutes(options.startTime);
-  const scheduled = activities.map(activity => {
+  return stampScheduleTimes({ ...plan, activities }, options.startTime);
+};
+
+/** Recalcula horários no array atual (não insere abertura/intervalos/encerramento). */
+export const stampScheduleTimes = (
+  plan: MeetingPlan,
+  startTime: string = defaultScheduleOptions.startTime,
+): MeetingPlan => {
+  let cursor = timeToMinutes(startTime);
+  const scheduled = (plan.activities || []).map(activity => {
     const start = cursor;
     cursor += activity.durationMinutes || 0;
     return {

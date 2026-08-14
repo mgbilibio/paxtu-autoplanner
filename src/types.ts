@@ -114,6 +114,19 @@ export interface GeneratorParams {
   catalogDigest?: string;
   /** Anexos da sessão do navegador (não persistir binário no MeetingPlan). */
   attachments?: import('./services/planAttachments').PlanAttachment[];
+  /**
+   * Sementes opcionais por faixa (índice = posição da atividade de miolo).
+   * String vazia = a IA inventa essa posição. Não persistir.
+   */
+  activityBriefs?: string[];
+}
+
+/** Pedido para refazer UMA atividade sem descartar o restante do plano. */
+export interface GenerateScoutActivityParams extends GeneratorParams {
+  context?: { sectionName: string; groupName: string };
+  currentPlan: MeetingPlan;
+  slotIndex: number;
+  oldActivity: Activity;
 }
 
 export interface GroupProfile {

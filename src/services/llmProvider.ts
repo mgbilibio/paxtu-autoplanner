@@ -2,7 +2,7 @@
 // Ordem de preferência de produto: gemini → ollama-local → ollama-cloud → xai-oauth.
 // Na web (GitHub Pages) o padrão continua Gemini; xAI é extra opcional com chave no browser.
 
-import { GeneratorParams, MeetingPlan, LlmProviderId } from '../types';
+import { Activity, GenerateScoutActivityParams, GeneratorParams, MeetingPlan, LlmProviderId } from '../types';
 import { getAppConfig } from './storageService';
 import * as gemini from './geminiService';
 import * as ollama from './ollamaService';
@@ -22,6 +22,7 @@ export interface LlmProvider {
   id: LlmProviderId;
   listModels: () => Promise<string[]>;
   generateScoutPlan: (params: GeneratorParams & { context?: { sectionName: string; groupName: string } }) => Promise<MeetingPlan>;
+  generateScoutActivity: (params: GenerateScoutActivityParams) => Promise<Activity>;
   isReachable: () => Promise<{ ok: boolean; error?: string }>;
 }
 
@@ -37,6 +38,7 @@ const geminiProvider: LlmProvider = {
   id: 'gemini',
   listModels: gemini.getAvailableModels,
   generateScoutPlan: gemini.generateScoutPlan,
+  generateScoutActivity: gemini.generateScoutActivity,
   isReachable: async () => {
     if (!gemini.hasGeminiCredentials()) {
       return { ok: false, error: `Chave de API do Gemini não configurada. ${GEMINI_KEY_HELP}` };
@@ -49,6 +51,7 @@ const ollamaLocalProvider: LlmProvider = {
   id: 'ollama-local',
   listModels: ollama.listModels,
   generateScoutPlan: ollama.generateScoutPlan,
+  generateScoutActivity: ollama.generateScoutActivity,
   isReachable: async () => {
     if (isWebApp()) {
       return {
@@ -64,6 +67,7 @@ const ollamaCloudProvider: LlmProvider = {
   id: 'ollama-cloud',
   listModels: ollama.listModels,
   generateScoutPlan: ollama.generateScoutPlan,
+  generateScoutActivity: ollama.generateScoutActivity,
   isReachable: ollama.isReachable,
 };
 
@@ -71,6 +75,7 @@ const xaiProvider: LlmProvider = {
   id: 'xai-oauth',
   listModels: xai.listModels,
   generateScoutPlan: xai.generateScoutPlan,
+  generateScoutActivity: xai.generateScoutActivity,
   isReachable: xai.isReachable,
 };
 
@@ -89,6 +94,9 @@ export const getProviderById = (id: LlmProviderId): LlmProvider => {
 
 export const generateScoutPlanRouted = (params: Parameters<LlmProvider['generateScoutPlan']>[0]) =>
   getActiveProvider().generateScoutPlan(params);
+
+export const generateScoutActivityRouted = (params: GenerateScoutActivityParams) =>
+  getActiveProvider().generateScoutActivity(params);
 
 export const listAvailableModels = () => getActiveProvider().listModels();
 

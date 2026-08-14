@@ -14,7 +14,7 @@ const asList = (value: unknown): string[] =>
     ? value.map(item => String(item).trim()).filter(Boolean)
     : [];
 
-const normalizeActivity = (activity: Activity, index: number): Activity => {
+export const normalizeActivityForUse = (activity: Activity, index: number): Activity => {
   const current = activity.evaluation || emptyEvaluation();
   return {
     ...activity,
@@ -32,6 +32,6 @@ const normalizeActivity = (activity: Activity, index: number): Activity => {
 
 export const normalizePlanForUse = (plan: MeetingPlan): MeetingPlan => ({
   ...plan,
-  activities: (plan.activities || []).map((a, i) => normalizeActivity(a, i)),
+  activities: (plan.activities || []).map((a, i) => normalizeActivityForUse(a, i)),
   studyGuide: plan.studyGuide || [],
 });

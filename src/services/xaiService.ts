@@ -1,10 +1,11 @@
-import { GeneratorParams, MeetingPlan } from '../types';
+import { Activity, GenerateScoutActivityParams, GeneratorParams, MeetingPlan } from '../types';
 import { getAppConfig } from './storageService';
 import { extractJson } from './llmJson';
-import { normalizePlanForUse } from './planNormalizationService';
+import { normalizeActivityForUse, normalizePlanForUse } from './planNormalizationService';
 import { getProgressionDetail } from './progressionDetailService';
 import type { MeetingCycle } from './geminiService';
 import { attachmentsToPromptBlock } from './planAttachments';
+import { activityBriefsPromptBlock, buildSingleActivityPrompt } from './activityBriefs';
 import type { PlanAttachment } from './planAttachments';
 
 const XAI_API = 'https://api.x.ai/v1';
@@ -175,6 +176,8 @@ Modo: ${planningMode}.
 Duração total: ${params.totalDuration} min. Atividades: ${params.activityCount || 3}. Jovens: ${params.participantsCount || 20}.
 Tema: ${params.narrativeTheme || 'livre'}.
 `;
+  const briefsBlock = activityBriefsPromptBlock(params.activityBriefs, params.activityCount || 3);
+  if (briefsBlock) userPromptBase += `\n${briefsBlock}\n`;
   if (planningMode === 'from_selection') userPromptBase += `\nOBJETIVOS:\n${objectivesList || '(nenhum)'}\n`;
   else {
     userPromptBase += `\nAUTO_LINK: invente atividades e amarre CÓDIGOS EXATOS do catálogo.\n`;
@@ -219,6 +222,15 @@ Array JSON: [{"activityTitle":"...","conceptExplainer":"...","teachingTips":"...
   planStructure.createdAt = new Date().toISOString();
   planStructure.id = Date.now().toString();
   return normalizePlanForUse(planStructure as MeetingPlan);
+};
+
+export const generateScoutActivity = async (params: GenerateScoutActivityParams): Promise<Activity> => {
+  if (!resolveXaiKey()) throw new Error(NO_KEY);
+  const attachmentBlock = attachmentsToPromptBlock(params.attachments);
+  const prompt = `${buildSingleActivityPrompt(params)}${attachmentBlock ? `\n\n${attachmentBlock}` : ''}`;
+  const parsed = await callJson<Activity>(prompt, 'refazer atividade', params.modelId);
+  const { isOperational: _op, operationalType: _type, ...safe } = parsed;
+  return normalizeActivityForUse(safe, params.slotIndex);
 };
 
 export const xaiErrorMessage = (error: unknown): string => sanitize(error);

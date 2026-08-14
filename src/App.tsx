@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ScoutBranch, MeetingPlan, ObjectiveItem, CatalogAnnotation, AppConfig, UserProfile, ScoutSection, CatalogItem, PlanningMode, LlmProviderId } from './types';
+import { ScoutBranch, MeetingPlan, Activity, ObjectiveItem, CatalogAnnotation, AppConfig, UserProfile, ScoutSection, CatalogItem, PlanningMode, LlmProviderId } from './types';
 import { BRANCHES } from './constants';
 import { getPlanningCatalog, buildCatalogDigest } from './services/catalogService';
-import { generateScoutPlanRouted as generateScoutPlan, listAvailableModels as getAvailableModels, getActiveProvider, getProviderById, normalizeProviderId, GEMINI_STUDIO_URL, GEMINI_KEY_HELP } from './services/llmProvider';
+import { generateScoutPlanRouted as generateScoutPlan, generateScoutActivityRouted as generateScoutActivity, listAvailableModels as getAvailableModels, getActiveProvider, getProviderById, normalizeProviderId, GEMINI_STUDIO_URL, GEMINI_KEY_HELP } from './services/llmProvider';
 import { getDefaultGeminiModel, pickPreferredGeminiModel, hasGeminiCredentials, curatedGeminiModelIds } from './services/geminiService';
 import { pickXaiFastModel } from './services/xaiService';
 import { getAnnotations, saveAnnotation, getAppConfig, saveAppConfig, normalizePath, downloadProgressBackup, importProgressBackup, saveSectionAsync, getAllMemberBlocoStates, downloadLocalAppBackup, importLocalAppBackup, ensureWorkspaceMetadata, acquireSectionEditLock, releaseSectionEditLock, renewSectionEditLock, EditLock, getSectionsAsync } from './services/storageService';
@@ -28,7 +28,8 @@ import { getPermissions, getRoleLabel, isOperationalProfile } from './services/r
 import { SectionProgressOverview } from './components/SectionProgressOverview';
 import { normalizeOllamaBaseUrl } from './services/ollamaUrlSecurity';
 import { buildCustomObjective } from './services/customObjectiveMatcher';
-import { applyOperationalSchedule, defaultScheduleOptions, estimateOperationalMinutes } from './services/meetingScheduleService';
+import { applyOperationalSchedule, defaultScheduleOptions, estimateOperationalMinutes, stampScheduleTimes } from './services/meetingScheduleService';
+import { hasAnyActivityBrief, trimActivityBriefs } from './services/activityBriefs';
 import { forceDownloadHtml } from './services/htmlExportCommon';
 import { useGlobalEvents } from './hooks/useGlobalEvents';
 import { clampSettingNumber } from './utils/clamp';
@@ -55,6 +56,7 @@ function App() {
   const [activeGeneratorSystem, setActiveGeneratorSystem] = useState<'POR_2025' | 'LEGACY_2020'>('POR_2025');
   const [totalDuration, setTotalDuration] = useState<number>(120); 
   const [activityCount, setActivityCount] = useState<number>(3);
+  const [activityBriefs, setActivityBriefs] = useState<string[]>(() => Array(3).fill(''));
   const [participantsCount, setParticipantsCount] = useState<number>(20);
   const [scheduleStartTime, setScheduleStartTime] = useState(defaultScheduleOptions.startTime);
   const [includeOpening, setIncludeOpening] = useState(defaultScheduleOptions.includeOpening);
@@ -203,6 +205,14 @@ function App() {
     const timer = window.setInterval(updateElapsed, 1000);
     return () => window.clearInterval(timer);
   }, [llmStartedAt]);
+
+  useEffect(() => {
+    const n = clampSettingNumber(activityCount, 3, 1, 10);
+    setActivityBriefs(prev => {
+      if (prev.length === n) return prev;
+      return Array.from({ length: n }, (_, i) => prev[i] ?? '');
+    });
+  }, [activityCount]);
 
   const testOllamaConnection = async () => {
     setTestingOllama(true);
@@ -707,6 +717,8 @@ function App() {
       effectiveMode === 'auto_link'
         ? buildCatalogDigest(getPlanningCatalog(selectedBranch, activeGeneratorSystem))
         : undefined;
+    const trimmedBriefs = trimActivityBriefs(activityBriefs, safeActivityCount);
+    const briefsForPrompt = hasAnyActivityBrief(trimmedBriefs) ? trimmedBriefs : undefined;
     setLoading(true);
     setError(null);
     setLlmStartedAt(Date.now());
@@ -735,6 +747,7 @@ function App() {
           planningMode: effectiveMode,
           catalogDigest,
           attachments: planAttachments,
+          activityBriefs: briefsForPrompt,
           context
       });
       if (!isActiveGeneration(runId)) return;
@@ -757,6 +770,78 @@ function App() {
     }
   };
 
+  const handleRegenerateActivity = async (index: number, activity: Activity, currentPlan: MeetingPlan): Promise<MeetingPlan> => {
+    if (!selectedBranch) {
+      showToast('Escolha o ramo antes de gerar.', 'error');
+      throw new Error('Escolha o ramo antes de gerar.');
+    }
+    const activeProvider = normalizeProviderId(appConfig?.llmProvider);
+    if (activeProvider === 'gemini' && !hasGeminiCredentials()) {
+      setError(`Configure a chave do Gemini em Configurações. ${GEMINI_KEY_HELP}`);
+      showToast('Configure a chave do Gemini.', 'error');
+      throw new Error('Configure a chave do Gemini.');
+    }
+    const effectiveMode: PlanningMode =
+      planningMode === 'from_selection' || planningMode === 'auto_link'
+        ? planningMode
+        : (selectedObjectives.length > 0 ? 'from_selection' : 'auto_link');
+    const safeTotalDuration = clampSettingNumber(totalDuration, 120, 30, 600);
+    const safeActivityCount = clampSettingNumber(activityCount, 3, 1, 10);
+    const safeParticipantsCount = clampSettingNumber(participantsCount, 20, 1, 500);
+    const scheduleOptions = {
+      ...defaultScheduleOptions,
+      startTime: scheduleStartTime,
+      includeOpening,
+      includeBreaks,
+      includeClosing,
+    };
+    const reservedMinutes = estimateOperationalMinutes(safeActivityCount, scheduleOptions);
+    const coreDuration = Math.max(30, safeTotalDuration - reservedMinutes);
+    const catalogDigest =
+      effectiveMode === 'auto_link'
+        ? buildCatalogDigest(getPlanningCatalog(selectedBranch, activeGeneratorSystem))
+        : undefined;
+    const trimmedBriefs = trimActivityBriefs(activityBriefs, safeActivityCount);
+    const briefsForPrompt = hasAnyActivityBrief(trimmedBriefs) ? trimmedBriefs : undefined;
+    const context = currentSection ? { sectionName: currentSection.name, groupName: appConfig?.profile?.groupName || 'Grupo Escoteiro' } : undefined;
+    try {
+      const generated = await generateScoutActivity({
+        branch: selectedBranch,
+        totalDuration: coreDuration,
+        narrativeTheme,
+        objectives: selectedObjectives,
+        modelId: selectedModel,
+        customInstruction,
+        referenceUrls,
+        activityCount: safeActivityCount,
+        participantsCount: safeParticipantsCount,
+        planningMode: effectiveMode,
+        catalogDigest,
+        attachments: planAttachments,
+        activityBriefs: briefsForPrompt,
+        context,
+        currentPlan,
+        slotIndex: index,
+        oldActivity: activity,
+      });
+      const { isOperational: _isOp, operationalType: _opType, ...generatedCore } = generated;
+      const replaced: Activity = {
+        ...generatedCore,
+        _uid: activity._uid || generated._uid,
+      };
+      const nextActivities = currentPlan.activities.map((item, i) => (i === index ? replaced : item));
+      const nextPlan = stampScheduleTimes({ ...currentPlan, activities: nextActivities }, scheduleStartTime);
+      setPlan(nextPlan);
+      showToast('Atividade refeita. As outras ficaram.', 'info');
+      return nextPlan;
+    } catch (err: any) {
+      const msg = err?.message || String(err) || 'Falha ao refazer a atividade.';
+      setError(msg);
+      showToast('Falha ao refazer esta atividade.', 'error');
+      throw err;
+    }
+  };
+
   const extractLevelRequirements = (text: string | undefined, level: number): string => {
       if (!text) return "Requisitos padrão.";
       // Bug fix: dentro de template-string `\s` e `\d` perdem o escape — precisa duplo backslash
@@ -776,7 +861,7 @@ function App() {
       setLevelSelectorTarget(null);
   };
 
-  const reset = () => { setStep(1); setPlan(null); setError(null); setSelectedObjectives([]); setNarrativeTheme(''); setSearchTerm(''); setCustomInstruction(''); setPlanAttachments([]); };
+  const reset = () => { setStep(1); setPlan(null); setError(null); setSelectedObjectives([]); setNarrativeTheme(''); setSearchTerm(''); setCustomInstruction(''); setPlanAttachments([]); setActivityBriefs(Array(clampSettingNumber(activityCount, 3, 1, 10)).fill('')); };
 
   // Guarda central de navegacao: (1) bloqueia o GERADOR quando a secao esta travada
   // por outro adulto (editLockConflict) e redireciona para consulta; (2) fecha overlays
@@ -1600,6 +1685,26 @@ function App() {
                                 </p>
                               </div>
                             </details>
+                            <div className="space-y-2">
+                              <p className="text-[10px] font-bold text-slate-500 uppercase">Sementes por atividade (opcional)</p>
+                              {activityBriefs.map((brief, i) => (
+                                <div key={i}>
+                                  <label className="text-[10px] font-bold text-slate-500 uppercase">Atividade {i + 1}</label>
+                                  <textarea
+                                    value={brief}
+                                    onChange={(e) => setActivityBriefs(prev => {
+                                      const next = [...prev];
+                                      next[i] = e.target.value;
+                                      return next;
+                                    })}
+                                    placeholder={i % 2 === 0 ? 'Ex: jogo de nós no pátio' : 'Ex: avaliação do ciclo + proposta do próximo'}
+                                    className="mt-0.5 w-full p-2 border rounded-lg text-xs bg-slate-50 outline-none"
+                                    rows={2}
+                                  />
+                                </div>
+                              ))}
+                              <p className="text-[10px] text-slate-400">Vazio = a IA inventa essa faixa. A instrução geral abaixo continua valendo.</p>
+                            </div>
                             <textarea value={customInstruction} onChange={(e) => setCustomInstruction(e.target.value)} placeholder="Instruções para a IA..." className="w-full p-2 border rounded-lg text-xs bg-slate-50 outline-none" rows={2}></textarea>
                             <PlanAttachmentsControl attachments={planAttachments} onChange={setPlanAttachments} />
                             {error && (
@@ -1631,6 +1736,7 @@ function App() {
                   plan={plan}
                   onReset={reset}
                   onRegenerate={handleGenerate}
+                  onRegenerateActivity={handleRegenerateActivity}
                   isGenerating={loading}
                 />
               )}

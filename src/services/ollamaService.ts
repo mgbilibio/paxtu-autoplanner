@@ -4,13 +4,14 @@
 // Cloud (:cloud): contexto alto (256k–1M), geração em PARTES e agregação no app
 // para evitar JSON monolítico que estoura saída/timeout e volta vazio.
 
-import { Activity, ActivityEvaluation, GeneratorParams, MeetingPlan, StudyItem } from '../types';
+import { Activity, ActivityEvaluation, GenerateScoutActivityParams, GeneratorParams, MeetingPlan, StudyItem } from '../types';
 import { getAppConfig } from './storageService';
 import { buildManuaisContextForBranch } from '../data/manuaisReferencia';
-import { normalizePlanForUse } from './planNormalizationService';
+import { normalizeActivityForUse, normalizePlanForUse } from './planNormalizationService';
 import { normalizeOllamaBaseUrl } from './ollamaUrlSecurity';
 import { extractJson } from './llmJson';
 import { attachmentsToPromptBlock } from './planAttachments';
+import { activityBriefsPromptBlock, buildSingleActivityPrompt } from './activityBriefs';
 import type { PlanAttachment } from './planAttachments';
 
 const DEFAULT_BASE_URL = 'http://localhost:11434';
@@ -301,6 +302,7 @@ const commonBrief = (params: GeneratorParams & { context?: { sectionName: string
     `Quantidade sugerida de atividades: ${params.activityCount || 3}.`,
     `Quantidade de jovens (estimativa): ${params.participantsCount || 20}.`,
     `Tema narrativo solicitado: ${theme}.`,
+    activityBriefsPromptBlock(params.activityBriefs, params.activityCount || 3),
     params.customInstruction ? `INSTRUÇÃO ESPECIAL: ${params.customInstruction}` : '',
     attachmentsToPromptBlock(params.attachments),
     '',
@@ -505,7 +507,9 @@ const buildSkeletonPrompt = (
     'MANUAIS DE REFERÊNCIA (só para orientar o tema; não invente citações longas ainda):',
     manuais,
     '',
-    `Crie o esqueleto com cerca de ${n} atividades.`,
+    activityBriefsPromptBlock(params.activityBriefs, n)
+      ? `Crie o esqueleto com EXATAMENTE ${n} atividades, uma por semente/faixa.`
+      : `Crie o esqueleto com cerca de ${n} atividades.`,
     'JSON EXATO:',
     '{',
     '  "theme": "tema curto 3-6 palavras",',
@@ -962,4 +966,27 @@ export const generateScoutPlan = async (
   );
 
   return normalizePlanForUse(plan);
+};
+
+export const generateScoutActivity = async (params: GenerateScoutActivityParams): Promise<Activity> => {
+  const model = resolveOllamaModel(params.modelId);
+  if (!model) throw new Error('Nenhum modelo Ollama selecionado. Configure em Configurações.');
+  const reachable = await isReachable();
+  if (!reachable.ok) {
+    throw new Error(`Ollama indisponível: ${reachable.error}\n\nVerifique se o serviço está rodando e tente novamente.`);
+  }
+  const attachmentBlock = attachmentsToPromptBlock(params.attachments);
+  const user = `${buildSingleActivityPrompt(params)}${attachmentBlock ? `\n\n${attachmentBlock}` : ''}`;
+  const parsed = await callOllamaChatForJson<Activity>(
+    {
+      model,
+      system: SYSTEM_BASE,
+      user,
+      numPredict: getGenerationOutputTokens(model),
+      temperature: 0.4,
+    },
+    'Refazer uma atividade',
+  );
+  const { isOperational: _op, operationalType: _type, ...safe } = parsed;
+  return normalizeActivityForUse(safe, params.slotIndex);
 };
