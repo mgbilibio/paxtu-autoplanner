@@ -4,6 +4,8 @@ import { extractJson } from './llmJson';
 import { normalizePlanForUse } from './planNormalizationService';
 import { getProgressionDetail } from './progressionDetailService';
 import type { MeetingCycle } from './geminiService';
+import { attachmentsToPromptBlock } from './planAttachments';
+import type { PlanAttachment } from './planAttachments';
 
 const XAI_API = 'https://api.x.ai/v1';
 // Catálogo xAI (ago/2026): não há mais grok-3-mini / grok-4-fast (aposentados em mai/2026).
@@ -125,6 +127,7 @@ export const generateScoutCycle = async (params: {
   customInstruction?: string;
   planningMode?: 'from_selection' | 'auto_link';
   catalogDigest?: string;
+  attachments?: PlanAttachment[];
 }): Promise<MeetingCycle> => {
   if (!resolveXaiKey()) throw new Error(NO_KEY);
   const mode =
@@ -140,6 +143,7 @@ MODO: ${mode}
 ${mode === 'from_selection' ? `OBJETIVOS:\n${objs || '(nenhum)'}` : `PREFERÊNCIAS:\n${objs || '(nenhuma)'}`}
 ${params.catalogDigest || ''}
 ${params.customInstruction ? `INSTRUÇÃO: ${params.customInstruction}` : ''}
+${attachmentsToPromptBlock(params.attachments)}
 RETORNE APENAS JSON:
 {"id":"ciclo","theme":"${params.cycleTheme}","rational":"...","meetings":[{"theme":"...","generalNotes":"...","progressionObjective":"...","acompanhamento":"...","avaliacaoJovens":"...","avaliacaoChefia":"...","requisitosObservaveis":["..."],"criteriosDeAceite":["..."]}]}
 `;
@@ -178,6 +182,8 @@ Tema: ${params.narrativeTheme || 'livre'}.
     if (params.catalogDigest) userPromptBase += `\n${params.catalogDigest}\n`;
   }
   if (params.customInstruction) userPromptBase += `\nINSTRUÇÃO:\n${params.customInstruction}\n`;
+  const attachmentBlock = attachmentsToPromptBlock(params.attachments);
+  if (attachmentBlock) userPromptBase += `\n${attachmentBlock}\n`;
   if (manuais.length) userPromptBase += `\nBIBLIOTECA:\n${manuais.join('\n')}\n`;
 
   window.dispatchEvent(new CustomEvent('paxtu:llm-progress', { detail: { message: 'Etapa 1/3: Gerando estrutura...' } }));

@@ -112,6 +112,8 @@ export interface GeneratorParams {
   planningMode?: PlanningMode;
   /** Resumo compacto do catálogo (progressão + especialidades) para amarração no modo auto_link. */
   catalogDigest?: string;
+  /** Anexos da sessão do navegador (não persistir binário no MeetingPlan). */
+  attachments?: import('./services/planAttachments').PlanAttachment[];
 }
 
 export interface GroupProfile {

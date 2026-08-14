@@ -8,6 +8,7 @@ import * as gemini from './geminiService';
 import * as ollama from './ollamaService';
 import * as xai from './xaiService';
 import { isWebApp } from './platform';
+import type { PlanAttachment } from './planAttachments';
 
 export const GEMINI_STUDIO_URL = 'https://aistudio.google.com/app/apikey';
 /** Painel de uso/cota do AI Studio (aba de rate limits no mesmo endereço). */
@@ -113,6 +114,7 @@ export const generateScoutCycleRouted = async (params: {
   modelId?: string;
   planningMode?: 'from_selection' | 'auto_link';
   catalogDigest?: string;
+  attachments?: PlanAttachment[];
 }): Promise<gemini.MeetingCycle> => {
   const id = normalizeProviderId(getAppConfig()?.llmProvider);
   if (id === 'gemini') {

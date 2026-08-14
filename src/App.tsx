@@ -37,6 +37,8 @@ import { isWebApp } from './services/platform';
 import { subscribeGroupAuth, signOutGroup, isAwaitingAccess } from './services/firebase/groupAuth';
 import { PendingAccessScreen } from './components/profiles/PendingAccessScreen';
 import { LlmModelControls } from './components/LlmModelControls';
+import { PlanAttachmentsControl } from './components/PlanAttachmentsControl';
+import { PlanAttachment } from './services/planAttachments';
 import { clearGeminiOAuthAccessToken, tryRequestGeminiAccessToken } from './services/googleAuth';
 
 function App() {
@@ -60,6 +62,7 @@ function App() {
   const [includeClosing, setIncludeClosing] = useState(defaultScheduleOptions.includeClosing);
   const [narrativeTheme, setNarrativeTheme] = useState<string>('');
   const [customInstruction, setCustomInstruction] = useState<string>('');
+  const [planAttachments, setPlanAttachments] = useState<PlanAttachment[]>([]);
   const [referenceUrls] = useState<string[]>([]);
   /** from_selection = partir dos itens; auto_link = tema livre e amarra códigos. */
   const [planningMode, setPlanningMode] = useState<PlanningMode>('auto_link');
@@ -731,6 +734,7 @@ function App() {
           participantsCount: safeParticipantsCount,
           planningMode: effectiveMode,
           catalogDigest,
+          attachments: planAttachments,
           context
       });
       if (!isActiveGeneration(runId)) return;
@@ -772,7 +776,7 @@ function App() {
       setLevelSelectorTarget(null);
   };
 
-  const reset = () => { setStep(1); setPlan(null); setError(null); setSelectedObjectives([]); setNarrativeTheme(''); setSearchTerm(''); setCustomInstruction(''); };
+  const reset = () => { setStep(1); setPlan(null); setError(null); setSelectedObjectives([]); setNarrativeTheme(''); setSearchTerm(''); setCustomInstruction(''); setPlanAttachments([]); };
 
   // Guarda central de navegacao: (1) bloqueia o GERADOR quando a secao esta travada
   // por outro adulto (editLockConflict) e redireciona para consulta; (2) fecha overlays
@@ -1597,6 +1601,7 @@ function App() {
                               </div>
                             </details>
                             <textarea value={customInstruction} onChange={(e) => setCustomInstruction(e.target.value)} placeholder="Instruções para a IA..." className="w-full p-2 border rounded-lg text-xs bg-slate-50 outline-none" rows={2}></textarea>
+                            <PlanAttachmentsControl attachments={planAttachments} onChange={setPlanAttachments} />
                             {error && (
                               <div className="bg-red-50 border border-red-200 text-red-800 text-[11px] rounded-lg p-2 whitespace-pre-wrap" role="alert">
                                 {error}

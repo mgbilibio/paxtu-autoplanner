@@ -10,6 +10,8 @@ import { buildManuaisContextForBranch } from '../data/manuaisReferencia';
 import { normalizePlanForUse } from './planNormalizationService';
 import { normalizeOllamaBaseUrl } from './ollamaUrlSecurity';
 import { extractJson } from './llmJson';
+import { attachmentsToPromptBlock } from './planAttachments';
+import type { PlanAttachment } from './planAttachments';
 
 const DEFAULT_BASE_URL = 'http://localhost:11434';
 const OLLAMA_CLOUD_BASE_URL = 'https://ollama.com';
@@ -300,6 +302,7 @@ const commonBrief = (params: GeneratorParams & { context?: { sectionName: string
     `Quantidade de jovens (estimativa): ${params.participantsCount || 20}.`,
     `Tema narrativo solicitado: ${theme}.`,
     params.customInstruction ? `INSTRUÇÃO ESPECIAL: ${params.customInstruction}` : '',
+    attachmentsToPromptBlock(params.attachments),
     '',
   ];
 
@@ -678,6 +681,7 @@ export const generateScoutCycle = async (params: {
   modelId?: string;
   planningMode?: 'from_selection' | 'auto_link';
   catalogDigest?: string;
+  attachments?: PlanAttachment[];
 }): Promise<OllamaMeetingCycle> => {
   const config = getAppConfig();
   const model = resolveOllamaModel(params.modelId);
@@ -715,6 +719,7 @@ export const generateScoutCycle = async (params: {
         mode === 'from_selection' ? objs : (objs ? `Preferências (opcionais):\n${objs}` : ''),
         mode === 'auto_link' && params.catalogDigest ? params.catalogDigest : '',
         params.customInstruction ? `Instrução especial: ${params.customInstruction}` : '',
+        attachmentsToPromptBlock(params.attachments),
         '',
         'JSON:',
         '{"theme":"...","rational":"estratégia do ciclo","meetings":[{"theme":"...","progressionObjective":"COD — descrição","generalNotes":"1 frase"}]}',
