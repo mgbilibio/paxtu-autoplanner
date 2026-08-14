@@ -189,8 +189,13 @@ const collectEtapaRecords = (official?: MemberOfficialRecord): CollectedOfficial
   }
 
   const vida = official.vidaEscoteira;
-  if (typeof vida === 'string') push(vida);
-  else if (asRecord(vida)) push(vida);
+  if (records.length === 0) {
+    if (typeof vida === 'string') push(vida);
+    else if (asRecord(vida)) push(vida);
+  } else if (asRecord(vida)) {
+    const rec = asRecord(vida)!;
+    if (pickString(rec.status, rec.situacao, rec.estado)) push(vida);
+  }
 
   return records;
 };

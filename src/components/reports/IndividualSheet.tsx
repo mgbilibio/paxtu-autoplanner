@@ -34,6 +34,9 @@ export const IndividualSheet: React.FC<Props> = ({
   specialtyStates = [],
 }) => {
   const catalog = getMemberCatalog(member, section);
+  const officialTrail = listOfficialEtapaTrail(member);
+  const officialOther = listOtherOfficialEtapas(member);
+  const officialSpecs = listOfficialSpecialties(member).filter(item => (item.nivelOficial ?? 0) >= 1);
 
   return (
     <div className="bg-white p-8 max-w-[210mm] mx-auto text-black print:p-0">
@@ -67,7 +70,7 @@ export const IndividualSheet: React.FC<Props> = ({
                 </tr>
               </thead>
               <tbody>
-                {listOfficialEtapaTrail(member).map(item => (
+                {officialTrail.map(item => (
                   <tr key={item.etapa}>
                     <td className="border border-black p-1 font-bold">{item.etapa}</td>
                     <td className="border border-black p-1 text-center">
@@ -80,9 +83,9 @@ export const IndividualSheet: React.FC<Props> = ({
                 ))}
               </tbody>
             </table>
-            {listOtherOfficialEtapas(member).length > 0 && (
+            {officialOther.length > 0 && (
               <p className="text-[11px] mb-2">
-                Outras: {listOtherOfficialEtapas(member).map(item =>
+                Outras: {officialOther.map(item =>
                   `${item.nome} (${item.conquistado ? 'conquistado' : 'pendente'})`
                 ).join('; ')}
               </p>
@@ -98,14 +101,12 @@ export const IndividualSheet: React.FC<Props> = ({
                 </tr>
               </thead>
               <tbody>
-                {listOfficialSpecialties(member).filter(item => (item.nivelOficial ?? 0) >= 1).length === 0 ? (
+                {officialSpecs.length === 0 ? (
                   <tr>
                     <td className="border border-black p-1" colSpan={4}>Nenhuma especialidade N1+ no histórico Paxtu.</td>
                   </tr>
                 ) : (
-                  listOfficialSpecialties(member)
-                    .filter(item => (item.nivelOficial ?? 0) >= 1)
-                    .map(item => (
+                  officialSpecs.map(item => (
                       <tr key={`${item.nome}-${item.nivelOficial || 0}`}>
                         <td className="border border-black p-1">{item.nome}</td>
                         <td className="border border-black p-1 text-center">{item.nivelOficial ? `N${item.nivelOficial}` : ''}</td>
