@@ -13,6 +13,13 @@ import {
   type SectionPack,
   type SectionPackSummary,
 } from '../../services/firebase/sectionPack';
+import {
+  applySectionsUpdatedDetail,
+  DATA_EVENTS,
+  getSectionsAsync,
+  mergeSectionLists,
+  type SectionsUpdatedDetail,
+} from '../../services/storageService';
 
 interface Props {
   user?: UserProfile | null;
@@ -35,25 +42,48 @@ export const SectionPackPanel: React.FC<Props> = ({ user, currentSection, sectio
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState<SectionPack | null>(null);
   const [sectionId, setSectionId] = useState('');
+  const [liveSections, setLiveSections] = useState<ScoutSection[]>(sections);
 
   const canManage = canManageSectionPack(user);
   const canPick = canPickSectionForPack(user);
 
   useEffect(() => {
-    const preferred = sectionIdForPack(user, currentSection, sections);
+    setLiveSections(prev => mergeSectionLists(sections, prev));
+  }, [sections]);
+
+  useEffect(() => {
+    const onSections = (event: Event) => {
+      const detail = (event as CustomEvent<SectionsUpdatedDetail>).detail;
+      if (detail?.upsert || detail?.removedId) {
+        setLiveSections(prev => applySectionsUpdatedDetail(prev, detail));
+      }
+      void getSectionsAsync().then(list => {
+        setLiveSections(prev => {
+          const fetched = applySectionsUpdatedDetail(list, detail);
+          if (detail?.removedId) return fetched;
+          return mergeSectionLists(fetched, prev);
+        });
+      });
+    };
+    window.addEventListener(DATA_EVENTS.SECTIONS_UPDATED, onSections);
+    return () => window.removeEventListener(DATA_EVENTS.SECTIONS_UPDATED, onSections);
+  }, []);
+
+  useEffect(() => {
+    const preferred = sectionIdForPack(user, currentSection, liveSections);
     setSectionId(prev => {
       if (canPick) {
-        if (prev && sections.some(item => item.id === prev)) return prev;
-        if (preferred && sections.some(item => item.id === preferred)) return preferred;
+        if (prev && liveSections.some(item => item.id === prev)) return prev;
+        if (preferred && liveSections.some(item => item.id === preferred)) return preferred;
         return '';
       }
       return preferred;
     });
-  }, [user, currentSection, sections, canPick]);
+  }, [user, currentSection, liveSections, canPick]);
 
   if (!canManage) return null;
 
-  const selected = sections.find(item => item.id === sectionId) || null;
+  const selected = liveSections.find(item => item.id === sectionId) || null;
   const mismatchWarning = pending && selected ? describeSectionPackMismatch(pending, selected) : null;
 
   const showOk = (message: string) => {
@@ -150,7 +180,7 @@ export const SectionPackPanel: React.FC<Props> = ({ user, currentSection, sectio
             disabled={busy}
           >
             <option value="">Selecione a seção…</option>
-            {sections.map(section => (
+            {liveSections.map(section => (
               <option key={section.id} value={section.id}>{section.name}</option>
             ))}
           </select>

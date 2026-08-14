@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { ScoutSection, UserProfile } from '../../types';
-import { getSectionsAsync, DATA_EVENTS } from '../../services/storageService';
+import {
+  applySectionsUpdatedDetail,
+  DATA_EVENTS,
+  getSectionsAsync,
+  type SectionsUpdatedDetail,
+} from '../../services/storageService';
 import { getRoleLabel } from '../../services/roleService';
 import { PasswordField } from '../PasswordField';
 import { ConfirmDialog } from '../ConfirmDialog';
@@ -133,28 +138,36 @@ export const WebAccountsPanel: React.FC<Props> = ({
   const [editEmail, setEditEmail] = useState('');
   const [personToDelete, setPersonToDelete] = useState<GroupPerson | null>(null);
 
-  const refresh = async () => {
+  const refresh = async (detail?: SectionsUpdatedDetail) => {
     const [sectionData, groupPeople] = await Promise.all([
       getSectionsAsync(),
       isAdmin ? listGroupPeople() : Promise.resolve([]),
     ]);
-    setSections(sectionData);
+    const merged = applySectionsUpdatedDetail(sectionData, detail);
+    setSections(merged);
     setPeople(groupPeople);
     setSectionId(prev => {
-      if (sectionData.length === 0) return '';
-      if (!prev || !sectionData.find(item => item.id === prev)) return sectionData[0].id;
-      return prev;
+      if (merged.length === 0) return '';
+      if (prev && merged.some(item => item.id === prev)) return prev;
+      return merged[0].id;
     });
   };
 
   useEffect(() => {
     void refresh();
-    const onUpdate = () => { void refresh(); };
-    window.addEventListener(DATA_EVENTS.SECTIONS_UPDATED, onUpdate);
-    window.addEventListener(DATA_EVENTS.USERS_UPDATED, onUpdate);
+    const onSections = (event: Event) => {
+      const detail = (event as CustomEvent<SectionsUpdatedDetail>).detail;
+      if (detail?.upsert || detail?.removedId) {
+        setSections(prev => applySectionsUpdatedDetail(prev, detail));
+      }
+      void refresh(detail);
+    };
+    const onUsers = () => { void refresh(); };
+    window.addEventListener(DATA_EVENTS.SECTIONS_UPDATED, onSections);
+    window.addEventListener(DATA_EVENTS.USERS_UPDATED, onUsers);
     return () => {
-      window.removeEventListener(DATA_EVENTS.SECTIONS_UPDATED, onUpdate);
-      window.removeEventListener(DATA_EVENTS.USERS_UPDATED, onUpdate);
+      window.removeEventListener(DATA_EVENTS.SECTIONS_UPDATED, onSections);
+      window.removeEventListener(DATA_EVENTS.USERS_UPDATED, onUsers);
     };
   }, [isAdmin]);
 
