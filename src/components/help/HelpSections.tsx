@@ -4,14 +4,20 @@ import React from 'react';
 import { FAQ, ROTEIRO, TELA_HELP } from './helpContent';
 
 export const Roteiro = () => (
-  <ol className="space-y-4">
+  <div className="space-y-4">
+    <p className="text-sm text-slate-600 bg-indigo-50 border border-indigo-100 rounded-lg px-3 py-2">
+      <strong className="text-slate-800">ScoutsAuto</strong> é este app.
+      {' '}Paxtu é só o sistema oficial da UEB (oficial / POR antigo) de onde copiamos o progresso dos jovens.
+    </p>
+    <ol className="space-y-4">
     {ROTEIRO.map((item, idx) => (
       <li key={idx} className="border-l-4 border-indigo-300 pl-4 py-2">
         <h4 className="font-bold text-slate-800">{item.titulo}</h4>
         <p className="text-sm text-slate-600 mt-1">{item.texto}</p>
       </li>
     ))}
-  </ol>
+    </ol>
+  </div>
 );
 
 export const TelaAtual: React.FC<{ currentView: string }> = ({ currentView }) => {
@@ -53,7 +59,10 @@ interface AskAiProps {
 
 export const AskAi: React.FC<AskAiProps> = ({ question, answer, loading, error, onQuestion, onAsk }) => (
   <div className="space-y-3">
-    <p className="text-xs text-slate-500">Pergunte sobre uso do app, progressão, especialidades ou rotina da seção.</p>
+    <p className="text-xs text-slate-500">
+      Pergunte sobre o ScoutsAuto (acesso, ficha oficial + blocos, cronograma, pacote da seção).
+      Usa a IA configurada em Configurações — Gemini é o padrão.
+    </p>
     <textarea value={question} onChange={event => onQuestion(event.target.value)} rows={3} className="w-full p-3 border rounded-lg text-sm" />
     <div className="flex justify-between items-center">
       <span className="text-xs text-slate-400">{question.length}/500</span>
