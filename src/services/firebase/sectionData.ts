@@ -8,6 +8,16 @@ import {
 } from 'firebase/firestore';
 import { ScoutGroup, ScoutMember, ScoutSection } from '../../types';
 import { getFirestoreDb } from './config';
+import {
+  OFFICIAL_COLLECTION,
+  OFFICIAL_COMPETENCIAS_DOC,
+  OFFICIAL_PAXTU_DOC,
+  OFFICIAL_VIDA_DOC,
+  hydrateMemberOfficial,
+  leanMemberForList,
+  shouldPersistOfficial,
+  splitOfficialDocs,
+} from './memberOfficial';
 import { firestoreWriteError, sanitizeMemberForFirestore } from './sanitizeFirestoreMember';
 import { withSectionKind } from './sectionKind';
 import { getFirebaseSessionUid } from './session';
@@ -92,11 +102,71 @@ export const deleteSectionDocument = async (sectionId: string): Promise<void> =>
   await deleteDoc(doc(getFirestoreDb(), 'sections', sectionId));
 };
 
+const hydrateMembersOfficial = async (
+  sectionId: string,
+  members: ScoutMember[],
+): Promise<ScoutMember[]> => Promise.all(members.map(async member => {
+  if (!member?.id) return member;
+  try {
+    const docs = await listNamedSubcollection(
+      'sections',
+      sectionId,
+      'members',
+      member.id,
+      OFFICIAL_COLLECTION,
+    );
+    return hydrateMemberOfficial(
+      member,
+      docs[OFFICIAL_PAXTU_DOC],
+      docs[OFFICIAL_COMPETENCIAS_DOC],
+      docs[OFFICIAL_VIDA_DOC],
+    );
+  } catch {
+    return member;
+  }
+}));
+
+const persistMembersOfficial = async (sectionId: string, members: ScoutMember[]): Promise<void> => {
+  await Promise.all(members.map(async member => {
+    if (!member?.id || !shouldPersistOfficial(member.official)) return;
+    const shards = splitOfficialDocs(member.official!);
+    try {
+      await writeMemberSubdoc(sectionId, member.id, OFFICIAL_COLLECTION, OFFICIAL_PAXTU_DOC, shards.paxtu);
+      if (shards.competencias) {
+        await writeMemberSubdoc(
+          sectionId,
+          member.id,
+          OFFICIAL_COLLECTION,
+          OFFICIAL_COMPETENCIAS_DOC,
+          shards.competencias,
+        );
+      } else {
+        await deleteMemberSubdoc(sectionId, member.id, OFFICIAL_COLLECTION, OFFICIAL_COMPETENCIAS_DOC);
+      }
+      if (shards.vida) {
+        await writeMemberSubdoc(
+          sectionId,
+          member.id,
+          OFFICIAL_COLLECTION,
+          OFFICIAL_VIDA_DOC,
+          shards.vida,
+        );
+      } else {
+        await deleteMemberSubdoc(sectionId, member.id, OFFICIAL_COLLECTION, OFFICIAL_VIDA_DOC);
+      }
+    } catch (error) {
+      throw firestoreWriteError(error, 'histórico oficial');
+    }
+  }));
+};
+
 export const readSectionItems = async <T>(sectionId: string, docId: string): Promise<T[]> => {
   const snap = await getDoc(doc(getFirestoreDb(), 'sections', sectionId, 'docs', docId));
   if (!snap.exists()) return [];
   const data = snap.data() as Record<string, unknown>;
-  return Array.isArray(data[ITEMS_FIELD]) ? data[ITEMS_FIELD] as T[] : [];
+  const items = Array.isArray(data[ITEMS_FIELD]) ? data[ITEMS_FIELD] as T[] : [];
+  if (docId !== 'members') return items;
+  return hydrateMembersOfficial(sectionId, items as ScoutMember[]) as Promise<T[]>;
 };
 
 export const writeSectionItems = async <T>(sectionId: string, docId: string, items: T[]): Promise<void> => {
@@ -105,13 +175,21 @@ export const writeSectionItems = async <T>(sectionId: string, docId: string, ite
   }
   // Firestore rejeita `undefined` e arrays aninhados. stripUndefined remove
   // undefined; membros passam pelo sanitizer (historico Paxtu string[][]).
+  // official gordo vai para sections/{id}/members/{memberId}/official/*;
+  // docs/members fica só com o resumo (source + nomes/datas de etapa).
   const payload = docId === 'members'
     ? (items as ScoutMember[]).map(sanitizeMemberForFirestore)
     : items;
   try {
+    const toWrite = docId === 'members'
+      ? (payload as ScoutMember[]).map(leanMemberForList)
+      : payload;
+    if (docId === 'members') {
+      await persistMembersOfficial(sectionId, payload as ScoutMember[]);
+    }
     await setDoc(
       doc(getFirestoreDb(), 'sections', sectionId, 'docs', docId),
-      stripUndefined({ items: payload }),
+      stripUndefined({ items: toWrite }),
     );
   } catch (error) {
     throw firestoreWriteError(error, docId === 'members' ? 'efetivo' : 'dados da seção');
@@ -173,7 +251,22 @@ export const writeMemberSubdoc = async (
   );
 };
 
-export const MEMBER_SUBCOLLECTIONS = ['bloco', 'progress', 'specialty', 'reconhecimento'] as const;
+export const deleteMemberSubdoc = async (
+  sectionId: string,
+  memberId: string,
+  collectionName: string,
+  docId: string,
+): Promise<void> => {
+  try {
+    await deleteDoc(
+      doc(getFirestoreDb(), 'sections', sectionId, 'members', memberId, collectionName, docId),
+    );
+  } catch {
+    // Ausente ou ilegível: a hidratação trata shard em falta como vazio.
+  }
+};
+
+export const MEMBER_SUBCOLLECTIONS = ['bloco', 'progress', 'specialty', 'reconhecimento', 'official'] as const;
 
 export const listNamedSubcollection = async (
   ...path: [string, ...string[]]

@@ -119,6 +119,13 @@ export const firestoreWriteError = (error: unknown, context = 'efetivo'): Error 
       `O ScoutsAuto não conseguiu gravar o ${context}: o Firestore não aceita listas dentro de listas. Importe o pacote de novo. Se o erro continuar, avise a chefia.`,
     );
   }
+  if (
+    /exceeds the maximum allowed size|maximum allowed size of 1,?048,?576|exceeds.*1.?048.?576|document too (?:large|big)/i.test(raw)
+  ) {
+    return new Error(
+      `O ScoutsAuto não conseguiu gravar o ${context}: um documento passou de 1 MB, o limite do Firestore. O histórico oficial de cada jovem fica no registro individual, não no efetivo da tropa. Tente de novo. Se o erro continuar, avise a chefia.`,
+    );
+  }
   if (error instanceof Error && alreadyPortuguese(error.message)) return error;
   const detail = raw.trim() ? ` ${raw}` : '';
   return new Error(`O ScoutsAuto não conseguiu gravar o ${context}.${detail}`);
