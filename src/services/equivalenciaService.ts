@@ -72,7 +72,7 @@ export interface OfficialVidaRow {
 }
 
 export const PAXTU_HISTORICO_AVISO =
-  'O Paxtu trouxe etapa e especialidade, não o item a item (I22…). Equivalência de bloco é sugestão; a chefia confirma.';
+  'Histórico oficial do Paxtu (etapas, competências e atividades). Equivalência de bloco é sugestão; a chefia confirma.';
 
 const CONCLUDED_STATUS = new Set([
   'concluido',

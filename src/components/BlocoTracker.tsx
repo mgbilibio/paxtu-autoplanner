@@ -33,6 +33,11 @@ import {
   PAXTU_HISTORICO_AVISO,
   suggestEquivalencia,
 } from '../services/equivalenciaService';
+import {
+  listOfficialCompetenciaTree,
+  officialCompetenciaTreeHtml,
+  officialEtapaItensFallbackHtml,
+} from '../services/officialPaxtuView';
 import { ConfirmDialog } from './ConfirmDialog';
 import { OfficialEquivalenciaPanel } from './OfficialEquivalenciaPanel';
 import { FichaViewToggle, ProgressViewLayout } from './ProgressViewLayout';
@@ -422,6 +427,10 @@ export const BlocoTracker: React.FC<Props> = ({ member, onClose }) => {
       </tr>
     `).join('');
     const trail = listOfficialEtapaTrail(member);
+    const tree = listOfficialCompetenciaTree(member);
+    const treeHtml = tree.length > 0
+      ? officialCompetenciaTreeHtml(tree)
+      : officialEtapaItensFallbackHtml(trail);
     const outras = listOtherOfficialEtapas(member);
     const conquistas = listOfficialConquistas(member);
     const especialidades = listOfficialSpecialties(member);
@@ -481,6 +490,7 @@ export const BlocoTracker: React.FC<Props> = ({ member, onClose }) => {
       <p>Etapa oficial: <strong>${escapeHtml(oficialEtapa || 'nao informada')}</strong></p>
       <h2>Progressao — Ramo escoteiro</h2>
       <table><thead><tr><th>Etapa</th><th>Situacao</th><th>Data</th></tr></thead><tbody>${trailHtml}</tbody></table>
+      ${treeHtml}
       ${outrasHtml}
       <h2>Conquistas e certificacoes</h2>
       <table><thead><tr><th>Conquista</th><th>Data</th></tr></thead><tbody>${conquistasHtml}</tbody></table>
@@ -495,7 +505,7 @@ export const BlocoTracker: React.FC<Props> = ({ member, onClose }) => {
       <title>Ficha de Progressao - ${escapeHtml(member.name)}</title>
       <style>
         body{font-family:Arial,sans-serif;margin:24px;color:#111827}
-        h1{font-size:20px;margin:0 0 4px} h2{font-size:14px;margin:20px 0 8px}
+        h1{font-size:20px;margin:0 0 4px} h2{font-size:14px;margin:20px 0 8px} h3{font-size:12px;margin:16px 0 6px}
         p{margin:4px 0 16px;color:#4b5563}
         table{width:100%;border-collapse:collapse;font-size:11px;margin-bottom:12px}
         th,td{border:1px solid #d1d5db;padding:6px;text-align:left;vertical-align:top}

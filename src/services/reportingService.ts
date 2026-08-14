@@ -26,6 +26,11 @@ import {
   officialStatusLabel,
   PAXTU_HISTORICO_AVISO,
 } from './equivalenciaService';
+import {
+  listOfficialCompetenciaTree,
+  officialCompetenciaTreeHtml,
+  officialEtapaItensFallbackHtml,
+} from './officialPaxtuView';
 
 export interface ProgressionHit {
   code: string;
@@ -175,7 +180,11 @@ export const generatePrintableHistory = (
   const catalog = getCatalogForSection(member.branch, section);
   const date = new Date().toLocaleDateString();
   const completedCodes = new Set(achievements.map(a => a.code));
-  
+  const officialTree = listOfficialCompetenciaTree(member);
+  const officialTreeHtml = officialTree.length > 0
+    ? officialCompetenciaTreeHtml(officialTree)
+    : officialEtapaItensFallbackHtml(listOfficialEtapaTrail(member));
+
   const html = `
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -195,6 +204,10 @@ export const generatePrintableHistory = (
         .item.completed { background: #f0fdf4; border-color: #bbf7d0; }
         .check { width: 14px; height: 14px; border: 1px solid #cbd5e1; border-radius: 2px; text-align: center; line-height: 14px; font-size: 10px; }
         .completed .check { background: #22c55e; border-color: #22c55e; color: white; }
+        table { width: 100%; border-collapse: collapse; font-size: 10px; margin: 0 0 12px; }
+        th, td { border: 1px solid #e2e8f0; padding: 4px 6px; text-align: left; vertical-align: top; }
+        th { background: #f8fafc; }
+        h3 { font-size: 12px; margin: 16px 0 6px; }
         .footer { margin-top: 40px; text-align: center; font-size: 9px; color: #94a3b8; border-top: 1px solid #f1f5f9; padding-top: 15px; }
         @media print { .no-print { display: none; } .item { break-inside: avoid; } }
     </style>
@@ -226,6 +239,7 @@ export const generatePrintableHistory = (
         </div>
       `).join('')}
     </div>
+    ${officialTreeHtml}
     ${listOtherOfficialEtapas(member).length ? `
     <div class="section-title" style="font-size:12px">Outros ramos e passagens</div>
     <p style="font-size:10px;margin:0 0 8px">Pendente aqui não significa que o jovem falhou — muitas etapas são de outro ramo.</p>
