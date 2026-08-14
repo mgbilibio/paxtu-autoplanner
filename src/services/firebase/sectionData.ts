@@ -80,17 +80,24 @@ const listSectionsByIds = async (ids: string[]): Promise<ScoutSection[]> => {
   return docs.filter((section): section is ScoutSection => section !== null);
 };
 
-export const listSectionDocuments = async (): Promise<ScoutSection[]> => {
+export const listSectionDocuments = async (extraIds: string[] = []): Promise<ScoutSection[]> => {
   // getDocs na coleção inteira falha para chefia: as regras só liberam
   // sections/{id} em sectionIds. Não enfraquecer as regras — ler por id.
+  // Snapshot da coleção também pode vir do cache sem a seção recém-criada:
+  // completar com getDoc dos ids conhecidos (login + overlay da gravação).
+  let listed: ScoutSection[] = [];
   try {
     const snap = await getDocs(collection(getFirestoreDb(), 'sections'));
-    const listed = snap.docs.map(item => withSectionKind({ id: item.id, ...item.data() } as ScoutSection));
-    if (listed.length > 0) return listed;
+    listed = snap.docs.map(item => withSectionKind({ id: item.id, ...item.data() } as ScoutSection));
   } catch {
-    // query da coleção negada ou vazia: cai nos ids do usuário autenticado
+    // query da coleção negada ou vazia: cai nos ids pontuais
   }
-  return listSectionsByIds(await readSignedInSectionIds());
+  const missing = uniqueIds([...extraIds, ...(await readSignedInSectionIds())])
+    .filter(id => !listed.some(item => item.id === id));
+  if (missing.length > 0) {
+    listed = [...listed, ...(await listSectionsByIds(missing))];
+  }
+  return listed;
 };
 
 export const writeSectionDocument = async (section: ScoutSection, groupName?: string): Promise<void> => {

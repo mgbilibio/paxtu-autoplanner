@@ -42,10 +42,14 @@ export {
 } from './storage/catalogStorage';
 
 export {
+  applySectionsUpdatedDetail,
   deleteSectionAsync,
   getSectionsAsync,
+  mergeSectionLists,
   saveSectionAsync,
 } from './storage/sectionStorage';
+
+export type { SectionsUpdatedDetail } from './storage/sectionStorage';
 
 export {
   getGroupsAsync,

@@ -19,11 +19,13 @@ export const BRANCH_BAR_CLASS: Record<ScoutBranch, string> = {
   [ScoutBranch.PIONEIRO]: 'bg-red-600',
 };
 import { 
+    applySectionsUpdatedDetail,
     getSectionsAsync, saveSectionAsync, deleteSectionAsync, 
     getGroupsAsync, saveGroupAsync, DATA_EVENTS,
     getMembersAsync, saveMemberAsync, deleteMemberAsync,
     saveUserAsync, getUsersAsync,
     getAppConfig,
+    type SectionsUpdatedDetail,
 } from '../../services/storageService';
 import { ConfirmDialog } from '../ConfirmDialog';
 import {
@@ -87,12 +89,19 @@ export const StructureManager: React.FC = () => {
 
   useEffect(() => {
     load();
+    const onSections = (event: Event) => {
+      const detail = (event as CustomEvent<SectionsUpdatedDetail>).detail;
+      if (detail?.upsert || detail?.removedId) {
+        setSections(prev => applySectionsUpdatedDetail(prev, detail));
+      }
+      void load();
+    };
     window.addEventListener(DATA_EVENTS.GROUPS_UPDATED, load);
-    window.addEventListener(DATA_EVENTS.SECTIONS_UPDATED, load);
+    window.addEventListener(DATA_EVENTS.SECTIONS_UPDATED, onSections);
     window.addEventListener(DATA_EVENTS.MEMBERS_UPDATED, load); 
     return () => {
         window.removeEventListener(DATA_EVENTS.GROUPS_UPDATED, load);
-        window.removeEventListener(DATA_EVENTS.SECTIONS_UPDATED, load);
+        window.removeEventListener(DATA_EVENTS.SECTIONS_UPDATED, onSections);
         window.removeEventListener(DATA_EVENTS.MEMBERS_UPDATED, load);
     };
   }, []);

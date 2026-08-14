@@ -8,6 +8,8 @@ export const DATA_EVENTS = {
   PROGRESS_LAUNCHES_UPDATED: 'paxtu:progress_launches_updated',
 };
 
-export const dispatchDataEvent = (eventName: string): void => {
-  window.dispatchEvent(new Event(eventName));
+export const dispatchDataEvent = (eventName: string, detail?: unknown): void => {
+  window.dispatchEvent(
+    detail === undefined ? new Event(eventName) : new CustomEvent(eventName, { detail }),
+  );
 };

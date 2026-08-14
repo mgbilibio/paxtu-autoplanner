@@ -11,7 +11,26 @@ import { isFileBacked, isFirestoreBacked, readJsonDoc, writeJsonDoc } from './du
 import { DATA_EVENTS, dispatchDataEvent } from './events';
 import { purgeMembersOfSection } from './memberStorage';
 import { SECTIONS_FILENAME, SECTIONS_KEY } from './names';
+import { mergeSectionLists } from './sectionList';
 import { runExclusive } from './writeQueue';
+
+export { applySectionsUpdatedDetail, mergeSectionLists } from './sectionList';
+export type { SectionsUpdatedDetail } from './sectionList';
+
+/** Seções gravadas nesta sessão. Cobre snapshot/cache do Firestore sem a seção nova. */
+const rememberedSections = new Map<string, ScoutSection>();
+
+const rememberSection = (section: ScoutSection): void => {
+  rememberedSections.set(section.id, section);
+};
+
+const forgetSection = (id: string): void => {
+  rememberedSections.delete(id);
+};
+
+const emitSectionsUpdated = (detail: { upsert?: ScoutSection; removedId?: string }): void => {
+  dispatchDataEvent(DATA_EVENTS.SECTIONS_UPDATED, detail);
+};
 
 const groupNameFor = async (section: ScoutSection): Promise<string | undefined> => {
   if (section.groupName) return section.groupName;
@@ -21,14 +40,17 @@ const groupNameFor = async (section: ScoutSection): Promise<string | undefined> 
 };
 
 export const getSectionsAsync = async (): Promise<ScoutSection[]> => {
-  if (isFirestoreBacked()) return listSectionDocuments();
-  return readJsonDoc<ScoutSection[]>(SECTIONS_FILENAME, SECTIONS_KEY, []);
+  const remote = isFirestoreBacked()
+    ? await listSectionDocuments([...rememberedSections.keys()])
+    : await readJsonDoc<ScoutSection[]>(SECTIONS_FILENAME, SECTIONS_KEY, []);
+  return mergeSectionLists(remote, [...rememberedSections.values()]);
 };
 
 export const saveSectionAsync = async (section: ScoutSection): Promise<void> => {
   if (isFirestoreBacked()) {
     await writeSectionDocument(section, await groupNameFor(section));
-    dispatchDataEvent(DATA_EVENTS.SECTIONS_UPDATED);
+    rememberSection(section);
+    emitSectionsUpdated({ upsert: section });
     return;
   }
   await runExclusive(SECTIONS_FILENAME, async () => {
@@ -38,14 +60,16 @@ export const saveSectionAsync = async (section: ScoutSection): Promise<void> => 
     if (index >= 0) updated[index] = section;
     await writeJsonDoc(SECTIONS_FILENAME, SECTIONS_KEY, updated);
   });
-  dispatchDataEvent(DATA_EVENTS.SECTIONS_UPDATED);
+  rememberSection(section);
+  emitSectionsUpdated({ upsert: section });
 };
 
 export const deleteSectionAsync = async (id: string): Promise<void> => {
   if (isFirestoreBacked()) {
     await purgeMembersOfSection(id);
     await deleteSectionDocument(id);
-    dispatchDataEvent(DATA_EVENTS.SECTIONS_UPDATED);
+    forgetSection(id);
+    emitSectionsUpdated({ removedId: id });
     return;
   }
   await runExclusive(SECTIONS_FILENAME, async () => {
@@ -57,5 +81,6 @@ export const deleteSectionAsync = async (id: string): Promise<void> => {
   if (config?.dataFolder && window.fileSystem?.deletePath) {
     await window.fileSystem.deletePath(config.dataFolder, sectionFolder(id));
   }
-  dispatchDataEvent(DATA_EVENTS.SECTIONS_UPDATED);
+  forgetSection(id);
+  emitSectionsUpdated({ removedId: id });
 };
