@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Paxtu AutoPlanner - Manual do Usuario</title>
+  <title>ScoutsAuto — Guia de uso</title>
   <style>
     body{font-family:Arial,Helvetica,sans-serif;margin:0;background:#eef2f7;color:#172033;line-height:1.55}
     main{max-width:900px;margin:0 auto;background:#fff;min-height:100vh;padding:28px;box-sizing:border-box}
@@ -14,71 +14,44 @@
 </head>
 <body>
 <main>
-  <h1>Manual do Usuario</h1>
-  <p>Paxtu AutoPlanner, distribuicao <strong>20260709-1904</strong>, com revisao segura de codigo em <strong>20260801</strong> e revisão de frescor UEB em <strong>20260811</strong>. Ferramenta local para a chefia e diretoria acompanharem planejamento, progressao e especialidades de Lobinhos e Escoteiros.</p>
+  <h1>ScoutsAuto</h1>
+  <p>Planejador da chefia no navegador. <strong>Paxtu</strong> é só o sistema oficial da UEB de progresso juvenil (oficial / POR antigo), de onde copiamos o histórico. Este app não se chama Paxtu nem PaxtuAP.</p>
 
-  <h2>Instalar ou usar sem instalar</h2>
+  <h2>Acesso</h2>
   <ul>
-    <li><strong>Instalador:</strong> execute <code>Paxtu AutoPlanner_Setup_20260709-1904.exe</code>.</li>
-    <li><strong>Portátil:</strong> execute <code>Paxtu AutoPlanner_Portable_20260709-1904.exe</code>. Não exige Node.js, Python nem instalação.</li>
-    <li><strong>ZIP:</strong> descompacte <code>Paxtu AutoPlanner_20260709-1904_x64.zip</code> e abra <code>Paxtu AutoPlanner.exe</code>.</li>
-  </ul>
-  <p class="note">O arquivo <code>INICIAR_APP.bat</code> pertence apenas ao ambiente de desenvolvimento. Não use esse arquivo em máquinas da chefia.</p>
-
-  <h2>Primeiro acesso e trabalho compartilhado</h2>
-  <ol>
-    <li>Crie ou selecione a pasta de dados da seção.</li>
-    <li>Para trabalho conjunto, use uma pasta sincronizada do Google Drive e mantenha uma pasta segregada por Alcateia ou Tropa.</li>
-    <li>Cadastre seção, usuários, jovens e adultos.</li>
-    <li>Respeite o aviso de modo consulta: uma pessoa deve editar cada seção por vez.</li>
-  </ol>
-
-  <h2>Transição do Programa Educativo atualizado</h2>
-  <p>A UEB estabeleceu período de transição do Programa Educativo atualizado até <strong>30/06/2027</strong>. Durante a transição, a UEL pode operar com o programa anterior ou atualizado conforme decisão institucional. A partir de <strong>01/07/2027</strong>, o Programa Educativo atualizado passa a ser obrigatório em todos os ramos.</p>
-  <p>Quando a UEL migrar no Paxtu oficial, registros anteriores devem ser preservados para consulta e nenhum jovem deve perder conquistas já registradas. Use este app como apoio local, não como substituto da decisão da diretoria nem do registro oficial no Paxtu/mAPPa/cONdecora.</p>
-
-  <h2>Progressão POR 2025+</h2>
-  <p>O padrão do app é o POR 2025+ para Lobinho e Escoteiro. As faixas etárias exibidas seguem a página oficial da UEB: Lobinho, <strong>6,5 a 10,5 anos</strong>; Escoteiro, <strong>10 a 14 anos</strong>. Cada jovem é acompanhado nos 18 blocos de aprendizagem, com ações fixas, variáveis, substituições, evidências e reconhecimento de ramo.</p>
-  <ol>
-    <li>Abra o jovem em <strong>Efetivo</strong> e acesse <strong>Blocos de Aprendizagem</strong>.</li>
-    <li>Marque somente as ações efetivamente realizadas e registre observações e avaliador.</li>
-    <li>Use a checklist de reconhecimento após os 18 blocos, respeitando idade, autoavaliação e homologação.</li>
-    <li>O modo 2020 é histórico e só deve ser usado para registros legados.</li>
-  </ol>
-
-  <h2>Especialidades</h2>
-  <p>O catálogo ativo de especialidades do POR 2025+ usa a página pública de especialidades da UEB, capturada em <strong>2026-08-11</strong>: <strong>208 especialidades</strong> e <strong>1.385 requisitos</strong>, organizados nos quatro eixos do Programa Educativo Atualizado. A base do Guia de Especialidades, 18ª edição (2024-1), permanece no projeto como histórico/transição, mas não é mais a lista principal do catálogo atualizado.</p>
-  <p>Uma atividade pode iniciar uma especialidade, mas não a conclui automaticamente.</p>
-  <ol>
-    <li>Abra <code>POR 2025+ &gt; Enciclopédia de Especialidades</code>.</li>
-    <li>Abra a ficha do jovem, registre o status, a evidência e a avaliação de cada requisito.</li>
-    <li>Use <strong>Selecionar para exportar fichas</strong> para trabalho offline. A devolução <code>.paxtuficha.json</code> é validada antes de ser aplicada.</li>
-    <li>Use o link de fonte para abrir a página pública da UEB da especialidade.</li>
-  </ol>
-
-  <h2>Roteiros, ciclo e agenda</h2>
-  <ul>
-    <li>Monte o roteiro com objetivos de bloco e especialidades; revise materiais, avaliação, horários e rotinas operacionais.</li>
-    <li>Exporte HTML para leitura no celular durante a atividade.</li>
-    <li>Na agenda, registre presença e aplique a progressão: ações de bloco são lançadas; especialidades oficiais ficam em estudo até a avaliação por requisito.</li>
-    <li>Ao excluir uma atividade com progressão lançada, o lançamento vinculado também é removido. Itens ainda creditados por outro lançamento ativo são preservados.</li>
-    <li>Use ciclo e relatórios para acompanhar cobertura, frequência, pendências e decisões da diretoria.</li>
+    <li>Qualquer pessoa com o link cria conta (Google ou e-mail e senha).</li>
+    <li>O primeiro login do grupo vira administrador.</li>
+    <li>Os demais aguardam em Configurações → Acessos: o admin libera com seção e papel, ou recusa.</li>
+    <li>Em Acessos também se edita (inclusive e-mail), desativa, exclui e envia redefinição de senha.</li>
+    <li>O app pede o e-mail de senha em português (<code>lang=pt</code>), com volta a este site. O texto do modelo Firebase (nome ScoutsAuto) está bloqueado no projeto.</li>
   </ul>
 
-  <h2>IA e privacidade</h2>
-  <p>Gemini e Ollama são opcionais. Sem IA, o app continua consultando dados e registrando progressão. Ollama exige instalação local apenas quando essa opção for escolhida. Backups locais não exportam chaves Gemini ou Ollama Cloud, mas a pasta de dados contém informações pessoais: compartilhe somente com a chefia autorizada e faça backups regulares.</p>
+  <h2>Dados</h2>
+  <p>A tropa fica no Firebase, não no git nem só no navegador. Hierarquia: <strong>Grupo → Seção → Equipe (unidade) → Pessoa</strong>. A pessoa (registro UEB) é estável; a lotação tem início e fim, então transferência guarda histórico. Chaves de IA ficam só neste navegador.</p>
 
-  <h2>Fontes consultadas</h2>
+  <h2>Efetivo e ficha</h2>
   <ul>
-    <li>POR 2026.02 e materiais oficiais de transição do Programa Educativo, com revisão web em 2026-08-09.</li>
-    <li>Resoluções CAN 05/2025 e CAN 09/2025 sobre transição, materiais e obrigatoriedade do Programa Educativo atualizado.</li>
-    <li>Manual do Escotista - Lobinho, 2025.10.</li>
-    <li>Manual do Escotista - Escoteiro, 2025.10.</li>
-    <li>Catálogo local estruturado da página pública UEB de Especialidades, capturado em 2026-08-11 por <code>conhecimento/tools/scrape_ueb_especialidades_2026.py</code>.</li>
-    <li>Catálogo local estruturado do Guia de Especialidades, 18ª edição, 2024-1, preservado para consulta/transição.</li>
-    <li>Acervo documental local em <code>docs/biblioteca</code>, mantido para auditoria de fonte.</li>
+    <li>Em <strong>Efetivo</strong>, a caixa “Adicionar novos membros” abre um nome ou lista rápida.</li>
+    <li>A ficha (📜) tem duas camadas: <strong>Oficial (Paxtu / POR antigo)</strong> — listas por etapa, itens, datas, feito/falta — e <strong>Blocos 2025+</strong>.</li>
+    <li>O dump oficial é cru. O de-para para POR 2025+ é só sugestão (equivalência UEB até <strong>30/jun/2027</strong>). A chefia confirma. O histórico oficial nunca é rebaixado.</li>
   </ul>
+
+  <h2>Pacote da seção</h2>
+  <p>Chefe e admin, em Configurações → Acessos: exportar ou importar JSON (<strong>mesclar</strong>). O histórico oficial fica no registro de cada jovem (subdocs), não no doc de 1&nbsp;MB do efetivo. A importação pode levar um minuto; se o botão ficar em “Aguarde…”, atualize a página e abra uma ficha.</p>
+
+  <h2>Planejamento</h2>
+  <ul>
+    <li><strong>Gerar:</strong> “Tema livre + amarra” (ou “A partir da seleção”).</li>
+    <li>Anexos: txt, md, html, imagem ou PDF.</li>
+    <li>Um campo por atividade; no roteiro, “Refazer esta”.</li>
+    <li>Cronograma no formato do papel: horário, duração, item e responsável.</li>
+    <li>O roteiro salvo vai a <strong>Roteiros</strong> e amarra na <strong>Agenda</strong> (“Roteiro do Catálogo”).</li>
+  </ul>
+
+  <h2>IA</h2>
+  <p>Gemini é o padrão. Cole a chave do AI Studio em Configurações → IA (só neste navegador). xAI é extra. Ollama local não roda neste site.</p>
+
+  <p class="note">A UEB prevê equivalência / transição do Programa Educativo até 30/06/2027. Homologação formal continua no Paxtu oficial.</p>
 </main>
 </body>
 </html>
-

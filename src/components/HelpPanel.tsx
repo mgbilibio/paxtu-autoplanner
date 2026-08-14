@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { askLlm } from '../services/llmProvider';
-import { FAQ, HelpTab, ROTEIRO, TELA_HELP } from './help/helpContent';
+import { FAQ, HELP_PRODUTO, HelpTab, ROTEIRO, TELA_HELP } from './help/helpContent';
 import { AskAi, Faq, Roteiro, TelaAtual } from './help/HelpSections';
 import { openUserGuideInBrowser } from '../services/webLibraryService';
 
@@ -57,7 +57,10 @@ export const HelpPanel: React.FC<Props> = ({ onClose, currentView }) => {
         onClick={event => event.stopPropagation()}
       >
         <div className="bg-gradient-to-r from-indigo-700 to-purple-700 text-white px-5 py-4 flex justify-between">
-          <h3 id="help-title" className="text-lg font-bold">Central de Ajuda</h3>
+          <div>
+            <h3 id="help-title" className="text-lg font-bold">Central de Ajuda</h3>
+            <p className="text-xs text-white/80 mt-0.5">ScoutsAuto · Paxtu é só o sistema oficial da UEB</p>
+          </div>
           <button onClick={onClose} aria-label="Fechar ajuda" className="text-white/70 hover:text-white text-2xl">
             x
           </button>
@@ -88,9 +91,9 @@ export const HelpPanel: React.FC<Props> = ({ onClose, currentView }) => {
           <button
             onClick={() => { void openUserGuideInBrowser(); }}
             className="text-sm font-bold bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700"
-            title="Abrir o Manual do Usuario completo (v2.12)"
+            title="Abrir o guia de uso do ScoutsAuto"
           >
-            📖 Abrir Guia de Uso completo
+            📖 Abrir guia de uso
           </button>
         </div>
       </div>
@@ -101,6 +104,7 @@ export const HelpPanel: React.FC<Props> = ({ onClose, currentView }) => {
 const buildContext = (currentView: string) => {
   const telaCtx = TELA_HELP[currentView];
   return [
+    HELP_PRODUTO,
     'Roteiro de uso:',
     ROTEIRO.map(item => `- ${item.titulo}: ${item.texto}`).join('\n'),
     telaCtx ? `Tela atual (${currentView}): ${telaCtx.titulo} - ${telaCtx.corpo}` : '',

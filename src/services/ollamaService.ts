@@ -466,7 +466,7 @@ export const askOllama = async (question: string, context: string, modelId?: str
       {
         role: 'system',
         content:
-          'Você é um assistente experiente em escotismo (UEB) e no app Paxtu AutoPlanner. Responda em português brasileiro, de forma direta e prática, em até 3 parágrafos. Use o contexto para fundamentar.',
+          'Você é um assistente experiente em escotismo (UEB) e no app ScoutsAuto. Paxtu é só o sistema oficial da UEB de progresso juvenil, não o nome deste app. Responda em português brasileiro, de forma direta e prática, em até 3 parágrafos. Use o contexto para fundamentar.',
       },
       { role: 'user', content: `CONTEXTO DO APP:\n${context}\n\nPERGUNTA:\n${question}` },
     ],

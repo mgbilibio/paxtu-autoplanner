@@ -184,7 +184,7 @@ export interface SmartSuggestion {
 export const askGemini = async (question: string, context: string, modelId?: string): Promise<string> => {
     if (!hasGeminiCredentials()) throw new Error(GEMINI_MISSING_KEY);
     const model = modelId || getDefaultGeminiModel();
-    const system = 'Você é um assistente experiente em escotismo (UEB) e no app Paxtu AutoPlanner. Responda em português brasileiro, de forma direta e prática, em até 3 parágrafos. Use o contexto fornecido para fundamentar a resposta. Se a pergunta sair do escopo do app ou escotismo, diga isso de forma cordial.';
+    const system = 'Você é um assistente experiente em escotismo (UEB) e no app ScoutsAuto. Paxtu é só o sistema oficial da UEB de progresso juvenil, não o nome deste app. Responda em português brasileiro, de forma direta e prática, em até 3 parágrafos. Use o contexto fornecido para fundamentar a resposta. Se a pergunta sair do escopo do app ou escotismo, diga isso de forma cordial.';
     const user = `CONTEXTO DO APP:\n${context}\n\nPERGUNTA DO CHEFE:\n${question}`;
     try {
       const result = await generateGeminiText(model, `${system}\n\n${user}`);
