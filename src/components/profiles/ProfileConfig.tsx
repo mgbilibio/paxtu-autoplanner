@@ -11,6 +11,7 @@ import { isWebApp } from '../../services/platform';
 interface Props {
   currentAccountId?: string;
   isAdmin?: boolean;
+  isReadOnly?: boolean;
   isGroupAdmin?: boolean;
   currentUser?: UserProfile | null;
   currentSection?: ScoutSection | null;
@@ -19,6 +20,7 @@ interface Props {
 export const ProfileConfig: React.FC<Props> = ({
   currentAccountId,
   isAdmin,
+  isReadOnly,
   isGroupAdmin,
   currentUser,
   currentSection,
@@ -59,7 +61,7 @@ export const ProfileConfig: React.FC<Props> = ({
   return (
     <div className="space-y-6 animate-fade-in">
       {/* U3: Banner de onboarding com progresso visual */}
-      {!allDone && (
+      {!allDone && !isReadOnly && (
         <div className="bg-gradient-to-r from-indigo-50 to-purple-50 p-5 rounded-xl border border-indigo-200">
           <div className="flex justify-between items-start mb-3">
             <div>
@@ -109,9 +111,9 @@ export const ProfileConfig: React.FC<Props> = ({
         </div>
       )}
 
-      <StructureManager />
-      {!isWebApp() && <UserManager />}
-      {isWebApp() && (
+      <StructureManager isReadOnly={!!isReadOnly} />
+      {!isReadOnly && !isWebApp() && <UserManager />}
+      {!isReadOnly && isWebApp() && (
         <div className="bg-white rounded-xl border p-4">
           <h3 className="font-bold text-slate-800 mb-2">Acessos do grupo</h3>
           <WebAccountsPanel
