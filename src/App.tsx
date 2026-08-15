@@ -1114,6 +1114,7 @@ function App() {
       }
       setView('LOGIN');
     };
+    const structurePerms = getPermissions(currentUser);
     return (
       <div className="min-h-screen bg-gray-100 p-8">
         <div className="max-w-4xl mx-auto">
@@ -1122,7 +1123,8 @@ function App() {
           </button>
           <ProfileConfig
             currentAccountId={currentUser?.id}
-            isAdmin={getPermissions(currentUser).isGlobal}
+            isAdmin={structurePerms.isGlobal && !structurePerms.isReadOnly}
+            isReadOnly={structurePerms.isReadOnly}
             isGroupAdmin={!!currentUser?.isAdmin}
             currentUser={currentUser}
             currentSection={currentSection}
@@ -1134,11 +1136,12 @@ function App() {
   if (!currentUser) return <LoginScreen onLogin={handleLogin} onConfigure={() => setView('PROFILE_CONFIG')} />;
 
   const permissions = getPermissions(currentUser);
-  const isAdmin = permissions.isGlobal;
-  // Escopo de secao passado aos componentes: admin ve tudo (undefined), demais ficam
-  // restritos a propria secao. Extraido para evitar repeticao e o optional chaining
-  // inconsistente espalhado pelas props.
-  const scopedSectionId = isAdmin ? undefined : currentSection?.id;
+  const isGlobal = permissions.isGlobal;
+  const isReadOnly = permissions.isReadOnly;
+  const isAdmin = isGlobal && !isReadOnly;
+  // Escopo de secao: visão global (admin ou Diretoria) vê tudo (undefined);
+  // chefe/assistente ficam restritos à própria seção.
+  const scopedSectionId = isGlobal ? undefined : currentSection?.id;
   const roleLabel = getRoleLabel(currentUser?.role);
   const displayCatalog = getPlanningCatalog(selectedBranch || ScoutBranch.ESCOTEIRO, activeGeneratorSystem);
   const currentScheduleOptions = {
@@ -1567,7 +1570,7 @@ function App() {
                 {settingsTab === 'contas' && isWebApp() && (
                   <WebAccountsPanel
                     currentAccountId={currentUser?.id}
-                    isAdmin={getPermissions(currentUser).isGlobal}
+                    isAdmin={isAdmin}
                     isGroupAdmin={!!currentUser?.isAdmin}
                     currentUser={currentUser}
                     currentSection={currentSection}
@@ -1589,7 +1592,7 @@ function App() {
             <div>
               <h1 className="text-lg font-bold tracking-tight">{currentUser?.name}</h1>
               <p className="text-[10px] font-medium uppercase text-green-400">
-                {roleLabel} • {isAdmin ? 'Visão global' : currentSection?.name}
+                {roleLabel} • {isGlobal ? 'Visão global' : currentSection?.name}
               </p>
             </div>
             <span
@@ -1623,7 +1626,7 @@ function App() {
             {permissions.canRecordEvaluation && !isLockedForCurrentUser && (
               <button onClick={() => { navigateTo('CALENDAR'); setMobileNavOpen(false); }} className="text-sm text-gray-400 hover:text-white px-3 text-left">Agenda</button>
             )}
-            {permissions.canEditYouth && !isLockedForCurrentUser && (
+            {(permissions.canEditYouth || isGlobal) && !isLockedForCurrentUser && (
               <button onClick={() => { navigateTo('MEMBERS'); setMobileNavOpen(false); }} className="text-sm text-gray-400 hover:text-white px-3 text-left">Efetivo</button>
             )}
             {/* Menu agrupado POR 2025+ — controlado (V1) */}
@@ -1654,7 +1657,7 @@ function App() {
               </div>
               )}
             </div>
-            {permissions.canConfigure && (
+            {(permissions.canConfigure || isGlobal) && (
               <button onClick={() => { setView('PROFILE_CONFIG'); setMobileNavOpen(false); }} className="text-sm text-gray-400 hover:text-white px-3 text-left">Estrutura</button>
             )}
             <button onClick={() => { navigateTo('REPORTS'); setMobileNavOpen(false); }} className="text-sm text-gray-400 hover:text-white px-3 text-left">Relatórios</button>
@@ -1719,9 +1722,9 @@ function App() {
             </div>
           )}
           {view === 'CATALOG' && <Catalog onLoadPlan={loadFromCatalog} onBack={() => navigateTo('GENERATOR')} />}
-          {view === 'MEMBERS' && <MembersManager sectionId={scopedSectionId} isAdmin={isAdmin} />}
+          {view === 'MEMBERS' && <MembersManager sectionId={scopedSectionId} isAdmin={isAdmin} isGlobal={isGlobal} isReadOnly={isReadOnly} />}
           {view === 'CALENDAR' && (currentSection ? <CalendarView sectionId={scopedSectionId} branch={currentSection.branch} isAdmin={isAdmin} /> : <div className="bg-amber-50 border border-amber-200 rounded-lg p-6 text-center text-amber-800">Sem seção selecionada. Faça login com um perfil de chefia vinculado a uma seção.</div>)}
-          {view === 'REPORTS' && (currentSection ? <ReportsDashboard sectionId={scopedSectionId} branch={currentSection.branch} isAdmin={isAdmin} /> : <div className="bg-amber-50 border border-amber-200 rounded-lg p-6 text-center text-amber-800">Sem seção selecionada para gerar relatórios.</div>)}
+          {view === 'REPORTS' && (currentSection ? <ReportsDashboard sectionId={scopedSectionId} branch={currentSection.branch} isAdmin={isGlobal} /> : <div className="bg-amber-50 border border-amber-200 rounded-lg p-6 text-center text-amber-800">Sem seção selecionada para gerar relatórios.</div>)}
           {view === 'CYCLE' && (currentSection ? <CyclePlanner branch={currentSection.branch} section={currentSection} /> : <div className="bg-amber-50 border border-amber-200 rounded-lg p-6 text-center text-amber-800">Sem seção selecionada. O planejador de ciclo precisa de uma seção ativa.</div>)}
           {view === 'ENCYCLOPEDIA' && <SpecialtyEncyclopedia onClose={() => navigateTo('GENERATOR')} />}
           {view === 'BLOCOS_2025' && <ProgressaoBlocos2025 onClose={() => navigateTo('GENERATOR')} />}

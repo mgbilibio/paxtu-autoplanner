@@ -44,7 +44,12 @@ type ConfirmAction = {
   onConfirm: () => Promise<void> | void;
 };
 
-export const StructureManager: React.FC = () => {
+interface StructureManagerProps {
+  isReadOnly?: boolean;
+}
+
+export const StructureManager: React.FC<StructureManagerProps> = ({ isReadOnly }) => {
+  const canWrite = !isReadOnly;
   const [group, setGroup] = useState<ScoutGroup | null>(null);
   const [sections, setSections] = useState<ScoutSection[]>([]);
   const [members, setMembers] = useState<ScoutMember[]>([]);
@@ -399,7 +404,7 @@ export const StructureManager: React.FC = () => {
       return (
       <div key={member.id} className={`flex items-center justify-between p-2 pl-4 border-l-2 hover:bg-slate-50 hover:border-slate-400 transition-colors text-sm group ${member.isArchived ? 'bg-slate-100/50 border-slate-300 opacity-60' : incomplete ? 'border-amber-300 bg-amber-50/40' : 'border-slate-200'}`}>
           <div className="flex items-center gap-2 min-w-0">
-              {opts?.selectable && (
+              {canWrite && opts?.selectable && (
                 <input
                   type="checkbox"
                   checked={staffSelection.has(member.id)}
@@ -419,11 +424,13 @@ export const StructureManager: React.FC = () => {
               </div>
               {member.isArchived && <span className="text-[8px] bg-slate-200 text-slate-500 px-1 rounded font-bold uppercase tracking-tighter">Arquivado</span>}
           </div>
+          {canWrite && (
           <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
               <button onClick={() => { setEditingMember(member); setIsMemberModalOpen(true); }} className="text-blue-400 hover:text-blue-600 px-1" title="Editar / completar">✏️</button>
               <button onClick={() => handleArchiveMember(member)} className="text-orange-400 hover:text-orange-600 px-1" title={member.isArchived ? 'Restaurar' : 'Arquivar'}>📦</button>
               {member.isArchived && <button onClick={() => handleDeleteMember(member.id)} className="text-red-300 hover:text-red-500 px-1">×</button>}
           </div>
+          )}
       </div>
       );
   };
@@ -432,8 +439,12 @@ export const StructureManager: React.FC = () => {
       return (
           <div className="text-center p-8 bg-white rounded-xl shadow-sm border border-slate-200">
               <h3 className="text-xl font-bold text-gray-800 mb-2">Bem-vindo ao AutoPlanner!</h3>
-              <p className="text-gray-500 mb-4">Para começar, precisamos criar o seu Grupo Escoteiro.</p>
-              <button onClick={() => setEditingGroup(true)} className="bg-green-600 text-white px-6 py-2 rounded-lg font-bold">Criar Grupo</button>
+              <p className="text-gray-500 mb-4">
+                {canWrite ? 'Para começar, precisamos criar o seu Grupo Escoteiro.' : 'Nenhum grupo cadastrado para consulta.'}
+              </p>
+              {canWrite && (
+                <button onClick={() => setEditingGroup(true)} className="bg-green-600 text-white px-6 py-2 rounded-lg font-bold">Criar Grupo</button>
+              )}
           </div>
       );
   }
@@ -468,7 +479,9 @@ export const StructureManager: React.FC = () => {
                         <h2 className="text-2xl font-bold">{group?.name}</h2>
                         <p className="text-slate-400">{group?.city}</p>
                     </div>
+                    {canWrite && (
                     <button onClick={() => setEditingGroup(true)} className="text-slate-400 hover:text-white transition-colors">✏️ Editar</button>
+                    )}
                 </div>
             )}
         </div>
@@ -477,7 +490,9 @@ export const StructureManager: React.FC = () => {
         <div className="bg-white p-6 rounded-b-xl shadow-sm border-x border-b border-gray-200 -mt-6 pt-8">
             <div className="flex justify-between items-center mb-6">
                 <h3 className="font-bold text-gray-700">Estrutura do Grupo</h3>
+                {canWrite && (
                 <button onClick={() => { resetSectionForm(); setAddingSection(true); }} className="text-sm bg-blue-50 text-blue-700 px-3 py-1 rounded-full font-bold border border-blue-100 hover:bg-blue-100 transition-colors">+ Nova Seção</button>
+                )}
             </div>
 
             {addingSection && (
@@ -513,12 +528,14 @@ export const StructureManager: React.FC = () => {
                                 <span className="font-bold text-gray-800">{section.name}</span>
                                 <span className="text-[10px] px-1.5 rounded border bg-white text-gray-500 font-bold uppercase tracking-tighter">{section.progressionSystem === 'POR_2025' || !section.progressionSystem ? 'POR 2025' : 'LEGACY'}</span>
                             </div>
+                            {canWrite && (
                             <div className="flex gap-2 flex-wrap">
                                 <button onClick={() => openQuickList(section.id, { role: TroopRole.CHEFE })} className="text-xs font-bold text-indigo-600 hover:bg-indigo-50 px-2 py-1 rounded" title="Lista de nomes">⚡ Lista rápida</button>
                                 <button onClick={() => startEditSection(section)} className="text-xs font-bold text-blue-600 hover:bg-blue-50 px-2 py-1 rounded">✏️ Editar</button>
                                 <button onClick={() => setAddingTeamToSectionId(section.id)} className="text-xs font-bold text-green-600 hover:bg-green-50 px-2 py-1 rounded">+ Equipe</button>
                                 <button onClick={() => handleDeleteSection(section.id)} className="text-xs font-bold text-red-400 hover:text-red-600 hover:bg-red-50 px-2 py-1 rounded">Excluir</button>
                             </div>
+                            )}
                         </div>
 
                         {importMode?.sectionId === section.id && (
@@ -598,16 +615,18 @@ export const StructureManager: React.FC = () => {
                             <div className="space-y-1">
                                 <div className="flex items-center justify-between pl-2 pr-1">
                                   <span className="text-[10px] font-bold text-slate-400 uppercase">Chefia / sem equipe</span>
+                                  {canWrite && (
                                   <div className="flex gap-1">
                                     <button onClick={() => openQuickList(section.id, { role: TroopRole.CHEFE })} className="text-[10px] font-bold text-indigo-600 hover:bg-indigo-50 px-1.5 py-0.5 rounded">⚡ Lista chefia</button>
                                     <button onClick={() => openNewMemberModal(section.id)} className="text-[10px] text-slate-500 hover:text-slate-700 px-1.5 py-0.5 rounded">+ um</button>
                                   </div>
+                                  )}
                                 </div>
                                 {(() => {
                                   const staff = members.filter(m => m.sectionId === section.id && !m.patrol && !m.isArchived);
                                   const selectedHere = staff.filter(m => staffSelection.has(m.id));
                                   const allSelected = staff.length > 0 && selectedHere.length === staff.length;
-                                  if (staff.length === 0) return null;
+                                  if (staff.length === 0 || !canWrite) return null;
                                   return (
                                     <div className="flex flex-wrap items-center gap-1.5 pl-2 pr-1 pb-1">
                                       <label className="flex items-center gap-1 text-[10px] text-slate-500 font-bold cursor-pointer">
@@ -653,16 +672,18 @@ export const StructureManager: React.FC = () => {
                                     <div key={team.id} className="border border-slate-100 rounded bg-slate-50 overflow-hidden">
                                         <div className="flex justify-between items-center p-2 bg-slate-100 border-b border-slate-200">
                                             <span className="font-bold text-xs text-slate-700 uppercase tracking-wide">{team.name}</span>
+                                            {canWrite && (
                                             <div className="flex gap-1">
                                                 <button onClick={() => openQuickList(section.id, { patrol: team.name, role: TroopRole.JUVENIL })} className="text-indigo-600 hover:bg-indigo-100 rounded px-1 text-[10px] font-bold" title="Lista de nomes na patrulha">⚡</button>
                                                 <button onClick={() => openNewMemberModal(section.id, team.name)} className="text-green-600 hover:bg-green-100 rounded px-1 text-xs font-bold" title="Um membro">+</button>
                                                 <button onClick={() => handleDeleteTeam(section.id, team.id)} className="text-red-300 hover:text-red-500 text-xs px-1">×</button>
                                             </div>
+                                            )}
                                         </div>
                                         <div className="p-1">
                                             {members.filter(m => m.sectionId === section.id && m.patrol === team.name && !m.isArchived).map(m => renderMemberRow(m))}
                                             {members.filter(m => m.sectionId === section.id && m.patrol === team.name && !m.isArchived).length === 0 && (
-                                              <p className="text-[10px] text-slate-400 italic px-2 py-1">Vazia — use ⚡ para colar a lista de nomes</p>
+                                              <p className="text-[10px] text-slate-400 italic px-2 py-1">{canWrite ? 'Vazia — use ⚡ para colar a lista de nomes' : 'Sem membros nesta unidade.'}</p>
                                             )}
                                         </div>
                                     </div>

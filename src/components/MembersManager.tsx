@@ -17,18 +17,29 @@ import {
   parseMemberLines,
   resolveTroopRole,
 } from '../utils/memberQuickAdd';
+import { collectUnits, filterMembers } from '../utils/memberFilters';
 
 interface Props {
   sectionId?: string;
+  /** Escrita + visão global (ADMINISTRADOR). */
   isAdmin?: boolean;
+  /** Vê todas as seções (admin ou Diretoria). */
+  isGlobal?: boolean;
+  /** Consulta: esconde add/edit/delete/move. */
+  isReadOnly?: boolean;
 }
 
 type FormMode = 'single' | 'bulk';
 
-export const MembersManager: React.FC<Props> = ({ sectionId, isAdmin }) => {
+export const MembersManager: React.FC<Props> = ({ sectionId, isAdmin, isGlobal, isReadOnly }) => {
+  const globalView = isGlobal ?? !!isAdmin;
+  const canWrite = !isReadOnly;
   const [members, setMembers] = useState<ScoutMember[]>([]);
   const [sections, setSections] = useState<ScoutSection[]>([]);
   const [loading, setLoading] = useState(true);
+  const [filterSectionId, setFilterSectionId] = useState(sectionId || '');
+  const [filterUnit, setFilterUnit] = useState('');
+  const [filterName, setFilterName] = useState('');
 
   const [historyMember, setHistoryMember] = useState<ScoutMember | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
@@ -59,6 +70,13 @@ export const MembersManager: React.FC<Props> = ({ sectionId, isAdmin }) => {
     loadMembers();
   }, [sectionId]);
 
+  useEffect(() => {
+    if (!globalView && sectionId) {
+      setFilterSectionId(sectionId);
+      setFilterUnit('');
+    }
+  }, [sectionId, globalView]);
+
   const loadMembers = async () => {
     setLoading(true);
     const [memData, secData] = await Promise.all([
@@ -79,7 +97,7 @@ export const MembersManager: React.FC<Props> = ({ sectionId, isAdmin }) => {
     setLoading(false);
   };
 
-  const resolvedSectionId = isAdmin ? targetSectionId : sectionId;
+  const resolvedSectionId = globalView ? targetSectionId : sectionId;
   const resolvedSection = useMemo(
     () => sections.find(s => s.id === resolvedSectionId),
     [sections, resolvedSectionId]
@@ -289,26 +307,93 @@ export const MembersManager: React.FC<Props> = ({ sectionId, isAdmin }) => {
     return Array.from(set).sort();
   }, [members, resolvedSection]);
 
+  const filterUnits = useMemo(
+    () => collectUnits(sections, members, filterSectionId || undefined),
+    [sections, members, filterSectionId],
+  );
+
+  const visibleMembers = useMemo(
+    () => filterMembers(members, {
+      sectionId: filterSectionId || undefined,
+      unit: filterUnit || undefined,
+      name: filterName,
+    }),
+    [members, filterSectionId, filterUnit, filterName],
+  );
+
+  const applySectionFilter = (nextSectionId: string) => {
+    setFilterSectionId(nextSectionId);
+    setFilterUnit('');
+    if (nextSectionId && canWrite && !editId) {
+      setTargetSectionId(nextSectionId);
+      const sec = sections.find(s => s.id === nextSectionId);
+      if (sec) setBranch(sec.branch);
+    }
+  };
+
   return (
     <div className="w-full max-w-none mx-auto animate-fade-in">
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
-        <div>
+      <div className="flex flex-col lg:flex-row lg:justify-between lg:items-end gap-4 mb-6">
+        <div className="min-w-0">
           <h2 className="text-2xl font-bold text-gray-800">👥 Efetivo da Seção</h2>
           <p className="text-gray-500 text-sm">
-            Cadastre só com o primeiro nome e complete depois. Use lista para patrulha ou chefia inteira.
+            {canWrite
+              ? 'Cadastre só com o primeiro nome e complete depois. Use lista para patrulha ou chefia inteira.'
+              : 'Consulta do efetivo. Filtros à direita não alteram cadastros.'}
           </p>
         </div>
-        {isEditing && (
-          <button
-            onClick={resetForm}
-            className="px-4 py-2 rounded-lg font-bold bg-red-100 text-red-600"
-          >
-            Fechar
-          </button>
-        )}
+        <div className="flex flex-wrap items-end gap-2 lg:justify-end">
+          {globalView && (
+            <label className="block min-w-[10rem]">
+              <span className="block text-[10px] font-bold uppercase text-slate-500 mb-1">Seção</span>
+              <select
+                value={filterSectionId}
+                onChange={e => applySectionFilter(e.target.value)}
+                className="w-full p-2 border border-slate-300 rounded-lg bg-white text-sm"
+              >
+                <option value="">Todas</option>
+                {sections.map(s => (
+                  <option key={s.id} value={s.id}>{s.name}</option>
+                ))}
+              </select>
+            </label>
+          )}
+          <label className="block min-w-[9rem]">
+            <span className="block text-[10px] font-bold uppercase text-slate-500 mb-1">Unidade</span>
+            <select
+              value={filterUnit}
+              onChange={e => setFilterUnit(e.target.value)}
+              disabled={filterUnits.length === 0}
+              className="w-full p-2 border border-slate-300 rounded-lg bg-white text-sm disabled:bg-slate-100 disabled:text-slate-400"
+            >
+              <option value="">Todas</option>
+              {filterUnits.map(unit => (
+                <option key={unit} value={unit}>{unit}</option>
+              ))}
+            </select>
+          </label>
+          <label className="block min-w-[12rem] flex-1 lg:flex-none">
+            <span className="block text-[10px] font-bold uppercase text-slate-500 mb-1">Busca por nome</span>
+            <input
+              type="search"
+              value={filterName}
+              onChange={e => setFilterName(e.target.value)}
+              placeholder="Buscar por nome"
+              className="w-full p-2 border border-slate-300 rounded-lg bg-white text-sm"
+            />
+          </label>
+          {isEditing && (
+            <button
+              onClick={resetForm}
+              className="px-4 py-2 rounded-lg font-bold bg-red-100 text-red-600"
+            >
+              Fechar
+            </button>
+          )}
+        </div>
       </div>
 
-      {!isEditing && (
+      {canWrite && !isEditing && (
         <div className="mb-6 bg-white p-4 rounded-xl border border-slate-200">
           <h3 className="font-bold text-gray-800 mb-3">Adicionar novos membros</h3>
           <div className="flex flex-wrap gap-2">
@@ -329,7 +414,7 @@ export const MembersManager: React.FC<Props> = ({ sectionId, isAdmin }) => {
       )}
 
       <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
-        {isEditing && (
+        {canWrite && isEditing && (
           <div className="xl:col-span-1">
             <div className="bg-white p-5 rounded-xl shadow-lg border border-green-100 sticky top-24 space-y-3">
               <div className="flex gap-1 p-1 bg-slate-100 rounded-lg">
@@ -366,7 +451,7 @@ export const MembersManager: React.FC<Props> = ({ sectionId, isAdmin }) => {
                   <h3 className="font-bold text-gray-800 border-b pb-2">
                     {editId ? 'Editar membro' : 'Cadastro rápido'}
                   </h3>
-                  {isAdmin && (
+                  {canWrite && globalView && (
                     <div>
                       <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Seção</label>
                       <select
@@ -470,7 +555,7 @@ export const MembersManager: React.FC<Props> = ({ sectionId, isAdmin }) => {
                     Um nome por linha. Opcional: <code className="bg-slate-100 px-1">Nome | Chefe</code> ou{' '}
                     <code className="bg-slate-100 px-1">Nome, registro, patrulha</code>.
                   </p>
-                  {isAdmin && (
+                  {canWrite && globalView && (
                     <select
                       value={targetSectionId}
                       onChange={e => setTargetSectionId(e.target.value)}
@@ -561,9 +646,13 @@ export const MembersManager: React.FC<Props> = ({ sectionId, isAdmin }) => {
               <span className="text-4xl grayscale opacity-50">⛺</span>
               <p className="text-gray-500 mt-2">Nenhum membro cadastrado.</p>
             </div>
+          ) : visibleMembers.length === 0 ? (
+            <div className="text-center py-12 bg-white rounded-xl border-2 border-dashed">
+              <p className="text-gray-500">Nenhum membro com esse filtro.</p>
+            </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-4">
-              {members.map(m => {
+              {visibleMembers.map(m => {
                 const incomplete = isMemberProfileIncomplete(m);
                 const reasons = incompleteReasons(m);
                 return (
@@ -588,7 +677,7 @@ export const MembersManager: React.FC<Props> = ({ sectionId, isAdmin }) => {
                             incompleto
                           </span>
                         )}
-                        {isAdmin && (
+                        {globalView && (
                           <span className="text-[10px] bg-yellow-100 text-yellow-800 px-1.5 rounded border border-yellow-200 truncate max-w-[100px]">
                             {getSectionName(m.sectionId)}
                           </span>
@@ -608,9 +697,13 @@ export const MembersManager: React.FC<Props> = ({ sectionId, isAdmin }) => {
                       {isYouthMember(m) && (
                         <button onClick={() => { void openFicha(m); }} className="text-green-600 hover:bg-green-50 p-1 rounded" title="Ficha de Progressão">📜</button>
                       )}
-                      <button onClick={() => handleEdit(m)} className="text-blue-500 hover:bg-blue-50 p-1 rounded" title="Editar / completar">✏️</button>
-                      <button onClick={() => { setMoveId(m.id); setMoveTargetSection(sections[0]?.id || ''); }} className="text-orange-500 hover:bg-orange-50 p-1 rounded" title="Mover de Seção">➡️</button>
-                      <button onClick={() => setDeleteTarget(m.id)} className="text-red-500 hover:bg-red-50 p-1 rounded" title="Excluir">🗑️</button>
+                      {canWrite && (
+                        <>
+                          <button onClick={() => handleEdit(m)} className="text-blue-500 hover:bg-blue-50 p-1 rounded" title="Editar / completar">✏️</button>
+                          <button onClick={() => { setMoveId(m.id); setMoveTargetSection(sections[0]?.id || ''); }} className="text-orange-500 hover:bg-orange-50 p-1 rounded" title="Mover de Seção">➡️</button>
+                          <button onClick={() => setDeleteTarget(m.id)} className="text-red-500 hover:bg-red-50 p-1 rounded" title="Excluir">🗑️</button>
+                        </>
+                      )}
                     </div>
                   </div>
                 );
