@@ -1,4 +1,4 @@
-import { UserProfile } from '../types';
+import type { UserProfile } from '../types';
 
 export const USER_ROLES = [
   'Chefe de Seção',

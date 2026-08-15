@@ -1,4 +1,4 @@
-import { ScoutMember, ScoutSection } from '../types';
+import type { ScoutMember, ScoutSection } from '../types';
 
 /** Normaliza texto para busca: minúsculas, sem acentos, espaços extras. */
 export const normalizeSearchText = (value?: string | null): string =>
