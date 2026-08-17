@@ -63,3 +63,11 @@ export const isOperationalProfile = (user?: UserProfile | null): boolean => {
   const permissions = getPermissions(user);
   return permissions.canPlan || permissions.canEditYouth;
 };
+
+/** ADMINISTRADOR (e flag isAdmin) ou Diretoria em consulta. Chefe/Assistente não. */
+export const canViewAccessLog = (user?: UserProfile | null): boolean => {
+  if (!user) return false;
+  if (user.isAdmin === true) return true;
+  const role = getRoleLabel(user.role);
+  return role === 'ADMINISTRADOR' || role === 'Diretoria';
+};

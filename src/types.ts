@@ -311,6 +311,9 @@ export interface UserProfile {
   active?: boolean;
   pendingApproval?: boolean;
   rejected?: boolean;
+  lastAccessAt?: string;
+  lastDataChangeAt?: string;
+  recentAccesses?: string[];
 }
 
 export interface SectionEnrollment {

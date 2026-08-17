@@ -41,11 +41,24 @@ export const ROTEIRO: HelpStep[] = [
   },
   {
     titulo: '5. Pacote da seção e acessos',
-    texto: 'Chefe e admin exportam/importam o JSON da seção em Configurações → Acessos (mesclar). Em Acessos também se edita (inclusive e-mail), desativa e exclui. Os dados da seção ficam no Firebase — não no git nem só no navegador.',
+    texto: 'Chefe e admin exportam/importam o JSON da seção em Configurações → Acessos (mesclar). Em Acessos também se edita (inclusive e-mail), desativa e exclui. O administrador (e a Diretoria em consulta) abre o Log de acessos: último login e última alteração nos dados. Os dados da seção ficam no Firebase — não no git nem só no navegador.',
+  },
+  {
+    titulo: '6. Início e manual',
+    texto: 'Depois do login abre o Início com os passos básicos. Dá para ir ao planejador ou marcar “Não mostrar de novo”. O manual completo (com as telas atuais) está no ? e no botão do Início.',
   },
 ];
 
 export const TELA_HELP: Record<string, ScreenHelp> = {
+  HOME: {
+    titulo: 'Início',
+    corpo: 'Tela curta depois do login: o que é o ScoutsAuto e os passos básicos (efetivo, gerar, catálogo, agenda, ajuda). Não substitui o manual completo.',
+    dicas: [
+      '“Ir ao planejador” (ou relatórios, na Diretoria) sai desta tela sem apagá-la do menu.',
+      '“Não mostrar de novo” guarda a preferência só neste navegador.',
+      'O botão do manual completo abre o guia com as telas atuais.',
+    ],
+  },
   DASHBOARD: {
     titulo: 'Painel da chefia',
     corpo: 'Entrada da seção: idade, progresso e reconhecimento, com atalhos para Gerar, Ciclo e Relatórios.',
@@ -61,6 +74,8 @@ export const TELA_HELP: Record<string, ScreenHelp> = {
       'Só o primeiro nome basta; registro UEB e nascimento completam depois.',
       'O registro UEB identifica a pessoa; ao transferir, a lotação anterior ganha data de fim.',
       'Chefe e assistente não têm ficha de progressão de jovem.',
+      'Quem vê as duas seções (Tropa e Alcateia) filtra por seção, unidade (patrulha/matilha) e nome.',
+      'Diretoria consulta o efetivo das seções, sem editar.',
     ],
   },
   REPORTS: {
@@ -68,7 +83,7 @@ export const TELA_HELP: Record<string, ScreenHelp> = {
     corpo: 'Visão da seção: frequência, progresso, pendências e leitura para diretoria.',
     dicas: [
       'A ficha lado a lado (oficial + blocos) abre no Efetivo, não aqui.',
-      'Diretoria e leitura veem só as seções em que foram liberados, em modo consulta.',
+      'Diretoria tem visão global em consulta (sem editar). Leitura/Auditoria fica na seção liberada.',
     ],
   },
   GENERATOR: {
@@ -126,9 +141,10 @@ export const TELA_HELP: Record<string, ScreenHelp> = {
     titulo: 'Estrutura',
     corpo: 'Grupo, seção e equipes. No site, a mesma tela traz Acessos do grupo (pedidos, papéis e pacote da seção).',
     dicas: [
-      'Ordem: Grupo Escoteiro → Seção → Equipe (+ Equipe).',
+      'Ordem: Grupo Escoteiro → Seção (Tropa e/ou Alcateia) → Equipe (+ Equipe).',
       'Cadastro rápido: só o nome basta; complete registro depois no Efetivo.',
       'Quem entra pelo site pede acesso; o admin libera em Acessos.',
+      'Administrador e Diretoria abrem o Log de acessos nesta tela ou em Configurações.',
     ],
   },
   LOGIN: {
@@ -207,5 +223,13 @@ export const FAQ: HelpFaq[] = [
   {
     q: 'Como volto ao POR 2020?',
     a: 'Em Configurações → Avançado, ative o modo legado só para consulta histórica. A ficha oficial (Paxtu) continua visível sem isso.',
+  },
+  {
+    q: 'Onde vejo quem entrou e quem alterou dados?',
+    a: 'Administrador (e Diretoria em consulta) abre Configurações ou Estrutura → Log de acessos. Cada conta mostra nome, e-mail, último acesso e última alteração nos dados, no horário de Cuiabá. Os registros começam neste deploy; não há histórico inventado.',
+  },
+  {
+    q: 'Como filtro o efetivo da Tropa e da Alcateia?',
+    a: 'Quem tem visão global (administrador ou Diretoria) usa os filtros de seção, unidade e nome no Efetivo. Chefe e assistente vêem só a seção em que foram liberados.',
   },
 ];

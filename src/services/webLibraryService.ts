@@ -157,7 +157,9 @@ export const openUserGuideInBrowser = async (): Promise<void> => {
     return;
   }
   const html = (await import('../../docs/usersmanual.html?raw')).default;
-  dispatchHtmlPreview('Guia_de_Uso_ScoutsAuto.html', html);
+  const base = new URL('./', window.location.href).href;
+  const withImages = html.replace(/src="manual\//g, `src="${base}manual/`);
+  dispatchHtmlPreview('Guia_de_Uso_ScoutsAuto.html', withImages);
 };
 
 const ensureLibraryIndex = async (): Promise<void> => {
