@@ -110,6 +110,16 @@ service cloud.firestore {
         );
     }
 
+    // lastAccessAt / lastDataChangeAt / recentAccesses: o próprio usuário ativo
+    // atualiza só esses campos (ISO). Sem senha, token ou PII extra.
+    function isSelfActivityUpdate() {
+      return signedIn()
+        && request.auth.uid == uid
+        && resource.data.active == true
+        && request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['lastAccessAt', 'lastDataChangeAt', 'recentAccesses']);
+    }
+
     match /meta/{docId} {
       allow read: if signedIn();
       allow create: if (docId == 'bootstrap'
@@ -154,6 +164,7 @@ service cloud.firestore {
           isAdmin()
           && !isSelfAdminLock()
         )
+        || isSelfActivityUpdate()
         || (
           signedIn()
           && request.auth.uid == uid

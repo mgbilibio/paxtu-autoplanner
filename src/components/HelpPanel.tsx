@@ -93,7 +93,7 @@ export const HelpPanel: React.FC<Props> = ({ onClose, currentView }) => {
             className="text-sm font-bold bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700"
             title="Abrir o guia de uso do ScoutsAuto"
           >
-            📖 Abrir guia de uso
+            📖 Abrir o manual completo
           </button>
         </div>
       </div>

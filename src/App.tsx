@@ -23,8 +23,11 @@ import { ProgressaoBlocos2025 } from './components/ProgressaoBlocos2025';
 import { BibliotecaView } from './components/BibliotecaView';
 import { GlobalSearch } from './components/GlobalSearch';
 import { HelpPanel } from './components/HelpPanel';
+import { AccessLogPanel } from './components/profiles/AccessLogPanel';
+import { WelcomeHome } from './components/WelcomeHome';
+import { hideWelcomePermanently, shouldShowWelcome } from './utils/welcomePreference';
 import { ConfirmDialog } from './components/ConfirmDialog';
-import { getPermissions, getRoleLabel, isOperationalProfile } from './services/roleService';
+import { canViewAccessLog, getPermissions, getRoleLabel, isOperationalProfile } from './services/roleService';
 import { SectionProgressOverview } from './components/SectionProgressOverview';
 import { normalizeOllamaBaseUrl } from './services/ollamaUrlSecurity';
 import { buildCustomObjective } from './services/customObjectiveMatcher';
@@ -49,7 +52,7 @@ function App() {
   const [detailItem, setDetailItem] = useState<{code: string, desc: string} | null>(null);
   const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
   const [currentSection, setCurrentSection] = useState<ScoutSection | null>(null);
-  const [view, setView] = useState<'LOGIN' | 'PROFILE_CONFIG' | 'DASHBOARD' | 'GENERATOR' | 'CATALOG' | 'MEMBERS' | 'CALENDAR' | 'REPORTS' | 'CYCLE' | 'ENCYCLOPEDIA' | 'BLOCOS_2025' | 'BIBLIOTECA'>('LOGIN');
+  const [view, setView] = useState<'LOGIN' | 'PROFILE_CONFIG' | 'HOME' | 'DASHBOARD' | 'GENERATOR' | 'CATALOG' | 'MEMBERS' | 'CALENDAR' | 'REPORTS' | 'CYCLE' | 'ENCYCLOPEDIA' | 'BLOCOS_2025' | 'BIBLIOTECA'>('LOGIN');
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [selectedBranch, setSelectedBranch] = useState<ScoutBranch | null>(null);
   const [showSettings, setShowSettings] = useState(false);
@@ -125,6 +128,7 @@ function App() {
   const [settingsTab, setSettingsTab] = useState<'ia' | 'dados' | 'avancado' | 'contas'>('ia');
   // Painel de Ajuda
   const [showHelp, setShowHelp] = useState(false);
+  const [showAccessLog, setShowAccessLog] = useState(false);
   const [toast, setToast] = useState<{ message: string; kind: 'info' | 'error' } | null>(null);
   const [editLockConflict, setEditLockConflict] = useState<EditLock | null>(null);
   const [webAuthReady, setWebAuthReady] = useState(!isWebApp());
@@ -467,7 +471,8 @@ function App() {
           return;
         }
       }
-      setView(isOperationalProfile(user) ? 'DASHBOARD' : 'REPORTS');
+      const plannerView = isOperationalProfile(user) ? 'DASHBOARD' : 'REPORTS';
+      setView(shouldShowWelcome() ? 'HOME' : plannerView);
   };
 
   const handleWebAuthenticated = (profile: UserProfile) => {
@@ -545,6 +550,7 @@ function App() {
     setShowSettings(false);
     setShowSearch(false);
     setShowHelp(false);
+    setShowAccessLog(false);
     setLoading(false);
     setLlmProgress(null);
     setLlmStartedAt(null);
@@ -1182,6 +1188,7 @@ function App() {
     <div className="min-h-screen bg-gray-100 text-gray-800 font-sans flex flex-col relative">
       {showSearch && <GlobalSearch onClose={() => setShowSearch(false)} />}
       {showHelp && <HelpPanel onClose={() => setShowHelp(false)} currentView={view} />}
+      {showAccessLog && <AccessLogPanel onClose={() => setShowAccessLog(false)} />}
       {htmlPreview && (
         <div className="fixed inset-0 bg-black/70 z-50 p-3 md:p-6 flex flex-col" role="dialog" aria-modal="true">
           <div className="bg-white rounded-t-xl shadow-xl p-3 flex items-center justify-between gap-3">
@@ -1256,6 +1263,18 @@ function App() {
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm animate-fade-in" role="dialog" aria-modal="true" aria-labelledby="settings-title">
             <div className="bg-white rounded-xl shadow-2xl max-w-lg w-full p-6 max-h-[90vh] overflow-y-auto">
                 <h3 id="settings-title" className="text-xl font-bold text-gray-800 mb-4">⚙️ Configurações</h3>
+                {canViewAccessLog(currentUser) && isWebApp() && (
+                  <button
+                    type="button"
+                    onClick={() => setShowAccessLog(true)}
+                    className="mb-4 w-full text-left px-4 py-3 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 rounded-lg"
+                  >
+                    <span className="block text-sm font-bold text-indigo-900">Log de acessos</span>
+                    <span className="block text-[11px] text-indigo-700 mt-0.5">
+                      Último login e última alteração nos dados de cada conta (horário de Cuiabá).
+                    </span>
+                  </button>
+                )}
                 {error && <div className="bg-red-50 text-red-600 p-3 rounded mb-4 text-xs" role="alert">{error}</div>}
                 <div className="flex border-b mb-4" role="tablist">
                     {([['ia','IA'],['dados','Dados'],['avancado','Avançado'], ...(isWebApp() ? [['contas','Acessos'] as const] : [])] as const).map(([id,label]) => (
@@ -1613,6 +1632,7 @@ function App() {
             aria-expanded={mobileNavOpen}
           >☰</button>
           <nav className={`${mobileNavOpen ? 'absolute top-16 left-0 right-0 bg-slate-900 flex-col p-4 gap-2 flex z-30 border-t border-slate-700' : 'hidden'} md:static md:flex md:flex-row md:items-center md:gap-2 md:p-0 md:border-0`}>
+            <button onClick={() => { navigateTo('HOME'); setMobileNavOpen(false); }} className="text-sm font-medium transition-all px-3 py-1 rounded-md text-gray-400 hover:text-white text-left">Início</button>
             <button onClick={() => { navigateTo((permissions.canPlan && !isLockedForCurrentUser) ? 'DASHBOARD' : 'REPORTS'); setMobileNavOpen(false); }} className="text-sm font-medium transition-all px-3 py-1 rounded-md text-gray-400 hover:text-white text-left">Painel</button>
             {permissions.canPlan && !isLockedForCurrentUser && (
               <button onClick={() => { navigateTo('GENERATOR'); if(step===3) reset(); setMobileNavOpen(false); }} className="text-sm font-medium transition-all px-3 py-1 rounded-md text-gray-400 hover:text-white text-left">Gerar</button>
@@ -1662,7 +1682,7 @@ function App() {
             )}
             <button onClick={() => { navigateTo('REPORTS'); setMobileNavOpen(false); }} className="text-sm text-gray-400 hover:text-white px-3 text-left">Relatórios</button>
             <button onClick={() => setShowHelp(true)} aria-label="Ajuda" title="Ajuda (roteiro, FAQ, IA)" className="text-gray-400 hover:text-white p-2 text-xl">❓</button>
-            {permissions.canConfigure && (
+            {(permissions.canConfigure || canViewAccessLog(currentUser)) && (
               <button onClick={() => setShowSettings(true)} aria-label="Configurações" className="text-gray-400 hover:text-white p-2 text-xl">⚙️</button>
             )}
             <button onClick={handleLogout} aria-label="Sair" title="Sair" className="w-8 h-8 rounded-full bg-red-900 flex items-center justify-center ml-2 hover:bg-red-800"><span aria-hidden="true">🚪</span></button>
@@ -1697,6 +1717,16 @@ function App() {
       {/* Main Content */}
       <main className="p-4 md:p-8 flex-1">
         <div className={view === 'MEMBERS' || view === 'GENERATOR' ? 'w-full max-w-[1800px] mx-auto' : 'max-w-6xl mx-auto'}>
+          {view === 'HOME' && (
+            <WelcomeHome
+              plannerLabel={permissions.canPlan && !isLockedForCurrentUser ? 'Ir ao planejador' : 'Ir aos relatórios'}
+              onGoToPlanner={() => navigateTo((permissions.canPlan && !isLockedForCurrentUser) ? 'DASHBOARD' : 'REPORTS')}
+              onHideForever={() => {
+                hideWelcomePermanently();
+                navigateTo((permissions.canPlan && !isLockedForCurrentUser) ? 'DASHBOARD' : 'REPORTS');
+              }}
+            />
+          )}
           {view === 'DASHBOARD' && currentSection && (
             <div className="space-y-6 animate-fade-in">
               <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">

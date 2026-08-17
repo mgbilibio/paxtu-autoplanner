@@ -3,55 +3,152 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ScoutsAuto — Guia de uso</title>
+  <title>ScoutsAuto — Manual completo</title>
   <style>
     body{font-family:Arial,Helvetica,sans-serif;margin:0;background:#eef2f7;color:#172033;line-height:1.55}
     main{max-width:900px;margin:0 auto;background:#fff;min-height:100vh;padding:28px;box-sizing:border-box}
-    h1{margin-top:0;color:#0f172a}h2{border-bottom:1px solid #dbe3ef;padding-bottom:6px;margin-top:28px}
-    code{background:#eef2ff;padding:2px 5px;border-radius:4px}li{margin:7px 0}.note{background:#eff6ff;border-left:4px solid #2563eb;padding:12px 14px}
+    h1{margin-top:0;color:#0f172a}h2{border-bottom:1px solid #dbe3ef;padding-bottom:6px;margin-top:32px}
+    h3{margin-top:22px;color:#1e293b}
+    code{background:#eef2ff;padding:2px 5px;border-radius:4px}li{margin:7px 0}
+    .note{background:#eff6ff;border-left:4px solid #2563eb;padding:12px 14px}
+    .warn{background:#fff7ed;border-left:4px solid #ea580c;padding:12px 14px}
+    figure.shot{margin:16px 0;padding:0;border:1px solid #dbe3ef;border-radius:12px;overflow:hidden;background:#f8fafc}
+    figure.shot img{display:block;width:100%;height:auto;background:#fff}
+    figure.shot img.missing{display:none}
+    figure.shot .placeholder{display:none;padding:28px 16px;text-align:center;color:#475569;font-size:14px;background:#f1f5f9}
+    figure.shot img.missing + .placeholder,figure.shot img[data-pending] + .placeholder{display:block}
+    figcaption{padding:10px 14px;font-size:13px;color:#334155;background:#fff;border-top:1px solid #e2e8f0}
+    nav.toc a{display:block;margin:4px 0;color:#1d4ed8}
     @media(max-width:600px){main{padding:18px}h1{font-size:25px}h2{font-size:19px}}
   </style>
 </head>
 <body>
 <main>
-  <h1>ScoutsAuto</h1>
-  <p>Planejador da chefia no navegador. <strong>Paxtu</strong> é só o sistema oficial da UEB de progresso juvenil (oficial / POR antigo), de onde copiamos o histórico. Este app não se chama Paxtu nem PaxtuAP.</p>
+  <h1>ScoutsAuto — manual completo</h1>
+  <p>Planejador da chefia no navegador: reuniões, efetivo e progressão <strong>POR 2025+</strong>. Os dados da tropa e da alcateia ficam no <strong>Firebase</strong> (Firestore), ligados ao login de cada pessoa — não no git nem só neste aparelho.</p>
+  <p><strong>Paxtu</strong> é só o sistema oficial da UEB de progresso juvenil (oficial / POR antigo), de onde copiamos o histórico. Este app não se chama Paxtu, PaxtuAP nem SocialKids.</p>
+  <p class="note">Horários do log de acessos usam <code>America/Cuiaba</code> (Cuiabá/MT). Capturas abaixo são da interface real; se o arquivo ainda não foi enviado, aparece o retângulo de reserva — nenhuma tela inventada.</p>
 
-  <h2>Acesso</h2>
+  <nav class="toc" aria-label="Índice">
+    <strong>Neste manual</strong>
+    <a href="#acesso">1. Acesso e papéis</a>
+    <a href="#inicio">2. Início</a>
+    <a href="#estrutura">3. Estrutura (grupo, Tropa e Alcateia)</a>
+    <a href="#efetivo">4. Efetivo e ficha</a>
+    <a href="#gerar">5. Gerar roteiro e cronograma</a>
+    <a href="#agenda">6. Agenda, roteiros e ciclo</a>
+    <a href="#relatorios">7. Relatórios e Diretoria</a>
+    <a href="#acessos">8. Acessos e log de acessos</a>
+    <a href="#ia">9. IA e dados</a>
+  </nav>
+
+  <h2 id="acesso">1. Acesso e papéis</h2>
   <ul>
     <li>Qualquer pessoa com o link cria conta (Google ou e-mail e senha).</li>
-    <li>O primeiro login do grupo vira administrador.</li>
+    <li>O primeiro login do grupo vira <strong>ADMINISTRADOR</strong>.</li>
     <li>Os demais aguardam em Configurações → Acessos: o admin libera com seção e papel, ou recusa.</li>
-    <li>Em Acessos também se edita (inclusive e-mail), desativa, exclui e envia redefinição de senha.</li>
-    <li>O app pede o e-mail de senha em português (<code>lang=pt</code>), com volta a este site. O texto do modelo Firebase (nome ScoutsAuto) está bloqueado no projeto.</li>
+    <li>Papéis: Chefe de Seção, Assistente, Diretoria (consulta global), Leitura/Auditoria, ADMINISTRADOR.</li>
+    <li>Pedido pendente não abre tropa nem alcateia.</li>
+    <li>“Esqueci a senha” manda e-mail em português, com volta a este site.</li>
+  </ul>
+  <figure class="shot" id="fig-login">
+    <img src="manual/login.png" alt="Tela de login do ScoutsAuto" onerror="this.classList.add('missing')">
+    <div class="placeholder">Captura real da tela de login — coloque <code>manual/login.png</code> (sem dados de jovens).</div>
+    <figcaption>Login: Google ou e-mail e senha. O primeiro acesso do grupo vira administrador.</figcaption>
+  </figure>
+
+  <h2 id="inicio">2. Início</h2>
+  <p>Depois do login abre uma tela curta: o que é o ScoutsAuto e os passos básicos (entrar, efetivo, gerar, catálogo, agenda, ajuda). Não é este manual inteiro.</p>
+  <ul>
+    <li><strong>Ir ao planejador</strong> (ou aos relatórios, na Diretoria) sai da tela sem apagá-la do menu Início.</li>
+    <li><strong>Não mostrar de novo</strong> guarda a preferência só neste navegador.</li>
+    <li>O botão do manual completo (também no ? da barra) abre este guia.</li>
   </ul>
 
-  <h2>Dados</h2>
-  <p>A tropa fica no Firebase, não no git nem só no navegador. Hierarquia: <strong>Grupo → Seção → Equipe (unidade) → Pessoa</strong>. A pessoa (registro UEB) é estável; a lotação tem início e fim, então transferência guarda histórico. Chaves de IA ficam só neste navegador.</p>
-
-  <h2>Efetivo e ficha</h2>
+  <h2 id="estrutura">3. Estrutura</h2>
+  <p>Hierarquia: <strong>Grupo → Seção → Equipe (unidade) → Pessoa</strong>. O grupo Unisselva usa duas seções no dia a dia: <strong>Tropa</strong> (ramo Escoteiro) e <strong>Alcateia</strong> (ramo Lobinho). Outras seções (Sênior, Pioneiro) seguem o mesmo cadastro.</p>
   <ul>
-    <li>Em <strong>Efetivo</strong>, a caixa “Adicionar novos membros” abre um nome ou lista rápida.</li>
-    <li>A ficha (📜) tem duas camadas: <strong>Oficial (Paxtu / POR antigo)</strong> — listas por etapa, itens, datas, feito/falta — e <strong>Blocos 2025+</strong>.</li>
+    <li>Em <strong>Estrutura</strong>: crie o grupo, a seção e as equipes (patrulha ou matilha).</li>
+    <li>A pessoa (registro UEB) é estável; a lotação tem início e fim — transferência guarda histórico.</li>
+    <li>No site, a mesma tela traz Acessos do grupo (pedidos, papéis e pacote da seção).</li>
+  </ul>
+  <figure class="shot" id="fig-estrutura">
+    <img src="manual/estrutura.png" alt="Tela de Estrutura do ScoutsAuto" onerror="this.classList.add('missing')">
+    <div class="placeholder">Captura real da Estrutura — coloque <code>manual/estrutura.png</code>.</div>
+    <figcaption>Estrutura: grupo, seções (Tropa / Alcateia) e equipes. Acessos do grupo ficam na mesma área no site.</figcaption>
+  </figure>
+
+  <h2 id="efetivo">4. Efetivo e ficha</h2>
+  <ul>
+    <li>A caixa “Adicionar novos membros” abre um nome ou lista rápida.</li>
+    <li>A ficha (📜) tem duas camadas: <strong>Oficial (Paxtu / POR antigo)</strong> e <strong>Blocos 2025+</strong>.</li>
     <li>O dump oficial é cru. O de-para para POR 2025+ é só sugestão (equivalência UEB até <strong>30/jun/2027</strong>). A chefia confirma. O histórico oficial nunca é rebaixado.</li>
+    <li>Quem vê as duas seções (administrador ou Diretoria) filtra por <strong>seção</strong>, <strong>unidade</strong> (patrulha/matilha) e <strong>nome</strong>.</li>
+    <li>Chefe e assistente vêem só a seção em que foram liberados.</li>
   </ul>
+  <figure class="shot" id="fig-efetivo">
+    <img src="manual/efetivo.png" alt="Tela de Efetivo do ScoutsAuto" onerror="this.classList.add('missing')">
+    <div class="placeholder">Captura real do Efetivo — coloque <code>manual/efetivo.png</code>. Recorte nomes de jovens se a tela tiver dados pessoais.</div>
+    <figcaption>Efetivo: lista da seção, filtros (seção / unidade / nome) e atalho da ficha.</figcaption>
+  </figure>
 
-  <h2>Pacote da seção</h2>
-  <p>Chefe e admin, em Configurações → Acessos: exportar ou importar JSON (<strong>mesclar</strong>). O histórico oficial fica no registro de cada jovem (subdocs), não no doc de 1&nbsp;MB do efetivo. A importação pode levar um minuto; se o botão ficar em “Aguarde…”, atualize a página e abra uma ficha.</p>
-
-  <h2>Planejamento</h2>
+  <h2 id="gerar">5. Gerar roteiro e cronograma</h2>
   <ul>
-    <li><strong>Gerar:</strong> “Tema livre + amarra” (ou “A partir da seleção”).</li>
-    <li>Anexos: txt, md, html, imagem ou PDF.</li>
-    <li>Um campo por atividade; no roteiro, “Refazer esta”.</li>
-    <li>Cronograma no formato do papel: horário, duração, item e responsável.</li>
-    <li>O roteiro salvo vai a <strong>Roteiros</strong> e amarra na <strong>Agenda</strong> (“Roteiro do Catálogo”).</li>
+    <li><strong>Tema livre + amarra</strong> (padrão) ou <strong>A partir da seleção</strong> no catálogo POR 2025+.</li>
+    <li>Anexos de contexto: txt, md, html, imagem ou PDF (só nesta sessão).</li>
+    <li>Um campo por atividade; no roteiro, “Refazer esta” com “O que mudar neste quadro”.</li>
+    <li>O <strong>cronograma</strong> segue o formulário de papel: horário de início, duração, item e responsável. Abertura, intervalos e encerramento ficam; a IA preenche o miolo.</li>
+    <li>O roteiro guarda o pedido; dá para regenerar sem redigitar.</li>
   </ul>
+  <figure class="shot" id="fig-gerar">
+    <img src="manual/gerar.png" alt="Tela Gerar roteiro do ScoutsAuto" onerror="this.classList.add('missing')">
+    <div class="placeholder">Captura real de Gerar — coloque <code>manual/gerar.png</code>.</div>
+    <figcaption>Gerar: tema, cronograma (horário, duração, responsável) e geração do roteiro POR 2025+.</figcaption>
+  </figure>
 
-  <h2>IA</h2>
+  <h2 id="agenda">6. Agenda, roteiros e ciclo</h2>
+  <ul>
+    <li>O roteiro salvo vai a <strong>Roteiros</strong> e amarra na <strong>Agenda</strong> (“Roteiro do Catálogo”).</li>
+    <li>Na Agenda: data, presença e lançamento de progressão a partir do roteiro. “Revisar crédito” tira quem não atingiu, sem apagar presença.</li>
+    <li><strong>Ciclo</strong> monta o arco de várias semanas (também com tema livre + amarra).</li>
+  </ul>
+  <figure class="shot" id="fig-agenda">
+    <img src="manual/agenda.png" alt="Tela de Agenda do ScoutsAuto" onerror="this.classList.add('missing')">
+    <div class="placeholder">Captura real da Agenda — coloque <code>manual/agenda.png</code>.</div>
+    <figcaption>Agenda: datas da seção, roteiro do catálogo, presença e lançamento de progressão.</figcaption>
+  </figure>
+
+  <h2 id="relatorios">7. Relatórios e Diretoria</h2>
+  <p>Visão da seção: frequência, progresso e pendências. A ficha lado a lado (oficial + blocos) abre no Efetivo, não aqui.</p>
+  <ul>
+    <li><strong>Diretoria</strong> tem visão global em <strong>consulta</strong>: vê Tropa e Alcateia, sem editar efetivo nem gerar roteiro.</li>
+    <li>Leitura/Auditoria fica na seção liberada, também em consulta.</li>
+    <li>Se outro adulto estiver editando a seção, o aviso de modo consulta aparece no topo.</li>
+  </ul>
+  <figure class="shot" id="fig-relatorios">
+    <img src="manual/relatorios.png" alt="Tela de Relatórios do ScoutsAuto" onerror="this.classList.add('missing')">
+    <div class="placeholder">Captura real dos Relatórios — coloque <code>manual/relatorios.png</code>.</div>
+    <figcaption>Relatórios: consolidado da seção para chefia e Diretoria em consulta.</figcaption>
+  </figure>
+
+  <h2 id="acessos">8. Acessos e log de acessos</h2>
+  <ul>
+    <li>Em Configurações → Acessos (ou Estrutura → Acessos do grupo): editar (inclusive e-mail), desativar, excluir e enviar redefinição de senha.</li>
+    <li>Chefe e admin exportam/importam o <strong>pacote JSON da seção</strong> (mesclar). O histórico oficial fica no registro de cada jovem (subdocs), não no doc de 1&nbsp;MB do efetivo.</li>
+    <li>O administrador baixa e restaura o JSON do <strong>grupo</strong> em Acessos. Sem senhas nem chaves de API.</li>
+    <li><strong>Log de acessos</strong> (ADMINISTRADOR e Diretoria): cada conta com nome, e-mail, <em>Último acesso</em> e <em>Última alteração nos dados</em>. Horário de Cuiabá. Se ainda não houver carimbo: “Ainda não há registros. Eles passam a aparecer a partir deste deploy.”</li>
+    <li>Chefe e Assistente não vêem o log, a menos que a conta seja administradora do grupo.</li>
+  </ul>
+  <figure class="shot" id="fig-acessos">
+    <img src="manual/acessos.png" alt="Log de acessos do ScoutsAuto" onerror="this.classList.add('missing')">
+    <div class="placeholder">Captura real do Log de acessos — coloque <code>manual/acessos.png</code>.</div>
+    <figcaption>Log de acessos: contas do grupo, último login e última gravação (efetivo, plano, estrutura…).</figcaption>
+  </figure>
+
+  <h2 id="ia">9. IA e dados</h2>
   <p>Gemini é o padrão. Cole a chave do AI Studio em Configurações → IA (só neste navegador). xAI é extra. Ollama local não roda neste site.</p>
-
-  <p class="note">A UEB prevê equivalência / transição do Programa Educativo até 30/06/2027. Homologação formal continua no Paxtu oficial.</p>
+  <p>POR 2025+ no menu: Blocos de Aprendizagem, Enciclopédia de Especialidades e Biblioteca (manuais de consulta). Em Configurações → Avançado, o modo legado (POR 2020) é só consulta histórica.</p>
+  <p class="warn">A UEB prevê equivalência / transição do Programa Educativo até 30/06/2027. Homologação formal continua no Paxtu oficial. Não publique capturas com nomes ou dados de saúde de jovens.</p>
 </main>
 </body>
 </html>

@@ -8,6 +8,7 @@ export const Roteiro = () => (
     <p className="text-sm text-slate-600 bg-indigo-50 border border-indigo-100 rounded-lg px-3 py-2">
       <strong className="text-slate-800">ScoutsAuto</strong> é este app.
       {' '}Paxtu é só o sistema oficial da UEB (oficial / POR antigo) de onde copiamos o progresso dos jovens.
+      {' '}O botão abaixo abre o <strong>manual completo</strong> (telas atuais, com espaço para capturas reais).
     </p>
     <ol className="space-y-4">
     {ROTEIRO.map((item, idx) => (

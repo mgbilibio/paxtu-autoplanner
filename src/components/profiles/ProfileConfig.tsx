@@ -3,8 +3,10 @@ import { ScoutSection, UserProfile } from '../../types';
 import { StructureManager } from './StructureManager';
 import { UserManager } from './UserManager';
 import { WebAccountsPanel } from './WebAccountsPanel';
+import { AccessLogPanel } from './AccessLogPanel';
 import { getGroupsAsync, getSectionsAsync, getUsersAsync } from '../../services/storageService';
 import { isWebApp } from '../../services/platform';
+import { canViewAccessLog } from '../../services/roleService';
 
 // U3: indicador de progresso do onboarding pós-setup wizard.
 // Mostra 3 passos com checkmarks dinâmicos.
@@ -26,6 +28,7 @@ export const ProfileConfig: React.FC<Props> = ({
   currentSection,
 }) => {
   const [steps, setSteps] = useState({ grupo: false, secao: false, usuario: false });
+  const [showAccessLog, setShowAccessLog] = useState(false);
 
   useEffect(() => {
     const refresh = async () => {
@@ -60,6 +63,19 @@ export const ProfileConfig: React.FC<Props> = ({
 
   return (
     <div className="space-y-6 animate-fade-in">
+      {showAccessLog && <AccessLogPanel onClose={() => setShowAccessLog(false)} />}
+      {canViewAccessLog(currentUser) && isWebApp() && (
+        <button
+          type="button"
+          onClick={() => setShowAccessLog(true)}
+          className="w-full text-left px-4 py-3 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 rounded-xl"
+        >
+          <span className="block text-sm font-bold text-indigo-900">Log de acessos</span>
+          <span className="block text-[11px] text-indigo-700 mt-0.5">
+            Nome, e-mail, último acesso e última alteração nos dados de cada conta.
+          </span>
+        </button>
+      )}
       {/* U3: Banner de onboarding com progresso visual */}
       {!allDone && !isReadOnly && (
         <div className="bg-gradient-to-r from-indigo-50 to-purple-50 p-5 rounded-xl border border-indigo-200">

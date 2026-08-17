@@ -38,6 +38,8 @@ import {
 } from './config';
 import { readGroupWebSettings } from './groupSettings';
 import { setFirebaseSessionUid } from './session';
+import { recordDataChange, recordLastAccess } from './accessLog';
+import { parseIsoField, parseRecentAccesses } from './accessLogFormat';
 
 export {
   BACKEND_NOT_CONFIGURED_MESSAGE,
@@ -71,6 +73,9 @@ export interface GroupPerson {
   awaitingApproval: boolean;
   rejected: boolean;
   requestedAt?: Date | null;
+  lastAccessAt?: string;
+  lastDataChangeAt?: string;
+  recentAccesses?: string[];
 }
 
 const emailKey = (raw: string): string =>
@@ -127,6 +132,9 @@ const personToProfile = (person: GroupPerson, uid: string): UserProfile => {
     active,
     pendingApproval: awaiting,
     rejected,
+    lastAccessAt: person.lastAccessAt,
+    lastDataChangeAt: person.lastDataChangeAt,
+    recentAccesses: person.recentAccesses,
   };
 };
 
@@ -156,6 +164,9 @@ const inviteFromData = (email: string, data: Record<string, unknown>): GroupPers
     awaitingApproval,
     rejected,
     requestedAt: timestampToDate(data.requestedAt),
+    lastAccessAt: parseIsoField(data.lastAccessAt),
+    lastDataChangeAt: parseIsoField(data.lastDataChangeAt),
+    recentAccesses: parseRecentAccesses(data.recentAccesses),
   };
 };
 
@@ -495,6 +506,9 @@ export const subscribeGroupAuth = (onChange: (profile: UserProfile | null) => vo
       const profile = await resolveMembership(user);
       if (cancelled) return;
       onChange(profile);
+      if (profile.active && !profile.pendingApproval && !profile.rejected) {
+        void recordLastAccess(user.uid);
+      }
       unsubDoc = onSnapshot(doc(getFirestoreDb(), 'users', user.uid), snap => {
         if (cancelled) return;
         if (!snap.exists()) return;
@@ -550,6 +564,9 @@ export const listGroupPeople = async (): Promise<GroupPerson[]> => {
       awaitingApproval: person.awaitingApproval,
       rejected: person.rejected,
       requestedAt: person.requestedAt ?? prev?.requestedAt,
+      lastAccessAt: person.lastAccessAt ?? prev?.lastAccessAt,
+      lastDataChangeAt: person.lastDataChangeAt ?? prev?.lastDataChangeAt,
+      recentAccesses: person.recentAccesses?.length ? person.recentAccesses : prev?.recentAccesses,
     });
   });
   return [...byEmail.values()].sort((a, b) => a.displayName.localeCompare(b.displayName, 'pt-BR'));
@@ -643,6 +660,7 @@ export const inviteGroupPerson = async (input: InvitePersonInput): Promise<Group
       createdAt: serverTimestamp(),
     }, { merge: true });
   }
+  void recordDataChange();
   return person;
 };
 
@@ -679,6 +697,7 @@ export const approvePendingPerson = async (
     approvedAt: serverTimestamp(),
     approvedBy: getFirebaseAuth().currentUser?.uid || null,
   });
+  void recordDataChange();
 };
 
 export const rejectPendingPerson = async (uid: string): Promise<void> => {
@@ -697,6 +716,7 @@ export const rejectPendingPerson = async (uid: string): Promise<void> => {
     rejectedAt: serverTimestamp(),
     rejectedBy: getFirebaseAuth().currentUser?.uid || null,
   });
+  void recordDataChange();
 };
 
 export const setPersonActive = async (emailRaw: string, active: boolean): Promise<void> => {
@@ -718,6 +738,7 @@ export const setPersonActive = async (emailRaw: string, active: boolean): Promis
   if (person.uid) {
     await updateDoc(doc(db, 'users', person.uid), { active });
   }
+  void recordDataChange();
 };
 
 export type PersonProfilePatch = {
@@ -788,6 +809,7 @@ export const updatePersonProfile = async (
     await updateDoc(doc(db, 'users', person.uid), payload);
   }
 
+  void recordDataChange();
   return { emailChanged, authEmailUnchanged: emailChanged && !!person.uid };
 };
 
@@ -816,6 +838,7 @@ export const deletePersonAccess = async (emailRaw: string): Promise<void> => {
   if (person.uid) {
     await deleteDoc(doc(db, 'users', person.uid));
   }
+  void recordDataChange();
 };
 
 export const sendPersonPasswordReset = async (emailRaw: string): Promise<void> => {

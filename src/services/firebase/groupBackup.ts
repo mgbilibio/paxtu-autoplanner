@@ -13,6 +13,7 @@ import {
   isEncryptedGroupBackup,
 } from './groupBackupCrypto';
 import { MEMBER_SUBCOLLECTIONS, listNamedSubcollection } from './sectionData';
+import { recordDataChange } from './accessLog';
 
 export const GROUP_BACKUP_KIND = 'scoutsauto-firestore-backup';
 export const GROUP_BACKUP_VERSION = 1;
@@ -438,6 +439,7 @@ export const importGroupFirestoreBackup = async (backup: GroupFirestoreBackup): 
   }
   const ops = collectWriteOps(sanitized, current);
   await commitWrites(ops);
+  void recordDataChange();
   Object.values(DATA_EVENTS).forEach(eventName => dispatchDataEvent(eventName));
   return summarizeGroupBackup(sanitized);
 };

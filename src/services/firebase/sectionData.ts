@@ -21,6 +21,7 @@ import {
 import { firestoreWriteError, sanitizeMemberForFirestore } from './sanitizeFirestoreMember';
 import { withSectionKind } from './sectionKind';
 import { getFirebaseSessionUid } from './session';
+import { recordDataChange } from './accessLog';
 
 const ITEMS_FIELD = 'items';
 
@@ -34,6 +35,7 @@ export const listGroupDocuments = async (): Promise<ScoutGroup[]> => {
 
 export const writeGroupDocument = async (group: ScoutGroup): Promise<void> => {
   await setDoc(doc(getFirestoreDb(), 'groups', group.id), stripUndefined({ ...group }));
+  void recordDataChange();
 };
 
 const uniqueIds = (ids: Array<string | undefined | null>): string[] => {
@@ -103,6 +105,7 @@ export const listSectionDocuments = async (extraIds: string[] = []): Promise<Sco
 export const writeSectionDocument = async (section: ScoutSection, groupName?: string): Promise<void> => {
   const payload = withSectionKind(section, groupName);
   await setDoc(doc(getFirestoreDb(), 'sections', section.id), stripUndefined({ ...payload }));
+  void recordDataChange();
 };
 
 export const deleteSectionDocument = async (sectionId: string): Promise<void> => {
@@ -228,6 +231,7 @@ export const writeSectionItems = async <T>(sectionId: string, docId: string, ite
       doc(getFirestoreDb(), 'sections', sectionId, 'docs', docId),
       stripUndefined({ items: toWrite }),
     );
+    void recordDataChange();
   } catch (error) {
     throw firestoreWriteError(error, docId === 'members' ? 'efetivo' : 'dados da seção');
   }

@@ -1,5 +1,6 @@
 import { doc, getDoc, setDoc } from 'firebase/firestore'
 import { getFirestoreDb } from './config'
+import { recordDataChange } from './accessLog'
 
 export interface GroupWebSettings {
   openRegistration: boolean
@@ -28,4 +29,5 @@ export const writeGroupWebSettings = async (settings: GroupWebSettings): Promise
   await setDoc(doc(getFirestoreDb(), ...SETTINGS_PATH), {
     openRegistration: settings.openRegistration === true,
   }, { merge: true })
+  void recordDataChange()
 }

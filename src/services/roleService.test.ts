@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { getPermissions, getRoleLabel } from './roleService.ts';
+import { canViewAccessLog, getPermissions, getRoleLabel } from './roleService.ts';
 import type { UserProfile } from '../types.ts';
 
 const user = (role: string): UserProfile => ({
@@ -42,5 +42,19 @@ describe('getPermissions', () => {
     assert.equal(perms.isGlobal, false);
     assert.equal(perms.isReadOnly, true);
     assert.equal(perms.canEditYouth, false);
+  });
+});
+
+describe('canViewAccessLog', () => {
+  it('allows ADMINISTRADOR and Diretoria, not Chefe or Assistente', () => {
+    assert.equal(canViewAccessLog(user('ADMINISTRADOR')), true);
+    assert.equal(canViewAccessLog(user('Diretoria')), true);
+    assert.equal(canViewAccessLog(user('Chefe de Seção')), false);
+    assert.equal(canViewAccessLog(user('Assistente')), false);
+    assert.equal(canViewAccessLog(user('Leitura/Auditoria')), false);
+  });
+
+  it('allows a group-admin flag even if the role label is chefia', () => {
+    assert.equal(canViewAccessLog({ ...user('Chefe de Seção'), isAdmin: true }), true);
   });
 });
