@@ -196,3 +196,35 @@ export const buildNationalActivitySeed = (input: {
     scheduleDraft,
   };
 };
+
+export const FICHA_HINT_TO_GENERATE = 'Marque uma ficha para carregar no Gerar.';
+
+export type IncludeSeedPick =
+  | { kind: 'seed'; activity: NationalActivityWindow; fichas: NationalActivityFicha[] }
+  | { kind: 'hint' }
+  | { kind: 'none' };
+
+/** After include: seed from first campaign with marked fichas; else theme-only (JOTA); else hint. */
+export const pickSeedAfterInclude = (
+  included: NationalActivityWindow[],
+  branch: ScoutBranch,
+  selectedFichaTitles: Record<string, string[]>,
+): IncludeSeedPick => {
+  for (const activity of included) {
+    const available = fichasForCampaignAndBranch(activity.title, branch);
+    const chosen = available.filter(ficha =>
+      (selectedFichaTitles[activity.title] ?? []).includes(ficha.title),
+    );
+    if (chosen.length > 0) {
+      return { kind: 'seed', activity, fichas: chosen };
+    }
+  }
+  const hasFichaCatalog = included.some(
+    activity => fichasForCampaignAndBranch(activity.title, branch).length > 0,
+  );
+  if (hasFichaCatalog) return { kind: 'hint' };
+  if (included.length > 0) {
+    return { kind: 'seed', activity: included[0], fichas: [] };
+  }
+  return { kind: 'none' };
+};
