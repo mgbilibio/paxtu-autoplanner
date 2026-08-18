@@ -21,11 +21,19 @@ import {
   syncProgressLaunchCredits,
 } from '../services/batchProgressionService';
 import { isYouthMember } from '../utils/memberQuickAdd';
+import { efemerideForDay } from '../utils/scoutEfemerides';
+import { resolveSectionBranch } from '../services/firebase/sectionKind';
+import { NationalActivitiesPanel } from './NationalActivitiesPanel';
 
 interface Props {
   sectionId?: string;
   branch: ScoutBranch;
+  /** Escrita + visão global (ADMINISTRADOR). */
   isAdmin?: boolean;
+  /** Vê todas as seções (admin ou Diretoria). */
+  isGlobal?: boolean;
+  /** Consulta: esconde criar/editar/excluir e o painel nacional. */
+  isReadOnly?: boolean;
 }
 
 type ConfirmAction = {
@@ -36,18 +44,7 @@ type ConfirmAction = {
   onConfirm: () => Promise<void> | void;
 };
 
-const SCOUT_EFEMERIDES: Record<string, string> = {
-    "02-22": "🎂 Dia do Fundador (B-P)",
-    "04-23": "⚜️ Dia Mundial do Escoteiro",
-    "05-30": "🦁 Dia do Ramo Lobinho",
-    "08-01": "🌍 Dia Mundial do Lenço",
-    "10-04": "🐺 Dia de Francisco de Assis (Lobinho)",
-    "10-19": "📡 JOTA-JOTI (Início)",
-    "10-20": "📡 JOTA-JOTI (Fim)",
-    "12-05": "🤝 Dia Internacional do Voluntário"
-};
-
-export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin }) => {
+export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin, isGlobal, isReadOnly }) => {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [plans, setPlans] = useState<MeetingPlan[]>([]);
   const [members, setMembers] = useState<ScoutMember[]>([]);
@@ -72,6 +69,9 @@ export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin }) =>
   const [feedback, setFeedback] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [confirmAction, setConfirmAction] = useState<ConfirmAction | null>(null);
+  const globalView = isGlobal ?? !!isAdmin;
+  const canWrite = !isReadOnly;
+  const showSectionChips = globalView || !sectionId;
 
   useEffect(() => {
     loadData();
@@ -170,13 +170,16 @@ export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin }) =>
   // Eventos do dia atualmente aberto no modal (usado para listar/escolher).
   const dayEventsForModal = selectedDate ? events.filter(e => e.date === selectedDate) : [];
   const catalogSectionId = isAdmin ? targetSectionId : sectionId;
+  const attendanceSectionId = isAdmin
+    ? targetSectionId
+    : (events.find(e => e.id === selectedEventId)?.sectionId || sectionId);
   const catalogPlans = plans.filter(p => {
     if (!catalogSectionId) return true;
     return !p.sectionId || p.sectionId === catalogSectionId;
   });
 
   const handleSaveEvent = async () => {
-    if (!selectedDate) return;
+    if (!canWrite || !selectedDate) return;
     
     const finalSectionId = isAdmin ? targetSectionId : sectionId;
     if (!finalSectionId) {
@@ -235,6 +238,7 @@ export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin }) =>
   };
 
   const handleDeleteEvent = async () => {
+    if (!canWrite) return;
     // Remove exatamente o evento aberto no modal (por id), nao o primeiro do dia.
     const existing = selectedEventId ? events.find(e => e.id === selectedEventId) : undefined;
     if (!existing) return;
@@ -262,6 +266,7 @@ export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin }) =>
   };
 
   const handleBatchProgression = async () => {
+      if (!canWrite) return;
       const plan = plans.find(p => p.id === selectedPlanId);
       if (!plan || !selectedDate) return;
       if (attendance.length === 0) {
@@ -345,7 +350,7 @@ export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin }) =>
   };
 
   const handleSaveCreditReview = async () => {
-    if (!eventLaunch) return;
+    if (!canWrite || !eventLaunch) return;
     try {
       emitProcessProgress('Atualizando créditos da atividade...');
       const updated = await syncProgressLaunchCredits(eventLaunch, reviewCreditedIds, members);
@@ -361,6 +366,9 @@ export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin }) =>
   };
 
   const getSectionName = (id?: string) => sections.find(s => s.id === id)?.name || '';
+  const scopedSection = sectionId ? sections.find(s => s.id === sectionId) : undefined;
+  const viewingBranch = sectionId ? resolveSectionBranch(scopedSection, branch) : undefined;
+  const writeSectionId = isAdmin ? targetSectionId : (sectionId || '');
 
   const renderCalendar = () => {
     const year = currentDate.getFullYear();
@@ -381,7 +389,7 @@ export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin }) =>
                 if (!day) return <div key={`blank-${index}`} className="bg-transparent h-24"></div>;
                 
                 const monthDay = `${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-                const efemeride = SCOUT_EFEMERIDES[monthDay];
+                const efemeride = efemerideForDay(monthDay, viewingBranch);
                 
                 const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
                 const dayEvents = events.filter(e => e.date === dateStr);
@@ -418,7 +426,7 @@ export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin }) =>
                                     onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); handleDateClick(day, ev.id); } }}
                                     className={`p-1 rounded text-[9px] font-bold truncate border-l-2 cursor-pointer hover:brightness-95 ${isAdmin ? 'bg-yellow-50 text-yellow-900 border-yellow-500' : 'bg-green-100 text-green-800 border-green-600'}`}
                                 >
-                                    {isAdmin && <span className="block text-[8px] opacity-70">{getSectionName(ev.sectionId)}</span>}
+                                    {showSectionChips && <span className="block text-[8px] opacity-70">{getSectionName(ev.sectionId)}</span>}
                                     {ev.title}
                                 </div>
                             ))}
@@ -443,7 +451,7 @@ export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin }) =>
         />
       )}
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-800">📅 Calendário {isAdmin ? 'Global' : ''}</h2>
+        <h2 className="text-2xl font-bold text-gray-800">📅 Calendário {globalView ? 'Global' : ''}</h2>
         <div className="flex items-center gap-4 bg-white p-1 rounded-lg border shadow-sm">
             <button onClick={() => changeMonth(-1)} className="px-3 py-1 hover:bg-gray-100 rounded">◀</button>
             <span className="font-bold text-lg w-40 text-center">
@@ -455,12 +463,26 @@ export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin }) =>
 
       {renderCalendar()}
 
+      {canWrite && (
+        <NationalActivitiesPanel
+          events={events}
+          sections={sections}
+          writeSectionId={writeSectionId}
+          fallbackBranch={branch}
+          isAdmin={isAdmin}
+          onWriteSectionChange={setTargetSectionId}
+          onChanged={loadData}
+        />
+      )}
+
       {showModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 animate-fade-in backdrop-blur-sm">
             <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]">
                 <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-slate-50">
                     <h3 className="text-xl font-bold text-gray-800">
-                        {selectedEventId ? 'Editar Atividade' : 'Agendar Atividade'}: <span className="text-slate-500">{selectedDate?.split('-').reverse().join('/')}</span>
+                        {canWrite
+                          ? (selectedEventId ? 'Editar Atividade' : 'Agendar Atividade')
+                          : (selectedEventId ? 'Atividade' : 'Dia')}: <span className="text-slate-500">{selectedDate?.split('-').reverse().join('/')}</span>
                     </h3>
                     <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-red-500 text-2xl">×</button>
                 </div>
@@ -497,16 +519,21 @@ export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin }) =>
                                     >
                                         <span className="truncate">
                                             {ev.title}
-                                            {isAdmin && (
+                                            {showSectionChips && (
                                                 <span className={`block text-[10px] ${selectedEventId === ev.id ? 'text-slate-300' : 'text-slate-400'}`}>
                                                     {getSectionName(ev.sectionId)}
                                                 </span>
                                             )}
                                         </span>
-                                        {selectedEventId === ev.id && <span className="text-[10px] uppercase font-bold shrink-0">Editando</span>}
+                                        {selectedEventId === ev.id && (
+                                          <span className="text-[10px] uppercase font-bold shrink-0">
+                                            {canWrite ? 'Editando' : 'Vendo'}
+                                          </span>
+                                        )}
                                     </button>
                                 ))}
                             </div>
+                            {canWrite && (
                             <button
                                 onClick={startNewEvent}
                                 className={`w-full px-3 py-2 rounded-lg text-sm font-bold border-2 border-dashed transition-colors
@@ -516,10 +543,20 @@ export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin }) =>
                             >
                                 + Nova atividade {selectedEventId === null ? '(em edição)' : ''}
                             </button>
+                            )}
                         </div>
                     )}
 
-                    {isAdmin && (
+                    {showSectionChips && !canWrite && selectedEventId && (
+                        <div className="mb-6 p-3 bg-slate-50 border border-slate-200 rounded-lg">
+                            <p className="text-xs font-bold text-slate-500 uppercase mb-1">Seção</p>
+                            <p className="text-sm font-semibold text-slate-800">
+                                {getSectionName(events.find(e => e.id === selectedEventId)?.sectionId) || '—'}
+                            </p>
+                        </div>
+                    )}
+
+                    {isAdmin && canWrite && (
                         <div className="mb-6 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
                             <label className="block text-xs font-bold text-yellow-800 uppercase mb-2">Seção Responsável (Admin)</label>
                             <select 
@@ -537,7 +574,8 @@ export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin }) =>
                         <select 
                             value={selectedPlanId} 
                             onChange={e => setSelectedPlanId(e.target.value)}
-                            className="w-full p-3 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-slate-200 outline-none"
+                            disabled={!canWrite}
+                            className="w-full p-3 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-slate-200 outline-none disabled:bg-slate-50"
                         >
                             <option value="">-- Selecione um roteiro salvo --</option>
                             {catalogPlans.map(p => (
@@ -567,7 +605,7 @@ export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin }) =>
                             </div>
                           );
                         })()}
-                        {selectedPlanId && !eventLaunch && (
+                        {canWrite && selectedPlanId && !eventLaunch && (
                             <div className="mt-2">
                                 <button 
                                     onClick={handleBatchProgression}
@@ -586,6 +624,7 @@ export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin }) =>
                                       ? ` · ${eventLaunch.excludedMemberIds.length} excluído(s) da avaliação`
                                       : ''}
                                 </div>
+                                {canWrite && (
                                 <button
                                     type="button"
                                     onClick={() => {
@@ -596,6 +635,7 @@ export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin }) =>
                                 >
                                     ✏️ Revisar crédito (excluir quem não atingiu)
                                 </button>
+                                )}
                                 <p className="text-[10px] text-slate-500 text-center">Presença e frequência não mudam ao excluir do crédito.</p>
                             </div>
                         )}
@@ -606,26 +646,28 @@ export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin }) =>
                         <textarea 
                             value={eventNotes}
                             onChange={e => setEventNotes(e.target.value)}
-                            className="w-full p-3 border border-gray-300 rounded-lg bg-white h-24 focus:ring-2 focus:ring-slate-200 outline-none"
+                            readOnly={!canWrite}
+                            className="w-full p-3 border border-gray-300 rounded-lg bg-white h-24 focus:ring-2 focus:ring-slate-200 outline-none read-only:bg-slate-50"
                             placeholder="Detalhes logísticos, local de encontro, etc."
                         />
                     </div>
 
                     <div>
                         <label className="block text-xs font-bold text-gray-500 uppercase mb-2">Lista de Presença</label>
-                        {members.filter(m => m.sectionId === (isAdmin ? targetSectionId : sectionId)).length === 0 ? (
+                        {members.filter(m => m.sectionId === attendanceSectionId).length === 0 ? (
                             <div className="text-sm text-gray-400 italic p-4 bg-gray-50 rounded border">
-                                {isAdmin && !targetSectionId ? "Selecione uma seção acima." : "Nenhum membro nesta seção."}
+                                {(isAdmin || globalView) && !attendanceSectionId ? "Selecione uma seção acima." : "Nenhum membro nesta seção."}
                             </div>
                         ) : (
                             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                                 {members
-                                    .filter(m => m.sectionId === (isAdmin ? targetSectionId : sectionId))
+                                    .filter(m => m.sectionId === attendanceSectionId)
                                     .map(m => (
-                                    <label key={m.id} className={`flex items-center gap-2 p-2 rounded border cursor-pointer transition-colors ${attendance.includes(m.id) ? 'bg-green-50 border-green-200' : 'bg-white border-gray-200 hover:bg-gray-50'}`}>
+                                    <label key={m.id} className={`flex items-center gap-2 p-2 rounded border ${canWrite ? 'cursor-pointer' : ''} transition-colors ${attendance.includes(m.id) ? 'bg-green-50 border-green-200' : 'bg-white border-gray-200 hover:bg-gray-50'}`}>
                                         <input 
                                             type="checkbox" 
                                             checked={attendance.includes(m.id)}
+                                            disabled={!canWrite}
                                             onChange={e => {
                                                 if (e.target.checked) setAttendance([...attendance, m.id]);
                                                 else setAttendance(attendance.filter(id => id !== m.id));
@@ -641,7 +683,7 @@ export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin }) =>
                 </div>
 
                 <div className="p-4 border-t border-gray-100 bg-gray-50 flex justify-between">
-                    {selectedEventId ? (
+                    {canWrite && selectedEventId ? (
                         <button
                             onClick={handleDeleteEvent}
                             className="px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg text-sm font-bold"
@@ -654,7 +696,7 @@ export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin }) =>
                             onClick={() => setShowModal(false)}
                             className="px-4 py-2 text-gray-600 hover:bg-gray-200 rounded-lg text-sm font-bold"
                         >
-                            Cancelar
+                            {canWrite ? 'Cancelar' : 'Fechar'}
                         </button>
                         <button
                             onClick={handleExportHtml}
@@ -662,12 +704,14 @@ export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin }) =>
                         >
                             Exportar HTML
                         </button>
+                        {canWrite && (
                         <button 
                             onClick={handleSaveEvent}
                             className="px-6 py-2 bg-slate-800 text-white rounded-lg text-sm font-bold hover:bg-slate-900 shadow-lg"
                         >
                             Salvar na Agenda
                         </button>
+                        )}
                     </div>
                 </div>
             </div>

@@ -1753,7 +1753,7 @@ function App() {
           )}
           {view === 'CATALOG' && <Catalog onLoadPlan={loadFromCatalog} onBack={() => navigateTo('GENERATOR')} />}
           {view === 'MEMBERS' && <MembersManager sectionId={scopedSectionId} isAdmin={isAdmin} isGlobal={isGlobal} isReadOnly={isReadOnly} />}
-          {view === 'CALENDAR' && (currentSection ? <CalendarView sectionId={scopedSectionId} branch={currentSection.branch} isAdmin={isAdmin} /> : <div className="bg-amber-50 border border-amber-200 rounded-lg p-6 text-center text-amber-800">Sem seção selecionada. Faça login com um perfil de chefia vinculado a uma seção.</div>)}
+          {view === 'CALENDAR' && (currentSection ? <CalendarView sectionId={scopedSectionId} branch={currentSection.branch} isAdmin={isAdmin} isGlobal={isGlobal} isReadOnly={isReadOnly} /> : <div className="bg-amber-50 border border-amber-200 rounded-lg p-6 text-center text-amber-800">Sem seção selecionada. Faça login com um perfil de chefia vinculado a uma seção.</div>)}
           {view === 'REPORTS' && (currentSection ? <ReportsDashboard sectionId={scopedSectionId} branch={currentSection.branch} isAdmin={isGlobal} /> : <div className="bg-amber-50 border border-amber-200 rounded-lg p-6 text-center text-amber-800">Sem seção selecionada para gerar relatórios.</div>)}
           {view === 'CYCLE' && (currentSection ? <CyclePlanner branch={currentSection.branch} section={currentSection} /> : <div className="bg-amber-50 border border-amber-200 rounded-lg p-6 text-center text-amber-800">Sem seção selecionada. O planejador de ciclo precisa de uma seção ativa.</div>)}
           {view === 'ENCYCLOPEDIA' && <SpecialtyEncyclopedia onClose={() => navigateTo('GENERATOR')} />}

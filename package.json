@@ -12,7 +12,7 @@
     "build": "tsc && vite build",
     "build:web": "tsc && vite build --mode web",
     "preview": "vite preview",
-    "test": "node --experimental-strip-types --test electron/securityGuards.test.ts src/services/firebase/groupBackupCrypto.test.ts src/services/storage/sectionList.test.ts src/services/firebase/sectionPackMatch.test.ts src/services/storage/localDataPolicy.test.ts src/services/roleService.test.ts src/utils/memberFilters.test.ts src/services/firebase/accessLog.test.ts src/utils/welcomePreference.test.ts",
+    "test": "node --experimental-strip-types --test electron/securityGuards.test.ts src/services/firebase/groupBackupCrypto.test.ts src/services/storage/sectionList.test.ts src/services/firebase/sectionPackMatch.test.ts src/services/storage/localDataPolicy.test.ts src/services/roleService.test.ts src/utils/memberFilters.test.ts src/services/firebase/accessLog.test.ts src/utils/welcomePreference.test.ts src/utils/nationalActivities.test.ts src/utils/scoutEfemerides.test.ts src/utils/calendarEvents.test.ts",
     "electron:build": "vite build && electron-builder",
     "dist": "npm run electron:build"
   },
