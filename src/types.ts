@@ -138,6 +138,10 @@ export interface GenerationSeedScheduleItem {
   responsible?: string;
   kind?: GenerationSeedScheduleKind;
   redoNote?: string;
+  description?: string;
+  materials?: string[];
+  progressionObjective?: string;
+  instrucaoChefia?: string;
 }
 
 /**

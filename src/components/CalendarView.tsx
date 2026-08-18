@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CalendarEvent, MeetingPlan, ScoutMember, ScoutBranch, ScoutSection, ProgressLaunch } from '../types';
+import { CalendarEvent, GenerationSeed, MeetingPlan, ScoutMember, ScoutBranch, ScoutSection, ProgressLaunch } from '../types';
 import {
   getCalendarEventsAsync,
   saveCalendarEventAsync,
@@ -24,6 +24,8 @@ import { isYouthMember } from '../utils/memberQuickAdd';
 import { efemerideForDay } from '../utils/scoutEfemerides';
 import { resolveSectionBranch } from '../services/firebase/sectionKind';
 import { NationalActivitiesPanel } from './NationalActivitiesPanel';
+import { NationalFichaSeedDialog } from './NationalFichaSeedDialog';
+import { NATIONAL_ACTIVITIES_2026 } from '../data/nationalActivities2026';
 
 interface Props {
   sectionId?: string;
@@ -34,6 +36,7 @@ interface Props {
   isGlobal?: boolean;
   /** Consulta: esconde criar/editar/excluir e o painel nacional. */
   isReadOnly?: boolean;
+  onUseInPlanner?: (seed: GenerationSeed, branch: ScoutBranch) => void;
 }
 
 type ConfirmAction = {
@@ -44,7 +47,7 @@ type ConfirmAction = {
   onConfirm: () => Promise<void> | void;
 };
 
-export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin, isGlobal, isReadOnly }) => {
+export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin, isGlobal, isReadOnly, onUseInPlanner }) => {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [plans, setPlans] = useState<MeetingPlan[]>([]);
   const [members, setMembers] = useState<ScoutMember[]>([]);
@@ -69,6 +72,7 @@ export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin, isGl
   const [feedback, setFeedback] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [confirmAction, setConfirmAction] = useState<ConfirmAction | null>(null);
+  const [plannerSeedEvent, setPlannerSeedEvent] = useState<CalendarEvent | null>(null);
   const globalView = isGlobal ?? !!isAdmin;
   const canWrite = !isReadOnly;
   const showSectionChips = globalView || !sectionId;
@@ -463,6 +467,24 @@ export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin, isGl
 
       {renderCalendar()}
 
+      {plannerSeedEvent && onUseInPlanner && (() => {
+        const campaign = NATIONAL_ACTIVITIES_2026.find(item => item.title === plannerSeedEvent.title);
+        if (!campaign) return null;
+        const eventSection = sections.find(section => section.id === plannerSeedEvent.sectionId);
+        return (
+          <NationalFichaSeedDialog
+            activity={campaign}
+            branch={resolveSectionBranch(eventSection, plannerSeedEvent.branch || branch)}
+            meetingDate={plannerSeedEvent.date}
+            onCancel={() => setPlannerSeedEvent(null)}
+            onConfirm={seed => {
+              setPlannerSeedEvent(null);
+              setShowModal(false);
+              onUseInPlanner(seed, resolveSectionBranch(eventSection, plannerSeedEvent.branch || branch));
+            }}
+          />
+        );
+      })()}
       {canWrite && (
         <NationalActivitiesPanel
           events={events}
@@ -472,6 +494,7 @@ export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin, isGl
           isAdmin={isAdmin}
           onWriteSectionChange={setTargetSectionId}
           onChanged={loadData}
+          onUseInPlanner={onUseInPlanner}
         />
       )}
 
@@ -640,6 +663,28 @@ export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin, isGl
                             </div>
                         )}
                     </div>
+
+                    {canWrite && selectedEventId && onUseInPlanner && (() => {
+                      const current = events.find(ev => ev.id === selectedEventId);
+                      const campaign = current
+                        ? NATIONAL_ACTIVITIES_2026.find(item => item.title === current.title)
+                        : undefined;
+                      if (!current || !campaign) return null;
+                      return (
+                        <div className="mb-6">
+                          <button
+                            type="button"
+                            onClick={() => setPlannerSeedEvent(current)}
+                            className="w-full px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-bold hover:bg-indigo-700 shadow"
+                          >
+                            Usar no planejamento
+                          </button>
+                          <p className="text-[10px] text-slate-500 mt-1 text-center">
+                            Abre o Gerar neste dia, com as fichas oficiais desta seção.
+                          </p>
+                        </div>
+                      );
+                    })()}
 
                     <div className="mb-6">
                         <label className="block text-xs font-bold text-gray-500 uppercase mb-2">Anotações / Detalhes</label>
