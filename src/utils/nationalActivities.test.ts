@@ -15,6 +15,7 @@ import {
   nationalActivitiesForBranch,
   nationalActivityAlreadyOnSection,
   officialWindowNotes,
+  pickSeedAfterInclude,
   selectNationalActivitiesToInclude,
 } from './nationalActivities.ts';
 import { branchFromKind, resolveSectionBranch } from '../services/firebase/sectionKind.ts';
@@ -241,5 +242,46 @@ describe('national activity fichas and seed', () => {
   it('points Caderno UEB links at the official PDF page', () => {
     assert.equal(cadernoPageUrl(9), `${CADERNO_ATIVIDADES_2026_URL}#page=9`);
     assert.equal(semana.cadernoPage, 9);
+  });
+});
+
+describe('pickSeedAfterInclude', () => {
+  it('opens Gerar with the marked Tropa ficha', () => {
+    const pick = pickSeedAfterInclude(
+      [semana],
+      'Escoteiro',
+      { 'Semana Escoteira 2026': ['CQWS Radioescuta'] },
+    );
+    assert.equal(pick.kind, 'seed');
+    if (pick.kind === 'seed') {
+      assert.equal(pick.activity.title, 'Semana Escoteira 2026');
+      assert.deepEqual(pick.fichas.map(item => item.title), ['CQWS Radioescuta']);
+    }
+  });
+
+  it('hints when Semana is included without a marked ficha', () => {
+    const pick = pickSeedAfterInclude([semana], 'Escoteiro', {});
+    assert.equal(pick.kind, 'hint');
+  });
+
+  it('seeds JOTA with theme only when that row is included', () => {
+    const pick = pickSeedAfterInclude([jota], 'Escoteiro', {});
+    assert.equal(pick.kind, 'seed');
+    if (pick.kind === 'seed') {
+      assert.equal(pick.activity.title, jota.title);
+      assert.deepEqual(pick.fichas, []);
+    }
+  });
+
+  it('does not mix Alcateia Kaa into a Tropa include', () => {
+    const pick = pickSeedAfterInclude(
+      [semana],
+      'Escoteiro',
+      { 'Semana Escoteira 2026': ['As Caçadas de Kaa', 'CQWS Radioescuta'] },
+    );
+    assert.equal(pick.kind, 'seed');
+    if (pick.kind === 'seed') {
+      assert.deepEqual(pick.fichas.map(item => item.title), ['CQWS Radioescuta']);
+    }
   });
 });
