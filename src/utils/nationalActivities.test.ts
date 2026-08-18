@@ -285,3 +285,22 @@ describe('pickSeedAfterInclude', () => {
     }
   });
 });
+
+describe('Dia do Amigo official fichas', () => {
+  it('keeps Tropa steps complete, not cut mid-sentence', () => {
+    const pontes = NATIONAL_ACTIVITY_FICHAS_2026.find(item => item.title === 'Construindo Pontes')!;
+    const joined = pontes.steps.join(' ');
+    assert.ok(joined.includes('trabalhar a partir da ideia de outra equipe'));
+    assert.ok(joined.includes('ninguém execute o próprio projeto'));
+    assert.ok(joined.includes('construir a ponte conforme o projeto recebido'));
+    assert.equal(pontes.steps.some(step => /a partir$/.test(step.trim())), false);
+  });
+
+  it('keeps Escape Room and Missão 360 through the last official step', () => {
+    const escape = NATIONAL_ACTIVITY_FICHAS_2026.find(item => item.title === 'Escape Room')!;
+    const missao = NATIONAL_ACTIVITY_FICHAS_2026.find(item => item.title === 'Missão Escoteira 360º')!;
+    assert.ok(escape.steps.join(' ').includes('celebrar o trabalho coletivo'));
+    assert.ok(missao.steps.join(' ').includes('Avaliação entre patrulhas'));
+    assert.ok(missao.steps.join(' ').includes('Primeiros socorros'));
+  });
+});
