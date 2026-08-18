@@ -4,7 +4,7 @@ import {
   NATIONAL_ACTIVITY_FICHAS_2026,
 } from '../data/nationalActivityFichas2026.ts';
 import type { NationalActivityFicha, NationalFichaRamo } from '../data/nationalActivityFichas2026.ts';
-import type { CalendarEvent, GenerationSeed, GenerationSeedScheduleItem, ScoutBranch } from '../types.ts';
+import { ScoutBranch, type CalendarEvent, type GenerationSeed, type GenerationSeedScheduleItem } from '../types.ts';
 
 const cycleLabelFromDate = (isoDate?: string): string => {
   const match = String(isoDate || '').match(/^(\d{4})-(\d{2})/);
@@ -70,10 +70,10 @@ export const campaignKeyForTitle = (title: string): string | null => {
 };
 
 export const mapFichaRamoToBranch = (ramo: NationalFichaRamo): ScoutBranch => {
-  if (ramo === 'filhotes' || ramo === 'lobinho') return 'Lobinho';
-  if (ramo === 'escoteiro') return 'Escoteiro';
-  if (ramo === 'senior') return 'Sênior';
-  return 'Pioneiro';
+  if (ramo === 'filhotes' || ramo === 'lobinho') return ScoutBranch.LOBINHO;
+  if (ramo === 'escoteiro') return ScoutBranch.ESCOTEIRO;
+  if (ramo === 'senior') return ScoutBranch.SENIOR;
+  return ScoutBranch.PIONEIRO;
 };
 
 export const fichaAppliesToBranch = (
