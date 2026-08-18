@@ -702,6 +702,15 @@ function App() {
     showToast('Pedido carregado no painel. Ajuste e gere de novo.', 'info');
   };
 
+  const handleUseNationalActivityInPlanner = (seed: GenerationSeed, branch?: ScoutBranch) => {
+    setSelectedBranch(branch || currentSection?.branch || null);
+    applySeedToPlanner(seed);
+    setAppliedPlannerSeed(seed);
+    navigateTo('GENERATOR');
+    setStep(2);
+    showToast('Ficha oficial carregada no Gerar. Ajuste e gere o roteiro.', 'info');
+  };
+
   const resolvePlanningMode = (explicit?: PlanningMode, fallback?: PlanningMode): PlanningMode => {
     if (explicit === 'from_selection' || explicit === 'auto_link') return explicit;
     if (fallback === 'from_selection' || fallback === 'auto_link') return fallback;
@@ -1753,7 +1762,7 @@ function App() {
           )}
           {view === 'CATALOG' && <Catalog onLoadPlan={loadFromCatalog} onBack={() => navigateTo('GENERATOR')} />}
           {view === 'MEMBERS' && <MembersManager sectionId={scopedSectionId} isAdmin={isAdmin} isGlobal={isGlobal} isReadOnly={isReadOnly} />}
-          {view === 'CALENDAR' && (currentSection ? <CalendarView sectionId={scopedSectionId} branch={currentSection.branch} isAdmin={isAdmin} isGlobal={isGlobal} isReadOnly={isReadOnly} /> : <div className="bg-amber-50 border border-amber-200 rounded-lg p-6 text-center text-amber-800">Sem seção selecionada. Faça login com um perfil de chefia vinculado a uma seção.</div>)}
+          {view === 'CALENDAR' && (currentSection ? <CalendarView sectionId={scopedSectionId} branch={currentSection.branch} isAdmin={isAdmin} isGlobal={isGlobal} isReadOnly={isReadOnly} onUseInPlanner={handleUseNationalActivityInPlanner} /> : <div className="bg-amber-50 border border-amber-200 rounded-lg p-6 text-center text-amber-800">Sem seção selecionada. Faça login com um perfil de chefia vinculado a uma seção.</div>)}
           {view === 'REPORTS' && (currentSection ? <ReportsDashboard sectionId={scopedSectionId} branch={currentSection.branch} isAdmin={isGlobal} /> : <div className="bg-amber-50 border border-amber-200 rounded-lg p-6 text-center text-amber-800">Sem seção selecionada para gerar relatórios.</div>)}
           {view === 'CYCLE' && (currentSection ? <CyclePlanner branch={currentSection.branch} section={currentSection} /> : <div className="bg-amber-50 border border-amber-200 rounded-lg p-6 text-center text-amber-800">Sem seção selecionada. O planejador de ciclo precisa de uma seção ativa.</div>)}
           {view === 'ENCYCLOPEDIA' && <SpecialtyEncyclopedia onClose={() => navigateTo('GENERATOR')} />}

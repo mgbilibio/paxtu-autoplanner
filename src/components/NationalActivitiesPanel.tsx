@@ -1,16 +1,22 @@
 import React, { useMemo, useState } from 'react';
-import { CalendarEvent, ScoutBranch, ScoutSection } from '../types';
+import { CalendarEvent, GenerationSeed, ScoutBranch, ScoutSection } from '../types';
+import type { NationalActivityWindow } from '../data/nationalActivities2026';
 import {
   buildNationalActivityEvent,
+  cadernoPageUrl,
   formatOfficialWindow,
+  isDateInOfficialWindow,
+  MISSING_SECTION_DATE_ERROR,
   nationalActivitiesForBranch,
   nationalActivityAlreadyOnSection,
+  OUTSIDE_WINDOW_WARNING,
   selectNationalActivitiesToInclude,
 } from '../utils/nationalActivities';
 import { resolveSectionBranch } from '../services/firebase/sectionKind';
 import { deleteCalendarEventAsync, saveCalendarEventAsync } from '../services/storageService';
 import { emitProcessDone, emitProcessProgress } from '../services/processFeedbackService';
 import { ConfirmDialog } from './ConfirmDialog';
+import { NationalFichaSeedDialog } from './NationalFichaSeedDialog';
 
 interface Props {
   events: CalendarEvent[];
@@ -20,6 +26,7 @@ interface Props {
   isAdmin?: boolean;
   onWriteSectionChange?: (sectionId: string) => void;
   onChanged: () => void;
+  onUseInPlanner?: (seed: GenerationSeed, branch: ScoutBranch) => void;
 }
 
 export const NationalActivitiesPanel: React.FC<Props> = ({
@@ -30,12 +37,18 @@ export const NationalActivitiesPanel: React.FC<Props> = ({
   isAdmin,
   onWriteSectionChange,
   onChanged,
+  onUseInPlanner,
 }) => {
   const [selectedTitles, setSelectedTitles] = useState<string[]>([]);
+  const [chosenDates, setChosenDates] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<string | null>(null);
   const [excludeTarget, setExcludeTarget] = useState<CalendarEvent | null>(null);
+  const [seedTarget, setSeedTarget] = useState<{
+    activity: NationalActivityWindow;
+    meetingDate: string;
+  } | null>(null);
 
   const writeSection = sections.find(section => section.id === writeSectionId);
   const writeBranch = resolveSectionBranch(writeSection, fallbackBranch);
@@ -48,8 +61,31 @@ export const NationalActivitiesPanel: React.FC<Props> = ({
       : undefined,
   }));
 
+  const dateOf = (title: string, existingDate?: string) =>
+    chosenDates[title] ?? existingDate ?? '';
+
   const toggleTitle = (title: string, checked: boolean) => {
     setSelectedTitles(prev => checked ? [...prev, title] : prev.filter(item => item !== title));
+  };
+
+  const handleDateChange = async (
+    activity: NationalActivityWindow,
+    existing: CalendarEvent | undefined,
+    value: string,
+  ) => {
+    setChosenDates(prev => ({ ...prev, [activity.title]: value }));
+    if (!existing || !value || !writeSectionId) return;
+    setBusy(true);
+    setError(null);
+    try {
+      await saveCalendarEventAsync({ ...existing, date: value });
+      setFeedback('Data desta seção atualizada.');
+      onChanged();
+    } catch {
+      setError('Não foi possível atualizar a data. A seção pode estar em modo consulta.');
+    } finally {
+      setBusy(false);
+    }
   };
 
   const handleInclude = async () => {
@@ -58,6 +94,11 @@ export const NationalActivitiesPanel: React.FC<Props> = ({
       return;
     }
     const chosen = catalog.filter(item => selectedTitles.includes(item.title));
+    const missingDate = chosen.some(item => !dateOf(item.title));
+    if (missingDate) {
+      setError(MISSING_SECTION_DATE_ERROR);
+      return;
+    }
     const toAdd = selectNationalActivitiesToInclude(chosen, events, writeSectionId);
     if (toAdd.length === 0) {
       setFeedback('Nada novo para incluir nesta seção.');
@@ -68,8 +109,9 @@ export const NationalActivitiesPanel: React.FC<Props> = ({
     try {
       emitProcessProgress(`Incluindo ${toAdd.length} atividade(s) nacional(is)...`);
       for (const activity of toAdd) {
+        const day = dateOf(activity.title);
         await saveCalendarEventAsync(
-          buildNationalActivityEvent(activity, writeSectionId, writeBranch),
+          buildNationalActivityEvent(activity, writeSectionId, writeBranch, day),
         );
       }
       setSelectedTitles([]);
@@ -103,6 +145,16 @@ export const NationalActivitiesPanel: React.FC<Props> = ({
     }
   };
 
+  const openPlanner = (activity: NationalActivityWindow, existing?: CalendarEvent) => {
+    const meetingDate = dateOf(activity.title, existing?.date);
+    if (!meetingDate) {
+      setError(MISSING_SECTION_DATE_ERROR);
+      return;
+    }
+    setError(null);
+    setSeedTarget({ activity, meetingDate });
+  };
+
   return (
     <section className="mt-8 bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
       {excludeTarget && (
@@ -115,10 +167,22 @@ export const NationalActivitiesPanel: React.FC<Props> = ({
           onConfirm={handleExclude}
         />
       )}
+      {seedTarget && onUseInPlanner && (
+        <NationalFichaSeedDialog
+          activity={seedTarget.activity}
+          branch={writeBranch}
+          meetingDate={seedTarget.meetingDate}
+          onCancel={() => setSeedTarget(null)}
+          onConfirm={seed => {
+            setSeedTarget(null);
+            onUseInPlanner(seed, writeBranch);
+          }}
+        />
+      )}
       <div className="px-5 py-4 border-b border-slate-100 bg-slate-50">
         <h3 className="text-lg font-bold text-gray-800">Atividades nacionais 2026</h3>
         <p className="text-sm text-slate-500 mt-1">
-          Janelas oficiais da UEB. Marque o que esta seção vai cumprir — nada entra sozinho.
+          Escolha o dia real desta seção antes de incluir. O Gerar recebe a ficha oficial do caderno.
         </p>
         {isAdmin && (
           <label className="block mt-3">
@@ -154,27 +218,64 @@ export const NationalActivitiesPanel: React.FC<Props> = ({
           {rows.map(({ activity, existing }) => {
             const included = !!existing;
             const checked = included || selectedTitles.includes(activity.title);
+            const day = dateOf(activity.title, existing?.date);
+            const outside = Boolean(day) && !isDateInOfficialWindow(day, activity.start, activity.end);
+            const fixed = activity.datePolicy === 'fixed';
             return (
-              <li key={activity.title} className="flex items-center gap-3 px-3 py-2.5 bg-white">
+              <li key={activity.title} className="flex flex-col gap-2 px-3 py-3 bg-white sm:flex-row sm:items-start">
                 <input
                   type="checkbox"
                   checked={checked}
                   disabled={included || busy}
                   onChange={e => toggleTitle(activity.title, e.target.checked)}
-                  className="w-4 h-4 text-slate-800 rounded shrink-0"
+                  className="w-4 h-4 text-slate-800 rounded shrink-0 mt-1"
                   aria-label={activity.title}
                 />
-                <div className="min-w-0 flex-1">
+                <div className="min-w-0 flex-1 space-y-1.5">
                   <p className="text-sm font-semibold text-slate-800">{activity.title}</p>
                   <p className="text-xs text-slate-500">
-                    {formatOfficialWindow(activity.start, activity.end).replace(' a ', ' – ')}
+                    Janela oficial: {formatOfficialWindow(activity.start, activity.end)}
                   </p>
+                  <label className="block">
+                    <span className="sr-only">Dia desta seção para {activity.title}</span>
+                    <input
+                      type="date"
+                      value={day}
+                      min={fixed ? activity.start : undefined}
+                      max={fixed ? activity.end : undefined}
+                      disabled={busy}
+                      onChange={e => { void handleDateChange(activity, existing, e.target.value); }}
+                      className="p-1.5 border border-slate-300 rounded text-xs bg-white outline-none"
+                      aria-label={`Dia desta seção: ${activity.title}`}
+                    />
+                  </label>
+                  {outside && !fixed && (
+                    <p className="text-[11px] text-amber-800">{OUTSIDE_WINDOW_WARNING}</p>
+                  )}
+                  <a
+                    href={cadernoPageUrl(activity.cadernoPage)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block text-xs font-bold text-indigo-700 hover:underline"
+                  >
+                    Caderno UEB
+                  </a>
                 </div>
                 {included ? (
-                  <div className="flex items-center gap-2 shrink-0">
+                  <div className="flex flex-wrap items-center gap-2 shrink-0">
                     <span className="text-[10px] font-bold uppercase text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded">
                       Incluída
                     </span>
+                    {onUseInPlanner && (
+                      <button
+                        type="button"
+                        disabled={busy}
+                        onClick={() => openPlanner(activity, existing)}
+                        className="text-xs font-bold text-indigo-700 hover:bg-indigo-50 px-2 py-1 rounded"
+                      >
+                        Usar no planejamento
+                      </button>
+                    )}
                     <button
                       type="button"
                       disabled={busy}

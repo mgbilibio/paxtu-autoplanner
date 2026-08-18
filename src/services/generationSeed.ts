@@ -126,6 +126,12 @@ export const buildGenerationSeed = (input: BuildGenerationSeedInput): Generation
     responsible: String(row.responsible || '').trim(),
     kind: scheduleKindOf(row),
     redoNote: String(row.redoNote || '').trim() || undefined,
+    description: String(row.description || '').trim() || undefined,
+    materials: Array.isArray(row.materials)
+      ? row.materials.map(item => String(item || '').trim()).filter(Boolean)
+      : undefined,
+    progressionObjective: String(row.progressionObjective || '').trim() || undefined,
+    instrucaoChefia: String(row.instrucaoChefia || '').trim() || undefined,
   })),
 });
 
@@ -161,9 +167,14 @@ export const activityFromSeedRow = (item: GenerationSeedScheduleItem, index: num
     title: item.title || `Item ${index + 1}`,
     durationMinutes: Math.max(0, item.durationMinutes || 0),
     educationalArea: EducationalArea.CARATER,
-    description: '',
-    materials: [],
-    progressionObjective: operationalType ? 'Operacional' : '',
+    description: String(item.description || '').trim(),
+    materials: Array.isArray(item.materials)
+      ? item.materials.map(entry => String(entry || '').trim()).filter(Boolean)
+      : [],
+    progressionObjective: operationalType
+      ? 'Operacional'
+      : String(item.progressionObjective || '').trim(),
+    instrucaoChefia: String(item.instrucaoChefia || '').trim() || undefined,
     responsible: item.responsible || '',
     isOperational: kind !== 'core',
     operationalType,
