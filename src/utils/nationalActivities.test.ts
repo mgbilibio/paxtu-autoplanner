@@ -304,3 +304,15 @@ describe('Dia do Amigo official fichas', () => {
     assert.ok(missao.steps.join(' ').includes('Primeiros socorros'));
   });
 });
+
+describe('caderno fichas completeness', () => {
+  it('has 72 fichas and no last step cut mid-sentence', () => {
+    assert.equal(NATIONAL_ACTIVITY_FICHAS_2026.length, 72);
+    const cutEnds = /(\s(a partir|investigar|critérios|cooperativas)|,)$/;
+    const bad = NATIONAL_ACTIVITY_FICHAS_2026.filter(ficha => {
+      const last = String(ficha.steps[ficha.steps.length - 1] || '').trim();
+      return cutEnds.test(last);
+    }).map(ficha => ficha.title);
+    assert.deepEqual(bad, []);
+  });
+});
