@@ -4,6 +4,7 @@ import { normalizeOllamaBaseUrl } from '../services/ollamaUrlSecurity';
 import { isCloudModel, sortModelsCloudFirst } from '../services/ollamaService';
 import { isWebApp } from '../services/platform';
 import { XaiOAuthPanel } from './XaiOAuthPanel';
+import { GrokDesktopOAuthPanel } from './GrokDesktopOAuthPanel';
 
 interface Props {
   onComplete: (config: AppConfig) => void;
@@ -138,8 +139,8 @@ export const SetupWizard: React.FC<Props> = ({ onComplete }) => {
               <h2 className="text-xl font-bold text-gray-800 mb-4">🔑 Provedor de IA</h2>
               <p className="text-gray-600 text-sm mb-4 leading-relaxed">
                 {isWebApp()
-                  ? <>Padrão: <strong>Gemini Flash-Lite</strong>. Os modelos são carregados da conta. xAI aceita login X/Grok para usar a assinatura ou uma chave API.</>
-                  : <>Padrão: <strong>Gemini Flash/Lite</strong>. Os modelos disponíveis são carregados da sua conta após a autenticação. Ollama fica na máquina.</>}
+                  ? <>Padrão: <strong>Gemini Flash-Lite</strong>. Sem chave, o seletor mantém esse padrão. xAI no site usa Device OAuth (precisa do Worker) ou uma chave API.</>
+                  : <>Padrão: <strong>Gemini Flash-Lite</strong>. O catálogo vivo da conta tem prioridade; sem listagem, o app usa o padrão Lite. Ollama fica na máquina. xAI desktop usa o cliente Grok Build.</>}
               </p>
 
               <div className="grid grid-cols-3 gap-2 mb-6">
@@ -201,9 +202,13 @@ export const SetupWizard: React.FC<Props> = ({ onComplete }) => {
               {provider === 'xai-oauth' && (
                 <>
                   <p className="text-[11px] text-slate-600 bg-slate-50 border border-slate-200 rounded p-3 mb-3 leading-relaxed">
-                    Conecte sua conta X/Grok pelo Device OAuth. Os modelos são carregados da conta autenticada; nenhuma versão fica fixa no ScoutsAuto.
+                    {isWebApp()
+                      ? 'No site, conecte X/Grok pelo Device OAuth (Worker Cloudflare) ou cole uma chave API. Os modelos vêm da conta autenticada.'
+                      : 'No desktop, entre com SuperGrok pelo cliente Grok Build. Sem o binário, o OAuth não inicia — use uma chave API. Os modelos vêm da conta autenticada.'}
                   </p>
-                  {isWebApp() && <div className="mb-3"><XaiOAuthPanel /></div>}
+                  <div className="mb-3">
+                    {isWebApp() ? <XaiOAuthPanel /> : <GrokDesktopOAuthPanel />}
+                  </div>
                   <input
                     type="password"
                     value={xaiKey}

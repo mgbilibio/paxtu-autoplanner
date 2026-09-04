@@ -15,6 +15,11 @@ import {
   resolveDataFile,
   resolveFolder,
 } from './securityGuards'
+import {
+  grokMissingBinaryMessage,
+  resolveGrokAuthFile,
+  resolveGrokExecutable,
+} from './grokClient'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -60,13 +65,9 @@ const trustedFolder = (folderPath: unknown): string | null => {
 const trustedDataFile = (folderPath: unknown, fileName: unknown): string | null =>
   resolveDataFile(folderPath, fileName, allowedDataFolder)
 
-const grokAuthFile = (): string => path.join(process.env['USERPROFILE'] || '', '.grok', 'auth.json')
+const grokAuthFile = (): string => resolveGrokAuthFile()
 
-const grokExecutable = (): string => {
-  const configured = process.env['GROK_EXECUTABLE']
-  if (configured) return configured
-  return path.join(process.env['USERPROFILE'] || '', '.grok', 'bin', 'grok.exe')
-}
+const grokExecutable = (): string => resolveGrokExecutable()
 
 const grokEnvironment = (): NodeJS.ProcessEnv => {
   const env = { ...process.env }
@@ -75,15 +76,22 @@ const grokEnvironment = (): NodeJS.ProcessEnv => {
   return env
 }
 
-const ensureGrokExecutable = async (): Promise<void> => {
+const grokBinaryInstalled = async (): Promise<boolean> => {
   try {
     await fs.access(grokExecutable())
+    return true
   } catch {
-    throw new Error('Cliente Grok não encontrado. Instale o Grok Build ou defina GROK_EXECUTABLE.')
+    return false
   }
 }
 
-const readGrokOAuthStatus = async (): Promise<{ connected: boolean; expiresAt?: string }> => {
+const ensureGrokExecutable = async (): Promise<void> => {
+  if (!(await grokBinaryInstalled())) {
+    throw new Error(grokMissingBinaryMessage(grokExecutable()))
+  }
+}
+
+const readGrokAuthFile = async (): Promise<{ connected: boolean; expiresAt?: string }> => {
   try {
     const raw = await fs.readFile(grokAuthFile(), 'utf8')
     const parsed = JSON.parse(raw) as Record<string, Record<string, unknown>>
@@ -95,6 +103,34 @@ const readGrokOAuthStatus = async (): Promise<{ connected: boolean; expiresAt?: 
     return { connected: true, expiresAt }
   } catch {
     return { connected: false }
+  }
+}
+
+const readGrokOAuthStatus = async (): Promise<{
+  connected: boolean
+  expiresAt?: string
+  installed: boolean
+  executable: string
+  message: string
+}> => {
+  const executable = grokExecutable()
+  const installed = await grokBinaryInstalled()
+  if (!installed) {
+    return {
+      connected: false,
+      installed: false,
+      executable,
+      message: grokMissingBinaryMessage(executable),
+    }
+  }
+  const auth = await readGrokAuthFile()
+  return {
+    ...auth,
+    installed: true,
+    executable,
+    message: auth.connected
+      ? 'Sessão Grok encontrada neste computador.'
+      : 'Cliente Grok encontrado, mas a sessão ainda não está conectada. Clique em Entrar.',
   }
 }
 

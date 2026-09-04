@@ -9,7 +9,7 @@ import { activityBriefsPromptBlock, buildSingleActivityPrompt, PRACTICAL_CONTENT
 import { chunkArray, DETAIL_BATCH_SIZE, mergeActivityDetails, STUDY_GUIDE_BATCH_SIZE } from './llmPlanBatches';
 import type { PlanAttachment } from './planAttachments';
 import { isWebApp } from './platform';
-import { getXaiBrowserStatus, resolveXaiBrowserBearer } from './xaiOAuthSession';
+import { explainXaiWebAccessGap, getXaiBrowserStatus, resolveXaiBrowserBearer } from './xaiOAuthSession';
 
 const XAI_API = 'https://api.x.ai/v1';
 
@@ -50,10 +50,19 @@ const requestWithGrokOAuth = async (prompt: string, modelId?: string): Promise<s
 
 export const isReachable = async (): Promise<{ ok: boolean; error?: string }> => {
   if (resolveXaiKey()) return { ok: true };
-  if (isWebApp() && getXaiBrowserStatus().connected) return { ok: true };
+  if (isWebApp()) {
+    const gap = explainXaiWebAccessGap(false);
+    if (!gap) return { ok: true };
+    return { ok: false, error: gap };
+  }
   const status = await window.fileSystem?.xaiOAuthStatus?.();
   if (status?.connected) return { ok: true };
-  if (hasXaiOAuthBridge()) return { ok: false, error: 'Entre com sua conta SuperGrok no botão de login.' };
+  if (status?.installed === false) {
+    return { ok: false, error: status.message || 'Cliente Grok Build não encontrado neste computador.' };
+  }
+  if (hasXaiOAuthBridge()) {
+    return { ok: false, error: status?.message || 'Entre com sua conta SuperGrok no botão de login.' };
+  }
   return { ok: false, error: NO_KEY };
 };
 
@@ -235,7 +244,7 @@ CONTEXTO:\n${userPromptBase}
     }));
     const chunk = await callJson<any[]>(`
 Estrutura (lote ${b + 1}/${detailBatches.length}): ${JSON.stringify({ ...planStructure, activities: batch })}
-Para CADA atividade DESTE LOTE, devolva um array JSON com description, materials, progressionObjective, objetivoEspecifico, instrucaoChefia, safetyNotes, manualReferencia e preparacaoPrevia. Campos avançados só quando forem realmente necessários.
+Para CADA atividade DESTE LOTE, devolva um array JSON com description, materials, progressionObjective, objetivoEspecifico, instrucaoChefia, conteudoPronto, passos, safetyNotes, manualReferencia e preparacaoPrevia. Conteúdo de campo (letra, cartões, script) é obrigatório no tipo correspondente.
 Detalhe SOMENTE estas ${batch.length} atividades. Não invente faixas extras.
 ${PRACTICAL_CONTENT_RULES}
 CONTEXTO:\n${userPromptBase}

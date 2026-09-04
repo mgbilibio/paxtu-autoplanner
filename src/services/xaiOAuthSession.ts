@@ -93,7 +93,9 @@ const refreshAccessToken = async (meta: StoredMeta): Promise<string> => {
     refresh_token: meta.refreshToken,
     client_id: XAI_CLIENT_ID,
   });
-  const response = await fetch(xaiOAuthUrls().token, {
+  const urls = xaiOAuthUrls();
+  if (!urls.proxyConfigured) throw new Error(missingXaiProxyMessage());
+  const response = await fetch(urls.token, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -120,7 +122,16 @@ const refreshAccessToken = async (meta: StoredMeta): Promise<string> => {
   return data.access_token;
 };
 
+export const explainXaiWebAccessGap = (hasApiKey = false): string | null => {
+  if (hasApiKey) return null;
+  const status = getXaiBrowserStatus();
+  if (status.connected) return null;
+  if (!status.proxyConfigured) return missingXaiProxyMessage();
+  return 'Entre com X/Grok neste navegador ou informe uma chave da API xAI.';
+};
+
 export const resolveXaiBrowserBearer = async (): Promise<string> => {
+  if (!xaiOAuthUrls().proxyConfigured) throw new Error(missingXaiProxyMessage());
   const access = readJson<StoredAccess>(ACCESS_KEY);
   if (access?.accessToken && !isExpired(access.expiresAt)) return access.accessToken;
   const meta = readJson<StoredMeta>(META_KEY);

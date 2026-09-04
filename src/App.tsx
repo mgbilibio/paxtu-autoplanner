@@ -3,7 +3,7 @@ import { ScoutBranch, MeetingPlan, Activity, ObjectiveItem, CatalogAnnotation, A
 import { BRANCHES } from './constants';
 import { getPlanningCatalog, buildCatalogDigest } from './services/catalogService';
 import { generateScoutPlanRouted as generateScoutPlan, generateScoutActivityRouted as generateScoutActivity, getActiveProvider, getProviderById, normalizeProviderId, GEMINI_STUDIO_URL, GEMINI_KEY_HELP } from './services/llmProvider';
-import { getDefaultGeminiModel, pickPreferredGeminiModel, hasGeminiCredentials } from './services/geminiService';
+import { getDefaultGeminiModel, pickPreferredGeminiModel, hasGeminiCredentials, offlineGeminiModels } from './services/geminiService';
 import { pickXaiFastModel } from './services/xaiService';
 import { getAnnotations, saveAnnotation, getAppConfig, saveAppConfig, normalizePath, downloadProgressBackup, importProgressBackup, saveSectionAsync, getAllMemberBlocoStates, downloadLocalAppBackup, importLocalAppBackup, ensureWorkspaceMetadata, acquireSectionEditLock, releaseSectionEditLock, renewSectionEditLock, EditLock, getSectionsAsync, savePlanToCatalog, clearWebLocalOperationalData } from './services/storageService';
 import { getProgressionDetail } from './services/progressionDetailService';
@@ -11,7 +11,8 @@ import { PlanDisplay } from './components/PlanDisplay';
 import { Catalog } from './components/Catalog';
 import { SetupWizard } from './components/SetupWizard';
 import { XaiOAuthPanel } from './components/XaiOAuthPanel';
-import { getXaiBrowserStatus } from './services/xaiOAuthSession';
+import { GrokDesktopOAuthPanel } from './components/GrokDesktopOAuthPanel';
+import { explainXaiWebAccessGap } from './services/xaiOAuthSession';
 import { MembersManager } from './components/MembersManager';
 import { CalendarView } from './components/CalendarView';
 import { ReportsDashboard } from './components/reports/ReportsDashboard';
@@ -101,7 +102,7 @@ function App() {
     next.has(name) ? next.delete(name) : next.add(name);
     return next;
   });
-  const [availableModels, setAvailableModels] = useState<string[]>([]);
+  const [availableModels, setAvailableModels] = useState<string[]>(() => offlineGeminiModels());
   const [selectedModel, setSelectedModel] = useState<string>(getDefaultGeminiModel());
   const [isRefreshingModels, setIsRefreshingModels] = useState(false);
   
@@ -319,7 +320,18 @@ function App() {
   };
 
   const geminiSelectorModels = (): string[] => {
-    return availableModels.filter(id => /^gemini/i.test(id));
+    const live = availableModels.filter(id => /^gemini/i.test(id));
+    return live.length > 0 ? live : offlineGeminiModels();
+  };
+
+  const resolveXaiAccessGap = async (): Promise<string | null> => {
+    const hasKey = Boolean(appConfig?.xaiApiKey || xaiKeyInput.trim());
+    if (isWebApp()) return explainXaiWebAccessGap(hasKey);
+    if (hasKey) return null;
+    const status = await window.fileSystem?.xaiOAuthStatus?.();
+    if (status?.connected) return null;
+    return status?.message
+      || 'Instale o Grok Build, entre com SuperGrok no aplicativo desktop, ou informe uma chave da API xAI.';
   };
 
   const fetchModels = async () => {
@@ -337,6 +349,10 @@ function App() {
                   const preferred = providerId === 'ollama-cloud' ? appConfig?.ollamaCloudModel : appConfig?.ollamaModel;
                   setSelectedModel(preferred && models.includes(preferred) ? preferred : models[0]);
               }
+          } else if (providerId === 'gemini') {
+              const fallbacks = offlineGeminiModels();
+              setAvailableModels(fallbacks);
+              setSelectedModel(pickPreferredGeminiModel(fallbacks, appConfig?.geminiModel || selectedModel));
           }
       } catch (e) { console.error(e); } finally { setIsRefreshingModels(false); }
   };
@@ -842,13 +858,9 @@ function App() {
       setShowSettings(true);
       return;
     }
-    if (activeProvider === 'xai-oauth' && !(
-      appConfig?.xaiApiKey
-      || xaiKeyInput.trim()
-      || getXaiBrowserStatus().connected
-      || window.fileSystem?.xaiOAuthRequest
-    )) {
-      setError('Entre com X/Grok neste navegador ou informe uma chave da API xAI.');
+    const xaiGap = await resolveXaiAccessGap();
+    if (activeProvider === 'xai-oauth' && xaiGap) {
+      setError(xaiGap);
       showToast('Configure o acesso xAI.', 'error');
       setShowSettings(true);
       return;
@@ -1001,6 +1013,14 @@ function App() {
       setError(`Configure a chave do Gemini em Configurações. ${GEMINI_KEY_HELP}`);
       showToast('Configure a chave do Gemini.', 'error');
       throw new Error('Configure a chave do Gemini.');
+    }
+    if (activeProvider === 'xai-oauth') {
+      const xaiGap = await resolveXaiAccessGap();
+      if (xaiGap) {
+        setError(xaiGap);
+        showToast('Configure o acesso xAI.', 'error');
+        throw new Error(xaiGap);
+      }
     }
     const effectiveMode = resolvePlanningMode(planningMode);
     const safeTotalDuration = clampSettingNumber(totalDuration, 120, 30, 600);
@@ -1363,11 +1383,11 @@ function App() {
                 <div className="mb-4 p-3 bg-slate-50 border border-slate-200 rounded-lg">
                     <p className="text-xs font-bold text-slate-700 mb-2">Provedor de IA <span className="font-normal text-slate-500">(preferência: Gemini → Ollama local → Cloud → xAI)</span></p>
                     <p className="text-[11px] text-slate-600 mb-2 leading-relaxed">
-                      Os modelos são consultados diretamente na conta do provedor; o Paxtu não fixa versões no código. Entre ou informe a chave para carregar o catálogo disponível.
+                      Gemini consulta o catálogo da conta e prefere Flash-Lite. Sem chave ou se a listagem falhar, o seletor mantém um padrão Flash-Lite para a UI não ficar em branco.
                       {isWebApp() && (
                         <> Cole a chave do{' '}
                           <a href={GEMINI_STUDIO_URL} target="_blank" rel="noreferrer" className="text-blue-700 underline">AI Studio</a>
-                          {' '}(fica só neste navegador). Na xAI, entre com X/Grok no próprio site ou use uma chave API.
+                          {' '}(fica só neste navegador). Na xAI, entre com X/Grok neste site (precisa do Worker <code>VITE_XAI_PROXY_URL</code>) ou use uma chave API.
                         </>
                       )}
                     </p>
@@ -1375,8 +1395,9 @@ function App() {
                         <label className="flex items-center gap-2 cursor-pointer">
                             <input type="radio" name="provider" checked={normalizeProviderId(providerInput) === 'gemini'} onChange={() => {
                               setProviderInput('gemini');
-                              setSelectedModel(appConfig?.geminiModel || getDefaultGeminiModel());
-                              setAvailableModels([]);
+                              const fallbacks = offlineGeminiModels();
+                              setAvailableModels(fallbacks);
+                              setSelectedModel(pickPreferredGeminiModel(fallbacks, appConfig?.geminiModel || getDefaultGeminiModel()));
                             }} />
                             <span className="text-sm"><strong>1. Gemini</strong> <span className="text-[10px] text-emerald-700 font-bold">recomendado</span> <span className="text-[10px] text-gray-500">— AI Studio, grátis/simples</span></span>
                         </label>
@@ -1495,9 +1516,11 @@ function App() {
                     {normalizeProviderId(providerInput) === 'xai-oauth' && (
                         <div className="space-y-2">
                           <p className="text-[11px] text-slate-600 leading-relaxed">
-                            Entre com sua conta X/Grok para usar os créditos da assinatura. O catálogo de modelos vem da conta autenticada e não de uma lista fixa do ScoutsAuto.
+                            Entre com sua conta X/Grok para usar os créditos da assinatura. O catálogo de modelos vem da conta autenticada. No site, o Device OAuth exige o Worker Cloudflare (<code>VITE_XAI_PROXY_URL</code>); no desktop, o cliente Grok Build.
                           </p>
-                          {isWebApp() && <XaiOAuthPanel onConnected={() => void fetchModels()} />}
+                          {isWebApp()
+                            ? <XaiOAuthPanel onConnected={() => void fetchModels()} />
+                            : <GrokDesktopOAuthPanel />}
                           <input type="password" value={xaiKeyInput} onChange={(e) => setXaiKeyInput(e.target.value)} className="w-full p-2 border rounded text-sm" placeholder="API Key xAI (opcional quando OAuth estiver conectado)" />
                           <LlmModelControls
                             selectId="settings-xai-model"

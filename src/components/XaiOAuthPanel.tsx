@@ -4,6 +4,10 @@ import {
   startXaiDeviceAuthorization,
 } from '../services/xaiOAuthDevice';
 import {
+  missingXaiProxyMessage,
+  probeXaiProxy,
+} from '../services/xaiOAuthConfig';
+import {
   clearXaiBrowserSession,
   getXaiBrowserStatus,
   XaiBrowserStatus,
@@ -19,6 +23,7 @@ export const XaiOAuthPanel: React.FC<Props> = ({ onConnected }) => {
   const [userCode, setUserCode] = useState('');
   const [authorizationUrl, setAuthorizationUrl] = useState('');
   const [message, setMessage] = useState('');
+  const [proxyAlert, setProxyAlert] = useState(status.proxyConfigured ? '' : missingXaiProxyMessage());
   const pollTimer = useRef<ReturnType<typeof setTimeout>>();
 
   const stopPolling = (): void => {
@@ -28,7 +33,24 @@ export const XaiOAuthPanel: React.FC<Props> = ({ onConnected }) => {
 
   useEffect(() => () => stopPolling(), []);
 
+  useEffect(() => {
+    if (!status.proxyConfigured) {
+      setProxyAlert(missingXaiProxyMessage());
+      return;
+    }
+    let cancelled = false;
+    void probeXaiProxy().then(result => {
+      if (!cancelled && !result.ok) setProxyAlert(result.message);
+      if (!cancelled && result.ok) setProxyAlert('');
+    });
+    return () => { cancelled = true; };
+  }, [status.proxyConfigured]);
+
   const beginLogin = async (): Promise<void> => {
+    if (!status.proxyConfigured) {
+      setMessage(missingXaiProxyMessage());
+      return;
+    }
     stopPolling();
     setBusy(true);
     setMessage('Iniciando autorização…');
@@ -85,13 +107,20 @@ export const XaiOAuthPanel: React.FC<Props> = ({ onConnected }) => {
     setMessage('Sessão xAI removida deste navegador.');
   };
 
+  const blocked = !status.proxyConfigured;
+
   return (
     <div className="rounded-lg border border-indigo-200 bg-indigo-50 p-3 space-y-3">
+      {(blocked || proxyAlert) && (
+        <p className="rounded border border-amber-300 bg-amber-50 p-2 text-xs font-bold text-amber-950" role="alert">
+          {proxyAlert || missingXaiProxyMessage()}
+        </p>
+      )}
       <p className={`text-xs font-bold ${status.connected ? 'text-green-700' : 'text-indigo-900'}`}>
         {status.message}
       </p>
       <div className="flex flex-wrap gap-2">
-        <button type="button" onClick={() => void beginLogin()} disabled={busy}
+        <button type="button" onClick={() => void beginLogin()} disabled={busy || blocked}
           className="rounded bg-indigo-700 px-3 py-2 text-xs font-bold text-white hover:bg-indigo-800 disabled:opacity-50">
           {busy ? 'Aguardando autorização…' : 'Entrar com X / Grok'}
         </button>
@@ -110,9 +139,9 @@ export const XaiOAuthPanel: React.FC<Props> = ({ onConnected }) => {
           </a>
         </div>
       )}
-      {message && <p className="text-[11px] text-indigo-900">{message}</p>}
+      {message && <p className={blocked ? 'text-[11px] font-bold text-amber-950' : 'text-[11px] text-indigo-900'} role={blocked ? 'alert' : undefined}>{message}</p>}
       <p className="text-[10px] text-indigo-700">
-        Access e refresh tokens ficam somente nesta sessão do navegador; nunca vão para o Firestore.
+        Access e refresh tokens ficam somente nesta sessão do navegador (sessionStorage); nunca vão para o Firestore nem para o repositório. O Client ID do Device OAuth é público; não há client secret neste app.
       </p>
     </div>
   );
