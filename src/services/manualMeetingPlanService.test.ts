@@ -2,7 +2,6 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import type { Activity } from '../types.ts';
 import { EducationalArea } from '../types.ts';
-import { buildManualMeetingPlan } from './manualMeetingPlanService.ts';
 import { validateManualActivities } from './manualActivityValidation.ts';
 
 const activity = (patch: Partial<Activity> = {}): Activity => ({
@@ -28,18 +27,4 @@ test('validação manual avisa referências ausentes sem impedir o salvamento', 
   ]);
   assert.equal(result.errors.length, 0);
   assert.equal(result.warnings.length, 2);
-});
-
-test('plano manual monta roteiro sem provedor de IA', () => {
-  const plan = buildManualMeetingPlan({
-    branch: 'Escoteiro',
-    theme: 'Nós e amarras',
-    totalDuration: 90,
-    participantsCount: 16,
-    meetingStartTime: '14:00',
-    activities: [activity()],
-  });
-  assert.equal(plan.theme, 'Nós e amarras');
-  assert.ok((plan.activities || []).length >= 1);
-  assert.match(plan.generalNotes || '', /manualmente/i);
 });

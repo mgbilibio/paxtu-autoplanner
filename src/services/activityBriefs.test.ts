@@ -1,12 +1,14 @@
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
 import test from 'node:test';
-import { ACTIVITY_JSON_HINT, PRACTICAL_CONTENT_RULES } from './activityBriefs.ts';
+
+const source = fs.readFileSync(new URL('./activityBriefs.ts', import.meta.url), 'utf8');
 
 test('regras de geração exigem material de campo, não slogan', () => {
-  assert.match(PRACTICAL_CONTENT_RULES, /conteudoPronto/);
-  assert.match(PRACTICAL_CONTENT_RULES, /SCRIPT FALADO|script falado/i);
-  assert.match(PRACTICAL_CONTENT_RULES, /roteiro cronometrado/i);
-  assert.match(PRACTICAL_CONTENT_RULES, /Não invente código/i);
-  assert.match(ACTIVITY_JSON_HINT, /conteudoPronto/);
-  assert.match(ACTIVITY_JSON_HINT, /passos/);
+  assert.match(source, /CONTEÚDO PRÁTICO PARA CAMPO/);
+  assert.match(source, /conteudoPronto/);
+  assert.match(source, /SCRIPT FALADO/);
+  assert.match(source, /roteiro cronometrado/);
+  assert.match(source, /Não invente código de progressão/);
+  assert.match(source, /"passos"/);
 });

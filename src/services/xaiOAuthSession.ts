@@ -2,7 +2,7 @@ import {
   missingXaiProxyMessage,
   XAI_CLIENT_ID,
   xaiOAuthUrls,
-} from './xaiOAuthConfig';
+} from './xaiOAuthConfig.ts';
 
 const ACCESS_KEY = 'paxtu_xai_access_session';
 const META_KEY = 'paxtu_xai_oauth_meta';
