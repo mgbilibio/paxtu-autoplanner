@@ -56,10 +56,20 @@ export const ACTIVITY_JSON_HINT = `{
   "materials": ["item 1 com qtde"],
   "progressionObjective": "[CÓDIGO] descrição curta",
   "objetivoEspecifico": "Ao final o jovem será capaz de...",
-  "instrucaoChefia": "informações práticas adicionais para a chefia",
+  "instrucaoChefia": "0–3 min: … / 3–8 min: … (cobrir durationMinutes quando a faixa tiver sequência)",
+  "conteudoPronto": "Letra da canção OU cartões de caso OU falas da cerimônia (texto pronto)",
+  "passos": [{"minuto": "0–3 min", "acao": "o que acontece"}],
   "safetyNotes": "cuidados específicos, ou vazio",
   "manualReferencia": "fonte real consultada, ou vazio",
-  "preparacaoPrevia": ["somente o que precisa ocorrer antes"]
+  "preparacaoPrevia": ["somente o que precisa ocorrer antes"],
+  "evaluation": {
+    "acompanhamento": "o que observar NESTA atividade",
+    "avaliacaoJovens": "pergunta específica",
+    "avaliacaoChefia": "critério desta faixa",
+    "requisitosObservaveis": ["no máximo 2 itens específicos"],
+    "criteriosDeAceite": [],
+    "evidenciasSugeridas": []
+  }
 }`;
 
 /**
@@ -67,34 +77,33 @@ export const ACTIVITY_JSON_HINT = `{
  * Produto: ScoutsAuto. Paxtu é só a fonte oficial UEB — não chamar o app de Paxtu.
  */
 export const PRACTICAL_CONTENT_RULES = `
-CONTEÚDO ESSENCIAL (ScoutsAuto — escreva para uso real em campo):
-Cada atividade precisa de nome, duração, objetivo curto, descrição detalhada, materiais,
-referência de progressão quando houver e informações adicionais úteis para a chefia.
-Não invente código de progressão, página, manual ou regra. Quando não houver fonte segura, deixe o campo vazio.
-Segurança, preparação prévia e avaliação são contextuais: inclua somente quando forem úteis.
+CONTEÚDO PRÁTICO PARA CAMPO (ScoutsAuto — material pronto, não slogan):
+Você entrega MATERIAL USÁVEL NA REUNIÃO. Nome, duração, objetivo curto, description detalhada,
+materiais e instrução da chefia são obrigatórios em toda faixa de miolo.
+Não invente código de progressão, página, manual ou regra. Sem fonte segura, deixe o campo vazio.
 Proibido: "conduzir canções dinâmicas e conhecidas", "imprimir letras", "apresentar conceitos",
 "distribuir estudos de caso", "elaborar cartões", "cantar canções conhecidas" — sem o conteúdo em si.
 Se a semente já nomeia pessoas, canções, frutas, patrulhas ou cerimônias, USE esses nomes. Não invente cerimônias extras.
 
 1) Canção / jogo / quebra-gelo: nomeie UMA canção (ou UM jogo) concreta deste dia.
    Inclua a letra (ou os 2–3 primeiros versos + refrão) OU as regras exatas do jogo
-   (como se joga, como termina, quem começa). Coloque isso em conteudoPronto.
+   (como se joga, como termina, quem começa). Isso é obrigatório em conteudoPronto.
 2) Oficina / tema técnico (ECA, nós, orientação, etc.): escreva o material pronto:
    3–6 fatos ou artigos curtos (no ECA, cite o número do artigo e o texto resumido);
    2–4 cartões de caso COM O TEXTO que a patrulha vai ler; perguntas; e um fechamento de 1 min em plenária.
    Não diga "elaborar cartões" — ESCREVA os cartões em conteudoPronto.
 3) Cerimônia / entrega / recepção: escreva o SCRIPT FALADO (quem diz o quê), a formação,
    a ordem dos nomes se a semente trouxer nomes, e marcas de minuto dentro da faixa.
-4) instrucaoChefia contém divisões de tarefa, adaptações, alertas e decisões práticas.
-   Use roteiro cronometrado apenas quando a atividade realmente precisar dele.
+4) instrucaoChefia das faixas de miolo: roteiro cronometrado que cobre durationMinutes
+   ("0–3 min: … / 3–8 min: …"), mais divisões de tarefa e alertas. Não use três slogans vagos.
 5) description = como a atividade realmente roda (regras, papéis, espaço), não uma declaração de missão.
 6) Faixas operacionais (IBEAGU, hidratação, IBOAGUCL): CURTAS. Um parágrafo + materiais.
    NÃO invente bloco de avaliação para elas. Sem requisitos/critérios/evidências.
-7) evaluation SÓ quando houver algo específico a observar (não "participação organizada" em todo cartão).
-   No máximo 2 itens observáveis. Se não couber avaliação, omita o campo evaluation.
+7) evaluation nas faixas de miolo: específica DESTA atividade (não "participação organizada").
+   No máximo 2 itens observáveis. Se realmente não couber, omita o campo evaluation.
 8) fundoDeCena: UMA frase, diferente em cada atividade. Proibido repetir "energia total", "mística" ou "legado".
 9) O produto se chama ScoutsAuto. Paxtu é só a fonte oficial da UEB. Nunca escreva "sistema PAXTU".
-10) Use conteudoPronto e passos apenas quando trouxerem conteúdo efetivamente pronto e necessário.
+10) Prefira conteudoPronto e passos. Se o tipo da atividade pedir letra, cartão ou script, esses campos são obrigatórios.
 `.trim();
 
 export const buildSingleActivityPrompt = (params: GenerateScoutActivityParams): string => {
