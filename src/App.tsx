@@ -1362,7 +1362,7 @@ function App() {
                   </button>
                 )}
                 {error && <div className="bg-red-50 text-red-600 p-3 rounded mb-4 text-xs" role="alert">{error}</div>}
-                <div className="flex border-b mb-4" role="tablist">
+                <div className="flex flex-wrap gap-x-2 gap-y-1 border-b mb-4" role="tablist">
                     {([['ia','IA'],['dados','Dados'],['avancado','Avançado'], ...(isWebApp() ? [['contas','Acessos'] as const] : [])] as const).map(([id,label]) => (
                         <button key={id} role="tab" aria-selected={settingsTab === id}
                             onClick={() => setSettingsTab(id)}
@@ -1711,12 +1711,12 @@ function App() {
 
       {/* Header */}
       <header className="bg-slate-900 text-white shadow-md sticky top-0 z-20">
-        <div className="max-w-6xl mx-auto flex items-center justify-between px-4 h-16">
-          <div className="flex items-center gap-3">
+        <div className="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-y-2 px-4 min-h-16 py-2">
+          <div className="flex items-center gap-3 min-w-0 flex-1">
             <div className="w-10 h-10 bg-slate-800 rounded-lg flex items-center justify-center border border-slate-700 shadow-inner">⚜️</div>
             <div>
-              <h1 className="text-lg font-bold tracking-tight">{currentUser?.name}</h1>
-              <p className="text-[10px] font-medium uppercase text-green-400">
+              <h1 className="text-lg font-bold tracking-tight break-words">{currentUser?.name}</h1>
+              <p className="text-[10px] font-medium uppercase text-green-400 break-words">
                 {roleLabel} • {isGlobal ? 'Visão global' : currentSection?.name}
               </p>
             </div>
@@ -1732,28 +1732,28 @@ function App() {
             </span>
           </div>
           <button
-            className="md:hidden text-gray-300 hover:text-white p-2 text-xl"
+            className="lg:hidden text-gray-300 hover:text-white p-2 text-xl"
             onClick={() => setMobileNavOpen(o => !o)}
             aria-label="Abrir menu"
             aria-expanded={mobileNavOpen}
           >☰</button>
-          <nav className={`${mobileNavOpen ? 'absolute top-16 left-0 right-0 bg-slate-900 flex-col p-4 gap-2 flex z-30 border-t border-slate-700' : 'hidden'} md:static md:flex md:flex-row md:items-center md:gap-2 md:p-0 md:border-0`}>
-            <button onClick={() => { navigateTo('HOME'); setMobileNavOpen(false); }} className="text-sm font-medium transition-all px-3 py-1 rounded-md text-gray-400 hover:text-white text-left">Início</button>
-            <button onClick={() => { navigateTo((permissions.canPlan && !isLockedForCurrentUser) ? 'DASHBOARD' : 'REPORTS'); setMobileNavOpen(false); }} className="text-sm font-medium transition-all px-3 py-1 rounded-md text-gray-400 hover:text-white text-left">Painel</button>
+          <nav className={`${mobileNavOpen ? 'absolute top-16 left-0 right-0 bg-slate-900 flex-col p-4 gap-2 flex z-30 border-t border-slate-700' : 'hidden'} lg:static lg:flex lg:flex-1 lg:min-w-0 lg:flex-row lg:flex-wrap lg:items-center lg:justify-end lg:gap-1 lg:p-0 lg:border-0`}>
+            <button onClick={() => { navigateTo('HOME'); setMobileNavOpen(false); }} className="text-sm font-medium transition-all px-2 py-1 rounded-md text-gray-400 hover:text-white text-left whitespace-normal">Início</button>
+            <button onClick={() => { navigateTo((permissions.canPlan && !isLockedForCurrentUser) ? 'DASHBOARD' : 'REPORTS'); setMobileNavOpen(false); }} className="text-sm font-medium transition-all px-2 py-1 rounded-md text-gray-400 hover:text-white text-left whitespace-normal">Painel</button>
             {permissions.canPlan && !isLockedForCurrentUser && (
-              <button onClick={() => { navigateTo('GENERATOR'); if(step===3) reset(); setMobileNavOpen(false); }} className="text-sm font-medium transition-all px-3 py-1 rounded-md text-gray-400 hover:text-white text-left">Gerar</button>
+              <button onClick={() => { navigateTo('GENERATOR'); if(step===3) reset(); setMobileNavOpen(false); }} className="text-sm font-medium transition-all px-2 py-1 rounded-md text-gray-400 hover:text-white text-left whitespace-normal">Gerar</button>
             )}
             {permissions.canPlan && !isLockedForCurrentUser && (
-              <button onClick={() => { navigateTo('CYCLE'); setMobileNavOpen(false); }} className="text-sm text-gray-400 hover:text-white px-3 text-left">Ciclo</button>
+              <button onClick={() => { navigateTo('CYCLE'); setMobileNavOpen(false); }} className="text-sm text-gray-400 hover:text-white px-2 py-1 text-left whitespace-normal">Ciclo</button>
             )}
             {permissions.canPlan && !isLockedForCurrentUser && (
-              <button onClick={() => { navigateTo('CATALOG'); setMobileNavOpen(false); }} className="text-sm text-gray-400 hover:text-white px-3 text-left">Roteiros</button>
+              <button onClick={() => { navigateTo('CATALOG'); setMobileNavOpen(false); }} className="text-sm text-gray-400 hover:text-white px-2 py-1 text-left whitespace-normal">Roteiros</button>
             )}
             {permissions.canRecordEvaluation && !isLockedForCurrentUser && (
-              <button onClick={() => { navigateTo('CALENDAR'); setMobileNavOpen(false); }} className="text-sm text-gray-400 hover:text-white px-3 text-left">Agenda</button>
+              <button onClick={() => { navigateTo('CALENDAR'); setMobileNavOpen(false); }} className="text-sm text-gray-400 hover:text-white px-2 py-1 text-left whitespace-normal">Agenda</button>
             )}
             {(permissions.canEditYouth || isGlobal) && !isLockedForCurrentUser && (
-              <button onClick={() => { navigateTo('MEMBERS'); setMobileNavOpen(false); }} className="text-sm text-gray-400 hover:text-white px-3 text-left">Efetivo</button>
+              <button onClick={() => { navigateTo('MEMBERS'); setMobileNavOpen(false); }} className="text-sm text-gray-400 hover:text-white px-2 py-1 text-left whitespace-normal">Efetivo</button>
             )}
             {/* Menu agrupado POR 2025+ — controlado (V1) */}
             <div className="relative" data-por2025-menu>
@@ -1761,7 +1761,7 @@ function App() {
                 onClick={(e) => { e.stopPropagation(); setPor2025MenuOpen(o => !o); }}
                 aria-expanded={por2025MenuOpen}
                 aria-haspopup="menu"
-                className="text-sm font-medium text-gray-300 hover:text-white px-3 py-1 rounded-md hover:bg-slate-800 flex items-center gap-1"
+                className="text-sm font-medium text-gray-300 hover:text-white px-2 py-1 rounded-md hover:bg-slate-800 flex items-center gap-1 whitespace-normal"
               >
                 POR 2025+ <span className="text-xs" aria-hidden="true">▾</span>
               </button>
@@ -1784,9 +1784,9 @@ function App() {
               )}
             </div>
             {(permissions.canConfigure || isGlobal) && (
-              <button onClick={() => { setView('PROFILE_CONFIG'); setMobileNavOpen(false); }} className="text-sm text-gray-400 hover:text-white px-3 text-left">Estrutura</button>
+              <button onClick={() => { setView('PROFILE_CONFIG'); setMobileNavOpen(false); }} className="text-sm text-gray-400 hover:text-white px-2 py-1 text-left whitespace-normal">Estrutura</button>
             )}
-            <button onClick={() => { navigateTo('REPORTS'); setMobileNavOpen(false); }} className="text-sm text-gray-400 hover:text-white px-3 text-left">Relatórios</button>
+            <button onClick={() => { navigateTo('REPORTS'); setMobileNavOpen(false); }} className="text-sm text-gray-400 hover:text-white px-2 py-1 text-left whitespace-normal">Relatórios</button>
             <button onClick={() => setShowHelp(true)} aria-label="Ajuda" title="Ajuda (roteiro, FAQ, IA)" className="text-gray-400 hover:text-white p-2 text-xl">❓</button>
             {(permissions.canConfigure || canViewAccessLog(currentUser)) && (
               <button onClick={() => setShowSettings(true)} aria-label="Configurações" className="text-gray-400 hover:text-white p-2 text-xl">⚙️</button>

@@ -53,6 +53,11 @@
     <li>O login usa <code>grok login --oauth</code>; a sessão é mantida pelo cliente Grok em <code>~/.grok/auth.json</code>. Nunca versionar, copiar ou registrar esse arquivo.</li>
     <li>O site publicado não promete OAuth local: sem ponte Electron, o usuário deve informar chave API própria.</li>
   </ul>
+  <h2>Responsividade do shell</h2>
+  <ul>
+    <li>O cabeçalho usa breakpoint amplo para trocar por menu compacto antes de a navegação ficar apertada.</li>
+    <li>Itens de navegação e abas de Configurações aceitam quebra de linha; não usar larguras fixas que cortem rótulos em telas estreitas.</li>
+  </ul>
   <h2>Contrato do gerador de atividades</h2>
   <ul>
     <li><code>scheduleDraft</code> é a fonte única de ordem, quantidade e duração. Não criar lista paralela de atividades na interface.</li>
@@ -68,7 +73,7 @@
     <li><code>python conhecimento/tools/audit_dados_operacionais.py</code>.</li>
     <li><code>python conhecimento/tools/run_release_check.py --dist</code>.</li>
   </ol>
-  <p>O build usa Vite 8; em <code>vite.config.ts</code>, use <code>import.meta.dirname</code> no lugar de <code>__dirname</code>. O release atual deve produzir instalador, executável portátil e ZIP em <code>release/20260904-1247/</code>. Os filtros de especialidade devem usar <code>isSpecialtyCode</code>, jamais o texto visível da categoria. Atualize este documento, <code>usersmanual.html</code> e <code>versions.html</code> em qualquer alteração de comportamento, dados ou distribuição. Os originais HTML da UEB ficam em <code>docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/</code>; versionar manifesto/hashes, não o cache bruto.</p>
+  <p>O build usa Vite 8; em <code>vite.config.ts</code>, use <code>import.meta.dirname</code> no lugar de <code>__dirname</code>. O release atual deve produzir instalador, executável portátil e ZIP em <code>release/20260904-1258/</code>. Os filtros de especialidade devem usar <code>isSpecialtyCode</code>, jamais o texto visível da categoria. Atualize este documento, <code>usersmanual.html</code> e <code>versions.html</code> em qualquer alteração de comportamento, dados ou distribuição. Os originais HTML da UEB ficam em <code>docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/</code>; versionar manifesto/hashes, não o cache bruto.</p>
 </main>
 </body>
 </html>

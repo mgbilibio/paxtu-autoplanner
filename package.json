@@ -1,7 +1,7 @@
 {
   "name": "paxtu-autoplanner",
   "private": true,
-  "version": "2026.9.5",
+  "version": "2026.9.6",
   "description": "Assistente de Planejamento e Progressão Escoteira",
   "author": "Margus - Grupo Unisselva (Cuiabá/MT)",
   "type": "module",
@@ -21,7 +21,7 @@
     "productName": "Paxtu AutoPlanner",
     "copyright": "Copyright © 2026 Margus - Grupo Unisselva (Cuiabá/MT)",
     "directories": {
-      "output": "release/20260904-1247"
+      "output": "release/20260904-1258"
     },
     "files": [
       "dist",
@@ -58,7 +58,7 @@
     ],
     "win": {
       "icon": "public/icon.ico",
-    "artifactName": "${productName}_20260904-1247_${arch}.${ext}",
+    "artifactName": "${productName}_20260904-1258_${arch}.${ext}",
       "target": [
         {
           "target": "nsis",
@@ -85,10 +85,10 @@
       "perMachine": false,
       "allowToChangeInstallationDirectory": true,
       "deleteAppDataOnUninstall": false,
-      "artifactName": "${productName}_Setup_20260904-1247.${ext}"
+      "artifactName": "${productName}_Setup_20260904-1258.${ext}"
     },
     "portable": {
-      "artifactName": "${productName}_Portable_20260904-1247.${ext}"
+      "artifactName": "${productName}_Portable_20260904-1258.${ext}"
     }
   },
   "dependencies": {
