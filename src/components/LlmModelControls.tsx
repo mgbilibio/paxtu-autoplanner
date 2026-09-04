@@ -38,7 +38,9 @@ export const LlmModelControls: React.FC<Props> = ({
     ? 'bg-transparent text-white text-xs outline-none border-none max-w-[220px]'
     : 'flex-1 min-w-[12rem] p-2 border rounded text-sm';
   const optionClass = compact ? 'text-black' : undefined;
-  const emptyLabel = compact ? 'Nenhum modelo — configure a IA' : 'Nenhum modelo disponível';
+  const emptyLabel = providerId === 'gemini'
+    ? (compact ? 'Flash-Lite (padrão offline)' : 'Gemini Flash-Lite (padrão até carregar o catálogo)')
+    : (compact ? 'Nenhum modelo — configure a IA' : 'Nenhum modelo disponível');
 
   return (
     <div className={compact ? 'flex gap-2 items-center flex-wrap' : 'space-y-2'}>

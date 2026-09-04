@@ -11,6 +11,23 @@ import { getGeminiOAuthAccessToken } from './googleAuth';
 import { attachmentsToGeminiParts, attachmentsToPromptBlock, GeminiInlinePart } from './planAttachments';
 import { activityBriefsPromptBlock, buildSingleActivityPrompt, PRACTICAL_CONTENT_RULES } from './activityBriefs';
 import { chunkArray, DETAIL_BATCH_SIZE, mergeActivityDetails, STUDY_GUIDE_BATCH_SIZE } from './llmPlanBatches';
+import {
+  DEFAULT_GEMINI_MODEL,
+  isSelectableFlashModel,
+  offlineGeminiModels,
+  pickPreferredGeminiModel as pickPreferredFromCatalog,
+  withGeminiCatalogFallback,
+} from './geminiModels';
+
+export {
+  DEFAULT_GEMINI_MODEL,
+  GEMINI_FALLBACK_MODELS,
+  geminiModelLabel,
+  isSelectableFlashModel,
+  offlineGeminiModels,
+  pickPreferredGeminiModel,
+  withGeminiCatalogFallback,
+} from './geminiModels';
 
 // Remove possiveis segredos (api key) de mensagens de erro da SDK antes de
 // exibir/logar — a SDK as vezes ecoa a URL da request com a chave.
@@ -32,37 +49,9 @@ const resolveApiKey = (): string | undefined => {
   return getStoredApiKey() ?? undefined;
 };
 
-// Modelos são descobertos em tempo de execução pela conta autenticada. Não
-// mantenha IDs, versões ou aliases de modelo fixos neste módulo.
-export const geminiModelLabel = (id: string): string => id.replace(/^gemini-/, 'Gemini ');
-
 export const getDefaultGeminiModel = (): string => {
   const saved = getAppConfig()?.geminiModel?.trim();
-  return saved || '';
-};
-
-const geminiVersionScore = (id: string): number => {
-  const match = id.match(/gemini-(\d+(?:\.\d+)?)/i);
-  return match ? Number(match[1]) : 0;
-};
-
-const isSelectableFlashModel = (id: string): boolean =>
-  /gemini/i.test(id)
-  && /flash/i.test(id)
-  && !/pro|image|tts|embed|live|vision/i.test(id);
-
-export const pickPreferredGeminiModel = (models: string[], current?: string): string => {
-  if (models.length === 0) return '';
-  if (current && models.includes(current)) return current;
-  const lite = models.filter(id => /flash-lite/i.test(id) && isSelectableFlashModel(id));
-  if (lite.length > 0) {
-    return [...lite].sort((a, b) => geminiVersionScore(b) - geminiVersionScore(a) || b.localeCompare(a))[0];
-  }
-  const flash = models.filter(id => isSelectableFlashModel(id));
-  if (flash.length > 0) {
-    return [...flash].sort((a, b) => geminiVersionScore(b) - geminiVersionScore(a) || b.localeCompare(a))[0];
-  }
-  return models[0] || '';
+  return saved || DEFAULT_GEMINI_MODEL;
 };
 
 export const hasGeminiCredentials = (): boolean =>
@@ -223,7 +212,7 @@ const parseGeminiModelList = (raw: Array<{ name?: string; supportedGenerationMet
     .filter(isSelectableFlashModel);
 
 export const getAvailableModels = async (): Promise<string[]> => {
-  if (!hasGeminiCredentials()) return [];
+  if (!hasGeminiCredentials()) return offlineGeminiModels();
 
   try {
     const apiKey = resolveApiKey();
@@ -238,11 +227,10 @@ export const getAvailableModels = async (): Promise<string[]> => {
           models.push(model.name.replace('models/', ''));
         }
       }
-      return Array.from(new Set(models.filter(isSelectableFlashModel)))
-        .sort((a, b) => geminiVersionScore(b) - geminiVersionScore(a) || b.localeCompare(a));
+      return withGeminiCatalogFallback(models);
     }
     const oauth = isWebApp() ? getGeminiOAuthAccessToken() : undefined;
-    if (!oauth) return [];
+    if (!oauth) return offlineGeminiModels();
     const models: string[] = [];
     let pageToken = '';
     do {
@@ -251,7 +239,7 @@ export const getAvailableModels = async (): Promise<string[]> => {
       const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?${query}`, {
         headers: { Authorization: `Bearer ${oauth}` },
       });
-      if (!response.ok) return [];
+      if (!response.ok) return offlineGeminiModels();
       const body = await response.json() as {
         models?: Array<{ name?: string; supportedGenerationMethods?: string[] }>;
         nextPageToken?: string;
@@ -259,20 +247,17 @@ export const getAvailableModels = async (): Promise<string[]> => {
       models.push(...parseGeminiModelList(body.models || []));
       pageToken = body.nextPageToken || '';
     } while (pageToken);
-    return Array.from(new Set(models))
-      .sort((a, b) => geminiVersionScore(b) - geminiVersionScore(a) || b.localeCompare(a));
+    return withGeminiCatalogFallback(models);
   } catch (e) {
     console.error('Erro ao listar modelos Gemini:', e);
-    return [];
+    return offlineGeminiModels();
   }
 };
 
 const resolveGeminiModel = async (requested?: string): Promise<string> => {
   const configured = requested?.trim() || getDefaultGeminiModel();
   const models = await getAvailableModels();
-  const selected = pickPreferredGeminiModel(models, configured);
-  if (selected) return selected;
-  throw new Error('A conta Gemini não retornou nenhum modelo Flash compatível com generateContent.');
+  return pickPreferredFromCatalog(models, configured) || DEFAULT_GEMINI_MODEL;
 };
 
 export interface CycleMeeting {
@@ -586,7 +571,8 @@ MODO AUTO_LINK:
           "description": "Como a atividade RODA: regras, papéis, espaço",
           "materials": ["item 1 com qtde"],
           "objetivoEspecifico": "Ao final o jovem será capaz de...",
-          "instrucaoChefia": "informações adicionais úteis para a chefia",
+          "instrucaoChefia": "0–3 min: … / 3–8 min: …",
+          "conteudoPronto": "letra, cartões ou script falado",
           "safetyNotes": "cuidados específicos, ou vazio",
           "manualReferencia": "fonte real consultada, ou vazio",
           "preparacaoPrevia": ["imprimir X"],
