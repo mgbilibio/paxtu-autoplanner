@@ -1,0 +1,11 @@
+{
+  "name": "paxtu-xai-proxy",
+  "private": true,
+  "type": "module",
+  "description": "Proxy CORS mínimo para o Device OAuth xAI do ScoutsAuto web",
+  "scripts": {
+    "deploy": "npx --yes wrangler deploy",
+    "dev": "npx --yes wrangler dev",
+    "test": "node --experimental-transform-types --test src/routes.test.ts"
+  }
+}

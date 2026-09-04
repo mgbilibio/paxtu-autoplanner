@@ -32,47 +32,13 @@ const resolveApiKey = (): string | undefined => {
   return getStoredApiKey() ?? undefined;
 };
 
-// Catálogo Flash / Flash-Lite (ago/2026). IDs conferidos na docs Gemini API:
-// 3.7 Flash (13 ago 2026), 3.6 Flash, 3.5 Flash-Lite GA + alias flash-lite-latest.
-// Web e desktop usam a mesma lista e o mesmo padrão (Lite, barato/rápido).
-export interface GeminiFlashChoice {
-  id: string;
-  label: string;
-}
-
-export const GEMINI_FLASH_MODELS: GeminiFlashChoice[] = [
-  { id: 'gemini-3.5-flash-lite', label: 'Gemini 3.5 Flash-Lite — mais barato/rápido' },
-  { id: 'gemini-flash-lite-latest', label: 'Gemini Flash-Lite latest (alias)' },
-  { id: 'gemini-3.6-flash', label: 'Gemini 3.6 Flash' },
-  { id: 'gemini-3.7-flash', label: 'Gemini 3.7 Flash — mais capaz' },
-  { id: 'gemini-3.5-flash', label: 'Gemini 3.5 Flash' },
-  { id: 'gemini-2.5-flash-lite', label: 'Gemini 2.5 Flash-Lite' },
-  { id: 'gemini-2.5-flash', label: 'Gemini 2.5 Flash' },
-];
-
-/** Fallbacks Lite se o id pinado falhar. Alias latest acompanha o GA vigente. */
-export const GEMINI_LITE_CANDIDATES = [
-  'gemini-3.5-flash-lite',
-  'gemini-flash-lite-latest',
-  'gemini-3.1-flash-lite',
-  'gemini-2.5-flash-lite',
-];
-
-/** @deprecated Use GEMINI_LITE_CANDIDATES. Mantido para imports existentes. */
-export const WEB_GEMINI_LITE_CANDIDATES = GEMINI_LITE_CANDIDATES;
-
-export const DEFAULT_GEMINI_MODEL = GEMINI_LITE_CANDIDATES[0];
-export const DESKTOP_DEFAULT_GEMINI_MODEL = DEFAULT_GEMINI_MODEL;
-
-export const geminiModelLabel = (id: string): string =>
-  GEMINI_FLASH_MODELS.find(model => model.id === id)?.label || id;
-
-export const curatedGeminiModelIds = (): string[] => GEMINI_FLASH_MODELS.map(model => model.id);
+// Modelos são descobertos em tempo de execução pela conta autenticada. Não
+// mantenha IDs, versões ou aliases de modelo fixos neste módulo.
+export const geminiModelLabel = (id: string): string => id.replace(/^gemini-/, 'Gemini ');
 
 export const getDefaultGeminiModel = (): string => {
   const saved = getAppConfig()?.geminiModel?.trim();
-  if (saved) return saved;
-  return DEFAULT_GEMINI_MODEL;
+  return saved || '';
 };
 
 const geminiVersionScore = (id: string): number => {
@@ -86,17 +52,17 @@ const isSelectableFlashModel = (id: string): boolean =>
   && !/pro|image|tts|embed|live|vision/i.test(id);
 
 export const pickPreferredGeminiModel = (models: string[], current?: string): string => {
-  if (models.length === 0) return getDefaultGeminiModel();
+  if (models.length === 0) return '';
   if (current && models.includes(current)) return current;
-  for (const candidate of GEMINI_LITE_CANDIDATES) {
-    if (models.includes(candidate)) return candidate;
-  }
   const lite = models.filter(id => /flash-lite/i.test(id) && isSelectableFlashModel(id));
   if (lite.length > 0) {
     return [...lite].sort((a, b) => geminiVersionScore(b) - geminiVersionScore(a) || b.localeCompare(a))[0];
   }
-  const flash = models.find(id => isSelectableFlashModel(id));
-  return flash || DEFAULT_GEMINI_MODEL;
+  const flash = models.filter(id => isSelectableFlashModel(id));
+  if (flash.length > 0) {
+    return [...flash].sort((a, b) => geminiVersionScore(b) - geminiVersionScore(a) || b.localeCompare(a))[0];
+  }
+  return models[0] || '';
 };
 
 export const hasGeminiCredentials = (): boolean =>
@@ -184,7 +150,7 @@ export interface SmartSuggestion {
 
 export const askGemini = async (question: string, context: string, modelId?: string): Promise<string> => {
     if (!hasGeminiCredentials()) throw new Error(GEMINI_MISSING_KEY);
-    const model = modelId || getDefaultGeminiModel();
+    const model = await resolveGeminiModel(modelId);
     const system = 'Você é um assistente experiente em escotismo (UEB) e no app ScoutsAuto. Paxtu é só o sistema oficial da UEB de progresso juvenil, não o nome deste app. Responda em português brasileiro, de forma direta e prática, em até 3 parágrafos. Use o contexto fornecido para fundamentar a resposta. Se a pergunta sair do escopo do app ou escotismo, diga isso de forma cordial.';
     const user = `CONTEXTO DO APP:\n${context}\n\nPERGUNTA DO CHEFE:\n${question}`;
     try {
@@ -240,7 +206,7 @@ export const generateSmartSuggestions = async (analysis: SectionAnalysis, branch
   `;
 
   try {
-    const text = await callGeminiSimple('', getDefaultGeminiModel(), "", prompt);
+    const text = await callGeminiSimple('', await resolveGeminiModel(), "", prompt);
     const parsed = extractJson<SmartSuggestion[]>(text);
     if (!parsed) throw new Error("JSON invalido");
     return parsed;
@@ -250,25 +216,14 @@ export const generateSmartSuggestions = async (analysis: SectionAnalysis, branch
   }
 };
 
-const parseGeminiModelList = (raw: Array<{ name?: string; supportedGenerationMethods?: string[]; supportedActions?: string[] }>): string[] =>
+const parseGeminiModelList = (raw: Array<{ name?: string; supportedGenerationMethods?: string[] }>): string[] =>
   raw
+    .filter(model => model.supportedGenerationMethods?.includes('generateContent'))
     .map(model => (model.name || '').replace(/^models\//, ''))
-    .filter(name =>
-      name.includes('gemini')
-      && !name.includes('vision')
-      && !/image|tts|embed/i.test(name),
-    );
+    .filter(isSelectableFlashModel);
 
 export const getAvailableModels = async (): Promise<string[]> => {
-  const curated = curatedGeminiModelIds();
-  const fallbacks = curated;
-  if (!hasGeminiCredentials()) return fallbacks;
-
-  const mergeFlashModels = (discovered: string[]): string[] => {
-    const extras = discovered.filter(id => isSelectableFlashModel(id) && !curated.includes(id));
-    extras.sort((a, b) => geminiVersionScore(b) - geminiVersionScore(a) || b.localeCompare(a));
-    return extras.length > 0 ? [...curated, ...extras] : curated;
-  };
+  if (!hasGeminiCredentials()) return [];
 
   try {
     const apiKey = resolveApiKey();
@@ -283,21 +238,41 @@ export const getAvailableModels = async (): Promise<string[]> => {
           models.push(model.name.replace('models/', ''));
         }
       }
-      return models.length > 0 ? mergeFlashModels(models) : fallbacks;
+      return Array.from(new Set(models.filter(isSelectableFlashModel)))
+        .sort((a, b) => geminiVersionScore(b) - geminiVersionScore(a) || b.localeCompare(a));
     }
     const oauth = isWebApp() ? getGeminiOAuthAccessToken() : undefined;
-    if (!oauth) return fallbacks;
-    const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models', {
-      headers: { Authorization: `Bearer ${oauth}` },
-    });
-    if (!response.ok) return fallbacks;
-    const body = await response.json() as { models?: Array<{ name?: string }> };
-    const models = parseGeminiModelList(body.models || []);
-    return models.length > 0 ? mergeFlashModels(models) : fallbacks;
+    if (!oauth) return [];
+    const models: string[] = [];
+    let pageToken = '';
+    do {
+      const query = new URLSearchParams({ pageSize: '1000' });
+      if (pageToken) query.set('pageToken', pageToken);
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?${query}`, {
+        headers: { Authorization: `Bearer ${oauth}` },
+      });
+      if (!response.ok) return [];
+      const body = await response.json() as {
+        models?: Array<{ name?: string; supportedGenerationMethods?: string[] }>;
+        nextPageToken?: string;
+      };
+      models.push(...parseGeminiModelList(body.models || []));
+      pageToken = body.nextPageToken || '';
+    } while (pageToken);
+    return Array.from(new Set(models))
+      .sort((a, b) => geminiVersionScore(b) - geminiVersionScore(a) || b.localeCompare(a));
   } catch (e) {
     console.error('Erro ao listar modelos Gemini:', e);
-    return fallbacks;
+    return [];
   }
+};
+
+const resolveGeminiModel = async (requested?: string): Promise<string> => {
+  const configured = requested?.trim() || getDefaultGeminiModel();
+  const models = await getAvailableModels();
+  const selected = pickPreferredGeminiModel(models, configured);
+  if (selected) return selected;
+  throw new Error('A conta Gemini não retornou nenhum modelo Flash compatível com generateContent.');
 };
 
 export interface CycleMeeting {
@@ -367,7 +342,7 @@ export const analyzeIndividualProgress = async (params: {
   `;
 
   try {
-    const text = await callGeminiSimple('', getDefaultGeminiModel(), "", prompt);
+    const text = await callGeminiSimple('', await resolveGeminiModel(), "", prompt);
     const parsed = extractJson<{ recommendation: string, items: string[] }>(text);
     if (!parsed) throw new Error("JSON invalido");
     return parsed;
@@ -430,7 +405,7 @@ export const generateScoutCycle = async (params: {
   `;
 
   try {
-    const text = await callGeminiSimple('', params.modelId || getDefaultGeminiModel(), "", prompt, attachmentsToGeminiParts(params.attachments));
+    const text = await callGeminiSimple('', await resolveGeminiModel(params.modelId), "", prompt, attachmentsToGeminiParts(params.attachments));
     const parsed = extractJson<MeetingCycle>(text);
     if (!parsed) throw new Error("JSON invalido");
     parsed.id = Date.now().toString();
@@ -444,7 +419,7 @@ export const generateScoutCycle = async (params: {
 export const generateScoutPlan = async (params: GeneratorParams & { context?: { sectionName: string, groupName: string } }): Promise<MeetingPlan> => {
   if (!hasGeminiCredentials()) throw new Error(GEMINI_MISSING_KEY);
 
-  const selectedModel = params.modelId || getDefaultGeminiModel();
+  const selectedModel = await resolveGeminiModel(params.modelId);
 
   const planningMode =
     params.planningMode === 'from_selection' || params.planningMode === 'auto_link'
@@ -686,7 +661,7 @@ MODO AUTO_LINK:
 
 export const generateScoutActivity = async (params: GenerateScoutActivityParams): Promise<Activity> => {
   if (!hasGeminiCredentials()) throw new Error(GEMINI_MISSING_KEY);
-  const selectedModel = params.modelId || getDefaultGeminiModel();
+  const selectedModel = await resolveGeminiModel(params.modelId);
   const extraParts = attachmentsToGeminiParts(params.attachments);
   const attachmentBlock = attachmentsToPromptBlock(params.attachments);
   const prompt = `${buildSingleActivityPrompt(params)}${attachmentBlock ? `\n\n${attachmentBlock}` : ''}`;

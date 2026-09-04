@@ -71,9 +71,19 @@ export const LlmModelControls: React.FC<Props> = ({
           Ver cota / uso
         </a>
       )}
-      {compact && refreshing && <span className="text-white text-xs animate-spin" aria-hidden="true">⟳</span>}
-      {compact && onRefresh && (
-        <button type="button" onClick={onRefresh} aria-label="Recarregar modelos" className="text-white text-xs">🔄</button>
+      {refreshing && <span className={compact ? 'text-white text-xs animate-spin' : 'text-slate-600 text-sm animate-spin'} aria-hidden="true">⟳</span>}
+      {onRefresh && (
+        <button
+          type="button"
+          onClick={onRefresh}
+          disabled={refreshing}
+          aria-label="Recarregar modelos do provedor"
+          className={compact
+            ? 'text-white text-xs disabled:opacity-50'
+            : 'rounded border border-slate-300 bg-white px-2.5 py-1.5 text-[11px] font-bold text-slate-700 hover:bg-slate-50 disabled:opacity-50'}
+        >
+          {compact ? '🔄' : 'Atualizar modelos'}
+        </button>
       )}
       </div>
     </div>

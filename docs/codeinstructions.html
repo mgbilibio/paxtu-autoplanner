@@ -48,10 +48,18 @@
   </ul>
   <h2>OAuth xAI/Grok</h2>
   <ul>
-    <li>O provider <code>xai-oauth</code> tem dois transportes: chave API no site e sessão OAuth do cliente <code>grok</code> no desktop.</li>
-    <li>O processo renderer nunca recebe tokens OAuth. <code>electron/main.ts</code> consulta o status sem devolver credenciais e executa o pedido pelo CLI autenticado.</li>
-    <li>O login usa <code>grok login --oauth</code>; a sessão é mantida pelo cliente Grok em <code>~/.grok/auth.json</code>. Nunca versionar, copiar ou registrar esse arquivo.</li>
-    <li>O site publicado não promete OAuth local: sem ponte Electron, o usuário deve informar chave API própria.</li>
+    <li>A edição web usa Device Authorization Grant, reaproveitando o fluxo comprovado do projeto SocialKids.</li>
+    <li><code>xaiOAuthDevice.ts</code> inicia e acompanha a autorização; <code>xaiOAuthSession.ts</code> mantém access e refresh tokens somente no <code>sessionStorage</code>.</li>
+    <li>Tokens xAI nunca devem ser gravados no Firestore, localStorage, logs, configuração exportada ou repositório.</li>
+    <li>O Worker em <code>workers/xai-proxy</code> encaminha somente device, token e userinfo, exige origem permitida e nunca funciona como proxy aberto.</li>
+    <li>A URL do Worker entra no build por <code>VITE_XAI_PROXY_URL</code>. Não colocar tokens, client secrets ou chaves privadas nessa variável.</li>
+    <li>O provider aceita a sessão OAuth ou uma chave API opcional. Ambos consultam <code>/v1/language-models</code> em tempo de execução.</li>
+  </ul>
+  <h2>Catálogos de modelos</h2>
+  <ul>
+    <li>Gemini deve consultar <code>models.list</code> e aceitar somente modelos anunciados com suporte a <code>generateContent</code>.</li>
+    <li>A preferência Flash-Lite/Flash é uma regra por capacidade e custo, nunca uma lista de IDs ou versões.</li>
+    <li>Se o provedor não devolver um modelo compatível, mostrar erro claro. Não inventar fallback obsoleto.</li>
   </ul>
   <h2>Responsividade do shell</h2>
   <ul>
@@ -68,12 +76,13 @@
   </ul>
   <h2>Validação e release</h2>
   <ol>
-    <li><code>npm run build</code>.</li>
-    <li><code>npm audit --audit-level=moderate</code>.</li>
-    <li><code>python conhecimento/tools/audit_dados_operacionais.py</code>.</li>
-    <li><code>python conhecimento/tools/run_release_check.py --dist</code>.</li>
+    <li><code>npm test</code>.</li>
+    <li><code>npm --prefix workers/xai-proxy test</code>.</li>
+    <li><code>npm run build:web</code>.</li>
+    <li>Publicar a <code>main</code> e confirmar o workflow GitHub Pages.</li>
+    <li>Testar login, catálogo e geração no site implantado.</li>
   </ol>
-  <p>O build usa Vite 8; em <code>vite.config.ts</code>, use <code>import.meta.dirname</code> no lugar de <code>__dirname</code>. O release atual deve produzir instalador, executável portátil e ZIP em <code>release/20260904-1258/</code>. Os filtros de especialidade devem usar <code>isSpecialtyCode</code>, jamais o texto visível da categoria. Atualize este documento, <code>usersmanual.html</code> e <code>versions.html</code> em qualquer alteração de comportamento, dados ou distribuição. Os originais HTML da UEB ficam em <code>docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/</code>; versionar manifesto/hashes, não o cache bruto.</p>
+  <p>O produto-alvo é a edição web com Firebase e deploy pelo GitHub Pages. O build usa Vite 8; em <code>vite.config.ts</code>, use <code>import.meta.dirname</code> no lugar de <code>__dirname</code>. Os filtros de especialidade devem usar <code>isSpecialtyCode</code>, jamais o texto visível da categoria. Atualize este documento, <code>usersmanual.html</code> e <code>versions.html</code> em qualquer alteração de comportamento, dados ou distribuição. Os originais HTML da UEB ficam em <code>docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/</code>; versionar manifesto/hashes, não o cache bruto.</p>
 </main>
 </body>
 </html>

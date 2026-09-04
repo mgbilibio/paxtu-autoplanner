@@ -11,6 +11,7 @@ interface ImportMetaEnv {
   readonly VITE_FIREBASE_APP_ID?: string;
   readonly VITE_FIREBASE_AUTH_X?: string;
   readonly VITE_FIREBASE_APPCHECK_SITE_KEY?: string;
+  readonly VITE_XAI_PROXY_URL?: string;
 }
 
 interface ImportMeta {

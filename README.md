@@ -70,13 +70,15 @@ Tela única: **Continuar com Google**, **Continuar com X** (se habilitado) e **e
 
 ### IA na web
 
-- **Gemini é o padrão**, na classe **Flash-Lite** (barata/rápida). O id padrão é `gemini-3.5-flash-lite` (GA); o seletor também lista `gemini-flash-lite-latest`, **Gemini 3.6 Flash** e **Gemini 3.7 Flash** (mais capaz, 13 ago 2026). A escolha fica no localStorage. Não usamos Pro por omissão.
+- **Gemini é o padrão**, priorizando a classe **Flash-Lite** (barata/rápida). O app consulta o catálogo disponível para a conta em tempo de execução, mantém a escolha válida no armazenamento local e não fixa IDs ou versões no código.
 - Cada escotista cola a própria chave do [AI Studio](https://aistudio.google.com/app/apikey) (conta Google, sem cartão). A chave fica **só no localStorage**. Sem chave, a UI permanece e avisa na hora de gerar.
 - Se o login Google conseguir um token OAuth da API Gemini (`generative-language`), o site tenta usar; se CORS, app OAuth não verificado ou escopo faltar, volta para “colar chave do AI Studio”.
-- **xAI/Grok** é extra opcional: no site use uma chave da API; no app desktop, “Entrar com xAI / X” usa a sessão OAuth oficial do cliente Grok, incluindo assinaturas SuperGrok. “Continuar com X” no login do ScoutsAuto é o provedor Twitter/X do Firebase (se `VITE_FIREBASE_AUTH_X` estiver ligado), não o OAuth da API xAI.
+- **xAI/Grok** é extra opcional: “Entrar com X / Grok” usa Device OAuth no navegador e os créditos da assinatura conectada. O proxy Cloudflare contorna somente o CORS do servidor de autenticação; access e refresh tokens ficam no `sessionStorage`, nunca no Firestore. O catálogo vem de `/v1/language-models`, sem IDs fixos. Uma chave xAI continua sendo alternativa opcional.
 - **Ollama local** só no desktop. Na web o controle aparece (paridade), com aviso.
 
 Nenhuma chave de API entra no repositório nem no bundle do Pages.
+
+O Worker mínimo está em `workers/xai-proxy`. A URL publicada deve ser definida na variável GitHub Actions `VITE_XAI_PROXY_URL`.
 
 ### Dados da seção no site
 

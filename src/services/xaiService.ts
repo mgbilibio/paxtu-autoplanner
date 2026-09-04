@@ -8,33 +8,25 @@ import { attachmentsToPromptBlock } from './planAttachments';
 import { activityBriefsPromptBlock, buildSingleActivityPrompt, PRACTICAL_CONTENT_RULES } from './activityBriefs';
 import { chunkArray, DETAIL_BATCH_SIZE, mergeActivityDetails, STUDY_GUIDE_BATCH_SIZE } from './llmPlanBatches';
 import type { PlanAttachment } from './planAttachments';
+import { isWebApp } from './platform';
+import { getXaiBrowserStatus, resolveXaiBrowserBearer } from './xaiOAuthSession';
 
 const XAI_API = 'https://api.x.ai/v1';
-// Catálogo xAI (ago/2026): não há mais grok-3-mini / grok-4-fast (aposentados em mai/2026).
-// grok-4.3 é o texto geral mais barato; se a listagem trouxer mini/fast/lite, preferimos isso.
-export const DEFAULT_MODEL = 'grok-4.3';
-export const FALLBACK_MODELS = ['grok-4.3', 'grok-4.20-0309-non-reasoning', 'grok-4.5'];
 
-const isTextGrok = (id: string): boolean =>
-  /^grok/i.test(id)
+const isTextLanguageModel = (id: string): boolean =>
+  Boolean(id.trim())
   && !/imagine|voice|image|video|tts|whisper|audio|embed/i.test(id)
   && !/multi-agent/i.test(id);
 
 export const pickXaiFastModel = (models: string[], current?: string): string => {
-  const text = models.filter(isTextGrok);
-  const pool = text.length > 0 ? text : FALLBACK_MODELS;
-  const cheap = pool.filter(id => /mini|fast|lite|4\.3/i.test(id));
-  const cheapNonReason = cheap.filter(id => /non-reasoning/i.test(id) || !/reasoning/i.test(id));
-  if (current && cheapNonReason.includes(current)) return current;
-  if (current && cheap.includes(current)) return current;
-  if (cheapNonReason.includes('grok-4.3')) return 'grok-4.3';
-  if (cheapNonReason[0]) return cheapNonReason[0];
-  if (cheap[0]) return cheap[0];
-  return pool[0] || DEFAULT_MODEL;
+  const text = models.filter(isTextLanguageModel);
+  if (current && text.includes(current)) return current;
+  const economical = text.find(id => /mini|fast|lite|non-reasoning/i.test(id));
+  return economical || text[0] || '';
 };
 
 const NO_KEY =
-  'Informe sua chave xAI em Configurações (fica só neste navegador). Sem chave, o Grok não gera roteiros.';
+  'Entre com sua conta X/Grok ou informe uma chave xAI em Configurações.';
 
 const sanitize = (error: unknown): string =>
   String((error as Error)?.message || error || 'Desconhecido')
@@ -58,6 +50,7 @@ const requestWithGrokOAuth = async (prompt: string, modelId?: string): Promise<s
 
 export const isReachable = async (): Promise<{ ok: boolean; error?: string }> => {
   if (resolveXaiKey()) return { ok: true };
+  if (isWebApp() && getXaiBrowserStatus().connected) return { ok: true };
   const status = await window.fileSystem?.xaiOAuthStatus?.();
   if (status?.connected) return { ok: true };
   if (hasXaiOAuthBridge()) return { ok: false, error: 'Entre com sua conta SuperGrok no botão de login.' };
@@ -67,12 +60,15 @@ export const isReachable = async (): Promise<{ ok: boolean; error?: string }> =>
 const chat = async (userPrompt: string, modelId?: string, temperature = 0.5): Promise<string> => {
   const apiKey = resolveXaiKey();
   if (!apiKey && hasXaiOAuthBridge()) return requestWithGrokOAuth(userPrompt, modelId);
-  if (!apiKey) throw new Error(NO_KEY);
-  const model = modelId || getAppConfig()?.xaiOAuthModel || DEFAULT_MODEL;
+  const bearer = apiKey || (isWebApp() ? await resolveXaiBrowserBearer() : undefined);
+  if (!bearer) throw new Error(NO_KEY);
+  const configuredModel = modelId?.trim() || getAppConfig()?.xaiOAuthModel?.trim();
+  const model = pickXaiFastModel(await listModels(), configuredModel);
+  if (!model) throw new Error('A xAI não retornou nenhum modelo de linguagem disponível para esta conta.');
   const response = await fetch(`${XAI_API}/chat/completions`, {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${apiKey}`,
+      Authorization: `Bearer ${bearer}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
@@ -113,22 +109,29 @@ const callJson = async <T,>(prompt: string, etapa: string, modelId?: string, tem
 
 export const listModels = async (): Promise<string[]> => {
   const apiKey = resolveXaiKey();
-  if (!apiKey) return FALLBACK_MODELS;
   try {
-    const response = await fetch(`${XAI_API}/models`, {
-      headers: { Authorization: `Bearer ${apiKey}` },
+    const bearer = apiKey || (isWebApp() ? await resolveXaiBrowserBearer() : undefined);
+    if (!bearer) return [];
+    const response = await fetch(`${XAI_API}/language-models`, {
+      headers: { Authorization: `Bearer ${bearer}` },
     });
-    if (!response.ok) return FALLBACK_MODELS;
-    const data = await response.json() as { data?: Array<{ id: string }> };
-    const ids = (data.data || []).map(item => item.id).filter(id => id.toLowerCase().includes('grok'));
-    return ids.length > 0 ? ids : FALLBACK_MODELS;
+    if (!response.ok) return [];
+    const data = await response.json() as {
+      models?: Array<{ id: string; output_modalities?: string[] }>;
+    };
+    return (data.models || [])
+      .filter(item => !item.output_modalities || item.output_modalities.includes('text'))
+      .map(item => item.id)
+      .filter(isTextLanguageModel);
   } catch {
-    return FALLBACK_MODELS;
+    return [];
   }
 };
 
 export const askXai = async (question: string, context: string, modelId?: string): Promise<string> => {
-  if (!resolveXaiKey() && !hasXaiOAuthBridge()) throw new Error(NO_KEY);
+  if (!resolveXaiKey() && !hasXaiOAuthBridge() && !getXaiBrowserStatus().connected) {
+    throw new Error(NO_KEY);
+  }
   return chat(
     `CONTEXTO DO APP:\n${context}\n\nPERGUNTA DO CHEFE:\n${question}\n\nResponda em até 3 parágrafos, direto e prático.`,
     modelId,
@@ -146,7 +149,9 @@ export const generateScoutCycle = async (params: {
   catalogDigest?: string;
   attachments?: PlanAttachment[];
 }): Promise<MeetingCycle> => {
-  if (!resolveXaiKey() && !hasXaiOAuthBridge()) throw new Error(NO_KEY);
+  if (!resolveXaiKey() && !hasXaiOAuthBridge() && !getXaiBrowserStatus().connected) {
+    throw new Error(NO_KEY);
+  }
   const mode =
     params.planningMode === 'from_selection' || params.planningMode === 'auto_link'
       ? params.planningMode
@@ -173,7 +178,9 @@ RETORNE APENAS JSON:
 export const generateScoutPlan = async (
   params: GeneratorParams & { context?: { sectionName: string; groupName: string } },
 ): Promise<MeetingPlan> => {
-  if (!resolveXaiKey() && !hasXaiOAuthBridge()) throw new Error(NO_KEY);
+  if (!resolveXaiKey() && !hasXaiOAuthBridge() && !getXaiBrowserStatus().connected) {
+    throw new Error(NO_KEY);
+  }
   const planningMode =
     params.planningMode === 'from_selection' || params.planningMode === 'auto_link'
       ? params.planningMode
@@ -266,7 +273,9 @@ Array JSON: [{"activityTitle":"...","conceptExplainer":"...","teachingTips":"...
 };
 
 export const generateScoutActivity = async (params: GenerateScoutActivityParams): Promise<Activity> => {
-  if (!resolveXaiKey() && !hasXaiOAuthBridge()) throw new Error(NO_KEY);
+  if (!resolveXaiKey() && !hasXaiOAuthBridge() && !getXaiBrowserStatus().connected) {
+    throw new Error(NO_KEY);
+  }
   const attachmentBlock = attachmentsToPromptBlock(params.attachments);
   const prompt = `${buildSingleActivityPrompt(params)}${attachmentBlock ? `\n\n${attachmentBlock}` : ''}`;
   const parsed = await callJson<Activity>(prompt, 'refazer atividade', params.modelId, 0.65);

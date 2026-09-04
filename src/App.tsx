@@ -2,14 +2,16 @@ import React, { useState, useEffect, useRef } from 'react';
 import { ScoutBranch, MeetingPlan, Activity, ObjectiveItem, CatalogAnnotation, AppConfig, UserProfile, ScoutSection, CatalogItem, PlanningMode, LlmProviderId, GenerationSeed } from './types';
 import { BRANCHES } from './constants';
 import { getPlanningCatalog, buildCatalogDigest } from './services/catalogService';
-import { generateScoutPlanRouted as generateScoutPlan, generateScoutActivityRouted as generateScoutActivity, listAvailableModels as getAvailableModels, getActiveProvider, getProviderById, normalizeProviderId, GEMINI_STUDIO_URL, GEMINI_KEY_HELP } from './services/llmProvider';
-import { getDefaultGeminiModel, pickPreferredGeminiModel, hasGeminiCredentials, curatedGeminiModelIds } from './services/geminiService';
+import { generateScoutPlanRouted as generateScoutPlan, generateScoutActivityRouted as generateScoutActivity, getActiveProvider, getProviderById, normalizeProviderId, GEMINI_STUDIO_URL, GEMINI_KEY_HELP } from './services/llmProvider';
+import { getDefaultGeminiModel, pickPreferredGeminiModel, hasGeminiCredentials } from './services/geminiService';
 import { pickXaiFastModel } from './services/xaiService';
 import { getAnnotations, saveAnnotation, getAppConfig, saveAppConfig, normalizePath, downloadProgressBackup, importProgressBackup, saveSectionAsync, getAllMemberBlocoStates, downloadLocalAppBackup, importLocalAppBackup, ensureWorkspaceMetadata, acquireSectionEditLock, releaseSectionEditLock, renewSectionEditLock, EditLock, getSectionsAsync, savePlanToCatalog, clearWebLocalOperationalData } from './services/storageService';
 import { getProgressionDetail } from './services/progressionDetailService';
 import { PlanDisplay } from './components/PlanDisplay';
 import { Catalog } from './components/Catalog';
 import { SetupWizard } from './components/SetupWizard';
+import { XaiOAuthPanel } from './components/XaiOAuthPanel';
+import { getXaiBrowserStatus } from './services/xaiOAuthSession';
 import { MembersManager } from './components/MembersManager';
 import { CalendarView } from './components/CalendarView';
 import { ReportsDashboard } from './components/reports/ReportsDashboard';
@@ -99,7 +101,7 @@ function App() {
     next.has(name) ? next.delete(name) : next.add(name);
     return next;
   });
-  const [availableModels, setAvailableModels] = useState<string[]>(() => curatedGeminiModelIds());
+  const [availableModels, setAvailableModels] = useState<string[]>([]);
   const [selectedModel, setSelectedModel] = useState<string>(getDefaultGeminiModel());
   const [isRefreshingModels, setIsRefreshingModels] = useState(false);
   
@@ -125,7 +127,6 @@ function App() {
   const [syncModeInput, setSyncModeInput] = useState<'local' | 'sharedFolder'>('local');
   const [ollamaStatus, setOllamaStatus] = useState<{ ok: boolean; error?: string } | null>(null);
   const [testingOllama, setTestingOllama] = useState<boolean>(false);
-  const [xaiOAuthStatus, setXaiOAuthStatus] = useState<{ connected: boolean; expiresAt?: string } | null>(null);
   // V1: dropdown POR 2025+ controlado (acessível por teclado/touch)
   const [por2025MenuOpen, setPor2025MenuOpen] = useState(false);
   // V3: nav mobile colapsável
@@ -318,17 +319,14 @@ function App() {
   };
 
   const geminiSelectorModels = (): string[] => {
-    const curated = curatedGeminiModelIds();
-    const extras = availableModels.filter(id => /^gemini/i.test(id) && !curated.includes(id));
-    return extras.length > 0 ? [...curated, ...extras] : curated;
+    return availableModels.filter(id => /^gemini/i.test(id));
   };
 
   const fetchModels = async () => {
-      const providerId = normalizeProviderId(appConfig?.llmProvider || 'gemini');
-      if (providerId === 'xai-oauth' && !appConfig?.xaiApiKey && !xaiKeyInput.trim() && !window.fileSystem?.xaiOAuthRequest) return;
+      const providerId = normalizeProviderId(providerInput || appConfig?.llmProvider || 'gemini');
       setIsRefreshingModels(true);
       try {
-          const models = await getAvailableModels();
+          const models = await getProviderById(providerId).listModels();
           setAvailableModels(models);
           if (models.length > 0) {
               if (providerId === 'gemini') {
@@ -343,22 +341,7 @@ function App() {
       } catch (e) { console.error(e); } finally { setIsRefreshingModels(false); }
   };
 
-  const refreshXaiOAuthStatus = async () => {
-    const status = await window.fileSystem?.xaiOAuthStatus?.();
-    setXaiOAuthStatus(status || null);
-  };
-
-  const startXaiOAuthLogin = async () => {
-    const result = await window.fileSystem?.xaiOAuthLogin?.();
-    if (result?.ok) showToast(result.message || 'Login xAI iniciado.', 'info');
-    else showToast(result?.error || 'Login xAI não disponível.', 'error');
-  };
-
-  useEffect(() => { fetchModels(); }, [appConfig?.apiKey, appConfig?.llmProvider, appConfig?.ollamaBaseUrl, appConfig?.ollamaCloudApiKey, appConfig?.xaiApiKey]);
-  useEffect(() => {
-    if (normalizeProviderId(providerInput) === 'xai-oauth') void refreshXaiOAuthStatus();
-  }, [providerInput, appConfig?.llmProvider]);
-
+  useEffect(() => { fetchModels(); }, [appConfig?.apiKey, appConfig?.llmProvider, appConfig?.ollamaBaseUrl, appConfig?.ollamaCloudApiKey, appConfig?.xaiApiKey, providerInput]);
   useEffect(() => {
     if (!ownEditLock || !currentUser || appConfig?.syncMode !== 'sharedFolder') return;
     const renew = async () => {
@@ -859,8 +842,13 @@ function App() {
       setShowSettings(true);
       return;
     }
-    if (activeProvider === 'xai-oauth' && !(appConfig?.xaiApiKey || xaiKeyInput.trim() || window.fileSystem?.xaiOAuthRequest)) {
-      setError('Entre com SuperGrok no aplicativo desktop ou informe uma chave da API xAI.');
+    if (activeProvider === 'xai-oauth' && !(
+      appConfig?.xaiApiKey
+      || xaiKeyInput.trim()
+      || getXaiBrowserStatus().connected
+      || window.fileSystem?.xaiOAuthRequest
+    )) {
+      setError('Entre com X/Grok neste navegador ou informe uma chave da API xAI.');
       showToast('Configure o acesso xAI.', 'error');
       setShowSettings(true);
       return;
@@ -1375,11 +1363,11 @@ function App() {
                 <div className="mb-4 p-3 bg-slate-50 border border-slate-200 rounded-lg">
                     <p className="text-xs font-bold text-slate-700 mb-2">Provedor de IA <span className="font-normal text-slate-500">(preferência: Gemini → Ollama local → Cloud → xAI)</span></p>
                     <p className="text-[11px] text-slate-600 mb-2 leading-relaxed">
-                      O padrão é <strong>Gemini 3.5 Flash-Lite</strong> (mais barato/rápido). Troque para 3.6 ou 3.7 Flash se precisar de mais capacidade.
+                      Os modelos são consultados diretamente na conta do provedor; o Paxtu não fixa versões no código. Entre ou informe a chave para carregar o catálogo disponível.
                       {isWebApp() && (
                         <> Cole a chave do{' '}
                           <a href={GEMINI_STUDIO_URL} target="_blank" rel="noreferrer" className="text-blue-700 underline">AI Studio</a>
-                          {' '}(fica só neste navegador). xAI pode usar OAuth da sessão SuperGrok no app desktop ou uma chave API.
+                          {' '}(fica só neste navegador). Na xAI, entre com X/Grok no próprio site ou use uma chave API.
                         </>
                       )}
                     </p>
@@ -1388,7 +1376,7 @@ function App() {
                             <input type="radio" name="provider" checked={normalizeProviderId(providerInput) === 'gemini'} onChange={() => {
                               setProviderInput('gemini');
                               setSelectedModel(appConfig?.geminiModel || getDefaultGeminiModel());
-                              setAvailableModels(curatedGeminiModelIds());
+                              setAvailableModels([]);
                             }} />
                             <span className="text-sm"><strong>1. Gemini</strong> <span className="text-[10px] text-emerald-700 font-bold">recomendado</span> <span className="text-[10px] text-gray-500">— AI Studio, grátis/simples</span></span>
                         </label>
@@ -1402,7 +1390,7 @@ function App() {
                         </label>
                         <label className="flex items-center gap-2 cursor-pointer">
                             <input type="radio" name="provider" checked={normalizeProviderId(providerInput) === 'xai-oauth'} onChange={() => setProviderInput('xai-oauth')} />
-                            <span className="text-sm"><strong>4. xAI Grok</strong> <span className="text-[10px] text-gray-500">— OAuth SuperGrok no desktop ou chave API</span></span>
+                            <span className="text-sm"><strong>4. xAI Grok</strong> <span className="text-[10px] text-gray-500">— entrar com X/Grok ou usar chave API</span></span>
                         </label>
                     </div>
 
@@ -1421,6 +1409,8 @@ function App() {
                               models={geminiSelectorModels()}
                               value={selectedModel}
                               onChange={(id) => persistSelectedModel(id, 'gemini')}
+                              refreshing={isRefreshingModels}
+                              onRefresh={() => { void fetchModels(); }}
                             />
                         </div>
                     )}
@@ -1505,29 +1495,9 @@ function App() {
                     {normalizeProviderId(providerInput) === 'xai-oauth' && (
                         <div className="space-y-2">
                           <p className="text-[11px] text-slate-600 leading-relaxed">
-                            No aplicativo desktop, entre com sua conta SuperGrok pelo OAuth oficial do cliente Grok. O token fica no processo principal e não é exposto ao navegador.
-                            No site publicado, use uma chave da API xAI, pois o navegador não acessa a sessão local do desktop.
+                            Entre com sua conta X/Grok para usar os créditos da assinatura. O catálogo de modelos vem da conta autenticada e não de uma lista fixa do ScoutsAuto.
                           </p>
-                          {window.fileSystem?.xaiOAuthLogin ? (
-                            <div className="rounded-lg border border-indigo-200 bg-indigo-50 p-2 space-y-2">
-                              <div className="flex flex-wrap items-center gap-2">
-                                <button type="button" onClick={() => { void startXaiOAuthLogin(); }} className="rounded bg-indigo-700 px-3 py-1 text-[11px] font-bold text-white hover:bg-indigo-800">
-                                  Entrar com xAI / X (SuperGrok)
-                                </button>
-                                <button type="button" onClick={() => { void refreshXaiOAuthStatus(); }} className="rounded border border-indigo-300 px-3 py-1 text-[11px] font-bold text-indigo-700 hover:bg-white">
-                                  Atualizar status
-                                </button>
-                                <span className={`text-[11px] font-bold ${xaiOAuthStatus?.connected ? 'text-green-700' : 'text-slate-500'}`}>
-                                  {xaiOAuthStatus?.connected ? '✓ Sessão encontrada' : 'Sessão não conectada'}
-                                </span>
-                              </div>
-                              <p className="text-[10px] text-indigo-900">O login abre o navegador do sistema. Conclua a autenticação e volte a este app.</p>
-                            </div>
-                          ) : (
-                            <p className="rounded-lg border border-amber-200 bg-amber-50 p-2 text-[11px] text-amber-900">
-                              OAuth de assinatura está disponível no aplicativo desktop. Esta aba web aceita somente uma chave da API xAI.
-                            </p>
-                          )}
+                          {isWebApp() && <XaiOAuthPanel onConnected={() => void fetchModels()} />}
                           <input type="password" value={xaiKeyInput} onChange={(e) => setXaiKeyInput(e.target.value)} className="w-full p-2 border rounded text-sm" placeholder="API Key xAI (opcional quando OAuth estiver conectado)" />
                           <LlmModelControls
                             selectId="settings-xai-model"
@@ -1535,6 +1505,8 @@ function App() {
                             models={availableModels}
                             value={selectedModel}
                             onChange={(id) => persistSelectedModel(id, 'xai-oauth')}
+                            refreshing={isRefreshingModels}
+                            onRefresh={() => { void fetchModels(); }}
                           />
                         </div>
                     )}

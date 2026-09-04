@@ -1,7 +1,7 @@
 {
   "name": "paxtu-autoplanner",
   "private": true,
-  "version": "2026.9.6",
+  "version": "2026.9.7",
   "description": "Assistente de Planejamento e Progressão Escoteira",
   "author": "Margus - Grupo Unisselva (Cuiabá/MT)",
   "type": "module",

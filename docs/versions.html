@@ -15,6 +15,15 @@
 <body>
 <main>
   <h1>Historico de Versoes</h1>
+  <h2>20260904-catalogos-llm-dinamicos</h2>
+  <p>Remoção dos modelos Gemini e Grok fixos e conclusão do Device xOAuth na edição web com Firebase.</p>
+  <ul>
+    <li>Gemini consulta o catálogo da conta e escolhe entre os modelos compatíveis com <code>generateContent</code>, sem IDs ou versões embutidos.</li>
+    <li>Grok consulta <code>/v1/language-models</code> com chave API ou Bearer da sessão Device OAuth, também sem fallback fixo.</li>
+    <li>“Entrar com X / Grok” autoriza no próprio navegador; o Worker dedicado resolve somente o CORS de <code>auth.x.ai</code>.</li>
+    <li>Access e refresh tokens ficam no <code>sessionStorage</code> e nunca no Firestore.</li>
+    <li>Ao atualizar uma sessão OAuth conectada, a interface carrega imediatamente o catálogo real da conta.</li>
+  </ul>
   <h2>20260904-gerador-essencial</h2>
   <p>Revisão do gerador para aproximar a tela do formulário usado pela chefia e retirar dependência obrigatória de IA.</p>
   <ul>
