@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "scoutsauto-d3068"
+    "default": "scoutsauto-d3068",
+    "scoutsauto": "scoutsauto-d3068"
   }
 }

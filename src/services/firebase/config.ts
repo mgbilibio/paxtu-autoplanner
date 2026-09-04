@@ -15,7 +15,7 @@ export interface FirebaseWebConfig {
 }
 
 export const BACKEND_NOT_CONFIGURED_MESSAGE =
-  'O backend do ScoutsAuto ainda não está configurado. Peça ao administrador para criar o projeto Firebase scoutsauto (plano Spark) na conta Google dele e definir as variáveis públicas VITE_FIREBASE_* no GitHub Actions (Pages).';
+  'O backend do ScoutsAuto ainda não está configurado. Peça ao administrador para usar o projeto Firebase scoutsauto-d3068 (nome de exibição scoutsauto, plano Spark) e definir as variáveis públicas VITE_FIREBASE_* no GitHub Actions (Pages).';
 
 export const NOT_INVITED_MESSAGE =
   'Peça ao administrador do grupo para te cadastrar.';
