@@ -609,13 +609,11 @@ MODO AUTO_LINK:
         {
           "title": "DEVE SER O MESMO TÍTULO",
           "description": "Como a atividade RODA: regras, papéis, espaço",
-          "fundoDeCena": "Uma frase única desta faixa",
           "materials": ["item 1 com qtde"],
-          "instrucaoChefia": "0–3 min: … / 3–8 min: … cobrindo durationMinutes",
-          "conteudoPronto": "Letra / cartões / script falado (texto pronto)",
-          "passos": [{"minuto": "0–3 min", "acao": "o que acontece"}],
           "objetivoEspecifico": "Ao final o jovem será capaz de...",
-          "manualReferencia": "Nome do manual/fonte",
+          "instrucaoChefia": "informações adicionais úteis para a chefia",
+          "safetyNotes": "cuidados específicos, ou vazio",
+          "manualReferencia": "fonte real consultada, ou vazio",
           "preparacaoPrevia": ["imprimir X"],
           "evaluation": {
             "acompanhamento": "o que observar NESTA atividade (omitir em IBEAGU/hidratação/IBOAGUCL)",

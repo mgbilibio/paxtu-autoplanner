@@ -249,6 +249,7 @@ interface ActivityDetailPayload {
   materials: string[];
   progressionObjective?: string;
   instrucaoChefia?: string;
+  safetyNotes?: string;
   objetivoEspecifico?: string;
   manualReferencia?: string;
   preparacaoPrevia?: string[];
@@ -568,14 +569,12 @@ const buildActivityDetailPrompt = (
     `  "durationMinutes": ${activity.durationMinutes},`,
     `  "educationalArea": ${JSON.stringify(activity.educationalArea)},`,
     '  "description": "como a atividade RODA: regras, papéis, espaço",',
-    '  "fundoDeCena": "uma frase única desta faixa, sem slogan repetido",',
     '  "materials": ["item com quantidade", "..."],',
     `  "progressionObjective": ${JSON.stringify(activity.progressionObjective)},`,
-    '  "instrucaoChefia": "0–3 min: … / 3–8 min: … cobrindo durationMinutes",',
-    '  "conteudoPronto": "letra / cartões / script falado",',
-    '  "passos": [{"minuto": "0–3 min", "acao": "o que acontece"}],',
     '  "objetivoEspecifico": "Ao final, o jovem será capaz de...",',
-    '  "manualReferencia": "Manual X, cap/seção",',
+    '  "instrucaoChefia": "informações adicionais úteis para a chefia",',
+    '  "safetyNotes": "cuidados específicos, ou vazio",',
+    '  "manualReferencia": "fonte real consultada, ou vazio",',
     '  "preparacaoPrevia": ["preparar ..."],',
     '  "evaluation": {',
     '    "acompanhamento": "o que observar NESTA atividade (omitir se operacional)",',
@@ -647,6 +646,7 @@ const mergeActivity = (skel: PlanSkeletonActivity, detail: ActivityDetailPayload
     progressionObjective: detail?.progressionObjective || skel.progressionObjective,
     fundoDeCena: detail?.fundoDeCena,
     instrucaoChefia: detail?.instrucaoChefia,
+    safetyNotes: detail?.safetyNotes,
     objetivoEspecifico: detail?.objetivoEspecifico,
     manualReferencia: detail?.manualReferencia,
     preparacaoPrevia: detail?.preparacaoPrevia,

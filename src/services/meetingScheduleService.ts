@@ -110,7 +110,7 @@ export const resolveMeetingStartTime = (plan: Pick<MeetingPlan, 'meetingStartTim
   || defaultScheduleOptions.startTime;
 
 export const isCoreScheduleSlot = (activity: Activity): boolean =>
-  !isCeremonialActivity(activity);
+  !activity.isOperational && !isCeremonialActivity(activity);
 
 export const scheduleRow = (
   title: string,
@@ -335,11 +335,21 @@ export const mergeGeneratedIntoCronograma = (
     if (!generated) return row;
     const namedTitle = String(row.title || '').trim();
     const keepTitle = namedTitle && !/^atividade\s+\d+$/i.test(namedTitle);
+    const keepMaterials = (row.materials || []).some(item => String(item || '').trim());
+    const keepPreparation = (row.preparacaoPrevia || []).some(item => String(item || '').trim());
     return {
       ...generated,
       title: keepTitle ? namedTitle : generated.title,
       durationMinutes: row.durationMinutes || generated.durationMinutes,
       responsible: row.responsible || generated.responsible,
+      objetivoEspecifico: row.objetivoEspecifico?.trim() || generated.objetivoEspecifico,
+      description: row.description?.trim() || generated.description,
+      materials: keepMaterials ? row.materials : generated.materials,
+      progressionObjective: row.progressionObjective?.trim() || generated.progressionObjective,
+      instrucaoChefia: row.instrucaoChefia?.trim() || generated.instrucaoChefia,
+      safetyNotes: row.safetyNotes?.trim() || generated.safetyNotes,
+      manualReferencia: row.manualReferencia?.trim() || generated.manualReferencia,
+      preparacaoPrevia: keepPreparation ? row.preparacaoPrevia : generated.preparacaoPrevia,
       scheduledStartTime: undefined,
       scheduledEndTime: undefined,
       isOperational: false,

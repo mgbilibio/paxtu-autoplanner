@@ -85,6 +85,7 @@ const renderActivity = (activity: MeetingPlan['activities'][number], index: numb
     ${renderPassos(activity)}
     ${activity.fundoDeCena ? `<div class="box"><strong>Fundo de cena</strong><p>${renderText(activity.fundoDeCena)}</p></div>` : ''}
     ${activity.instrucaoChefia ? `<div class="box"><strong>Instrução para chefia</strong><p>${renderText(activity.instrucaoChefia)}</p></div>` : ''}
+    ${activity.safetyNotes ? `<div class="box"><strong>Cuidados de segurança</strong><p>${renderText(activity.safetyNotes)}</p></div>` : ''}
     ${activity.objetivoEspecifico ? `<p><span class="tag">Objetivo</span> ${renderText(activity.objetivoEspecifico)}</p>` : ''}
     ${renderEvaluation(activity)}
     <div class="grid small">

@@ -7,13 +7,14 @@ export const trimActivityBriefs = (briefs: string[] | undefined, count: number):
 export const hasAnyActivityBrief = (briefs: string[] | undefined): boolean =>
   (briefs || []).some(brief => String(brief || '').trim().length > 0);
 
-/** Abertura / intervalo / encerramento (IBEAGU, hidratação, IBOAGUCL). Item nomeado (canção, oficina, cerimônia) é miolo. */
+/** Rotinas e itens fixos são preservados; somente atividades são completadas pela IA. */
 export const isCeremonialActivity = (activity: Activity): boolean =>
-  activity.operationalType === 'opening'
+  Boolean(activity.isOperational)
+  || activity.operationalType === 'opening'
   || activity.operationalType === 'break'
   || activity.operationalType === 'closing';
 
-/** Índice da faixa "de miolo" (ignora abertura/intervalo/encerramento). */
+/** Índice da atividade editável (ignora rotinas e itens fixos). */
 export const coreBriefIndex = (plan: MeetingPlan, slotIndex: number): number =>
   (plan.activities || [])
     .slice(0, slotIndex)
@@ -54,21 +55,11 @@ export const ACTIVITY_JSON_HINT = `{
   "description": "Como a atividade RODA: regras, papéis, espaço — não um slogan",
   "materials": ["item 1 com qtde"],
   "progressionObjective": "[CÓDIGO] descrição curta",
-  "fundoDeCena": "Uma frase única desta faixa (sem repetir slogan)",
-  "instrucaoChefia": "0–3 min: … / 3–8 min: … (cobrir durationMinutes inteiro)",
-  "conteudoPronto": "Letra da canção OU cartões de caso OU falas da cerimônia (texto pronto)",
-  "passos": [{"minuto": "0–3 min", "acao": "o que acontece"}],
   "objetivoEspecifico": "Ao final o jovem será capaz de...",
-  "manualReferencia": "Nome do manual/fonte",
-  "preparacaoPrevia": ["imprimir X"],
-  "evaluation": {
-    "acompanhamento": "o que observar NESTA atividade",
-    "avaliacaoJovens": "pergunta específica",
-    "avaliacaoChefia": "critério desta faixa",
-    "requisitosObservaveis": ["no máximo 2 itens observáveis e específicos"],
-    "criteriosDeAceite": [],
-    "evidenciasSugeridas": []
-  }
+  "instrucaoChefia": "informações práticas adicionais para a chefia",
+  "safetyNotes": "cuidados específicos, ou vazio",
+  "manualReferencia": "fonte real consultada, ou vazio",
+  "preparacaoPrevia": ["somente o que precisa ocorrer antes"]
 }`;
 
 /**
@@ -76,8 +67,11 @@ export const ACTIVITY_JSON_HINT = `{
  * Produto: ScoutsAuto. Paxtu é só a fonte oficial UEB — não chamar o app de Paxtu.
  */
 export const PRACTICAL_CONTENT_RULES = `
-CONTEÚDO PRÁTICO OBRIGATÓRIO (ScoutsAuto — não escreva diretrizes vazias):
-Você entrega MATERIAL PRONTO PARA USAR EM CAMPO, não um roteiro de intenções.
+CONTEÚDO ESSENCIAL (ScoutsAuto — escreva para uso real em campo):
+Cada atividade precisa de nome, duração, objetivo curto, descrição detalhada, materiais,
+referência de progressão quando houver e informações adicionais úteis para a chefia.
+Não invente código de progressão, página, manual ou regra. Quando não houver fonte segura, deixe o campo vazio.
+Segurança, preparação prévia e avaliação são contextuais: inclua somente quando forem úteis.
 Proibido: "conduzir canções dinâmicas e conhecidas", "imprimir letras", "apresentar conceitos",
 "distribuir estudos de caso", "elaborar cartões", "cantar canções conhecidas" — sem o conteúdo em si.
 Se a semente já nomeia pessoas, canções, frutas, patrulhas ou cerimônias, USE esses nomes. Não invente cerimônias extras.
@@ -91,16 +85,16 @@ Se a semente já nomeia pessoas, canções, frutas, patrulhas ou cerimônias, US
    Não diga "elaborar cartões" — ESCREVA os cartões em conteudoPronto.
 3) Cerimônia / entrega / recepção: escreva o SCRIPT FALADO (quem diz o quê), a formação,
    a ordem dos nomes se a semente trouxer nomes, e marcas de minuto dentro da faixa.
-4) instrucaoChefia é um ROTEIRO CRONOMETRADO que cobre durationMinutes inteiro, no formato
-   "0–3 min: … / 3–8 min: …". Não use três slogans numerados vagos.
+4) instrucaoChefia contém divisões de tarefa, adaptações, alertas e decisões práticas.
+   Use roteiro cronometrado apenas quando a atividade realmente precisar dele.
 5) description = como a atividade realmente roda (regras, papéis, espaço), não uma declaração de missão.
 6) Faixas operacionais (IBEAGU, hidratação, IBOAGUCL): CURTAS. Um parágrafo + materiais.
    NÃO invente bloco de avaliação para elas. Sem requisitos/critérios/evidências.
-7) evaluation SÓ em atividades de miolo, e específica DESTA atividade (não "participação organizada" em todo cartão).
+7) evaluation SÓ quando houver algo específico a observar (não "participação organizada" em todo cartão).
    No máximo 2 itens observáveis. Se não couber avaliação, omita o campo evaluation.
 8) fundoDeCena: UMA frase, diferente em cada atividade. Proibido repetir "energia total", "mística" ou "legado".
 9) O produto se chama ScoutsAuto. Paxtu é só a fonte oficial da UEB. Nunca escreva "sistema PAXTU".
-10) Prefira os campos conteudoPronto e passos. Se não puder, coloque letra/cartões/script dentro de instrucaoChefia.
+10) Use conteudoPronto e passos apenas quando trouxerem conteúdo efetivamente pronto e necessário.
 `.trim();
 
 export const buildSingleActivityPrompt = (params: GenerateScoutActivityParams): string => {

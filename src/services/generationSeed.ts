@@ -20,7 +20,7 @@ export const scheduleKindOf = (activity: Activity): GenerationSeedScheduleKind =
 };
 
 export const isCoreSeedKind = (kind?: GenerationSeedScheduleKind): boolean =>
-  kind !== 'opening' && kind !== 'break' && kind !== 'closing';
+  kind === undefined || kind === 'core';
 
 /** Contagem de miolo do cronograma restaurado — não usar activityCount se o draft tiver mais faixas. */
 export const coreCountFromSeed = (seed: GenerationSeed): number => {
@@ -69,7 +69,7 @@ const kindLabel: Record<GenerationSeedScheduleKind, string> = {
   break: 'intervalo',
   closing: 'encerramento',
   fixed: 'item fixo',
-  core: 'miolo',
+  core: 'atividade',
 };
 
 export interface BuildGenerationSeedInput {
@@ -132,6 +132,9 @@ export const buildGenerationSeed = (input: BuildGenerationSeedInput): Generation
       : undefined,
     progressionObjective: String(row.progressionObjective || '').trim() || undefined,
     instrucaoChefia: String(row.instrucaoChefia || '').trim() || undefined,
+    safetyNotes: String(row.safetyNotes || '').trim() || undefined,
+    objetivoEspecifico: String(row.objetivoEspecifico || '').trim() || undefined,
+    manualReferencia: String(row.manualReferencia || '').trim() || undefined,
   })),
 });
 
@@ -175,6 +178,9 @@ export const activityFromSeedRow = (item: GenerationSeedScheduleItem, index: num
       ? 'Operacional'
       : String(item.progressionObjective || '').trim(),
     instrucaoChefia: String(item.instrucaoChefia || '').trim() || undefined,
+    safetyNotes: String(item.safetyNotes || '').trim() || undefined,
+    objetivoEspecifico: String(item.objetivoEspecifico || '').trim() || undefined,
+    manualReferencia: String(item.manualReferencia || '').trim() || undefined,
     responsible: item.responsible || '',
     isOperational: kind !== 'core',
     operationalType,
@@ -200,7 +206,7 @@ export const formatGenerationSeedReadable = (seed: GenerationSeed): string => {
   const briefs = (seed.activityBriefs || [])
     .map((brief, i) => {
       const text = String(brief || '').trim();
-      return text ? `  ${i + 1}. ${text}` : `  ${i + 1}. (vazio — a IA inventa esta faixa)`;
+      return text ? `  ${i + 1}. ${text}` : `  ${i + 1}. (sem orientação adicional)`;
     })
     .join('\n');
   const selected = (seed.selectedObjectives || [])
@@ -225,7 +231,7 @@ export const formatGenerationSeedReadable = (seed: GenerationSeed): string => {
       'Duração / faixas / jovens',
       [
         seed.totalDuration != null ? `${seed.totalDuration} min` : '',
-        seed.activityCount != null ? `${seed.activityCount} atividade(s) de miolo` : '',
+        seed.activityCount != null ? `${seed.activityCount} atividade(s)` : '',
         seed.participantsCount != null ? `${seed.participantsCount} jovens` : '',
       ].filter(Boolean).join(' · '),
     ),
@@ -239,7 +245,7 @@ export const formatGenerationSeedReadable = (seed: GenerationSeed): string => {
     seed.customInstruction ? `Instrução especial:\n${seed.customInstruction}` : '',
     selected ? `Objetivos selecionados:\n${selected}` : '',
     cronograma ? `Cronograma:\n${cronograma}` : '',
-    briefs ? `Sementes por atividade:\n${briefs}` : '',
+    briefs ? `Orientações adicionais por atividade:\n${briefs}` : '',
     anexos
       ? `Anexos (somente nomes; os arquivos ficam só na sessão):\n${anexos}`
       : '',

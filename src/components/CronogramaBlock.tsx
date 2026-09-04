@@ -48,7 +48,7 @@ const rowKind = (activity: Activity): RowKind => {
 };
 
 const kindLabel: Record<RowKind, string> = {
-  core: 'Miolo (IA)',
+  core: 'Atividade',
   fixed: 'Item fixo',
   opening: 'Abertura',
   break: 'Intervalo',
@@ -172,7 +172,7 @@ export const CronogramaBlock: React.FC<Props> = ({
     <section className={`rounded-xl border border-slate-200 bg-white min-w-0 ${compact ? 'p-3' : 'p-5'} print:border-slate-400 print:shadow-none`}>
       <div className="flex items-start justify-between gap-2 mb-3">
         <div>
-          <p className="text-[10px] font-black uppercase tracking-[0.18em] text-slate-500">ScoutsAuto</p>
+          <p className="text-[10px] font-black uppercase tracking-[0.18em] text-slate-500">Cronograma</p>
           <h3 className={`font-black text-slate-800 uppercase tracking-wide ${compact ? 'text-sm' : 'text-lg'}`}>
             Programação de reunião semanal
           </h3>
@@ -183,7 +183,7 @@ export const CronogramaBlock: React.FC<Props> = ({
               type="button"
               onClick={applySimpleModel}
               className="text-[10px] font-bold px-2 py-1 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50"
-              title="IBEAGU, atividades de miolo, intervalos e IBOAGUCL"
+              title="Abertura, atividades, intervalos e encerramento"
             >
               Modelo simples
             </button>

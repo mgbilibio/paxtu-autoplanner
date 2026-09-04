@@ -37,7 +37,7 @@ export const ROTEIRO: HelpStep[] = [
   },
   {
     titulo: '4. Planejar a reunião',
-    texto: 'Em Gerar, use “Tema livre + amarra” (ou “A partir da seleção”). Anexe txt/md/html/imagem/PDF. Há um campo por atividade e, no roteiro, “Refazer esta” com “O que mudar neste quadro”. O cronograma segue o formulário de papel: horário, duração, item e responsável. O roteiro guarda o pedido; dá para regenerar sem redigitar. O roteiro salvo vai a Roteiros e amarra na Agenda.',
+    texto: 'Em Gerar, monte o cronograma e preencha diretamente cada atividade: nome, objetivo curto, descrição detalhada, materiais, progressão e informações para a chefia. Salve sem IA ou use “Completar com IA” como apoio opcional. O roteiro salvo vai a Roteiros e pode ser ligado à Agenda.',
   },
   {
     titulo: '5. Pacote da seção e acessos',
@@ -88,12 +88,13 @@ export const TELA_HELP: Record<string, ScreenHelp> = {
   },
   GENERATOR: {
     titulo: 'Gerar roteiro',
-    corpo: 'Monta a reunião. Padrão: tema livre — a IA amarra progressão e especialidades. O cronograma é o da programação semanal em papel.',
+    corpo: 'Monta a reunião a partir do cronograma e dos detalhes essenciais de cada atividade. A IA é um apoio opcional.',
     dicas: [
-      '“Tema livre + amarra”: informe o tema e gere, sem marcar o catálogo.',
-      '“A partir da seleção”: marque poucos objetivos com +.',
-      'No cronograma: início, duração, item e responsável. A IA preenche o miolo; abertura, intervalos e encerramento ficam.',
-      'Um campo por atividade (semente). No roteiro gerado, “O que mudar neste quadro” + “Refazer esta” refaz só aquela faixa. O roteiro guarda o pedido; dá para regenerar sem redigitar.',
+      'O catálogo de progressão é opcional e serve para escolher referências reais.',
+      'A ordem e as durações do cronograma determinam o roteiro.',
+      '“Salvar planejamento” funciona sem IA; “Completar com IA” enriquece o rascunho.',
+      'No cronograma: início, duração, item e responsável. Abertura, intervalos, itens fixos e encerramento ficam preservados.',
+      'Em cada atividade, detalhe objetivo, modo de fazer, materiais, progressão e recados para a chefia. “Refazer esta” altera só aquela faixa.',
       'Anexos de contexto: txt, md, html, imagem ou PDF. Ficam só nesta sessão.',
       'A IA padrão é Gemini (chave em Configurações → IA, só neste navegador). xAI é extra.',
     ],
@@ -202,7 +203,7 @@ export const FAQ: HelpFaq[] = [
   },
   {
     q: 'Como planejo a reunião de sábado?',
-    a: 'Gerar → “Tema livre + amarra” (ou marque itens e use “A partir da seleção”). Preencha tema, cronograma (horário, duração, item, responsável), um campo por atividade se quiser, e anexos. “✨ Gerar Roteiro”. No resultado, anote “O que mudar neste quadro” e “Refazer esta” refaz aquela faixa. O roteiro guarda o pedido; dá para regenerar sem redigitar. O roteiro salvo aparece em Roteiros e na Agenda.',
+    a: 'Gerar → monte o cronograma e detalhe cada atividade. O essencial é nome, objetivo curto, como fazer, materiais, progressão quando houver e informação para a chefia. Use “Salvar planejamento” sem IA ou “Completar com IA” como apoio. No resultado, “Refazer esta” altera apenas uma atividade. O roteiro salvo aparece em Roteiros e na Agenda.',
   },
   {
     q: 'Como edito ou tiro o acesso de alguém?',

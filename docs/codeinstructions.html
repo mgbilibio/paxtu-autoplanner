@@ -11,7 +11,7 @@
 <body>
 <main>
   <h1>Instrucoes de Codigo</h1>
-  <p>Atualizado em <strong>20260811-especialidades-ueb26</strong>. Aplicam-se ao app alvo em <code>PaxtuAP/</code>.</p>
+  <p>Atualizado em <strong>20260904-gerador-essencial</strong>. Aplicam-se ao app alvo em <code>PaxtuAP/</code>.</p>
   <h2>Arquitetura atual</h2>
   <ul>
     <li><code>src/</code>: interface React e regras de apresentação.</li>
@@ -46,6 +46,14 @@
     <li>O IPC <code>ollama:request</code> só deve anexar <code>Authorization</code> após validação por URL parseada e host cloud allowlisted.</li>
     <li>Ollama Cloud não deve iniciar chamadas JSON com <code>format=json</code>; use prompt estruturado e parser/fallback do app.</li>
   </ul>
+  <h2>Contrato do gerador de atividades</h2>
+  <ul>
+    <li><code>scheduleDraft</code> é a fonte única de ordem, quantidade e duração. Não criar lista paralela de atividades na interface.</li>
+    <li><code>ActivityEditor</code> mantém visíveis nome, responsável, objetivo curto, descrição detalhada, materiais, progressão e informações para a chefia.</li>
+    <li>Preparação, segurança e referência documental ficam recolhidas. Campos avançados antigos continuam compatíveis, sem preenchimento obrigatório.</li>
+    <li><code>buildManualMeetingPlan</code> salva sem credencial de IA. Só nome, descrição e materiais bloqueiam; referências inaplicáveis geram aviso.</li>
+    <li>A IA é secundária e preserva a ordem, o título, a duração e o responsável do cronograma. Nunca inventar código ou fonte.</li>
+  </ul>
   <h2>Validação e release</h2>
   <ol>
     <li><code>npm run build</code>.</li>
@@ -53,7 +61,7 @@
     <li><code>python conhecimento/tools/audit_dados_operacionais.py</code>.</li>
     <li><code>python conhecimento/tools/run_release_check.py --dist</code>.</li>
   </ol>
-  <p>O build usa Vite 8; em <code>vite.config.ts</code>, use <code>import.meta.dirname</code> no lugar de <code>__dirname</code>. O release deve produzir instalador, executável portátil e ZIP em <code>release/20260709-1904/</code>. Os filtros de especialidade devem usar <code>isSpecialtyCode</code>, jamais o texto visível da categoria. Atualize este documento, <code>usersmanual.html</code> e <code>versions.html</code> em qualquer alteração de comportamento, dados ou distribuição. Os originais HTML da UEB ficam em <code>docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/</code>; versionar manifesto/hashes, não o cache bruto.</p>
+  <p>O build usa Vite 8; em <code>vite.config.ts</code>, use <code>import.meta.dirname</code> no lugar de <code>__dirname</code>. O release atual deve produzir instalador, executável portátil e ZIP em <code>release/20260904-1129/</code>. Os filtros de especialidade devem usar <code>isSpecialtyCode</code>, jamais o texto visível da categoria. Atualize este documento, <code>usersmanual.html</code> e <code>versions.html</code> em qualquer alteração de comportamento, dados ou distribuição. Os originais HTML da UEB ficam em <code>docs/biblioteca/fontes_web/ueb_especialidades_2026_08_11/</code>; versionar manifesto/hashes, não o cache bruto.</p>
 </main>
 </body>
 </html>

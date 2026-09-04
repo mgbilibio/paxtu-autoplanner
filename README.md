@@ -122,11 +122,11 @@ npm run build:web
 
 ## Distribuição
 
-O release `20260709-1904` gera em `release/20260709-1904/`:
+O release `20260904-1129` gera em `release/20260904-1129/`:
 
-- `Paxtu AutoPlanner_Setup_20260709-1904.exe`: instalador.
-- `Paxtu AutoPlanner_Portable_20260709-1904.exe`: executável portátil.
-- `Paxtu AutoPlanner_20260709-1904_x64.zip`: pacote para descompactar e executar.
+- `Paxtu AutoPlanner_Setup_20260904-1129.exe`: instalador.
+- `Paxtu AutoPlanner_Portable_20260904-1129.exe`: executável portátil.
+- `Paxtu AutoPlanner_20260904-1129_x64.zip`: pacote para descompactar e executar.
 
 As três opções dispensam Node.js e Python na máquina da chefia. O arquivo `INICIAR_APP.bat` é apenas para desenvolvimento.
 

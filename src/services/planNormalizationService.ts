@@ -60,12 +60,16 @@ export const normalizeActivityForUse = (activity: Activity, index: number): Acti
   const passos = asPassos(activity.passos);
   const conteudoPronto = String(activity.conteudoPronto || '').trim();
   const redoNote = String(activity.redoNote || '').trim();
+  const safetyNotes = String(activity.safetyNotes || '').trim();
+  const objective = String(activity.objetivoEspecifico || '').trim();
   return {
     ...activity,
     _uid: activity._uid || `act-${index}`,
     conteudoPronto: conteudoPronto || undefined,
     passos: passos.length ? passos : undefined,
     redoNote: redoNote || undefined,
+    safetyNotes: safetyNotes || undefined,
+    objetivoEspecifico: objective || undefined,
     evaluation: operational ? undefined : normalizeEvaluation(activity.evaluation),
   };
 };

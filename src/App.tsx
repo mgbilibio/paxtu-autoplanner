@@ -46,6 +46,11 @@ import { LlmModelControls } from './components/LlmModelControls';
 import { PlanAttachmentsControl } from './components/PlanAttachmentsControl';
 import { PlanAttachment } from './services/planAttachments';
 import { clearGeminiOAuthAccessToken, tryRequestGeminiAccessToken } from './services/googleAuth';
+import { ActivityEditor } from './components/ActivityEditor';
+import {
+  buildManualMeetingPlan,
+  validateManualActivities,
+} from './services/manualMeetingPlanService';
 
 function App() {
   const [appConfig, setAppConfig] = useState<AppConfig | null>(null);
@@ -711,6 +716,57 @@ function App() {
     showToast('Ficha oficial carregada no Gerar. Ajuste e gere o roteiro.', 'info');
   };
 
+  const handleSaveManualPlan = async () => {
+    if (!selectedBranch) {
+      setError('Escolha o ramo antes de salvar.');
+      showToast('Escolha o ramo antes de salvar.', 'error');
+      return;
+    }
+    const check = validateManualActivities(scheduleDraft);
+    if (check.errors.length) {
+      const message = check.errors.join('\n');
+      setError(message);
+      showToast('Complete os campos essenciais indicados.', 'error');
+      return;
+    }
+    const manualPlan = buildManualMeetingPlan({
+      branch: selectedBranch,
+      activities: scheduleDraft,
+      theme: narrativeTheme,
+      totalDuration,
+      participantsCount,
+      meetingStartTime: scheduleStartTime,
+      unitName: currentSection?.name,
+      meetingDate,
+      cycleLabel,
+      meetingType,
+      objectives: meetingObjectives,
+      technicalContent,
+      authorId: currentUser?.id,
+      authorName: currentUser?.name,
+      sectionId: currentSection?.id,
+    });
+    setLoading(true);
+    setError(null);
+    try {
+      const saved = await savePlanToCatalog(manualPlan, currentSection?.id);
+      setPlan(saved);
+      setCatalogPersist({ saved: true, error: null });
+      setStep(3);
+      const suffix = check.warnings.length ? ` ${check.warnings.length} aviso(s) não bloqueante(s).` : '';
+      finishProcessFeedback(`Planejamento salvo sem IA.${suffix}`);
+    } catch (saveErr: unknown) {
+      const saveMsg = saveErr instanceof Error ? saveErr.message : String(saveErr);
+      setPlan(manualPlan);
+      setCatalogPersist({ saved: false, error: saveMsg });
+      setError(`Planejamento montado, mas não foi salvo no catálogo: ${saveMsg}`);
+      setStep(3);
+      showToast('Planejamento montado; houve falha ao salvar no catálogo.', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const resolvePlanningMode = (explicit?: PlanningMode, fallback?: PlanningMode): PlanningMode => {
     if (explicit === 'from_selection' || explicit === 'auto_link') return explicit;
     if (fallback === 'from_selection' || fallback === 'auto_link') return fallback;
@@ -1062,7 +1118,7 @@ function App() {
   };
 
   const reset = () => {
-    setStep(1);
+    setStep(currentSection && currentSection.id !== 'GLOBAL' ? 2 : 1);
     setPlan(null);
     setError(null);
     setCatalogPersist({ saved: false, error: null });
@@ -1183,6 +1239,12 @@ function App() {
     }
     const total = next.reduce((sum, row) => sum + (row.durationMinutes || 0), 0);
     if (total >= 30 && total <= 600) setTotalDuration(total);
+  };
+  const updateCoreActivity = (uid: string | undefined, index: number, patch: Partial<Activity>) => {
+    handleScheduleDraftChange(scheduleDraft.map((row, rowIndex) => {
+      const sameUid = uid && row._uid === uid;
+      return sameUid || (!uid && rowIndex === index) ? { ...row, ...patch } : row;
+    }));
   };
   const handleActivityCountChange = (value: number) => {
     setActivityCount(value);
@@ -1778,7 +1840,7 @@ function App() {
           )}
           {view === 'GENERATOR' && !isLockedForCurrentUser && (
             <>
-              {step === 1 && (
+              {step === 1 && (!currentSection || currentSection.id === 'GLOBAL') && (
                 <div className="animate-fade-in py-6">
                   <h2 className="text-center text-3xl font-bold mb-12">Ramo de Atividade</h2>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -1791,10 +1853,14 @@ function App() {
                   </div>
                 </div>
               )}
-              {step === 2 && selectedBranch && (
+              {(step === 2 || (step === 1 && currentSection?.id !== 'GLOBAL')) && selectedBranch && (
                 <div className="space-y-6">
                   <div className="flex justify-between bg-white p-4 rounded-xl border items-center">
-                    <button onClick={() => setStep(1)} className="text-sm font-bold text-gray-500">← Voltar</button>
+                    {currentSection?.id === 'GLOBAL' ? (
+                      <button onClick={() => setStep(1)} className="text-sm font-bold text-gray-500">← Trocar ramo</button>
+                    ) : (
+                      <span className="text-sm font-bold text-slate-600">{selectedBranch}</span>
+                    )}
                     {showLegacy ? (
                       <div className="flex bg-slate-100 rounded-lg p-1">
                           <button onClick={() => setActiveGeneratorSystem('POR_2025')} className={`px-3 py-1 text-[10px] rounded-md transition-all ${activeGeneratorSystem === 'POR_2025' ? 'bg-white shadow text-indigo-600 font-bold' : 'text-slate-400'}`}>POR 2025+</button>
@@ -1821,7 +1887,7 @@ function App() {
                     </div>
                   </div>
                   <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-                    <div className="lg:col-span-7 min-w-0 bg-white rounded-2xl border flex flex-col min-h-[600px] overflow-hidden shadow-sm">
+                    <div className="lg:col-span-4 min-w-0 bg-white rounded-2xl border flex flex-col max-h-[760px] overflow-hidden shadow-sm">
                         <div className="p-4 bg-gray-50 border-b space-y-3">
                             <div className="flex flex-col md:flex-row gap-2 md:gap-4">
                               <input type="text" placeholder="Pesquisar catálogo..." className="flex-1 p-2 border rounded-lg text-sm" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
@@ -1897,7 +1963,7 @@ function App() {
                             })}
                         </div>
                     </div>
-                    <div className="lg:col-span-5 min-w-0 sticky top-24 bg-white rounded-2xl shadow-xl border flex flex-col max-h-[calc(100vh-120px)] overflow-hidden">
+                    <div className="lg:col-span-8 min-w-0 bg-white rounded-2xl shadow-xl border flex flex-col overflow-hidden">
                         <div className="p-4 border-b bg-slate-50 shrink-0 space-y-2">
                           <div className="flex justify-between items-center">
                             <span className="font-black text-slate-800 uppercase text-xs">📋 Planejamento</span>
@@ -1905,31 +1971,11 @@ function App() {
                               <button onClick={clearSelectedObjectives} className="text-red-400 hover:text-red-600 text-[10px] font-bold">Limpar seleção</button>
                             )}
                           </div>
-                          <div className="flex gap-1 p-0.5 bg-slate-200/80 rounded-lg">
-                            <button
-                              type="button"
-                              onClick={() => setPlanningMode('auto_link')}
-                              className={`flex-1 text-[10px] font-bold py-1.5 rounded-md transition-all ${planningMode === 'auto_link' ? 'bg-white shadow text-indigo-700' : 'text-slate-500'}`}
-                              title="Cria atividades pelo tema e amarra códigos do catálogo"
-                            >
-                              Tema livre + amarra
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => setPlanningMode('from_selection')}
-                              className={`flex-1 text-[10px] font-bold py-1.5 rounded-md transition-all ${planningMode === 'from_selection' ? 'bg-white shadow text-green-700' : 'text-slate-500'}`}
-                              title="Parte dos itens que você marcou no catálogo"
-                            >
-                              A partir da seleção
-                            </button>
-                          </div>
                           <p className="text-[10px] text-slate-500 leading-snug">
-                            {planningMode === 'auto_link'
-                              ? 'Não precisa marcar itens. Informe tema/instrução; a IA cria atividades e vincula progressão/especialidades do catálogo.'
-                              : `Marque itens no catálogo (+). Selecionados: ${selectedObjectives.length}.`}
+                            Referências escolhidas no catálogo: {selectedObjectives.length}. Elas ficam disponíveis em cada atividade.
                           </p>
                         </div>
-                        <div className="flex-1 min-h-0 p-4 overflow-y-auto bg-slate-50/50 custom-scrollbar">
+                        <div className="min-h-0 p-4 bg-slate-50/50">
                             {planningMode === 'auto_link' && selectedObjectives.length === 0 ? (
                               <p className="text-center text-slate-400 text-xs mt-6 px-2">
                                 Seleção opcional. Você pode só preencher o tema abaixo e gerar — ou marcar preferências no catálogo.
@@ -1942,7 +1988,7 @@ function App() {
                                 ))
                             )}
                         </div>
-                        <div className="p-4 border-t space-y-3 shrink-0 overflow-y-auto max-h-[55vh] bg-white min-w-0">
+                        <div className="p-4 border-t space-y-4 bg-white min-w-0">
                             <div>
                               <label className="text-[10px] font-bold text-slate-500 uppercase">Tema da reunião</label>
                               <input
@@ -1953,14 +1999,10 @@ function App() {
                                 className="mt-1 w-full p-2 border rounded-lg text-xs bg-slate-50 outline-none"
                               />
                             </div>
-                            <div className="grid grid-cols-3 gap-2">
+                            <div className="grid grid-cols-2 gap-2">
                                 <div>
                                     <label className="text-[10px] font-bold text-slate-500 uppercase">Duração (min)</label>
                                     <input type="number" min="30" step="15" value={totalDuration} onChange={(e) => setTotalDuration(Number(e.target.value))} onBlur={() => setTotalDuration(v => clampSettingNumber(v, 120, 30, 600))} className="w-full p-2 border rounded-lg text-xs bg-slate-50 outline-none" />
-                                </div>
-                                <div>
-                                    <label className="text-[10px] font-bold text-slate-500 uppercase">Atividades</label>
-                                    <input type="number" min={MIN_CORE_SLOTS} max={MAX_CORE_SLOTS} value={activityCount} onChange={(e) => handleActivityCountChange(Number(e.target.value))} onBlur={() => { if (activityCount < MIN_CORE_SLOTS) handleActivityCountChange(MIN_CORE_SLOTS); }} className="w-full p-2 border rounded-lg text-xs bg-slate-50 outline-none" />
                                 </div>
                                 <div>
                                     <label className="text-[10px] font-bold text-slate-500 uppercase">Jovens</label>
@@ -2001,44 +2043,71 @@ function App() {
                                 onActivitiesChange={handleScheduleDraftChange}
                               />
                               <p className="text-[10px] text-indigo-700 px-3 pb-2">
-                                Unidade: {currentSection?.name || 'seção atual'} · {draftCoreCount} item(ns) de miolo para a IA · rotina {reservedOperationalMinutes} min. Intervalos e itens extras que você adicionar entram no roteiro nos horários do cronograma.
+                                Unidade: {currentSection?.name || 'seção atual'} · {draftCoreCount} atividade(s) · rotina {reservedOperationalMinutes} min. A ordem e as durações deste cronograma são a fonte do planejamento.
                               </p>
                             </div>
-                            <div className="space-y-2">
-                              <p className="text-[10px] font-bold text-slate-500 uppercase">Sementes por atividade (opcional)</p>
-                              {activityBriefs.map((brief, i) => (
-                                <div key={i}>
-                                  <label className="text-[10px] font-bold text-slate-500 uppercase">Atividade {i + 1}</label>
-                                  <textarea
-                                    value={brief}
-                                    onChange={(e) => setActivityBriefs(prev => {
-                                      const next = [...prev];
-                                      next[i] = e.target.value;
-                                      return next;
-                                    })}
-                                    placeholder={i % 2 === 0 ? 'Ex: jogo de nós no pátio' : 'Ex: avaliação do ciclo + proposta do próximo'}
-                                    className="mt-0.5 w-full p-2 border rounded-lg text-xs bg-slate-50 outline-none"
-                                    rows={2}
+                            <section className="space-y-3">
+                              <div>
+                                <p className="text-xs font-black uppercase text-slate-800">Detalhes das atividades</p>
+                                <p className="text-[11px] text-slate-500">Só o essencial fica aberto. Preparação, segurança e referências documentais são opcionais.</p>
+                              </div>
+                              {scheduleDraft.map((activity, rowIndex) => {
+                                if (!isCoreScheduleSlot(activity)) return null;
+                                const coreIndex = scheduleDraft
+                                  .slice(0, rowIndex)
+                                  .filter(isCoreScheduleSlot).length;
+                                return (
+                                  <ActivityEditor
+                                    key={activity._uid || rowIndex}
+                                    activity={activity}
+                                    index={coreIndex}
+                                    objectives={selectedObjectives}
+                                    onChange={patch => updateCoreActivity(activity._uid, rowIndex, patch)}
                                   />
-                                </div>
-                              ))}
-                              <p className="text-[10px] text-slate-400">Vazio = a IA inventa essa faixa. A instrução geral abaixo continua valendo.</p>
-                            </div>
-                            <textarea value={customInstruction} onChange={(e) => setCustomInstruction(e.target.value)} placeholder="Instruções para a IA..." className="w-full p-2 border rounded-lg text-xs bg-slate-50 outline-none" rows={2}></textarea>
-                            <PlanAttachmentsControl attachments={planAttachments} onChange={setPlanAttachments} />
+                                );
+                              })}
+                            </section>
+                            <details className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                              <summary className="cursor-pointer text-xs font-bold text-slate-600">Opções da IA e anexos</summary>
+                              <div className="mt-3 space-y-3">
+                                <label className="block">
+                                  <span className="text-[10px] font-bold uppercase text-slate-500">Como a IA deve usar o catálogo</span>
+                                  <select
+                                    value={planningMode}
+                                    onChange={event => setPlanningMode(event.target.value as PlanningMode)}
+                                    className="mt-1 w-full rounded-lg border bg-white p-2 text-xs"
+                                  >
+                                    <option value="auto_link">Sugerir vínculos pelo tema</option>
+                                    <option value="from_selection">Usar somente as referências escolhidas</option>
+                                  </select>
+                                </label>
+                                <textarea value={customInstruction} onChange={(e) => setCustomInstruction(e.target.value)} placeholder="Instrução geral para a IA (opcional)" className="w-full p-2 border rounded-lg text-xs bg-white outline-none" rows={2}></textarea>
+                                <PlanAttachmentsControl attachments={planAttachments} onChange={setPlanAttachments} />
+                              </div>
+                            </details>
                             {error && (
                               <div className="bg-red-50 border border-red-200 text-red-800 text-[11px] rounded-lg p-2 whitespace-pre-wrap" role="alert">
                                 {error}
                               </div>
                             )}
-                            <button
-                              type="button"
-                              onClick={() => { void handleGenerate(); }}
-                              disabled={loading}
-                              className={`w-full py-3 rounded-xl font-bold text-white uppercase text-xs shadow-md ${loading ? 'bg-slate-400 cursor-wait' : 'bg-green-600 hover:bg-green-700'}`}
-                            >
-                              {loading ? 'Criando...' : '✨ Gerar Roteiro'}
-                            </button>
+                            <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+                              <button
+                                type="button"
+                                onClick={() => { void handleSaveManualPlan(); }}
+                                disabled={loading}
+                                className={`w-full py-3 rounded-xl font-bold text-white uppercase text-xs shadow-md ${loading ? 'bg-slate-400 cursor-wait' : 'bg-green-600 hover:bg-green-700'}`}
+                              >
+                                {loading ? 'Salvando...' : 'Salvar planejamento'}
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => { void handleGenerate(); }}
+                                disabled={loading}
+                                className={`w-full py-3 rounded-xl border font-bold uppercase text-xs ${loading ? 'border-slate-200 text-slate-400 cursor-wait' : 'border-indigo-300 text-indigo-700 hover:bg-indigo-50'}`}
+                              >
+                                {loading ? 'Processando...' : 'Completar com IA (opcional)'}
+                              </button>
+                            </div>
                             {loading && (
                               <button type="button" onClick={cancelGeneration} className="w-full py-2 text-xs font-bold text-red-600 hover:bg-red-50 rounded-lg border border-red-100">
                                 Cancelar geração

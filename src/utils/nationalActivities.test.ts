@@ -219,6 +219,9 @@ describe('national activity fichas and seed', () => {
     assert.equal(seed.scheduleDraft?.[0]?.title, 'CQWS Radioescuta');
     assert.equal(seed.scheduleDraft?.[0]?.durationMinutes, 60);
     assert.ok((seed.scheduleDraft?.[0]?.materials || []).length > 0);
+    assert.ok(String(seed.scheduleDraft?.[0]?.objetivoEspecifico || '').includes('radioescotismo'));
+    assert.equal(seed.scheduleDraft?.[0]?.progressionObjective, '');
+    assert.match(String(seed.scheduleDraft?.[0]?.manualReferencia || ''), /Caderno de Atividades 2026/);
     assert.ok(String(seed.objectives || '').includes('radioescotismo'));
     assert.ok((seed.activityBriefs || []).some(brief => /Como fazer|WebSDR|radioescuta/i.test(brief)));
     assert.ok(String(seed.technicalContent || '').includes('Materiais'));

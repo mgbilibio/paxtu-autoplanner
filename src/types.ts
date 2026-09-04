@@ -36,6 +36,7 @@ export interface Activity {
   // Campos enriquecidos (opcionais — preenchidos pela IA quando suportado pelo modelo)
   fundoDeCena?: string;          // Narrativa específica que conecta a atividade ao tema
   instrucaoChefia?: string;      // Passo-a-passo de execução para a chefia, dicas, alertas de segurança
+  safetyNotes?: string;          // Cuidados de segurança específicos, quando a atividade exigir.
   objetivoEspecifico?: string;   // Comportamento esperado ao final ("Ao final, o jovem será capaz de...")
   manualReferencia?: string;     // Ex: "Manual do Escotista 2025, p.275 (Vida ao Ar Livre)"
   preparacaoPrevia?: string[];   // Lista de itens que a chefia precisa preparar ANTES (imprimir, montar etc.)
@@ -142,6 +143,9 @@ export interface GenerationSeedScheduleItem {
   materials?: string[];
   progressionObjective?: string;
   instrucaoChefia?: string;
+  safetyNotes?: string;
+  objetivoEspecifico?: string;
+  manualReferencia?: string;
 }
 
 /**

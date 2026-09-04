@@ -640,6 +640,21 @@ export const PlanDisplay: React.FC<Props> = ({
                                 )}
                             </div>
                         )}
+                        {(act.safetyNotes || isEditing) && (
+                            <div className="bg-red-50 border-l-4 border-red-400 p-4 rounded-r-xl">
+                                <h4 className="text-xs font-black text-red-700 uppercase tracking-wider mb-2">Cuidados de segurança</h4>
+                                {isEditing ? (
+                                    <textarea
+                                        value={act.safetyNotes || ''}
+                                        onChange={e => updateActivity(i, 'safetyNotes', e.target.value)}
+                                        className="w-full p-2 border rounded-lg text-sm bg-white"
+                                        rows={3}
+                                    />
+                                ) : (
+                                    <p className="text-red-900 whitespace-pre-line leading-relaxed">{act.safetyNotes}</p>
+                                )}
+                            </div>
+                        )}
 
                         {/* Objetivo específico */}
                         {(act.objetivoEspecifico || isEditing) && (

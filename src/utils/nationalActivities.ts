@@ -170,8 +170,10 @@ export const buildNationalActivitySeed = (input: {
       kind: 'core',
       description: ficha.steps.join('\n'),
       materials: [...ficha.materials],
-      progressionObjective: ficha.objective,
+      progressionObjective: '',
+      objetivoEspecifico: ficha.objective,
       instrucaoChefia: ficha.steps.map((step, index) => `${index + 1}. ${step}`).join('\n') || undefined,
+      manualReferencia: `Caderno de Atividades 2026${ficha.page ? `, p. ${ficha.page}` : ''}`,
     }))
     : [{
       title: input.activity.title,

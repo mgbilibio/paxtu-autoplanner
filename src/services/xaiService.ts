@@ -214,7 +214,7 @@ CONTEXTO:\n${userPromptBase}
     }));
     const chunk = await callJson<any[]>(`
 Estrutura (lote ${b + 1}/${detailBatches.length}): ${JSON.stringify({ ...planStructure, activities: batch })}
-Para CADA atividade DESTE LOTE, devolva um array JSON com description, materials, instrucaoChefia, conteudoPronto, passos, objetivoEspecifico, fundoDeCena, evaluation.
+Para CADA atividade DESTE LOTE, devolva um array JSON com description, materials, progressionObjective, objetivoEspecifico, instrucaoChefia, safetyNotes, manualReferencia e preparacaoPrevia. Campos avançados só quando forem realmente necessários.
 Detalhe SOMENTE estas ${batch.length} atividades. Não invente faixas extras.
 ${PRACTICAL_CONTENT_RULES}
 CONTEXTO:\n${userPromptBase}
