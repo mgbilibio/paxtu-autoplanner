@@ -1,7 +1,7 @@
 # Roadmap unificado Paxtu AutoPlanner (plano vivo)
 
 **Data:** 2026-07-18  
-**Status:** implementação parcial (2026-07-18) — progressão editável + Ollama Cloud + UI multi-provider; xAI OAuth ainda stub
+**Status:** implementação parcial (atualizado em 2026-09-04) — progressão editável + Ollama Cloud + UI multi-provider; xAI OAuth desktop restaurado via cliente oficial Grok. A versão web continua usando chave API.
 
 ---
 
@@ -101,10 +101,10 @@ Ordem pensada para valor cedo + risco controlado:
 
 ## 8. Critérios de “plano cumprido” (macro)
 
-- [x] Chefia escolhe Gemini (default), Ollama local ou Ollama Cloud em Configurações; xAI listado como “em breve”.  
+- [x] Chefia escolhe Gemini (default), Ollama local ou Ollama Cloud em Configurações; xAI aparece com OAuth desktop ou chave API na web.
 - [x] Ollama local e cloud usam transporte/auth distintos (loopback vs `ollama.com` + Bearer).  
 - [x] Na Agenda: lançar para presentes e **revisar crédito** (excluir/re-incluir), sem perder presença.  
-- [ ] xAI OAuth completo (spike GO + adapter)  
+- [~] xAI OAuth: ponte desktop via `grok login --oauth` e `grok --single`; troca direta de tokens/API consumer continua delegada ao cliente oficial.
 - [x] Help Agenda atualizado.
 
 ---

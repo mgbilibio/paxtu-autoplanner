@@ -115,7 +115,7 @@ function App() {
   const [llmElapsed, setLlmElapsed] = useState<number>(0);
   const generationRef = useRef({ id: 0, cancelled: false });
   const [htmlPreview, setHtmlPreview] = useState<{ fileName: string; html: string } | null>(null);
-  // Providers: Gemini (1º) → Ollama local → Ollama Cloud → xAI (stub)
+  // Providers: Gemini (1º) → Ollama local → Ollama Cloud → xAI OAuth/API
   const [providerInput, setProviderInput] = useState<LlmProviderId>('gemini');
   const [ollamaUrlInput, setOllamaUrlInput] = useState<string>('http://localhost:11434');
   const [ollamaCloudKeyInput, setOllamaCloudKeyInput] = useState<string>('');
@@ -125,6 +125,7 @@ function App() {
   const [syncModeInput, setSyncModeInput] = useState<'local' | 'sharedFolder'>('local');
   const [ollamaStatus, setOllamaStatus] = useState<{ ok: boolean; error?: string } | null>(null);
   const [testingOllama, setTestingOllama] = useState<boolean>(false);
+  const [xaiOAuthStatus, setXaiOAuthStatus] = useState<{ connected: boolean; expiresAt?: string } | null>(null);
   // V1: dropdown POR 2025+ controlado (acessível por teclado/touch)
   const [por2025MenuOpen, setPor2025MenuOpen] = useState(false);
   // V3: nav mobile colapsável
@@ -324,7 +325,7 @@ function App() {
 
   const fetchModels = async () => {
       const providerId = normalizeProviderId(appConfig?.llmProvider || 'gemini');
-      if (providerId === 'xai-oauth' && !appConfig?.xaiApiKey && !xaiKeyInput.trim()) return;
+      if (providerId === 'xai-oauth' && !appConfig?.xaiApiKey && !xaiKeyInput.trim() && !window.fileSystem?.xaiOAuthRequest) return;
       setIsRefreshingModels(true);
       try {
           const models = await getAvailableModels();
@@ -342,7 +343,21 @@ function App() {
       } catch (e) { console.error(e); } finally { setIsRefreshingModels(false); }
   };
 
+  const refreshXaiOAuthStatus = async () => {
+    const status = await window.fileSystem?.xaiOAuthStatus?.();
+    setXaiOAuthStatus(status || null);
+  };
+
+  const startXaiOAuthLogin = async () => {
+    const result = await window.fileSystem?.xaiOAuthLogin?.();
+    if (result?.ok) showToast(result.message || 'Login xAI iniciado.', 'info');
+    else showToast(result?.error || 'Login xAI não disponível.', 'error');
+  };
+
   useEffect(() => { fetchModels(); }, [appConfig?.apiKey, appConfig?.llmProvider, appConfig?.ollamaBaseUrl, appConfig?.ollamaCloudApiKey, appConfig?.xaiApiKey]);
+  useEffect(() => {
+    if (normalizeProviderId(providerInput) === 'xai-oauth') void refreshXaiOAuthStatus();
+  }, [providerInput, appConfig?.llmProvider]);
 
   useEffect(() => {
     if (!ownEditLock || !currentUser || appConfig?.syncMode !== 'sharedFolder') return;
@@ -844,9 +859,9 @@ function App() {
       setShowSettings(true);
       return;
     }
-    if (activeProvider === 'xai-oauth' && !(appConfig?.xaiApiKey || xaiKeyInput.trim())) {
-      setError('Cole sua chave da API xAI em Configurações (fica só neste navegador). Não há login OAuth xAI neste site.');
-      showToast('Informe a chave xAI.', 'error');
+    if (activeProvider === 'xai-oauth' && !(appConfig?.xaiApiKey || xaiKeyInput.trim() || window.fileSystem?.xaiOAuthRequest)) {
+      setError('Entre com SuperGrok no aplicativo desktop ou informe uma chave da API xAI.');
+      showToast('Configure o acesso xAI.', 'error');
       setShowSettings(true);
       return;
     }
@@ -1364,7 +1379,7 @@ function App() {
                       {isWebApp() && (
                         <> Cole a chave do{' '}
                           <a href={GEMINI_STUDIO_URL} target="_blank" rel="noreferrer" className="text-blue-700 underline">AI Studio</a>
-                          {' '}(fica só neste navegador). xAI é extra opcional com chave colada — não há “entrar com xAI”.
+                          {' '}(fica só neste navegador). xAI pode usar OAuth da sessão SuperGrok no app desktop ou uma chave API.
                         </>
                       )}
                     </p>
@@ -1387,7 +1402,7 @@ function App() {
                         </label>
                         <label className="flex items-center gap-2 cursor-pointer">
                             <input type="radio" name="provider" checked={normalizeProviderId(providerInput) === 'xai-oauth'} onChange={() => setProviderInput('xai-oauth')} />
-                            <span className="text-sm"><strong>4. xAI Grok</strong> <span className="text-[10px] text-gray-500">— chave api.x.ai, modelo rápido do catálogo</span></span>
+                            <span className="text-sm"><strong>4. xAI Grok</strong> <span className="text-[10px] text-gray-500">— OAuth SuperGrok no desktop ou chave API</span></span>
                         </label>
                     </div>
 
@@ -1490,10 +1505,30 @@ function App() {
                     {normalizeProviderId(providerInput) === 'xai-oauth' && (
                         <div className="space-y-2">
                           <p className="text-[11px] text-slate-600 leading-relaxed">
-                            Extra opcional. Cole a chave da API xAI (console.x.ai). Fica só neste navegador — nunca no repositório.
-                            Não implementamos “entrar com X”: OAuth xAI exige SuperGrok/X Premium+ e um Client ID oficial nosso.
+                            No aplicativo desktop, entre com sua conta SuperGrok pelo OAuth oficial do cliente Grok. O token fica no processo principal e não é exposto ao navegador.
+                            No site publicado, use uma chave da API xAI, pois o navegador não acessa a sessão local do desktop.
                           </p>
-                          <input type="password" value={xaiKeyInput} onChange={(e) => setXaiKeyInput(e.target.value)} className="w-full p-2 border rounded text-sm" placeholder="API Key xAI" />
+                          {window.fileSystem?.xaiOAuthLogin ? (
+                            <div className="rounded-lg border border-indigo-200 bg-indigo-50 p-2 space-y-2">
+                              <div className="flex flex-wrap items-center gap-2">
+                                <button type="button" onClick={() => { void startXaiOAuthLogin(); }} className="rounded bg-indigo-700 px-3 py-1 text-[11px] font-bold text-white hover:bg-indigo-800">
+                                  Entrar com xAI / X (SuperGrok)
+                                </button>
+                                <button type="button" onClick={() => { void refreshXaiOAuthStatus(); }} className="rounded border border-indigo-300 px-3 py-1 text-[11px] font-bold text-indigo-700 hover:bg-white">
+                                  Atualizar status
+                                </button>
+                                <span className={`text-[11px] font-bold ${xaiOAuthStatus?.connected ? 'text-green-700' : 'text-slate-500'}`}>
+                                  {xaiOAuthStatus?.connected ? '✓ Sessão encontrada' : 'Sessão não conectada'}
+                                </span>
+                              </div>
+                              <p className="text-[10px] text-indigo-900">O login abre o navegador do sistema. Conclua a autenticação e volte a este app.</p>
+                            </div>
+                          ) : (
+                            <p className="rounded-lg border border-amber-200 bg-amber-50 p-2 text-[11px] text-amber-900">
+                              OAuth de assinatura está disponível no aplicativo desktop. Esta aba web aceita somente uma chave da API xAI.
+                            </p>
+                          )}
+                          <input type="password" value={xaiKeyInput} onChange={(e) => setXaiKeyInput(e.target.value)} className="w-full p-2 border rounded text-sm" placeholder="API Key xAI (opcional quando OAuth estiver conectado)" />
                           <LlmModelControls
                             selectId="settings-xai-model"
                             provider="xai-oauth"

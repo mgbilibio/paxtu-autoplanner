@@ -96,7 +96,7 @@ export const TELA_HELP: Record<string, ScreenHelp> = {
       'No cronograma: início, duração, item e responsável. Abertura, intervalos, itens fixos e encerramento ficam preservados.',
       'Em cada atividade, detalhe objetivo, modo de fazer, materiais, progressão e recados para a chefia. “Refazer esta” altera só aquela faixa.',
       'Anexos de contexto: txt, md, html, imagem ou PDF. Ficam só nesta sessão.',
-      'A IA padrão é Gemini (chave em Configurações → IA, só neste navegador). xAI é extra.',
+      'A IA padrão é Gemini (chave em Configurações → IA, só neste navegador). xAI é extra: chave no site ou OAuth SuperGrok no app desktop.',
     ],
   },
   CYCLE: {
@@ -211,7 +211,7 @@ export const FAQ: HelpFaq[] = [
   },
   {
     q: 'Qual IA o site usa?',
-    a: 'Gemini é o padrão. Cole a chave do AI Studio em Configurações → IA (fica só neste navegador). “Ver cota / uso” abre o AI Studio. xAI é extra, com chave colada. Ollama local não roda neste site.',
+    a: 'Gemini é o padrão. Cole a chave do AI Studio em Configurações → IA (fica só neste navegador). “Ver cota / uso” abre o AI Studio. xAI pode usar chave colada no site ou OAuth da sessão SuperGrok no app desktop. Ollama local não roda neste site.',
   },
   {
     q: 'Posso usar sem internet?',

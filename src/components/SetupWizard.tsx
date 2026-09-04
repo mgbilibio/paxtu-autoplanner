@@ -12,6 +12,7 @@ export const SetupWizard: React.FC<Props> = ({ onComplete }) => {
   const [provider, setProvider] = useState<LlmProviderId>('gemini');
   const [apiKey, setApiKey] = useState('');
   const [xaiKey, setXaiKey] = useState('');
+  const [xaiOAuthStatus, setXaiOAuthStatus] = useState<{ connected: boolean; expiresAt?: string } | null>(null);
   const [ollamaUrl, setOllamaUrl] = useState('http://localhost:11434');
   const [ollamaTestStatus, setOllamaTestStatus] = useState<{ ok: boolean; error?: string; models?: string[] } | null>(null);
   const [testingOllama, setTestingOllama] = useState(false);
@@ -32,6 +33,22 @@ export const SetupWizard: React.FC<Props> = ({ onComplete }) => {
   React.useEffect(() => {
     setHasFileSystem(!!window.fileSystem);
   }, []);
+
+  const refreshXaiOAuthStatus = async () => {
+    const status = await window.fileSystem?.xaiOAuthStatus?.();
+    setXaiOAuthStatus(status || null);
+  };
+
+  const startXaiOAuthLogin = async () => {
+    const result = await window.fileSystem?.xaiOAuthLogin?.();
+    if (result?.ok) {
+      setXaiOAuthStatus({ connected: false });
+    }
+  };
+
+  React.useEffect(() => {
+    if (provider === 'xai-oauth') void refreshXaiOAuthStatus();
+  }, [provider]);
 
   const testOllama = async () => {
     setTestingOllama(true);
@@ -83,7 +100,7 @@ export const SetupWizard: React.FC<Props> = ({ onComplete }) => {
 
   const canAdvanceFromStep1 = (): boolean => {
     if (provider === 'gemini') return isWebApp() || !!apiKey.trim();
-    if (provider === 'xai-oauth') return isWebApp() || !!xaiKey.trim();
+    if (provider === 'xai-oauth') return isWebApp() || !!xaiKey.trim() || !!window.fileSystem?.xaiOAuthLogin;
     if (isWebApp() && (provider === 'ollama' || provider === 'ollama-local')) return true;
     return !!ollamaTestStatus?.ok && !!selectedOllamaModel;
   };
@@ -137,11 +154,11 @@ export const SetupWizard: React.FC<Props> = ({ onComplete }) => {
               <h2 className="text-xl font-bold text-gray-800 mb-4">🔑 Provedor de IA</h2>
               <p className="text-gray-600 text-sm mb-4 leading-relaxed">
                 {isWebApp()
-                  ? <>Padrão: <strong>Gemini Flash-Lite</strong> (barato e rápido). A chave do AI Studio é opcional agora — cole depois em Configurações. xAI é extra com chave colada. Ollama local só no app desktop.</>
+                  ? <>Padrão: <strong>Gemini Flash-Lite</strong> (barato e rápido). A chave do AI Studio é opcional agora — cole depois em Configurações. xAI pode usar OAuth SuperGrok no app desktop ou uma chave API. Ollama local só no app desktop.</>
                   : <>Padrão: <strong>Gemini Flash-Lite</strong> (barato e rápido). Escolha 3.6 ou 3.7 Flash no seletor se precisar de mais capacidade. Ollama fica na máquina.</>}
               </p>
 
-              <div className={`grid gap-2 mb-6 ${isWebApp() ? 'grid-cols-3' : 'grid-cols-2'}`}>
+              <div className="grid grid-cols-3 gap-2 mb-6">
                 <button
                   onClick={() => setProvider('gemini')}
                   className={`p-4 border-2 rounded-lg text-left transition-all ${provider === 'gemini' ? 'border-blue-600 bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`}
@@ -149,15 +166,13 @@ export const SetupWizard: React.FC<Props> = ({ onComplete }) => {
                   <div className="font-bold text-sm">☁️ Gemini</div>
                   <div className="text-[11px] text-gray-500 mt-1">Flash-Lite · AI Studio</div>
                 </button>
-                {isWebApp() && (
-                  <button
-                    onClick={() => setProvider('xai-oauth')}
-                    className={`p-4 border-2 rounded-lg text-left transition-all ${provider === 'xai-oauth' ? 'border-slate-800 bg-slate-50' : 'border-gray-200 hover:border-gray-300'}`}
-                  >
-                    <div className="font-bold text-sm">⚡ xAI</div>
-                    <div className="text-[11px] text-gray-500 mt-1">Extra · chave api.x.ai</div>
-                  </button>
-                )}
+                <button
+                  onClick={() => setProvider('xai-oauth')}
+                  className={`p-4 border-2 rounded-lg text-left transition-all ${provider === 'xai-oauth' ? 'border-slate-800 bg-slate-50' : 'border-gray-200 hover:border-gray-300'}`}
+                >
+                  <div className="font-bold text-sm">⚡ xAI</div>
+                  <div className="text-[11px] text-gray-500 mt-1">OAuth SuperGrok ou chave API</div>
+                </button>
                 <button
                   onClick={() => setProvider('ollama')}
                   className={`p-4 border-2 rounded-lg text-left transition-all ${provider === 'ollama' ? 'border-emerald-600 bg-emerald-50' : 'border-gray-200 hover:border-gray-300'}`}
@@ -202,9 +217,34 @@ export const SetupWizard: React.FC<Props> = ({ onComplete }) => {
               {provider === 'xai-oauth' && (
                 <>
                   <p className="text-[11px] text-slate-600 bg-slate-50 border border-slate-200 rounded p-3 mb-3 leading-relaxed">
-                    Cole a chave da API xAI (fica só neste navegador). O site escolhe um modelo barato/rápido do catálogo (hoje <code>grok-4.3</code>).
-                    Não há login OAuth xAI — isso exigiria SuperGrok e um Client ID oficial.
+                    No app desktop, conecte sua conta SuperGrok pelo OAuth oficial do cliente Grok. No site publicado, o navegador não acessa a sessão local: use uma chave da API xAI. O modelo padrão é <code>grok-4.3</code>.
                   </p>
+                  <div className="rounded-lg border border-indigo-200 bg-indigo-50 p-3 mb-3">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => { void startXaiOAuthLogin(); }}
+                        disabled={!hasFileSystem || !window.fileSystem?.xaiOAuthLogin}
+                        className="rounded bg-indigo-700 px-3 py-1.5 text-xs font-bold text-white hover:bg-indigo-800 disabled:cursor-not-allowed disabled:bg-slate-400"
+                      >
+                        Entrar com xAI / X (SuperGrok)
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => { void refreshXaiOAuthStatus(); }}
+                        disabled={!hasFileSystem || !window.fileSystem?.xaiOAuthStatus}
+                        className="rounded border border-indigo-300 px-3 py-1.5 text-xs font-bold text-indigo-700 hover:bg-white disabled:cursor-not-allowed disabled:text-slate-400"
+                      >
+                        Atualizar status
+                      </button>
+                      <span className={`text-[11px] font-bold ${xaiOAuthStatus?.connected ? 'text-green-700' : 'text-slate-500'}`}>
+                        {xaiOAuthStatus?.connected ? '✓ Sessão OAuth encontrada' : hasFileSystem ? 'Sessão não conectada' : 'Disponível no app desktop'}
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-indigo-900 mt-2">
+                      O token fica no cliente Grok e não é enviado ao navegador nem salvo no projeto.
+                    </p>
+                  </div>
                   <input
                     type="password"
                     value={xaiKey}

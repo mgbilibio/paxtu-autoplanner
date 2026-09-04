@@ -1,6 +1,7 @@
 // Abstração de provider de LLM. Alterna Gemini, Ollama local, Ollama Cloud e xAI.
 // Ordem de preferência de produto: gemini → ollama-local → ollama-cloud → xai-oauth.
-// Na web (GitHub Pages) o padrão continua Gemini; xAI é extra opcional com chave no browser.
+// Na web (GitHub Pages) o padrão continua Gemini; xAI usa chave no browser.
+// No desktop, xAI também pode usar a sessão OAuth do cliente Grok via ponte main/preload.
 
 import { Activity, GenerateScoutActivityParams, GeneratorParams, MeetingPlan, LlmProviderId } from '../types';
 import { getAppConfig } from './storageService';

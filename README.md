@@ -73,7 +73,7 @@ Tela única: **Continuar com Google**, **Continuar com X** (se habilitado) e **e
 - **Gemini é o padrão**, na classe **Flash-Lite** (barata/rápida). O id padrão é `gemini-3.5-flash-lite` (GA); o seletor também lista `gemini-flash-lite-latest`, **Gemini 3.6 Flash** e **Gemini 3.7 Flash** (mais capaz, 13 ago 2026). A escolha fica no localStorage. Não usamos Pro por omissão.
 - Cada escotista cola a própria chave do [AI Studio](https://aistudio.google.com/app/apikey) (conta Google, sem cartão). A chave fica **só no localStorage**. Sem chave, a UI permanece e avisa na hora de gerar.
 - Se o login Google conseguir um token OAuth da API Gemini (`generative-language`), o site tenta usar; se CORS, app OAuth não verificado ou escopo faltar, volta para “colar chave do AI Studio”.
-- **xAI/Grok** é extra opcional: chave colada no localStorage. O site escolhe um modelo barato/rápido do catálogo atual (hoje `grok-4.3`; não há mais `grok-3-mini`). “Continuar com X” no login do ScoutsAuto é o provedor Twitter/X do Firebase (se `VITE_FIREBASE_AUTH_X` estiver ligado), não o OAuth da API xAI.
+- **xAI/Grok** é extra opcional: no site use uma chave da API; no app desktop, “Entrar com xAI / X” usa a sessão OAuth oficial do cliente Grok, incluindo assinaturas SuperGrok. “Continuar com X” no login do ScoutsAuto é o provedor Twitter/X do Firebase (se `VITE_FIREBASE_AUTH_X` estiver ligado), não o OAuth da API xAI.
 - **Ollama local** só no desktop. Na web o controle aparece (paridade), com aviso.
 
 Nenhuma chave de API entra no repositório nem no bundle do Pages.

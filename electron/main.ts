@@ -1,6 +1,7 @@
 import { app, BrowserWindow, ipcMain, dialog, shell } from 'electron'
 import path from 'node:path'
 import fs from 'node:fs/promises'
+import { spawn } from 'node:child_process'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import Database from 'better-sqlite3'
 import {
@@ -58,6 +59,75 @@ const trustedFolder = (folderPath: unknown): string | null => {
 
 const trustedDataFile = (folderPath: unknown, fileName: unknown): string | null =>
   resolveDataFile(folderPath, fileName, allowedDataFolder)
+
+const grokAuthFile = (): string => path.join(process.env['USERPROFILE'] || '', '.grok', 'auth.json')
+
+const grokExecutable = (): string => {
+  const configured = process.env['GROK_EXECUTABLE']
+  if (configured) return configured
+  return path.join(process.env['USERPROFILE'] || '', '.grok', 'bin', 'grok.exe')
+}
+
+const grokEnvironment = (): NodeJS.ProcessEnv => {
+  const env = { ...process.env }
+  delete env.XAI_API_KEY
+  delete env.VITE_XAI_API_KEY
+  return env
+}
+
+const ensureGrokExecutable = async (): Promise<void> => {
+  try {
+    await fs.access(grokExecutable())
+  } catch {
+    throw new Error('Cliente Grok não encontrado. Instale o Grok Build ou defina GROK_EXECUTABLE.')
+  }
+}
+
+const readGrokOAuthStatus = async (): Promise<{ connected: boolean; expiresAt?: string }> => {
+  try {
+    const raw = await fs.readFile(grokAuthFile(), 'utf8')
+    const parsed = JSON.parse(raw) as Record<string, Record<string, unknown>>
+    const entry = Object.values(parsed).find(value => value && typeof value === 'object' && (
+      typeof value.access_token === 'string' || typeof value.refresh_token === 'string'
+    ))
+    if (!entry) return { connected: false }
+    const expiresAt = typeof entry.expires_at === 'string' ? entry.expires_at : undefined
+    return { connected: true, expiresAt }
+  } catch {
+    return { connected: false }
+  }
+}
+
+const runGrokOAuthRequest = async (prompt: string, model?: string): Promise<string> => {
+  if (Buffer.byteLength(prompt, 'utf8') > 4 * 1024 * 1024) {
+    throw new Error('Pedido Grok grande demais.')
+  }
+  const tempFolder = await fs.mkdtemp(path.join(app.getPath('temp'), 'paxtu-grok-'))
+  const promptFile = path.join(tempFolder, 'prompt.txt')
+  await fs.writeFile(promptFile, prompt, 'utf8')
+  const args = ['--prompt-file', promptFile, '--output-format', 'plain', '--no-plan', '--no-subagents', '--max-turns', '1']
+  if (model && /^[a-zA-Z0-9._:-]{1,120}$/.test(model)) args.push('--model', model)
+  return new Promise((resolve, reject) => {
+    const child = spawn(grokExecutable(), args, { windowsHide: true, env: grokEnvironment() })
+    let output = ''
+    let errorOutput = ''
+    const cleanup = () => fs.rm(tempFolder, { recursive: true, force: true }).catch(() => undefined)
+    const timer = setTimeout(() => child.kill(), 15 * 60 * 1000)
+    child.stdout.on('data', chunk => { output += String(chunk) })
+    child.stderr.on('data', chunk => { errorOutput += String(chunk) })
+    child.once('error', error => {
+      clearTimeout(timer)
+      void cleanup()
+      reject(new Error(`Grok OAuth não está disponível neste computador: ${error.message}`))
+    })
+    child.once('close', code => {
+      clearTimeout(timer)
+      void cleanup()
+      if (code === 0 && output.trim()) resolve(output.trim())
+      else reject(new Error(errorOutput.trim() || `Grok encerrou sem resposta (código ${code ?? 'desconhecido'}).`))
+    })
+  })
+}
 
 // 🚧 Use ['ENV_NAME'] avoid vite:define plugin - Vite@2.x
 const VITE_DEV_SERVER_URL = process.env['VITE_DEV_SERVER_URL']
@@ -432,6 +502,40 @@ ipcMain.handle('ollama:cancelAll', async () => {
   activeOllamaControllers.forEach(ctrl => ctrl.abort());
   activeOllamaControllers.clear();
   return { ok: true };
+})
+
+// OAuth xAI/Grok usa a sessão oficial do cliente Grok; tokens nunca saem do processo main.
+ipcMain.handle('xai:oauth:status', async () => readGrokOAuthStatus())
+
+ipcMain.handle('xai:oauth:login', async () => {
+  try {
+    await ensureGrokExecutable()
+    const child = spawn(grokExecutable(), ['login', '--oauth'], {
+      windowsHide: true,
+      detached: true,
+      stdio: 'ignore',
+      env: grokEnvironment(),
+    })
+    child.unref()
+    return { ok: true, message: 'Login Grok iniciado. Conclua a janela do navegador e atualize o status.' }
+  } catch (error: unknown) {
+    return { ok: false, error: error instanceof Error ? error.message : String(error) }
+  }
+})
+
+ipcMain.handle('xai:oauth:request', async (_, prompt: string, model?: string) => {
+  if (typeof prompt !== 'string' || !prompt.trim()) {
+    return { ok: false, body: '', error: 'Pedido Grok vazio.' }
+  }
+  const status = await readGrokOAuthStatus()
+  if (!status.connected) return { ok: false, body: '', error: 'Entre com sua conta SuperGrok no botão de login xAI.' }
+  try {
+    await ensureGrokExecutable()
+    const body = await runGrokOAuthRequest(prompt, model)
+    return { ok: true, body }
+  } catch (error: unknown) {
+    return { ok: false, body: '', error: error instanceof Error ? error.message : String(error) }
+  }
 })
 
 // Quit when all windows are closed, except on macOS. There, it's common

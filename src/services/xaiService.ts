@@ -46,13 +46,27 @@ export const resolveXaiKey = (): string | undefined => {
   return key || undefined;
 };
 
+const hasXaiOAuthBridge = (): boolean => Boolean(window.fileSystem?.xaiOAuthRequest);
+
+const requestWithGrokOAuth = async (prompt: string, modelId?: string): Promise<string> => {
+  const request = window.fileSystem?.xaiOAuthRequest;
+  if (!request) throw new Error('OAuth xAI está disponível somente no aplicativo desktop.');
+  const result = await request(prompt, modelId);
+  if (!result.ok) throw new Error(result.error || 'Grok OAuth não retornou resposta.');
+  return result.body;
+};
+
 export const isReachable = async (): Promise<{ ok: boolean; error?: string }> => {
-  if (!resolveXaiKey()) return { ok: false, error: NO_KEY };
-  return { ok: true };
+  if (resolveXaiKey()) return { ok: true };
+  const status = await window.fileSystem?.xaiOAuthStatus?.();
+  if (status?.connected) return { ok: true };
+  if (hasXaiOAuthBridge()) return { ok: false, error: 'Entre com sua conta SuperGrok no botão de login.' };
+  return { ok: false, error: NO_KEY };
 };
 
 const chat = async (userPrompt: string, modelId?: string, temperature = 0.5): Promise<string> => {
   const apiKey = resolveXaiKey();
+  if (!apiKey && hasXaiOAuthBridge()) return requestWithGrokOAuth(userPrompt, modelId);
   if (!apiKey) throw new Error(NO_KEY);
   const model = modelId || getAppConfig()?.xaiOAuthModel || DEFAULT_MODEL;
   const response = await fetch(`${XAI_API}/chat/completions`, {
@@ -114,7 +128,7 @@ export const listModels = async (): Promise<string[]> => {
 };
 
 export const askXai = async (question: string, context: string, modelId?: string): Promise<string> => {
-  if (!resolveXaiKey()) throw new Error(NO_KEY);
+  if (!resolveXaiKey() && !hasXaiOAuthBridge()) throw new Error(NO_KEY);
   return chat(
     `CONTEXTO DO APP:\n${context}\n\nPERGUNTA DO CHEFE:\n${question}\n\nResponda em até 3 parágrafos, direto e prático.`,
     modelId,
@@ -132,7 +146,7 @@ export const generateScoutCycle = async (params: {
   catalogDigest?: string;
   attachments?: PlanAttachment[];
 }): Promise<MeetingCycle> => {
-  if (!resolveXaiKey()) throw new Error(NO_KEY);
+  if (!resolveXaiKey() && !hasXaiOAuthBridge()) throw new Error(NO_KEY);
   const mode =
     params.planningMode === 'from_selection' || params.planningMode === 'auto_link'
       ? params.planningMode
@@ -159,7 +173,7 @@ RETORNE APENAS JSON:
 export const generateScoutPlan = async (
   params: GeneratorParams & { context?: { sectionName: string; groupName: string } },
 ): Promise<MeetingPlan> => {
-  if (!resolveXaiKey()) throw new Error(NO_KEY);
+  if (!resolveXaiKey() && !hasXaiOAuthBridge()) throw new Error(NO_KEY);
   const planningMode =
     params.planningMode === 'from_selection' || params.planningMode === 'auto_link'
       ? params.planningMode
@@ -252,7 +266,7 @@ Array JSON: [{"activityTitle":"...","conceptExplainer":"...","teachingTips":"...
 };
 
 export const generateScoutActivity = async (params: GenerateScoutActivityParams): Promise<Activity> => {
-  if (!resolveXaiKey()) throw new Error(NO_KEY);
+  if (!resolveXaiKey() && !hasXaiOAuthBridge()) throw new Error(NO_KEY);
   const attachmentBlock = attachmentsToPromptBlock(params.attachments);
   const prompt = `${buildSingleActivityPrompt(params)}${attachmentBlock ? `\n\n${attachmentBlock}` : ''}`;
   const parsed = await callJson<Activity>(prompt, 'refazer atividade', params.modelId, 0.65);

@@ -25,6 +25,13 @@
     <li><strong>IA opcional:</strong> instruções e anexos ficam recolhidos, e “Completar com IA” preserva o cronograma.</li>
     <li><strong>Saída completa:</strong> cuidados de segurança aparecem no roteiro e no HTML exportado.</li>
   </ul>
+  <h2>20260904-xai-oauth-desktop</h2>
+  <p>Restauração do acesso xAI/Grok por OAuth para o aplicativo desktop.</p>
+  <ul>
+    <li>O rótulo xAI deixou de fingir que OAuth era apenas uma chave de API.</li>
+    <li>O desktop inicia <code>grok login --oauth</code>, consulta o status sem expor tokens e encaminha a geração pela sessão autenticada.</li>
+    <li>O site continua aceitando chave API, mas informa claramente que a assinatura OAuth exige o aplicativo desktop.</li>
+  </ul>
   <h2>20260811-especialidades-ueb26</h2>
   <p>Importação segura da base pública atualizada de especialidades da UEB.</p>
   <ul>

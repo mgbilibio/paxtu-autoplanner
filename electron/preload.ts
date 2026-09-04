@@ -12,5 +12,8 @@ contextBridge.exposeInMainWorld('fileSystem', {
   ollamaRequest: (method: string, url: string, body?: string, timeoutMs?: number, authBearer?: string) =>
     ipcRenderer.invoke('ollama:request', method, url, body, timeoutMs, authBearer),
   cancelOllamaRequests: () => ipcRenderer.invoke('ollama:cancelAll'),
+  xaiOAuthStatus: () => ipcRenderer.invoke('xai:oauth:status'),
+  xaiOAuthLogin: () => ipcRenderer.invoke('xai:oauth:login'),
+  xaiOAuthRequest: (prompt: string, model?: string) => ipcRenderer.invoke('xai:oauth:request', prompt, model),
   searchLibrary: (query: string, limit?: number) => ipcRenderer.invoke('library:search', query, limit)
 })

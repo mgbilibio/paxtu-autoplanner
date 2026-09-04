@@ -1,5 +1,7 @@
 # Design: Provedor xAI / Grok via OAuth (assinatura, sem API key)
 
+> Atualização 2026-09-04: o Paxtu restaura o acesso OAuth no aplicativo desktop por meio da sessão já autenticada do cliente oficial `grok` (`grok login --oauth` / `grok --single`). O renderer não recebe tokens. A aba publicada no GitHub Pages permanece no transporte documentado pela xAI (chave API); o fluxo consumer OAuth não é reimplementado no navegador.
+
 **Status:** em planejamento — decisões Q1–Q3 e Q5 fechadas (2026-07-18)  
 **App:** Paxtu AutoPlanner  
 **Data:** 2026-07-18  
