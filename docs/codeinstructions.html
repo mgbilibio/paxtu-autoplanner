@@ -74,7 +74,7 @@
     <li><code>scheduleDraft</code> é a fonte única de ordem, quantidade e duração. Não criar lista paralela de atividades na interface.</li>
     <li><code>ActivityEditor</code> mantém visíveis nome, responsável, objetivo curto, descrição detalhada, materiais, progressão e informações para a chefia.</li>
     <li>Preparação, segurança e referência documental ficam recolhidas. Campos avançados antigos continuam compatíveis, sem preenchimento obrigatório.</li>
-    <li><code>buildManualMeetingPlan</code> salva sem credencial de IA. Só nome, descrição e materiais bloqueiam; referências inaplicáveis geram aviso.</li>
+    <li><code>buildManualMeetingPlan</code> salva sem credencial de IA. Nome, descrição e materiais vazios só avisam; nunca abortam <code>handleSaveManualPlan</code>. O rascunho é incremental (mesmo <code>id</code> nas gravações seguintes). A IA (“Completar com IA”) continua exigindo conteúdo de campo completo.</li>
     <li>A IA é secundária e preserva a ordem, o título, a duração e o responsável do cronograma. Nunca inventar código ou fonte. Quando a IA gerar, o conteúdo de campo (letra, cartões, script, roteiro cronometrado) continua obrigatório no tipo correspondente.</li>
   </ul>
   <h2>Validação e release</h2>

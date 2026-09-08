@@ -92,7 +92,7 @@ export const TELA_HELP: Record<string, ScreenHelp> = {
     dicas: [
       'O catálogo de progressão é opcional e serve para escolher referências reais.',
       'A ordem e as durações do cronograma determinam o roteiro.',
-      '“Salvar planejamento” funciona sem IA; “Completar com IA” enriquece o rascunho.',
+      '“Salvar planejamento” grava o rascunho mesmo incompleto (pode ir completando). “Completar com IA” enriquece o rascunho.',
       'No cronograma: início, duração, item e responsável. Abertura, intervalos, itens fixos e encerramento ficam preservados.',
       'Em cada atividade, detalhe objetivo, modo de fazer, materiais, progressão e recados para a chefia. “Refazer esta” altera só aquela faixa.',
       'Anexos de contexto: txt, md, html, imagem ou PDF. Ficam só nesta sessão.',
@@ -203,7 +203,7 @@ export const FAQ: HelpFaq[] = [
   },
   {
     q: 'Como planejo a reunião de sábado?',
-    a: 'Gerar → monte o cronograma e detalhe cada atividade. O essencial é nome, objetivo curto, como fazer, materiais, progressão quando houver e informação para a chefia. Use “Salvar planejamento” sem IA ou “Completar com IA” como apoio. No resultado, “Refazer esta” altera apenas uma atividade. O roteiro salvo aparece em Roteiros e na Agenda.',
+    a: 'Gerar → monte o cronograma e detalhe cada atividade. Pode salvar o rascunho incompleto e ir preenchendo. Use “Salvar planejamento” sem IA ou “Completar com IA” como apoio. No resultado, “Refazer esta” altera apenas uma atividade. O roteiro salvo aparece em Roteiros e na Agenda.',
   },
   {
     q: 'Como edito ou tiro o acesso de alguém?',

@@ -77,7 +77,7 @@ Tela única: **Continuar com Google**, **Continuar com X** (se habilitado) e **e
 - Se o login Google conseguir um token OAuth da API Gemini (`generative-language`), o site tenta usar; se CORS, app OAuth não verificado ou escopo faltar, volta para “colar chave do AI Studio”.
 - **xAI/Grok na web (Device OAuth):** o botão “Entrar com X / Grok” **permanece**. O navegador **nunca** chama `auth.x.ai` / `api.x.ai` direto (isso vira “Failed to fetch” por CORS). Precisa do Worker em `workers/xai-proxy` e da variável pública `VITE_XAI_PROXY_URL`. Sem proxy, ou se o Worker estiver fora, a UI mostra alerta em português com o que publicar — nunca o erro cru em inglês. Em Configurações → IA dá para colar a URL do Worker neste navegador. `npm run dev:web` usa um proxy local (`/__xai_oauth`) sem vazar tokens. Tokens ficam no `sessionStorage` (aba), nunca no Firestore. O Client ID do Device OAuth é público; **não** há client secret no repositório. Catálogo e chat web passam pelo Worker (`/v1/language-models`, `/v1/chat/completions`). Uma chave xAI continua sendo alternativa.
 - **xAI/Grok no desktop:** o app Electron inicia `grok login --oauth` se o Grok Build estiver instalado (`%USERPROFILE%\.grok\bin\grok.exe` no Windows, `~/.grok/bin/grok` no resto, ou `GROK_EXECUTABLE`). Sem o binário, o status **não** afirma que o OAuth está pronto.
-- **Sem IA:** em Gerar, “Salvar planejamento” grava o cronograma preenchido à mão. A IA é opcional (“Completar com IA”).
+- **Sem IA:** em Gerar, “Salvar planejamento” grava o rascunho à mão mesmo incompleto (avisos não bloqueiam). A IA é opcional (“Completar com IA”).
 - **Ollama local** só no desktop. Na web o controle aparece (paridade), com aviso.
 
 Nenhuma chave de API entra no repositório nem no bundle do Pages.

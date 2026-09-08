@@ -757,12 +757,6 @@ function App() {
       return;
     }
     const check = validateManualActivities(scheduleDraft);
-    if (check.errors.length) {
-      const message = check.errors.join('\n');
-      setError(message);
-      showToast('Complete os campos essenciais indicados.', 'error');
-      return;
-    }
     const manualPlan = buildManualMeetingPlan({
       branch: selectedBranch,
       activities: scheduleDraft,
@@ -780,22 +774,32 @@ function App() {
       authorName: currentUser?.name,
       sectionId: currentSection?.id,
     });
+    if (plan?.id) {
+      manualPlan.id = plan.id;
+      manualPlan.createdAt = plan.createdAt;
+    }
     setLoading(true);
     setError(null);
     try {
       const saved = await savePlanToCatalog(manualPlan, currentSection?.id);
       setPlan(saved);
       setCatalogPersist({ saved: true, error: null });
-      setStep(3);
-      const suffix = check.warnings.length ? ` ${check.warnings.length} aviso(s) não bloqueante(s).` : '';
-      finishProcessFeedback(`Planejamento salvo sem IA.${suffix}`);
+      const suffix = check.warnings.length
+        ? ` ${check.warnings.length} aviso(s) — pode completar depois.`
+        : '';
+      finishProcessFeedback(`Rascunho salvo. Continue editando.${suffix}`);
+      showToast(
+        check.warnings.length
+          ? 'Rascunho salvo. Os avisos não impedem a próxima gravação.'
+          : 'Planejamento salvo. Pode continuar editando.',
+        'info',
+      );
     } catch (saveErr: unknown) {
       const saveMsg = saveErr instanceof Error ? saveErr.message : String(saveErr);
       setPlan(manualPlan);
       setCatalogPersist({ saved: false, error: saveMsg });
-      setError(`Planejamento montado, mas não foi salvo no catálogo: ${saveMsg}`);
-      setStep(3);
-      showToast('Planejamento montado; houve falha ao salvar no catálogo.', 'error');
+      setError(`Rascunho montado, mas não foi salvo no catálogo: ${saveMsg}`);
+      showToast('O editor continua aberto; tente salvar de novo.', 'error');
     } finally {
       setLoading(false);
     }
@@ -1273,6 +1277,7 @@ function App() {
   const displayTotalDuration = clampSettingNumber(totalDuration, 120, 30, 600);
   const displayActivityCount = Math.max(MIN_CORE_SLOTS, Math.round(Number.isFinite(activityCount) ? activityCount : DEFAULT_CORE_SLOTS));
   const draftCoreCount = scheduleDraft.filter(isCoreScheduleSlot).length;
+  const manualDraftCheck = validateManualActivities(scheduleDraft);
   const reservedFromDraft = scheduleDraft
     .filter(row => !isCoreScheduleSlot(row))
     .reduce((sum, row) => sum + (row.durationMinutes || 0), 0);
@@ -2103,7 +2108,7 @@ function App() {
                             <section className="space-y-3">
                               <div>
                                 <p className="text-xs font-black uppercase text-slate-800">Detalhes das atividades</p>
-                                <p className="text-[11px] text-slate-500">Só o essencial fica aberto. Preparação, segurança e referências documentais são opcionais.</p>
+                                <p className="text-[11px] text-slate-500">Pode gravar o rascunho incompleto e ir completando. Preparação, segurança e referências documentais são opcionais.</p>
                               </div>
                               {scheduleDraft.map((activity, rowIndex) => {
                                 if (!isCoreScheduleSlot(activity)) return null;
@@ -2139,6 +2144,17 @@ function App() {
                                 <PlanAttachmentsControl attachments={planAttachments} onChange={setPlanAttachments} />
                               </div>
                             </details>
+                            {manualDraftCheck.warnings.length > 0 && (
+                              <div className="bg-amber-50 border border-amber-200 text-amber-950 text-[11px] rounded-lg p-2 whitespace-pre-wrap" role="status">
+                                <p className="font-bold mb-1">Ainda incompleto — “Salvar planejamento” grava o rascunho assim mesmo:</p>
+                                {manualDraftCheck.warnings.join('\n')}
+                              </div>
+                            )}
+                            {catalogPersist.saved && !catalogPersist.error && (
+                              <p className="text-[11px] font-bold text-green-700" role="status">
+                                Rascunho gravado no catálogo. Pode continuar editando e salvar de novo.
+                              </p>
+                            )}
                             {error && (
                               <div className="bg-red-50 border border-red-200 text-red-800 text-[11px] rounded-lg p-2 whitespace-pre-wrap" role="alert">
                                 {error}
