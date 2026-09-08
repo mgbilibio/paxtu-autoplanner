@@ -5,6 +5,7 @@ import { isCloudModel, sortModelsCloudFirst } from '../services/ollamaService';
 import { isWebApp } from '../services/platform';
 import { XaiOAuthPanel } from './XaiOAuthPanel';
 import { GrokDesktopOAuthPanel } from './GrokDesktopOAuthPanel';
+import { AiLoginStatusBar } from './AiLoginStatusBar';
 
 interface Props {
   onComplete: (config: AppConfig) => void;
@@ -125,6 +126,15 @@ export const SetupWizard: React.FC<Props> = ({ onComplete }) => {
           <div className="text-5xl mb-4">⚜️</div>
           <h1 className="text-2xl font-bold">Bem-vindo ao Paxtu AutoPlanner</h1>
           <p className="text-slate-400 text-sm mt-2">Vamos configurar seu ambiente de trabalho.</p>
+          <div className="mt-4 flex justify-center">
+            <AiLoginStatusBar
+              variant="dark"
+              onOpenProvider={(id) => {
+                setProvider(id);
+                setStep(1);
+              }}
+            />
+          </div>
         </div>
 
         <div className="p-8">

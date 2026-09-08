@@ -1,4 +1,5 @@
 import {
+  describeXaiProxyFailure,
   missingXaiProxyMessage,
   XAI_CLIENT_ID,
   xaiOAuthUrls,
@@ -95,14 +96,19 @@ const refreshAccessToken = async (meta: StoredMeta): Promise<string> => {
   });
   const urls = xaiOAuthUrls();
   if (!urls.proxyConfigured) throw new Error(missingXaiProxyMessage());
-  const response = await fetch(urls.token, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      Accept: 'application/json',
-    },
-    body,
-  });
+  let response: Response;
+  try {
+    response = await fetch(urls.token, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Accept: 'application/json',
+      },
+      body,
+    });
+  } catch (error) {
+    throw new Error(describeXaiProxyFailure(error));
+  }
   const data = await response.json() as {
     access_token?: string;
     refresh_token?: string;

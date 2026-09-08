@@ -57,6 +57,30 @@ export const getDefaultGeminiModel = (): string => {
 export const hasGeminiCredentials = (): boolean =>
   Boolean(resolveApiKey() || (isWebApp() && getGeminiOAuthAccessToken()));
 
+/** Sonda leve: lista modelos de verdade. Fallback offline NÃO conta como sucesso. */
+export const probeGeminiCredentials = async (): Promise<'ok' | 'fail' | 'skipped'> => {
+  if (!hasGeminiCredentials()) return 'skipped';
+  try {
+    const apiKey = resolveApiKey();
+    if (apiKey) {
+      const ai = new GoogleGenAI({ apiKey });
+      const response = await ai.models.list();
+      for await (const model of response) {
+        if (model.name) return 'ok';
+      }
+      return 'fail';
+    }
+    const oauth = isWebApp() ? getGeminiOAuthAccessToken() : undefined;
+    if (!oauth) return 'fail';
+    const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models?pageSize=1', {
+      headers: { Authorization: `Bearer ${oauth}` },
+    });
+    return response.ok ? 'ok' : 'fail';
+  } catch {
+    return 'fail';
+  }
+};
+
 const looksLikeUnsupportedMedia = (message: string): boolean =>
   /unsupported (mime|media)|mime type|mimetype|inline_data|inlinedata|application\/pdf|unable to process input (image|pdf|file)/i.test(message);
 

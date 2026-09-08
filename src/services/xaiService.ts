@@ -10,8 +10,17 @@ import { chunkArray, DETAIL_BATCH_SIZE, mergeActivityDetails, STUDY_GUIDE_BATCH_
 import type { PlanAttachment } from './planAttachments';
 import { isWebApp } from './platform';
 import { explainXaiWebAccessGap, getXaiBrowserStatus, resolveXaiBrowserBearer } from './xaiOAuthSession';
+import { describeXaiProxyFailure, xaiOAuthUrls } from './xaiOAuthConfig';
 
 const XAI_API = 'https://api.x.ai/v1';
+
+const xaiHttpUrl = (kind: 'models' | 'chat'): string => {
+  if (isWebApp()) {
+    const urls = xaiOAuthUrls();
+    if (urls.proxyConfigured) return kind === 'models' ? urls.models : urls.chat;
+  }
+  return kind === 'models' ? `${XAI_API}/language-models` : `${XAI_API}/chat/completions`;
+};
 
 const isTextLanguageModel = (id: string): boolean =>
   Boolean(id.trim())
@@ -74,7 +83,9 @@ const chat = async (userPrompt: string, modelId?: string, temperature = 0.5): Pr
   const configuredModel = modelId?.trim() || getAppConfig()?.xaiOAuthModel?.trim();
   const model = pickXaiFastModel(await listModels(), configuredModel);
   if (!model) throw new Error('A xAI não retornou nenhum modelo de linguagem disponível para esta conta.');
-  const response = await fetch(`${XAI_API}/chat/completions`, {
+  let response: Response;
+  try {
+    response = await fetch(xaiHttpUrl('chat'), {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${bearer}`,
@@ -93,6 +104,9 @@ const chat = async (userPrompt: string, modelId?: string, temperature = 0.5): Pr
       ],
     }),
   });
+  } catch (error) {
+    throw new Error(isWebApp() ? describeXaiProxyFailure(error) : sanitize(error));
+  }
   const raw = await response.text();
   if (!response.ok) {
     throw new Error(`xAI HTTP ${response.status}: ${raw.slice(0, 180)}`);
@@ -121,7 +135,7 @@ export const listModels = async (): Promise<string[]> => {
   try {
     const bearer = apiKey || (isWebApp() ? await resolveXaiBrowserBearer() : undefined);
     if (!bearer) return [];
-    const response = await fetch(`${XAI_API}/language-models`, {
+    const response = await fetch(xaiHttpUrl('models'), {
       headers: { Authorization: `Bearer ${bearer}` },
     });
     if (!response.ok) return [];
@@ -290,6 +304,18 @@ export const generateScoutActivity = async (params: GenerateScoutActivityParams)
   const parsed = await callJson<Activity>(prompt, 'refazer atividade', params.modelId, 0.65);
   const { isOperational: _op, operationalType: _type, ...safe } = parsed;
   return normalizeActivityForUse(safe, params.slotIndex);
+};
+
+export const probeGrokCredentials = async (): Promise<'ok' | 'fail' | 'skipped'> => {
+  if (!isWebApp()) {
+    const status = await window.fileSystem?.xaiOAuthStatus?.();
+    if (status?.connected && status.installed !== false) return 'ok';
+    if (!resolveXaiKey()) return status?.installed === false ? 'fail' : 'skipped';
+  } else if (!resolveXaiKey() && !getXaiBrowserStatus().connected) {
+    return 'skipped';
+  }
+  const models = await listModels();
+  return models.length > 0 ? 'ok' : 'fail';
 };
 
 export const xaiErrorMessage = (error: unknown): string => sanitize(error);

@@ -75,7 +75,7 @@ Tela única: **Continuar com Google**, **Continuar com X** (se habilitado) e **e
 - **Gemini é o padrão**, priorizando **Flash-Lite**. Com credencial, o app consulta o catálogo da conta (`models.list`) e prefere um Flash-Lite disponível. **Sem chave, ou se a listagem falhar**, o seletor não fica em branco: usa o padrão `gemini-3.5-flash-lite` e um fallback curto (não é o inventário completo da Gemini). A geração ainda exige chave/token e avisa na hora.
 - Cada escotista cola a própria chave do [AI Studio](https://aistudio.google.com/app/apikey) (conta Google, sem cartão). A chave fica **só no localStorage**. Sem chave, a UI permanece e avisa na hora de gerar.
 - Se o login Google conseguir um token OAuth da API Gemini (`generative-language`), o site tenta usar; se CORS, app OAuth não verificado ou escopo faltar, volta para “colar chave do AI Studio”.
-- **xAI/Grok na web (Device OAuth):** o botão “Entrar com X / Grok” **permanece**. Precisa do Worker em `workers/xai-proxy` e da variável pública `VITE_XAI_PROXY_URL`. Sem proxy, ou se o Worker estiver fora do ar, a tela de Configurações e o Gerar mostram alerta — não falham em silêncio. Tokens ficam no `sessionStorage` (aba), nunca no Firestore. O Client ID do Device OAuth é público; **não** há client secret no repositório. O catálogo vem de `/v1/language-models`. Uma chave xAI continua sendo alternativa.
+- **xAI/Grok na web (Device OAuth):** o botão “Entrar com X / Grok” **permanece**. O navegador **nunca** chama `auth.x.ai` / `api.x.ai` direto (isso vira “Failed to fetch” por CORS). Precisa do Worker em `workers/xai-proxy` e da variável pública `VITE_XAI_PROXY_URL`. Sem proxy, ou se o Worker estiver fora, a UI mostra alerta em português com o que publicar — nunca o erro cru em inglês. Em Configurações → IA dá para colar a URL do Worker neste navegador. `npm run dev:web` usa um proxy local (`/__xai_oauth`) sem vazar tokens. Tokens ficam no `sessionStorage` (aba), nunca no Firestore. O Client ID do Device OAuth é público; **não** há client secret no repositório. Catálogo e chat web passam pelo Worker (`/v1/language-models`, `/v1/chat/completions`). Uma chave xAI continua sendo alternativa.
 - **xAI/Grok no desktop:** o app Electron inicia `grok login --oauth` se o Grok Build estiver instalado (`%USERPROFILE%\.grok\bin\grok.exe` no Windows, `~/.grok/bin/grok` no resto, ou `GROK_EXECUTABLE`). Sem o binário, o status **não** afirma que o OAuth está pronto.
 - **Sem IA:** em Gerar, “Salvar planejamento” grava o cronograma preenchido à mão. A IA é opcional (“Completar com IA”).
 - **Ollama local** só no desktop. Na web o controle aparece (paridade), com aviso.
@@ -90,7 +90,7 @@ Nenhuma chave de API entra no repositório nem no bundle do Pages.
 4. Garantir que o workflow `deploy-pages.yml` injeta `VITE_XAI_PROXY_URL` no `npm run build:web` (já está no YAML).
 5. Disparar o deploy do Pages. Sem esse rebuild, o site antigo continua sem proxy.
 
-O Worker só aceita origem `https://mgbilibio.github.io` (localhost só se `ALLOW_LOCALHOST=1`). Encaminha apenas `/oauth/device`, `/oauth/token` e `/oauth/userinfo` para `auth.x.ai`. Chamadas de modelo vão direto a `api.x.ai`.
+O Worker aceita `https://mgbilibio.github.io` e qualquer `localhost` / `127.0.0.1`. Encaminha `/oauth/device`, `/oauth/token`, `/oauth/userinfo` para `auth.x.ai` e `/v1/language-models` + `/v1/chat/completions` para `api.x.ai`. Sem o Worker publicado **e** o rebuild do Pages com `VITE_XAI_PROXY_URL`, o botão web não inicia o Device OAuth.
 
 ### Dados da seção no site
 

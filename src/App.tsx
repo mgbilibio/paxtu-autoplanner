@@ -12,7 +12,9 @@ import { Catalog } from './components/Catalog';
 import { SetupWizard } from './components/SetupWizard';
 import { XaiOAuthPanel } from './components/XaiOAuthPanel';
 import { GrokDesktopOAuthPanel } from './components/GrokDesktopOAuthPanel';
+import { AiLoginStatusBar } from './components/AiLoginStatusBar';
 import { explainXaiWebAccessGap } from './services/xaiOAuthSession';
+import { notifyAiLoginChanged } from './services/aiLoginEvents';
 import { MembersManager } from './components/MembersManager';
 import { CalendarView } from './components/CalendarView';
 import { ReportsDashboard } from './components/reports/ReportsDashboard';
@@ -626,6 +628,24 @@ function App() {
     setOllamaContextInput(newConfig.ollamaGenerationContext || 262144);
     setOllamaOutputInput(newConfig.ollamaGenerationOutput || 12288);
     setShowSettings(false);
+    notifyAiLoginChanged();
+  };
+
+  const openAiSettings = (provider: 'gemini' | 'xai-oauth'): void => {
+    setSettingsTab('ia');
+    setProviderInput(provider);
+    setShowSettings(true);
+    setMobileNavOpen(false);
+    if (view !== 'PROFILE_CONFIG') return;
+    if (isWebApp() && currentUser) {
+      void enterAppAsWebUser(currentUser);
+      return;
+    }
+    if (currentUser && currentSection) {
+      setView(isOperationalProfile(currentUser) ? 'DASHBOARD' : 'REPORTS');
+      return;
+    }
+    if (currentUser) setView('HOME');
   };
 
   const initiateAddObjective = (item: CatalogItem, catName: string) => {
@@ -1212,6 +1232,9 @@ function App() {
     return (
       <div className="min-h-screen bg-gray-100 p-8">
         <div className="max-w-4xl mx-auto">
+          <div className="mb-4">
+            <AiLoginStatusBar variant="light" onOpenProvider={openAiSettings} />
+          </div>
           <button onClick={backFromStructure} className="mb-6 text-slate-500 hover:text-slate-800">
             {isWebApp() && currentUser ? '→ Entrar no aplicativo' : currentUser ? '← Voltar ao painel' : '← Voltar'}
           </button>
@@ -1725,6 +1748,7 @@ function App() {
             >
               {activeGeneratorSystem === 'POR_2025' ? 'POR 2025+' : 'POR 2020 (legado)'}
             </span>
+            <AiLoginStatusBar variant="dark" onOpenProvider={openAiSettings} />
           </div>
           <button
             className="lg:hidden text-gray-300 hover:text-white p-2 text-xl"

@@ -19,7 +19,8 @@
   <p>Revisão dos commits de 2026-09-04: xOAuth web permanece, Gemini não fica em branco e o desktop Grok deixa de fingir que o OAuth funciona sem o cliente.</p>
   <ul>
     <li><strong>Gemini:</strong> catálogo vivo da conta tem prioridade; sem credencial ou se <code>models.list</code> falhar, o seletor usa o padrão Flash-Lite (<code>gemini-3.5-flash-lite</code>) em vez de lista vazia.</li>
-    <li><strong>xOAuth web:</strong> sem <code>VITE_XAI_PROXY_URL</code> ou com Worker inacessível, Configurações e Gerar mostram alerta. Tokens continuam no <code>sessionStorage</code>.</li>
+    <li><strong>xOAuth web:</strong> o site não chama <code>auth.x.ai</code> do navegador. Sem <code>VITE_XAI_PROXY_URL</code>, Worker fora ou URL apontando para a xAI, Configurações mostra alerta em português (nunca “Failed to fetch”). Catálogo e chat web também passam pelo Worker. Tokens continuam no <code>sessionStorage</code>.</li>
+    <li><strong>Indicadores Gemini/Grok:</strong> pílulas verde/vermelho no cabeçalho, na Estrutura e no assistente inicial. Verde só depois de sonda utilizável; vermelho no xOAuth quebrado. Clique abre Configurações → IA.</li>
     <li><strong>Desktop Grok:</strong> caminhos Windows/Unix e <code>GROK_EXECUTABLE</code>; status recusa “conectado” se <code>grok</code>/<code>grok.exe</code> não existir.</li>
     <li><strong>Geração:</strong> IA continua opcional no salvamento manual; prompts voltam a exigir material de campo (letra, cartões, script).</li>
     <li><strong>Firebase CLI:</strong> projeto padrão <code>scoutsauto-d3068</code> (nome de exibição scoutsauto). <code>package.json</code> 2026.9.8 com indentação corrigida.</li>
