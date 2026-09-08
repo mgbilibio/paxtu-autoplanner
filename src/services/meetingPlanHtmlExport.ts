@@ -76,10 +76,10 @@ const renderActivity = (activity: MeetingPlan['activities'][number], index: numb
     <div class="meta">
       <span class="pill">${activity.durationMinutes || 0} min</span>
       <span class="pill">${escapeHtml(activity.educationalArea)}</span>
-      <span class="pill">${escapeHtml(activity.progressionObjective || 'Geral')}</span>
       ${activity.responsible ? `<span class="pill">${escapeHtml(activity.responsible)}</span>` : ''}
       ${activity.isOperational ? '<span class="tag warn">Rotina da reunião</span>' : ''}
     </div>
+    <p class="por"><strong>Código de progressão</strong><br>${renderText(activity.progressionObjective || 'Geral')}</p>
     <p>${renderText(activity.description)}</p>
     ${activity.conteudoPronto ? `<div class="box ready"><strong>Conteúdo pronto</strong><p>${renderText(activity.conteudoPronto)}</p></div>` : ''}
     ${renderPassos(activity)}

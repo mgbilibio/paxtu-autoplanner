@@ -11,7 +11,7 @@
 <body>
 <main>
   <h1>Instrucoes de Codigo</h1>
-  <p>Atualizado em <strong>20260904-gerador-essencial</strong>. Aplicam-se ao app alvo em <code>PaxtuAP/</code>.</p>
+  <p>Atualizado em <strong>20260904-2048</strong> (versão <code>2026.9.8</code>). Aplicam-se ao app alvo em <code>PaxtuAP/</code>.</p>
   <h2>Arquitetura atual</h2>
   <ul>
     <li><code>src/</code>: interface React e regras de apresentação.</li>
@@ -51,15 +51,18 @@
     <li>A edição web usa Device Authorization Grant, reaproveitando o fluxo comprovado do projeto SocialKids.</li>
     <li><code>xaiOAuthDevice.ts</code> inicia e acompanha a autorização; <code>xaiOAuthSession.ts</code> mantém access e refresh tokens somente no <code>sessionStorage</code>.</li>
     <li>Tokens xAI nunca devem ser gravados no Firestore, localStorage, logs, configuração exportada ou repositório.</li>
-    <li>O Worker em <code>workers/xai-proxy</code> encaminha somente device, token e userinfo, exige origem permitida e nunca funciona como proxy aberto.</li>
-    <li>A URL do Worker entra no build por <code>VITE_XAI_PROXY_URL</code>. Não colocar tokens, client secrets ou chaves privadas nessa variável.</li>
+    <li>O Worker em <code>workers/xai-proxy</code> encaminha device, token, userinfo, language-models e chat/completions. Origens: <code>https://mgbilibio.github.io</code> e localhost. Nunca funciona como proxy aberto. Respostas 403 levam cabeçalhos CORS para o browser não esconder o erro como “Failed to fetch”.</li>
+    <li>A URL do Worker entra no build por <code>VITE_XAI_PROXY_URL</code> (variável pública do GitHub Actions, não secret). Sem ela, ou se o Worker estiver fora, a UI avisa em português. Em desenvolvimento, <code>/__xai_oauth</code> no Vite é o fallback same-origin. Não colocar tokens, client secrets ou chaves privadas nessa variável.</li>
+    <li>O indicador Gemini/Grok no chrome reusa <code>hasGeminiCredentials</code>, <code>getXaiBrowserStatus</code> e sondas leves de listagem. Verde só se a credencial for utilizável agora.</li>
+    <li>O Client ID do Device OAuth é público (app Pages). Tokens só em <code>sessionStorage</code>. Não há client secret no repositório.</li>
+    <li>No desktop, OAuth usa o cliente Grok Build (<code>electron/grokClient.ts</code>). Sem o binário, o status não afirma que o login funciona.</li>
     <li>O provider aceita a sessão OAuth ou uma chave API opcional. Ambos consultam <code>/v1/language-models</code> em tempo de execução.</li>
   </ul>
   <h2>Catálogos de modelos</h2>
   <ul>
     <li>Gemini deve consultar <code>models.list</code> e aceitar somente modelos anunciados com suporte a <code>generateContent</code>.</li>
-    <li>A preferência Flash-Lite/Flash é uma regra por capacidade e custo, nunca uma lista de IDs ou versões.</li>
-    <li>Se o provedor não devolver um modelo compatível, mostrar erro claro. Não inventar fallback obsoleto.</li>
+    <li>A preferência Flash-Lite/Flash é uma regra por capacidade e custo. Uma lista curta de fallback (<code>GEMINI_FALLBACK_MODELS</code>) existe só para cold start / falha da listagem — não é o catálogo completo.</li>
+    <li>Sem credencial ou se a listagem falhar, o seletor mantém o padrão Flash-Lite. A geração continua exigindo chave/token e avisa.</li>
   </ul>
   <h2>Responsividade do shell</h2>
   <ul>
@@ -71,8 +74,8 @@
     <li><code>scheduleDraft</code> é a fonte única de ordem, quantidade e duração. Não criar lista paralela de atividades na interface.</li>
     <li><code>ActivityEditor</code> mantém visíveis nome, responsável, objetivo curto, descrição detalhada, materiais, progressão e informações para a chefia.</li>
     <li>Preparação, segurança e referência documental ficam recolhidas. Campos avançados antigos continuam compatíveis, sem preenchimento obrigatório.</li>
-    <li><code>buildManualMeetingPlan</code> salva sem credencial de IA. Só nome, descrição e materiais bloqueiam; referências inaplicáveis geram aviso.</li>
-    <li>A IA é secundária e preserva a ordem, o título, a duração e o responsável do cronograma. Nunca inventar código ou fonte.</li>
+    <li><code>buildManualMeetingPlan</code> salva sem credencial de IA. Nome, descrição e materiais vazios só avisam; nunca abortam <code>handleSaveManualPlan</code>. O rascunho é incremental (mesmo <code>id</code> nas gravações seguintes). A IA (“Completar com IA”) continua exigindo conteúdo de campo completo.</li>
+    <li>A IA é secundária e preserva a ordem, o título, a duração e o responsável do cronograma. Nunca inventar código ou fonte. Quando a IA gerar, o conteúdo de campo (letra, cartões, script, roteiro cronometrado) continua obrigatório no tipo correspondente.</li>
   </ul>
   <h2>Validação e release</h2>
   <ol>

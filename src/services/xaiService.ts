@@ -9,9 +9,18 @@ import { activityBriefsPromptBlock, buildSingleActivityPrompt, PRACTICAL_CONTENT
 import { chunkArray, DETAIL_BATCH_SIZE, mergeActivityDetails, STUDY_GUIDE_BATCH_SIZE } from './llmPlanBatches';
 import type { PlanAttachment } from './planAttachments';
 import { isWebApp } from './platform';
-import { getXaiBrowserStatus, resolveXaiBrowserBearer } from './xaiOAuthSession';
+import { explainXaiWebAccessGap, getXaiBrowserStatus, resolveXaiBrowserBearer } from './xaiOAuthSession';
+import { describeXaiProxyFailure, xaiOAuthUrls } from './xaiOAuthConfig';
 
 const XAI_API = 'https://api.x.ai/v1';
+
+const xaiHttpUrl = (kind: 'models' | 'chat'): string => {
+  if (isWebApp()) {
+    const urls = xaiOAuthUrls();
+    if (urls.proxyConfigured) return kind === 'models' ? urls.models : urls.chat;
+  }
+  return kind === 'models' ? `${XAI_API}/language-models` : `${XAI_API}/chat/completions`;
+};
 
 const isTextLanguageModel = (id: string): boolean =>
   Boolean(id.trim())
@@ -50,10 +59,19 @@ const requestWithGrokOAuth = async (prompt: string, modelId?: string): Promise<s
 
 export const isReachable = async (): Promise<{ ok: boolean; error?: string }> => {
   if (resolveXaiKey()) return { ok: true };
-  if (isWebApp() && getXaiBrowserStatus().connected) return { ok: true };
+  if (isWebApp()) {
+    const gap = explainXaiWebAccessGap(false);
+    if (!gap) return { ok: true };
+    return { ok: false, error: gap };
+  }
   const status = await window.fileSystem?.xaiOAuthStatus?.();
   if (status?.connected) return { ok: true };
-  if (hasXaiOAuthBridge()) return { ok: false, error: 'Entre com sua conta SuperGrok no botão de login.' };
+  if (status?.installed === false) {
+    return { ok: false, error: status.message || 'Cliente Grok Build não encontrado neste computador.' };
+  }
+  if (hasXaiOAuthBridge()) {
+    return { ok: false, error: status?.message || 'Entre com sua conta SuperGrok no botão de login.' };
+  }
   return { ok: false, error: NO_KEY };
 };
 
@@ -65,7 +83,9 @@ const chat = async (userPrompt: string, modelId?: string, temperature = 0.5): Pr
   const configuredModel = modelId?.trim() || getAppConfig()?.xaiOAuthModel?.trim();
   const model = pickXaiFastModel(await listModels(), configuredModel);
   if (!model) throw new Error('A xAI não retornou nenhum modelo de linguagem disponível para esta conta.');
-  const response = await fetch(`${XAI_API}/chat/completions`, {
+  let response: Response;
+  try {
+    response = await fetch(xaiHttpUrl('chat'), {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${bearer}`,
@@ -84,6 +104,9 @@ const chat = async (userPrompt: string, modelId?: string, temperature = 0.5): Pr
       ],
     }),
   });
+  } catch (error) {
+    throw new Error(isWebApp() ? describeXaiProxyFailure(error) : sanitize(error));
+  }
   const raw = await response.text();
   if (!response.ok) {
     throw new Error(`xAI HTTP ${response.status}: ${raw.slice(0, 180)}`);
@@ -112,7 +135,7 @@ export const listModels = async (): Promise<string[]> => {
   try {
     const bearer = apiKey || (isWebApp() ? await resolveXaiBrowserBearer() : undefined);
     if (!bearer) return [];
-    const response = await fetch(`${XAI_API}/language-models`, {
+    const response = await fetch(xaiHttpUrl('models'), {
       headers: { Authorization: `Bearer ${bearer}` },
     });
     if (!response.ok) return [];
@@ -235,7 +258,7 @@ CONTEXTO:\n${userPromptBase}
     }));
     const chunk = await callJson<any[]>(`
 Estrutura (lote ${b + 1}/${detailBatches.length}): ${JSON.stringify({ ...planStructure, activities: batch })}
-Para CADA atividade DESTE LOTE, devolva um array JSON com description, materials, progressionObjective, objetivoEspecifico, instrucaoChefia, safetyNotes, manualReferencia e preparacaoPrevia. Campos avançados só quando forem realmente necessários.
+Para CADA atividade DESTE LOTE, devolva um array JSON com description, materials, progressionObjective, objetivoEspecifico, instrucaoChefia, conteudoPronto, passos, safetyNotes, manualReferencia e preparacaoPrevia. Conteúdo de campo (letra, cartões, script) é obrigatório no tipo correspondente.
 Detalhe SOMENTE estas ${batch.length} atividades. Não invente faixas extras.
 ${PRACTICAL_CONTENT_RULES}
 CONTEXTO:\n${userPromptBase}
@@ -281,6 +304,18 @@ export const generateScoutActivity = async (params: GenerateScoutActivityParams)
   const parsed = await callJson<Activity>(prompt, 'refazer atividade', params.modelId, 0.65);
   const { isOperational: _op, operationalType: _type, ...safe } = parsed;
   return normalizeActivityForUse(safe, params.slotIndex);
+};
+
+export const probeGrokCredentials = async (): Promise<'ok' | 'fail' | 'skipped'> => {
+  if (!isWebApp()) {
+    const status = await window.fileSystem?.xaiOAuthStatus?.();
+    if (status?.connected && status.installed !== false) return 'ok';
+    if (!resolveXaiKey()) return status?.installed === false ? 'fail' : 'skipped';
+  } else if (!resolveXaiKey() && !getXaiBrowserStatus().connected) {
+    return 'skipped';
+  }
+  const models = await listModels();
+  return models.length > 0 ? 'ok' : 'fail';
 };
 
 export const xaiErrorMessage = (error: unknown): string => sanitize(error);

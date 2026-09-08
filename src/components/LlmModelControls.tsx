@@ -38,7 +38,16 @@ export const LlmModelControls: React.FC<Props> = ({
     ? 'bg-transparent text-white text-xs outline-none border-none max-w-[220px]'
     : 'flex-1 min-w-[12rem] p-2 border rounded text-sm';
   const optionClass = compact ? 'text-black' : undefined;
-  const emptyLabel = compact ? 'Nenhum modelo — configure a IA' : 'Nenhum modelo disponível';
+  const emptyLabel = providerId === 'gemini'
+    ? (compact ? 'Flash-Lite (padrão offline)' : 'Gemini Flash-Lite (padrão até carregar o catálogo)')
+    : providerId === 'ollama-local'
+      ? (compact ? 'Liste os modelos locais' : 'Nenhum modelo local — clique em Listar modelos')
+    : providerId === 'ollama-cloud'
+      ? (compact ? 'Liste os modelos Cloud' : 'Nenhum modelo Cloud — clique em Listar modelos')
+      : (compact ? 'Nenhum modelo — configure a IA' : 'Nenhum modelo disponível');
+  const refreshLabel = providerId === 'ollama-local' || providerId === 'ollama-cloud'
+    ? (compact ? '🔄' : 'Listar modelos')
+    : (compact ? '🔄' : 'Atualizar modelos');
 
   return (
     <div className={compact ? 'flex gap-2 items-center flex-wrap' : 'space-y-2'}>
@@ -77,12 +86,12 @@ export const LlmModelControls: React.FC<Props> = ({
           type="button"
           onClick={onRefresh}
           disabled={refreshing}
-          aria-label="Recarregar modelos do provedor"
+          aria-label={providerId === 'ollama-local' || providerId === 'ollama-cloud' ? 'Listar modelos' : 'Recarregar modelos do provedor'}
           className={compact
             ? 'text-white text-xs disabled:opacity-50'
             : 'rounded border border-slate-300 bg-white px-2.5 py-1.5 text-[11px] font-bold text-slate-700 hover:bg-slate-50 disabled:opacity-50'}
         >
-          {compact ? '🔄' : 'Atualizar modelos'}
+          {refreshLabel}
         </button>
       )}
       </div>

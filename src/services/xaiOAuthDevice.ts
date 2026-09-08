@@ -1,4 +1,5 @@
 import {
+  describeXaiProxyFailure,
   missingXaiProxyMessage,
   XAI_CLIENT_ID,
   XAI_OAUTH_SCOPE,
@@ -24,20 +25,33 @@ const requestHeaders = (): Record<string, string> => ({
   Accept: 'application/json',
 });
 
+const readJson = async (response: Response): Promise<Record<string, unknown>> => {
+  try {
+    return await response.json() as Record<string, unknown>;
+  } catch {
+    return {};
+  }
+};
+
 export const startXaiDeviceAuthorization = async (): Promise<XaiDeviceAuthorization> => {
   const urls = xaiOAuthUrls();
   if (!urls.proxyConfigured) throw new Error(missingXaiProxyMessage());
   const body = new URLSearchParams({ client_id: XAI_CLIENT_ID, scope: XAI_OAUTH_SCOPE });
-  const response = await fetch(urls.device, {
-    method: 'POST',
-    headers: requestHeaders(),
-    body,
-  });
-  const data = await response.json() as Record<string, unknown>;
+  let response: Response;
+  try {
+    response = await fetch(urls.device, {
+      method: 'POST',
+      headers: requestHeaders(),
+      body,
+    });
+  } catch (error) {
+    throw new Error(describeXaiProxyFailure(error));
+  }
+  const data = await readJson(response);
   const deviceCode = String(data.device_code || '');
   const userCode = String(data.user_code || '');
   if (!response.ok || !deviceCode || !userCode) {
-    throw new Error(String(data.error_description || data.error || 'Não foi possível iniciar o xOAuth.'));
+    throw new Error(String(data.error_description || data.error || describeXaiProxyFailure(`Falha xOAuth (${response.status}).`)));
   }
   const baseUrl = String(data.verification_uri || 'https://accounts.x.ai/connect');
   return {
@@ -50,15 +64,19 @@ export const startXaiDeviceAuthorization = async (): Promise<XaiDeviceAuthorizat
 };
 
 const fetchIdentity = async (accessToken: string): Promise<{ email?: string; name?: string }> => {
-  const response = await fetch(xaiOAuthUrls().userInfo, {
-    headers: { Authorization: `Bearer ${accessToken}` },
-  });
-  if (!response.ok) return {};
-  const data = await response.json() as Record<string, unknown>;
-  return {
-    email: typeof data.email === 'string' ? data.email : undefined,
-    name: typeof data.name === 'string' ? data.name : undefined,
-  };
+  try {
+    const response = await fetch(xaiOAuthUrls().userInfo, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    if (!response.ok) return {};
+    const data = await response.json() as Record<string, unknown>;
+    return {
+      email: typeof data.email === 'string' ? data.email : undefined,
+      name: typeof data.name === 'string' ? data.name : undefined,
+    };
+  } catch {
+    return {};
+  }
 };
 
 export const pollXaiDeviceAuthorization = async (
@@ -69,12 +87,19 @@ export const pollXaiDeviceAuthorization = async (
     device_code: deviceCode,
     client_id: XAI_CLIENT_ID,
   });
-  const response = await fetch(xaiOAuthUrls().token, {
-    method: 'POST',
-    headers: requestHeaders(),
-    body,
-  });
-  const data = await response.json() as Record<string, unknown>;
+  const urls = xaiOAuthUrls();
+  if (!urls.proxyConfigured) return { status: 'error', message: missingXaiProxyMessage() };
+  let response: Response;
+  try {
+    response = await fetch(urls.token, {
+      method: 'POST',
+      headers: requestHeaders(),
+      body,
+    });
+  } catch (error) {
+    return { status: 'error', message: describeXaiProxyFailure(error) };
+  }
+  const data = await readJson(response);
   if (response.ok && typeof data.access_token === 'string') {
     const identity = await fetchIdentity(data.access_token);
     saveXaiBrowserSession(

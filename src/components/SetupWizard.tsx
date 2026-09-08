@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { AppConfig, DataSyncMode, LlmProviderId } from '../types';
 import { normalizeOllamaBaseUrl } from '../services/ollamaUrlSecurity';
-import { isCloudModel, sortModelsCloudFirst } from '../services/ollamaService';
+import { belongsInOllamaSelector, isCloudModel, isReachable as ollamaIsReachable, listModels as ollamaListModels } from '../services/ollamaService';
 import { isWebApp } from '../services/platform';
 import { XaiOAuthPanel } from './XaiOAuthPanel';
+import { GrokDesktopOAuthPanel } from './GrokDesktopOAuthPanel';
+import { AiLoginStatusBar } from './AiLoginStatusBar';
 
 interface Props {
   onComplete: (config: AppConfig) => void;
@@ -44,40 +46,15 @@ export const SetupWizard: React.FC<Props> = ({ onComplete }) => {
       setTestingOllama(false);
       return;
     }
-    const url = `${baseUrl}/api/tags`;
-
-    // Prefere IPC do Electron (sem CORS); fallback para fetch direto em browser puro.
-    const pickModels = (raw: any[]): string[] =>
-      sortModelsCloudFirst((raw || []).map((m: any) => m.name as string).filter(Boolean));
-
-    if (window.fileSystem?.ollamaRequest) {
-      const r = await window.fileSystem.ollamaRequest('GET', url);
-      if (r.ok) {
-        const data = JSON.parse(r.body);
-        const models = pickModels(data?.models || []);
-        status = { ok: true, models };
-        if (models.length > 0) setSelectedOllamaModel(models[0]);
-      } else {
-        status = { ok: false, error: r.error === 'timeout' ? 'Timeout — Ollama não está rodando?' : (r.error || `HTTP ${r.status}`) };
-      }
-    } else {
-      const ctrl = new AbortController();
-      const timer = setTimeout(() => ctrl.abort(), 2500);
-      try {
-        const r = await fetch(url, { signal: ctrl.signal });
-        if (!r.ok) status = { ok: false, error: `HTTP ${r.status}` };
-        else {
-          const data = await r.json();
-          const models = pickModels(data?.models || []);
-          status = { ok: true, models };
-          if (models.length > 0) setSelectedOllamaModel(models[0]);
-        }
-      } catch (e: any) {
-        status = { ok: false, error: e?.name === 'AbortError' ? 'Timeout — Ollama não está rodando?' : (e?.message || 'Falha de conexão (CORS? defina OLLAMA_ORIGINS=*)') };
-      } finally {
-        clearTimeout(timer);
-      }
+    const reachable = await ollamaIsReachable({ mode: 'local', baseUrl });
+    if (!reachable.ok) {
+      setOllamaTestStatus({ ok: false, error: reachable.error });
+      setTestingOllama(false);
+      return;
     }
+    const models = (await ollamaListModels({ mode: 'local', baseUrl })).filter(belongsInOllamaSelector);
+    status = { ok: true, models };
+    if (models.length > 0) setSelectedOllamaModel(models[0]);
     setOllamaTestStatus(status);
     setTestingOllama(false);
   };
@@ -85,14 +62,13 @@ export const SetupWizard: React.FC<Props> = ({ onComplete }) => {
   const canAdvanceFromStep1 = (): boolean => {
     if (provider === 'gemini') return isWebApp() || !!apiKey.trim();
     if (provider === 'xai-oauth') return isWebApp() || !!xaiKey.trim() || !!window.fileSystem?.xaiOAuthLogin;
-    if (isWebApp() && (provider === 'ollama' || provider === 'ollama-local')) return true;
+    if (provider === 'ollama' || provider === 'ollama-local') return true;
     return !!ollamaTestStatus?.ok && !!selectedOllamaModel;
   };
 
   const handleFinish = () => {
     const next: typeof errors = {};
     if (provider === 'gemini' && !apiKey.trim() && !isWebApp()) next.apiKey = 'A Chave API do Gemini é obrigatória.';
-    if ((provider === 'ollama' || provider === 'ollama-local') && !isWebApp() && !selectedOllamaModel) next.ollama = 'Selecione um modelo Ollama disponível.';
     setErrors(next);
     if (Object.keys(next).length > 0) { setStep(1); return; }
     const resolvedProvider: LlmProviderId =
@@ -124,6 +100,15 @@ export const SetupWizard: React.FC<Props> = ({ onComplete }) => {
           <div className="text-5xl mb-4">⚜️</div>
           <h1 className="text-2xl font-bold">Bem-vindo ao Paxtu AutoPlanner</h1>
           <p className="text-slate-400 text-sm mt-2">Vamos configurar seu ambiente de trabalho.</p>
+          <div className="mt-4 flex justify-center">
+            <AiLoginStatusBar
+              variant="dark"
+              onOpenProvider={(id) => {
+                setProvider(id);
+                setStep(1);
+              }}
+            />
+          </div>
         </div>
 
         <div className="p-8">
@@ -137,9 +122,7 @@ export const SetupWizard: React.FC<Props> = ({ onComplete }) => {
             <div className="animate-slide-in">
               <h2 className="text-xl font-bold text-gray-800 mb-4">🔑 Provedor de IA</h2>
               <p className="text-gray-600 text-sm mb-4 leading-relaxed">
-                {isWebApp()
-                  ? <>Padrão: <strong>Gemini Flash-Lite</strong>. Os modelos são carregados da conta. xAI aceita login X/Grok para usar a assinatura ou uma chave API.</>
-                  : <>Padrão: <strong>Gemini Flash/Lite</strong>. Os modelos disponíveis são carregados da sua conta após a autenticação. Ollama fica na máquina.</>}
+                <>Padrão: <strong>Gemini Flash-Lite</strong>. Sem chave, o seletor mantém esse padrão. Ollama local consulta o daemon na máquina (sem chave). xAI no site usa Device OAuth (precisa do Worker) ou uma chave API.</>
               </p>
 
               <div className="grid grid-cols-3 gap-2 mb-6">
@@ -162,7 +145,7 @@ export const SetupWizard: React.FC<Props> = ({ onComplete }) => {
                   className={`p-4 border-2 rounded-lg text-left transition-all ${provider === 'ollama' ? 'border-emerald-600 bg-emerald-50' : 'border-gray-200 hover:border-gray-300'}`}
                 >
                   <div className="font-bold text-sm">💻 Ollama</div>
-                  <div className="text-[11px] text-gray-500 mt-1">{isWebApp() ? 'Só no app desktop' : 'Local · privacidade total'}</div>
+                  <div className="text-[11px] text-gray-500 mt-1">Local · sem chave</div>
                 </button>
               </div>
 
@@ -201,9 +184,13 @@ export const SetupWizard: React.FC<Props> = ({ onComplete }) => {
               {provider === 'xai-oauth' && (
                 <>
                   <p className="text-[11px] text-slate-600 bg-slate-50 border border-slate-200 rounded p-3 mb-3 leading-relaxed">
-                    Conecte sua conta X/Grok pelo Device OAuth. Os modelos são carregados da conta autenticada; nenhuma versão fica fixa no ScoutsAuto.
+                    {isWebApp()
+                      ? 'No site, conecte X/Grok pelo Device OAuth (Worker Cloudflare) ou cole uma chave API. Os modelos vêm da conta autenticada.'
+                      : 'No desktop, entre com SuperGrok pelo cliente Grok Build. Sem o binário, o OAuth não inicia — use uma chave API. Os modelos vêm da conta autenticada.'}
                   </p>
-                  {isWebApp() && <div className="mb-3"><XaiOAuthPanel /></div>}
+                  <div className="mb-3">
+                    {isWebApp() ? <XaiOAuthPanel /> : <GrokDesktopOAuthPanel />}
+                  </div>
                   <input
                     type="password"
                     value={xaiKey}
@@ -214,27 +201,12 @@ export const SetupWizard: React.FC<Props> = ({ onComplete }) => {
                 </>
               )}
 
-              {provider === 'ollama' && isWebApp() && (
-                <p className="text-[11px] text-amber-800 bg-amber-50 border border-amber-200 rounded p-3 mb-3 leading-relaxed">
-                  Ollama local não roda neste site (GitHub Pages). Use Gemini ou xAI aqui, ou o aplicativo desktop para localhost:11434.
-                  Você pode avançar; a geração avisa se este provedor estiver selecionado.
-                </p>
-              )}
-
-              {provider === 'ollama' && !isWebApp() && (
+              {provider === 'ollama' && (
                 <>
-                  <div className="bg-emerald-50 border border-emerald-100 rounded-lg p-4 mb-4 text-xs text-emerald-900">
-                    <p className="font-bold mb-2">💻 Setup do Ollama (recomendado: cloud):</p>
-                    <ol className="list-decimal pl-4 space-y-1">
-                      <li>
-                        Baixe e instale: {' '}
-                        <a href="https://ollama.com/download" target="_blank" rel="noreferrer" className="bg-emerald-700 text-white px-2 py-0.5 rounded font-bold">ollama.com/download</a>
-                      </li>
-                      <li>Login cloud: <code className="bg-white px-1 border rounded">ollama signin</code></li>
-                      <li>Puxe um modelo cloud (sem GB locais): <code className="bg-white px-1 border rounded">ollama pull minimax-m3:cloud</code></li>
-                      <li>Volte aqui e clique <strong>Testar</strong></li>
-                    </ol>
-                  </div>
+                  <p className="text-[11px] text-slate-600 bg-slate-50 border border-slate-200 rounded p-3 mb-3 leading-relaxed">
+                    Sem chave. O daemon Ollama precisa estar rodando na URL abaixo. “Listar modelos” consulta essa URL.
+                    Se o daemon estiver parado ou o navegador for bloqueado, o aviso pede que o Ollama aceite a origem do site.
+                  </p>
                   <label className="block text-xs font-bold text-gray-700 uppercase mb-1">URL do Ollama</label>
                   <div className="flex gap-2 mb-3">
                     <input
@@ -244,11 +216,12 @@ export const SetupWizard: React.FC<Props> = ({ onComplete }) => {
                       className="flex-1 p-2 border border-gray-300 rounded-lg bg-gray-50 focus:bg-white focus:ring-2 focus:ring-emerald-500 outline-none text-sm"
                     />
                     <button
-                      onClick={testOllama}
+                      type="button"
+                      onClick={() => { void testOllama(); }}
                       disabled={testingOllama}
-                      className="px-4 py-2 bg-emerald-700 text-white rounded-lg font-bold disabled:bg-slate-400 text-sm"
+                      className="px-4 py-2 bg-emerald-700 text-white rounded-lg font-bold disabled:bg-slate-400 text-sm whitespace-nowrap"
                     >
-                      {testingOllama ? '...' : 'Testar'}
+                      {testingOllama ? '...' : 'Listar modelos'}
                     </button>
                   </div>
                   {ollamaTestStatus && (
@@ -262,7 +235,7 @@ export const SetupWizard: React.FC<Props> = ({ onComplete }) => {
                   )}
                   {ollamaTestStatus?.ok && (ollamaTestStatus.models?.length || 0) === 0 && (
                     <p className="text-xs text-amber-700 mb-3">
-                      Nenhum modelo. Ex.: <code className="bg-gray-100 px-1">ollama pull minimax-m3:cloud</code> e Testar de novo.
+                      O daemon respondeu, mas não devolveu modelos.
                     </p>
                   )}
                   {ollamaTestStatus?.ok && (ollamaTestStatus.models?.length || 0) > 0 && (
@@ -279,15 +252,9 @@ export const SetupWizard: React.FC<Props> = ({ onComplete }) => {
                           </option>
                         ))}
                       </select>
-                      {errors.ollama && <p role="alert" className="text-xs text-red-600 mt-1">{errors.ollama}</p>}
                       {isCloudModel(selectedOllamaModel) && (
                         <p className="text-[11px] text-emerald-800 mt-2 bg-emerald-50 border border-emerald-200 rounded p-2">
-                          Modelo cloud: o app gera o roteiro em partes e usa contexto ≥256k. Requer conta Ollama logada.
-                        </p>
-                      )}
-                      {!isCloudModel(selectedOllamaModel) && /^[^:]+:(0\.5|1|1\.7|2|3)b/i.test(selectedOllamaModel) && (
-                        <p className="text-[11px] text-amber-700 mt-2 bg-amber-50 border border-amber-200 rounded p-2">
-                          ⚠️ Modelos locais muito pequenos podem falhar no JSON. Prefira <code>:cloud</code> ou local ≥7B.
+                          Modelo <code>:cloud</code> puxado pelo daemon local: o app gera o roteiro em partes.
                         </p>
                       )}
                     </>

@@ -28,6 +28,18 @@ textarea:focus-visible,
   border-radius: 4px;
 }
 
+/* Texto POR longo no card da atividade: quebra em várias linhas, sem cortar. */
+.wrap-por-text {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  white-space: normal;
+  overflow: visible;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
 /* V20: regras de impressão — esconde header/nav e modais; foca no conteúdo */
 @media print {
   header, nav, .no-print { display: none !important; }

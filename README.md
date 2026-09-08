@@ -35,13 +35,15 @@ URL: `https://mgbilibio.github.io/paxtu-autoplanner/`
 
 Publicação: Actions em push para `main` (`npm run build:web`, sem Electron e **sem** `GEMINI_API_KEY`). Ative uma vez em **Settings → Pages → Source: GitHub Actions**.
 
-### Backend web (Firebase `scoutsauto`)
+### Backend web (Firebase `scoutsauto-d3068`)
 
-O site ScoutsAuto usa **Firebase Auth + Cloud Firestore** (plano Spark, gratuito). O projeto chama-se `scoutsauto` e fica na conta Google pessoal de quem mantém o repositório — o grupo **não** tem e-mail compartilhado. Cada escotista entra com o **próprio** endereço (Gmail, Google Workspace, `@escoteiros` ou outro domínio). Não há lista de domínios permitidos.
+O site ScoutsAuto usa **Firebase Auth + Cloud Firestore** (plano Spark, gratuito). O **nome de exibição** no console é `scoutsauto`; o **project ID** (CLI, IAM, `.firebaserc`) é `scoutsauto-d3068`. O projeto fica na conta Google pessoal de quem mantém o repositório — o grupo **não** tem e-mail compartilhado. Cada escotista entra com o **próprio** endereço (Gmail, Google Workspace, `@escoteiros` ou outro domínio). Não há lista de domínios permitidos.
+
+`firebase deploy` sem `--project` usa `scoutsauto-d3068`. O alias `scoutsauto` no `.firebaserc` aponta para o mesmo ID — não crie outro projeto só pelo nome curto.
 
 Não existe cadastro aberto na tropa. Qualquer pessoa com o link do site pode entrar (Google ou e-mail e senha) e fica **pendente** até o administrador liberar seção e papel. Convites prévios são opcionais. Sem as variáveis `VITE_FIREBASE_*`, a tela de login aparece, mas o acesso falha fechado (não há assistente de “primeiro admin” só neste navegador).
 
-1. No [Firebase Console](https://console.firebase.google.com/) crie o projeto **scoutsauto** (Spark).
+1. No [Firebase Console](https://console.firebase.google.com/) o projeto de produção já é **scoutsauto-d3068** (exibição `scoutsauto`, Spark). Não troque o ID.
 2. Authentication → ative **Google** e **E-mail/senha**. Opcional: Twitter/X, e então defina `VITE_FIREBASE_AUTH_X=true`.
 3. Authorized domains: `mgbilibio.github.io` e `localhost`.
 4. Firestore Database → criar (modo produção) e publicar as regras do repo: `firebase deploy --only firestore:rules` (arquivos `firestore.rules` e `firestore.indexes.json`).
@@ -50,9 +52,9 @@ Não existe cadastro aberto na tropa. Qualquer pessoa com o link do site pode en
 | Variable | Exemplo |
 | --- | --- |
 | `VITE_FIREBASE_API_KEY` | chave pública do app Web |
-| `VITE_FIREBASE_AUTH_DOMAIN` | `scoutsauto.firebaseapp.com` |
-| `VITE_FIREBASE_PROJECT_ID` | `scoutsauto` |
-| `VITE_FIREBASE_STORAGE_BUCKET` | `scoutsauto.appspot.com` |
+| `VITE_FIREBASE_AUTH_DOMAIN` | `scoutsauto.firebaseapp.com` (ou o domínio do projeto `scoutsauto-d3068`) |
+| `VITE_FIREBASE_PROJECT_ID` | `scoutsauto-d3068` |
+| `VITE_FIREBASE_STORAGE_BUCKET` | bucket do projeto `scoutsauto-d3068` |
 | `VITE_FIREBASE_MESSAGING_SENDER_ID` | número do projeto |
 | `VITE_FIREBASE_APP_ID` | `1:...:web:...` |
 | `VITE_FIREBASE_AUTH_X` | `true` só se o provedor X estiver ligado |
@@ -70,15 +72,25 @@ Tela única: **Continuar com Google**, **Continuar com X** (se habilitado) e **e
 
 ### IA na web
 
-- **Gemini é o padrão**, priorizando a classe **Flash-Lite** (barata/rápida). O app consulta o catálogo disponível para a conta em tempo de execução, mantém a escolha válida no armazenamento local e não fixa IDs ou versões no código.
+- **Gemini é o padrão**, priorizando **Flash-Lite**. Com credencial, o app consulta o catálogo da conta (`models.list`) e prefere um Flash-Lite disponível. **Sem chave, ou se a listagem falhar**, o seletor não fica em branco: usa o padrão `gemini-3.5-flash-lite` e um fallback curto (não é o inventário completo da Gemini). A geração ainda exige chave/token e avisa na hora.
 - Cada escotista cola a própria chave do [AI Studio](https://aistudio.google.com/app/apikey) (conta Google, sem cartão). A chave fica **só no localStorage**. Sem chave, a UI permanece e avisa na hora de gerar.
 - Se o login Google conseguir um token OAuth da API Gemini (`generative-language`), o site tenta usar; se CORS, app OAuth não verificado ou escopo faltar, volta para “colar chave do AI Studio”.
-- **xAI/Grok** é extra opcional: “Entrar com X / Grok” usa Device OAuth no navegador e os créditos da assinatura conectada. O proxy Cloudflare contorna somente o CORS do servidor de autenticação; access e refresh tokens ficam no `sessionStorage`, nunca no Firestore. O catálogo vem de `/v1/language-models`, sem IDs fixos. Uma chave xAI continua sendo alternativa opcional.
-- **Ollama local** só no desktop. Na web o controle aparece (paridade), com aviso.
+- **xAI/Grok na web (Device OAuth):** o botão “Entrar com X / Grok” **permanece**. O navegador **nunca** chama `auth.x.ai` / `api.x.ai` direto (isso vira “Failed to fetch” por CORS). Precisa do Worker em `workers/xai-proxy` e da variável pública `VITE_XAI_PROXY_URL`. Sem proxy, ou se o Worker estiver fora, a UI mostra alerta em português com o que publicar — nunca o erro cru em inglês. Em Configurações → IA dá para colar a URL do Worker neste navegador. `npm run dev:web` usa um proxy local (`/__xai_oauth`) sem vazar tokens. Tokens ficam no `sessionStorage` (aba), nunca no Firestore. O Client ID do Device OAuth é público; **não** há client secret no repositório. Catálogo e chat web passam pelo Worker (`/v1/language-models`, `/v1/chat/completions`). Uma chave xAI continua sendo alternativa.
+- **xAI/Grok no desktop:** o app Electron inicia `grok login --oauth` se o Grok Build estiver instalado (`%USERPROFILE%\.grok\bin\grok.exe` no Windows, `~/.grok/bin/grok` no resto, ou `GROK_EXECUTABLE`). Sem o binário, o status **não** afirma que o OAuth está pronto.
+- **Sem IA:** em Gerar, “Salvar planejamento” grava o rascunho à mão mesmo incompleto (avisos não bloqueiam). A IA é opcional (“Completar com IA”).
+- **Ollama local** no próprio site: sem chave. “Listar modelos” consulta a URL do daemon (padrão `http://localhost:11434`). Se o daemon estiver parado ou o CORS bloquear, o aviso pede que o Ollama aceite a origem do site — nunca “só no aplicativo desktop”. **Ollama Cloud** lista os modelos da chave colada. IDs Gemini não entram nesses seletores.
 
 Nenhuma chave de API entra no repositório nem no bundle do Pages.
 
-O Worker mínimo está em `workers/xai-proxy`. A URL publicada deve ser definida na variável GitHub Actions `VITE_XAI_PROXY_URL`.
+#### O que o Margus precisa configurar para o xOAuth web no Pages
+
+1. Publicar o Worker: `cd workers/xai-proxy && npx wrangler login && npm run deploy`.
+2. Copiar a URL (ex.: `https://paxtu-xai-proxy.<conta>.workers.dev`).
+3. No repositório GitHub: **Settings → Secrets and variables → Actions → Variables** → `VITE_XAI_PROXY_URL` = essa URL (variável pública, não secret).
+4. Garantir que o workflow `deploy-pages.yml` injeta `VITE_XAI_PROXY_URL` no `npm run build:web` (já está no YAML).
+5. Disparar o deploy do Pages. Sem esse rebuild, o site antigo continua sem proxy.
+
+O Worker aceita `https://mgbilibio.github.io` e qualquer `localhost` / `127.0.0.1`. Encaminha `/oauth/device`, `/oauth/token`, `/oauth/userinfo` para `auth.x.ai` e `/v1/language-models` + `/v1/chat/completions` para `api.x.ai`. Sem o Worker publicado **e** o rebuild do Pages com `VITE_XAI_PROXY_URL`, o botão web não inicia o Device OAuth.
 
 ### Dados da seção no site
 
@@ -111,7 +123,7 @@ npm install
 npm run dev
 ```
 
-O picker de perfis local (tela “Quem está usando hoje?”) permanece. O seletor Gemini (3.7 / 3.6 / Lite) é o mesmo da web; o padrão é Flash-Lite.
+O picker de perfis local (tela “Quem está usando hoje?”) permanece. O seletor Gemini é o mesmo da web: catálogo vivo da conta, com padrão Flash-Lite se a listagem falhar.
 
 Para Gemini no desktop, copie `.env.example` para `.env.local` e informe a chave **só na sua máquina**. Nunca publique `.env.local`.
 
@@ -124,11 +136,11 @@ npm run build:web
 
 ## Distribuição
 
-O release `20260904-1129` gera em `release/20260904-1129/`:
+O release `20260904-2048` (versão `2026.9.8`) gera em `release/20260904-2048/`:
 
-- `Paxtu AutoPlanner_Setup_20260904-1129.exe`: instalador.
-- `Paxtu AutoPlanner_Portable_20260904-1129.exe`: executável portátil.
-- `Paxtu AutoPlanner_20260904-1129_x64.zip`: pacote para descompactar e executar.
+- `Paxtu AutoPlanner_Setup_20260904-2048.exe`: instalador.
+- `Paxtu AutoPlanner_Portable_20260904-2048.exe`: executável portátil.
+- `Paxtu AutoPlanner_20260904-2048_x64.zip`: pacote para descompactar e executar.
 
 As três opções dispensam Node.js e Python na máquina da chefia. O arquivo `INICIAR_APP.bat` é apenas para desenvolvimento.
 

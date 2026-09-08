@@ -3,15 +3,19 @@ import { ScoutBranch, MeetingPlan, Activity, ObjectiveItem, CatalogAnnotation, A
 import { BRANCHES } from './constants';
 import { getPlanningCatalog, buildCatalogDigest } from './services/catalogService';
 import { generateScoutPlanRouted as generateScoutPlan, generateScoutActivityRouted as generateScoutActivity, getActiveProvider, getProviderById, normalizeProviderId, GEMINI_STUDIO_URL, GEMINI_KEY_HELP } from './services/llmProvider';
-import { getDefaultGeminiModel, pickPreferredGeminiModel, hasGeminiCredentials } from './services/geminiService';
+import { getDefaultGeminiModel, pickPreferredGeminiModel, hasGeminiCredentials, offlineGeminiModels } from './services/geminiService';
 import { pickXaiFastModel } from './services/xaiService';
+import { belongsInOllamaSelector } from './services/ollamaService';
 import { getAnnotations, saveAnnotation, getAppConfig, saveAppConfig, normalizePath, downloadProgressBackup, importProgressBackup, saveSectionAsync, getAllMemberBlocoStates, downloadLocalAppBackup, importLocalAppBackup, ensureWorkspaceMetadata, acquireSectionEditLock, releaseSectionEditLock, renewSectionEditLock, EditLock, getSectionsAsync, savePlanToCatalog, clearWebLocalOperationalData } from './services/storageService';
 import { getProgressionDetail } from './services/progressionDetailService';
 import { PlanDisplay } from './components/PlanDisplay';
 import { Catalog } from './components/Catalog';
 import { SetupWizard } from './components/SetupWizard';
 import { XaiOAuthPanel } from './components/XaiOAuthPanel';
-import { getXaiBrowserStatus } from './services/xaiOAuthSession';
+import { GrokDesktopOAuthPanel } from './components/GrokDesktopOAuthPanel';
+import { AiLoginStatusBar } from './components/AiLoginStatusBar';
+import { explainXaiWebAccessGap } from './services/xaiOAuthSession';
+import { notifyAiLoginChanged } from './services/aiLoginEvents';
 import { MembersManager } from './components/MembersManager';
 import { CalendarView } from './components/CalendarView';
 import { ReportsDashboard } from './components/reports/ReportsDashboard';
@@ -101,7 +105,7 @@ function App() {
     next.has(name) ? next.delete(name) : next.add(name);
     return next;
   });
-  const [availableModels, setAvailableModels] = useState<string[]>([]);
+  const [availableModels, setAvailableModels] = useState<string[]>(() => offlineGeminiModels());
   const [selectedModel, setSelectedModel] = useState<string>(getDefaultGeminiModel());
   const [isRefreshingModels, setIsRefreshingModels] = useState(false);
   
@@ -255,13 +259,18 @@ function App() {
       setAppConfig(tmp);
       setOllamaUrlInput(safeUrl);
     }
-    const provider = getProviderById('ollama');
+    const provider = getProviderById('ollama-local');
     const status = await provider.isReachable();
     setOllamaStatus(status);
     if (status.ok) {
-      const models = await provider.listModels();
+      const models = (await provider.listModels()).filter(belongsInOllamaSelector);
       setAvailableModels(models);
-      if (models.length > 0) setSelectedModel(models[0]);
+      const preferred = getAppConfig()?.ollamaModel;
+      if (models.length > 0) {
+        setSelectedModel(preferred && models.includes(preferred) ? preferred : models[0]);
+      }
+    } else {
+      setAvailableModels([]);
     }
     setTestingOllama(false);
   };
@@ -319,14 +328,66 @@ function App() {
   };
 
   const geminiSelectorModels = (): string[] => {
-    return availableModels.filter(id => /^gemini/i.test(id));
+    const live = availableModels.filter(id => /^gemini/i.test(id));
+    return live.length > 0 ? live : offlineGeminiModels();
+  };
+
+  const ollamaSelectorModels = (): string[] =>
+    availableModels.filter(belongsInOllamaSelector);
+
+  const persistOllamaDraft = (mode: 'local' | 'cloud'): void => {
+    if (!appConfig) return;
+    if (mode === 'cloud') {
+      const next = { ...appConfig, ollamaCloudApiKey: ollamaCloudKeyInput.trim() };
+      saveAppConfig(next);
+      setAppConfig(next);
+      return;
+    }
+    const url = normalizeOllamaBaseUrl(ollamaUrlInput) || 'http://localhost:11434';
+    const next = { ...appConfig, ollamaBaseUrl: url };
+    saveAppConfig(next);
+    setAppConfig(next);
+    setOllamaUrlInput(url);
+  };
+
+  const selectOllamaProvider = (id: 'ollama-local' | 'ollama-cloud'): void => {
+    setProviderInput(id);
+    setAvailableModels([]);
+    setOllamaStatus(null);
+    const kept = id === 'ollama-cloud' ? appConfig?.ollamaCloudModel : appConfig?.ollamaModel;
+    setSelectedModel(kept && belongsInOllamaSelector(kept) ? kept : '');
+  };
+
+  const resolveXaiAccessGap = async (): Promise<string | null> => {
+    const hasKey = Boolean(appConfig?.xaiApiKey || xaiKeyInput.trim());
+    if (isWebApp()) return explainXaiWebAccessGap(hasKey);
+    if (hasKey) return null;
+    const status = await window.fileSystem?.xaiOAuthStatus?.();
+    if (status?.connected) return null;
+    return status?.message
+      || 'Instale o Grok Build, entre com SuperGrok no aplicativo desktop, ou informe uma chave da API xAI.';
   };
 
   const fetchModels = async () => {
       const providerId = normalizeProviderId(providerInput || appConfig?.llmProvider || 'gemini');
       setIsRefreshingModels(true);
       try {
-          const models = await getProviderById(providerId).listModels();
+          if (providerId === 'ollama-cloud') persistOllamaDraft('cloud');
+          if (providerId === 'ollama-local') persistOllamaDraft('local');
+          if (providerId === 'ollama-local' || providerId === 'ollama-cloud') {
+              const status = await getProviderById(providerId).isReachable();
+              setOllamaStatus(status);
+              if (!status.ok) {
+                  setAvailableModels([]);
+                  const preferred = providerId === 'ollama-cloud' ? appConfig?.ollamaCloudModel : appConfig?.ollamaModel;
+                  setSelectedModel(preferred && belongsInOllamaSelector(preferred) ? preferred : '');
+                  return;
+              }
+          }
+          let models = await getProviderById(providerId).listModels();
+          if (providerId === 'ollama-local' || providerId === 'ollama-cloud') {
+              models = models.filter(belongsInOllamaSelector);
+          }
           setAvailableModels(models);
           if (models.length > 0) {
               if (providerId === 'gemini') {
@@ -337,6 +398,13 @@ function App() {
                   const preferred = providerId === 'ollama-cloud' ? appConfig?.ollamaCloudModel : appConfig?.ollamaModel;
                   setSelectedModel(preferred && models.includes(preferred) ? preferred : models[0]);
               }
+          } else if (providerId === 'gemini') {
+              const fallbacks = offlineGeminiModels();
+              setAvailableModels(fallbacks);
+              setSelectedModel(pickPreferredGeminiModel(fallbacks, appConfig?.geminiModel || selectedModel));
+          } else if (providerId === 'ollama-local' || providerId === 'ollama-cloud') {
+              const preferred = providerId === 'ollama-cloud' ? appConfig?.ollamaCloudModel : appConfig?.ollamaModel;
+              setSelectedModel(preferred && belongsInOllamaSelector(preferred) ? preferred : '');
           }
       } catch (e) { console.error(e); } finally { setIsRefreshingModels(false); }
   };
@@ -610,6 +678,24 @@ function App() {
     setOllamaContextInput(newConfig.ollamaGenerationContext || 262144);
     setOllamaOutputInput(newConfig.ollamaGenerationOutput || 12288);
     setShowSettings(false);
+    notifyAiLoginChanged();
+  };
+
+  const openAiSettings = (provider: 'gemini' | 'xai-oauth'): void => {
+    setSettingsTab('ia');
+    setProviderInput(provider);
+    setShowSettings(true);
+    setMobileNavOpen(false);
+    if (view !== 'PROFILE_CONFIG') return;
+    if (isWebApp() && currentUser) {
+      void enterAppAsWebUser(currentUser);
+      return;
+    }
+    if (currentUser && currentSection) {
+      setView(isOperationalProfile(currentUser) ? 'DASHBOARD' : 'REPORTS');
+      return;
+    }
+    if (currentUser) setView('HOME');
   };
 
   const initiateAddObjective = (item: CatalogItem, catName: string) => {
@@ -721,12 +807,7 @@ function App() {
       return;
     }
     const check = validateManualActivities(scheduleDraft);
-    if (check.errors.length) {
-      const message = check.errors.join('\n');
-      setError(message);
-      showToast('Complete os campos essenciais indicados.', 'error');
-      return;
-    }
+    // Não há check.errors: descrição/materiais/título vazios só entram em check.warnings.
     const manualPlan = buildManualMeetingPlan({
       branch: selectedBranch,
       activities: scheduleDraft,
@@ -744,22 +825,32 @@ function App() {
       authorName: currentUser?.name,
       sectionId: currentSection?.id,
     });
+    if (plan?.id) {
+      manualPlan.id = plan.id;
+      manualPlan.createdAt = plan.createdAt;
+    }
     setLoading(true);
     setError(null);
     try {
       const saved = await savePlanToCatalog(manualPlan, currentSection?.id);
       setPlan(saved);
       setCatalogPersist({ saved: true, error: null });
-      setStep(3);
-      const suffix = check.warnings.length ? ` ${check.warnings.length} aviso(s) não bloqueante(s).` : '';
-      finishProcessFeedback(`Planejamento salvo sem IA.${suffix}`);
+      const suffix = check.warnings.length
+        ? ` ${check.warnings.length} aviso(s) — pode completar depois.`
+        : '';
+      finishProcessFeedback(`Rascunho salvo. Continue editando.${suffix}`);
+      showToast(
+        check.warnings.length
+          ? 'Rascunho salvo. Os avisos não impedem a próxima gravação.'
+          : 'Planejamento salvo. Pode continuar editando.',
+        'info',
+      );
     } catch (saveErr: unknown) {
       const saveMsg = saveErr instanceof Error ? saveErr.message : String(saveErr);
       setPlan(manualPlan);
       setCatalogPersist({ saved: false, error: saveMsg });
-      setError(`Planejamento montado, mas não foi salvo no catálogo: ${saveMsg}`);
-      setStep(3);
-      showToast('Planejamento montado; houve falha ao salvar no catálogo.', 'error');
+      setError(`Rascunho montado, mas não foi salvo no catálogo: ${saveMsg}`);
+      showToast('O editor continua aberto; tente salvar de novo.', 'error');
     } finally {
       setLoading(false);
     }
@@ -824,12 +915,6 @@ function App() {
       setShowSettings(true);
       return;
     }
-    if (activeProvider === 'ollama-local' && isWebApp()) {
-      setError('Ollama local só funciona no aplicativo desktop. Neste site use Gemini (padrão) ou cole uma chave xAI.');
-      showToast('Ollama local só no desktop.', 'error');
-      setShowSettings(true);
-      return;
-    }
     if (activeProvider === 'ollama-local' && !(selectedModel || appConfig?.ollamaModel)) {
       setError('Nenhum modelo Ollama local selecionado.');
       showToast('Selecione um modelo Ollama.', 'error');
@@ -842,13 +927,9 @@ function App() {
       setShowSettings(true);
       return;
     }
-    if (activeProvider === 'xai-oauth' && !(
-      appConfig?.xaiApiKey
-      || xaiKeyInput.trim()
-      || getXaiBrowserStatus().connected
-      || window.fileSystem?.xaiOAuthRequest
-    )) {
-      setError('Entre com X/Grok neste navegador ou informe uma chave da API xAI.');
+    const xaiGap = await resolveXaiAccessGap();
+    if (activeProvider === 'xai-oauth' && xaiGap) {
+      setError(xaiGap);
       showToast('Configure o acesso xAI.', 'error');
       setShowSettings(true);
       return;
@@ -1001,6 +1082,14 @@ function App() {
       setError(`Configure a chave do Gemini em Configurações. ${GEMINI_KEY_HELP}`);
       showToast('Configure a chave do Gemini.', 'error');
       throw new Error('Configure a chave do Gemini.');
+    }
+    if (activeProvider === 'xai-oauth') {
+      const xaiGap = await resolveXaiAccessGap();
+      if (xaiGap) {
+        setError(xaiGap);
+        showToast('Configure o acesso xAI.', 'error');
+        throw new Error(xaiGap);
+      }
     }
     const effectiveMode = resolvePlanningMode(planningMode);
     const safeTotalDuration = clampSettingNumber(totalDuration, 120, 30, 600);
@@ -1192,6 +1281,9 @@ function App() {
     return (
       <div className="min-h-screen bg-gray-100 p-8">
         <div className="max-w-4xl mx-auto">
+          <div className="mb-4">
+            <AiLoginStatusBar variant="light" onOpenProvider={openAiSettings} />
+          </div>
           <button onClick={backFromStructure} className="mb-6 text-slate-500 hover:text-slate-800">
             {isWebApp() && currentUser ? '→ Entrar no aplicativo' : currentUser ? '← Voltar ao painel' : '← Voltar'}
           </button>
@@ -1230,6 +1322,7 @@ function App() {
   const displayTotalDuration = clampSettingNumber(totalDuration, 120, 30, 600);
   const displayActivityCount = Math.max(MIN_CORE_SLOTS, Math.round(Number.isFinite(activityCount) ? activityCount : DEFAULT_CORE_SLOTS));
   const draftCoreCount = scheduleDraft.filter(isCoreScheduleSlot).length;
+  const manualDraftCheck = validateManualActivities(scheduleDraft);
   const reservedFromDraft = scheduleDraft
     .filter(row => !isCoreScheduleSlot(row))
     .reduce((sum, row) => sum + (row.durationMinutes || 0), 0);
@@ -1363,11 +1456,11 @@ function App() {
                 <div className="mb-4 p-3 bg-slate-50 border border-slate-200 rounded-lg">
                     <p className="text-xs font-bold text-slate-700 mb-2">Provedor de IA <span className="font-normal text-slate-500">(preferência: Gemini → Ollama local → Cloud → xAI)</span></p>
                     <p className="text-[11px] text-slate-600 mb-2 leading-relaxed">
-                      Os modelos são consultados diretamente na conta do provedor; o Paxtu não fixa versões no código. Entre ou informe a chave para carregar o catálogo disponível.
+                      Gemini consulta o catálogo da conta e prefere Flash-Lite. Sem chave ou se a listagem falhar, o seletor mantém um padrão Flash-Lite para a UI não ficar em branco.
                       {isWebApp() && (
                         <> Cole a chave do{' '}
                           <a href={GEMINI_STUDIO_URL} target="_blank" rel="noreferrer" className="text-blue-700 underline">AI Studio</a>
-                          {' '}(fica só neste navegador). Na xAI, entre com X/Grok no próprio site ou use uma chave API.
+                          {' '}(fica só neste navegador). Na xAI, entre com X/Grok neste site (precisa do Worker <code>VITE_XAI_PROXY_URL</code>) ou use uma chave API.
                         </>
                       )}
                     </p>
@@ -1375,17 +1468,18 @@ function App() {
                         <label className="flex items-center gap-2 cursor-pointer">
                             <input type="radio" name="provider" checked={normalizeProviderId(providerInput) === 'gemini'} onChange={() => {
                               setProviderInput('gemini');
-                              setSelectedModel(appConfig?.geminiModel || getDefaultGeminiModel());
-                              setAvailableModels([]);
+                              const fallbacks = offlineGeminiModels();
+                              setAvailableModels(fallbacks);
+                              setSelectedModel(pickPreferredGeminiModel(fallbacks, appConfig?.geminiModel || getDefaultGeminiModel()));
                             }} />
                             <span className="text-sm"><strong>1. Gemini</strong> <span className="text-[10px] text-emerald-700 font-bold">recomendado</span> <span className="text-[10px] text-gray-500">— AI Studio, grátis/simples</span></span>
                         </label>
                         <label className="flex items-center gap-2 cursor-pointer">
-                            <input type="radio" name="provider" checked={normalizeProviderId(providerInput) === 'ollama-local'} onChange={() => setProviderInput('ollama-local')} />
-                            <span className="text-sm"><strong>2. Ollama local</strong> <span className="text-[10px] text-gray-500">— app + porta 11434{isWebApp() ? ' (só desktop)' : ''}</span></span>
+                            <input type="radio" name="provider" checked={normalizeProviderId(providerInput) === 'ollama-local'} onChange={() => selectOllamaProvider('ollama-local')} />
+                            <span className="text-sm"><strong>2. Ollama local</strong> <span className="text-[10px] text-gray-500">— daemon na máquina + porta 11434</span></span>
                         </label>
                         <label className="flex items-center gap-2 cursor-pointer">
-                            <input type="radio" name="provider" checked={normalizeProviderId(providerInput) === 'ollama-cloud'} onChange={() => setProviderInput('ollama-cloud')} />
+                            <input type="radio" name="provider" checked={normalizeProviderId(providerInput) === 'ollama-cloud'} onChange={() => selectOllamaProvider('ollama-cloud')} />
                             <span className="text-sm"><strong>3. Ollama Cloud</strong> <span className="text-[10px] text-gray-500">— API web + chave ollama.com</span></span>
                         </label>
                         <label className="flex items-center gap-2 cursor-pointer">
@@ -1417,31 +1511,29 @@ function App() {
 
                     {normalizeProviderId(providerInput) === 'ollama-local' && (
                         <div className="space-y-2">
-                            {isWebApp() && (
-                              <p className="text-[11px] text-amber-800 bg-amber-50 border border-amber-200 rounded p-2">
-                                Ollama local (localhost:11434) só funciona no aplicativo desktop. Neste site escolha Gemini ou cole uma chave xAI / Ollama Cloud.
-                              </p>
-                            )}
-                            <a href="https://ollama.com/download" target="_blank" rel="noreferrer" className="inline-block bg-emerald-700 text-white px-3 py-1 rounded font-bold text-[11px]">Baixar Ollama</a>
-                            <p className="text-[11px] text-gray-600">
-                                Modelos locais ou <code className="bg-gray-100 px-1">:cloud</code> via app (<code className="bg-gray-100 px-1">ollama signin</code>).
+                            <p className="text-[11px] text-slate-600">
+                                Sem chave. O daemon Ollama precisa estar rodando na URL abaixo. “Listar modelos” consulta essa URL e preenche o seletor com o que o daemon devolver.
                             </p>
                             <div className="flex gap-2">
                                 <input type="text" value={ollamaUrlInput} onChange={(e) => setOllamaUrlInput(e.target.value)} className="flex-1 p-2 border rounded text-sm" placeholder="http://localhost:11434" />
-                                <button onClick={testOllamaConnection} disabled={testingOllama} className="bg-emerald-700 hover:bg-emerald-600 disabled:bg-slate-400 text-white px-3 py-1 rounded font-bold text-xs">
+                                <button type="button" onClick={() => { void testOllamaConnection(); }} disabled={testingOllama || isRefreshingModels} className="bg-emerald-700 hover:bg-emerald-600 disabled:bg-slate-400 text-white px-3 py-1 rounded font-bold text-xs">
                                     {testingOllama ? '...' : 'Testar'}
                                 </button>
                             </div>
                             {ollamaStatus && (
                                 <p className={`text-[11px] ${ollamaStatus.ok ? 'text-green-700' : 'text-red-700'}`}>
-                                    {ollamaStatus.ok ? `✓ Conectado · ${availableModels.length} modelo(s)` : `✗ ${ollamaStatus.error}`}
+                                    {ollamaStatus.ok ? `✓ Conectado · ${ollamaSelectorModels().length} modelo(s)` : `✗ ${ollamaStatus.error}`}
                                 </p>
                             )}
-                            {availableModels.length > 0 && (
-                                <select value={selectedModel} onChange={(e) => setSelectedModel(e.target.value)} className="w-full p-2 border rounded text-sm">
-                                    {availableModels.map(m => <option key={m} value={m}>{m}</option>)}
-                                </select>
-                            )}
+                            <LlmModelControls
+                              selectId="settings-ollama-local-model"
+                              provider="ollama-local"
+                              models={ollamaSelectorModels()}
+                              value={selectedModel}
+                              onChange={(id) => persistSelectedModel(id, 'ollama-local')}
+                              refreshing={isRefreshingModels}
+                              onRefresh={() => { void fetchModels(); }}
+                            />
                             <div className="grid grid-cols-2 gap-2 pt-2">
                                 <label className="text-[11px] font-bold text-slate-700">
                                     Contexto
@@ -1460,44 +1552,31 @@ function App() {
                             <a href="https://ollama.com/settings/keys" target="_blank" rel="noreferrer" className="inline-block bg-teal-700 text-white px-3 py-1 rounded font-bold text-[11px]">Criar chave ollama.com</a>
                             <p className="text-[11px] text-gray-600">Chamada direta à API web (não precisa do app Ollama rodando).</p>
                             <input type="password" value={ollamaCloudKeyInput} onChange={(e) => setOllamaCloudKeyInput(e.target.value)} className="w-full p-2 border rounded text-sm" placeholder="API Key Ollama Cloud" />
-                            <button onClick={async () => {
-                              // salva key temporariamente para o teste
-                              if (appConfig) {
-                                const tmp = { ...appConfig, llmProvider: 'ollama-cloud' as const, ollamaCloudApiKey: ollamaCloudKeyInput.trim() };
-                                saveAppConfig(tmp);
-                                setAppConfig(tmp);
-                              }
-                              setTestingOllama(true);
-                              const status = await getProviderById('ollama-cloud').isReachable();
-                              setOllamaStatus(status);
-                              if (status.ok) {
-                                const models = await getProviderById('ollama-cloud').listModels();
-                                setAvailableModels(models);
-                                if (models[0]) setSelectedModel(models[0]);
-                              }
-                              setTestingOllama(false);
-                            }} disabled={testingOllama} className="bg-teal-700 hover:bg-teal-600 disabled:bg-slate-400 text-white px-3 py-1 rounded font-bold text-xs">
-                              {testingOllama ? '...' : 'Testar Cloud'}
-                            </button>
                             {ollamaStatus && (
                                 <p className={`text-[11px] ${ollamaStatus.ok ? 'text-green-700' : 'text-red-700'}`}>
-                                    {ollamaStatus.ok ? `✓ Cloud · ${availableModels.length} modelo(s)` : `✗ ${ollamaStatus.error}`}
+                                    {ollamaStatus.ok ? `✓ Cloud · ${ollamaSelectorModels().length} modelo(s)` : `✗ ${ollamaStatus.error}`}
                                 </p>
                             )}
-                            {availableModels.length > 0 && (
-                                <select value={selectedModel} onChange={(e) => setSelectedModel(e.target.value)} className="w-full p-2 border rounded text-sm">
-                                    {availableModels.map(m => <option key={m} value={m}>{m}</option>)}
-                                </select>
-                            )}
+                            <LlmModelControls
+                              selectId="settings-ollama-cloud-model"
+                              provider="ollama-cloud"
+                              models={ollamaSelectorModels()}
+                              value={selectedModel}
+                              onChange={(id) => persistSelectedModel(id, 'ollama-cloud')}
+                              refreshing={isRefreshingModels}
+                              onRefresh={() => { void fetchModels(); }}
+                            />
                         </div>
                     )}
 
                     {normalizeProviderId(providerInput) === 'xai-oauth' && (
                         <div className="space-y-2">
                           <p className="text-[11px] text-slate-600 leading-relaxed">
-                            Entre com sua conta X/Grok para usar os créditos da assinatura. O catálogo de modelos vem da conta autenticada e não de uma lista fixa do ScoutsAuto.
+                            Entre com sua conta X/Grok para usar os créditos da assinatura. O catálogo de modelos vem da conta autenticada. No site, o Device OAuth exige o Worker Cloudflare (<code>VITE_XAI_PROXY_URL</code>); no desktop, o cliente Grok Build.
                           </p>
-                          {isWebApp() && <XaiOAuthPanel onConnected={() => void fetchModels()} />}
+                          {isWebApp()
+                            ? <XaiOAuthPanel onConnected={() => void fetchModels()} />
+                            : <GrokDesktopOAuthPanel />}
                           <input type="password" value={xaiKeyInput} onChange={(e) => setXaiKeyInput(e.target.value)} className="w-full p-2 border rounded text-sm" placeholder="API Key xAI (opcional quando OAuth estiver conectado)" />
                           <LlmModelControls
                             selectId="settings-xai-model"
@@ -1702,6 +1781,7 @@ function App() {
             >
               {activeGeneratorSystem === 'POR_2025' ? 'POR 2025+' : 'POR 2020 (legado)'}
             </span>
+            <AiLoginStatusBar variant="dark" onOpenProvider={openAiSettings} />
           </div>
           <button
             className="lg:hidden text-gray-300 hover:text-white p-2 text-xl"
@@ -1884,7 +1964,10 @@ function App() {
                           models={
                             normalizeProviderId(appConfig?.llmProvider) === 'gemini'
                               ? geminiSelectorModels()
-                              : availableModels
+                              : normalizeProviderId(appConfig?.llmProvider) === 'ollama-local'
+                                || normalizeProviderId(appConfig?.llmProvider) === 'ollama-cloud'
+                                ? ollamaSelectorModels()
+                                : availableModels
                           }
                           value={selectedModel}
                           onChange={(id) => persistSelectedModel(id, normalizeProviderId(appConfig?.llmProvider))}
@@ -2056,7 +2139,7 @@ function App() {
                             <section className="space-y-3">
                               <div>
                                 <p className="text-xs font-black uppercase text-slate-800">Detalhes das atividades</p>
-                                <p className="text-[11px] text-slate-500">Só o essencial fica aberto. Preparação, segurança e referências documentais são opcionais.</p>
+                                <p className="text-[11px] text-slate-500">Pode gravar o rascunho incompleto e ir completando. Preparação, segurança e referências documentais são opcionais.</p>
                               </div>
                               {scheduleDraft.map((activity, rowIndex) => {
                                 if (!isCoreScheduleSlot(activity)) return null;
@@ -2092,6 +2175,17 @@ function App() {
                                 <PlanAttachmentsControl attachments={planAttachments} onChange={setPlanAttachments} />
                               </div>
                             </details>
+                            {manualDraftCheck.warnings.length > 0 && (
+                              <div className="bg-amber-50 border border-amber-200 text-amber-950 text-[11px] rounded-lg p-2 whitespace-pre-wrap" role="status">
+                                <p className="font-bold mb-1">Ainda incompleto — “Salvar planejamento” grava o rascunho assim mesmo:</p>
+                                {manualDraftCheck.warnings.join('\n')}
+                              </div>
+                            )}
+                            {catalogPersist.saved && !catalogPersist.error && (
+                              <p className="text-[11px] font-bold text-green-700" role="status">
+                                Rascunho gravado no catálogo. Pode continuar editando e salvar de novo.
+                              </p>
+                            )}
                             {error && (
                               <div className="bg-red-50 border border-red-200 text-red-800 text-[11px] rounded-lg p-2 whitespace-pre-wrap" role="alert">
                                 {error}

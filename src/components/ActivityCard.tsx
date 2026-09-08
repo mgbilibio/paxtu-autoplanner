@@ -42,8 +42,8 @@ export const ActivityCard: React.FC<Props> = ({ activity, index }) => {
         <p className="whitespace-pre-line">{activity.description}</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm bg-gray-50 p-3 rounded-md">
-        <div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm bg-gray-50 p-3 rounded-md min-w-0">
+        <div className="min-w-0">
           <strong className="block text-gray-700 mb-1">🛠️ Materiais:</strong>
           {activity.materials.length > 0 ? (
             <ul className="list-disc list-inside text-gray-600 pl-1">
@@ -53,9 +53,9 @@ export const ActivityCard: React.FC<Props> = ({ activity, index }) => {
             <span className="text-gray-400 italic">Nenhum material específico.</span>
           )}
         </div>
-        <div>
+        <div className="min-w-0">
           <strong className="block text-gray-700 mb-1">🎯 Progressão/Paxtu:</strong>
-          <p className="text-gray-600 font-medium">
+          <p className="text-gray-600 font-medium wrap-por-text">
              {activity.progressionObjective}
           </p>
         </div>

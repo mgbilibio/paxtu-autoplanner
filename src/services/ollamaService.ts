@@ -13,6 +13,11 @@ import { extractJson } from './llmJson';
 import { attachmentsToPromptBlock } from './planAttachments';
 import { activityBriefsPromptBlock, buildSingleActivityPrompt, PRACTICAL_CONTENT_RULES } from './activityBriefs';
 import type { PlanAttachment } from './planAttachments';
+import { belongsInOllamaSelector } from './ollamaModels';
+import { explainOllamaLocalFailure } from './ollamaLocalAccess';
+
+export { belongsInOllamaSelector } from './ollamaModels';
+export { explainOllamaLocalFailure } from './ollamaLocalAccess';
 
 const DEFAULT_BASE_URL = 'http://localhost:11434';
 const OLLAMA_CLOUD_BASE_URL = 'https://ollama.com';
@@ -36,22 +41,29 @@ const OLLAMA_KEEP_ALIVE = '20m';
 const LOCAL_CHAT_TIMEOUT_MS = 8 * 60 * 1000;
 const CLOUD_CHAT_TIMEOUT_MS = 15 * 60 * 1000;
 
+export interface OllamaAccessOptions {
+  mode?: 'local' | 'cloud';
+  baseUrl?: string;
+  cloudApiKey?: string;
+}
+
 /** Normaliza id de provider (ollama legado = local). */
-export const resolveOllamaMode = (): 'local' | 'cloud' => {
+export const resolveOllamaMode = (options?: OllamaAccessOptions): 'local' | 'cloud' => {
+  if (options?.mode) return options.mode;
   const p = getAppConfig()?.llmProvider;
   if (p === 'ollama-cloud') return 'cloud';
   return 'local';
 };
 
-const getBaseUrl = (): string => {
-  if (resolveOllamaMode() === 'cloud') return OLLAMA_CLOUD_BASE_URL;
-  const config = getAppConfig();
-  return normalizeOllamaBaseUrl(config?.ollamaBaseUrl) || DEFAULT_BASE_URL;
+const getBaseUrl = (options?: OllamaAccessOptions): string => {
+  if (resolveOllamaMode(options) === 'cloud') return OLLAMA_CLOUD_BASE_URL;
+  const raw = options?.baseUrl ?? getAppConfig()?.ollamaBaseUrl;
+  return normalizeOllamaBaseUrl(raw) || DEFAULT_BASE_URL;
 };
 
-const getAuthBearer = (): string | undefined => {
-  if (resolveOllamaMode() !== 'cloud') return undefined;
-  const key = (getAppConfig()?.ollamaCloudApiKey || '').trim();
+const getAuthBearer = (options?: OllamaAccessOptions): string | undefined => {
+  if (resolveOllamaMode(options) !== 'cloud') return undefined;
+  const key = (options?.cloudApiKey ?? getAppConfig()?.ollamaCloudApiKey ?? '').trim();
   if (!key) return undefined;
   return key.startsWith('Bearer ') ? key : `Bearer ${key}`;
 };
@@ -144,53 +156,64 @@ const httpRequest = async (
   method: string,
   url: string,
   body?: unknown,
-  timeoutMs?: number
+  timeoutMs?: number,
+  options?: OllamaAccessOptions,
 ): Promise<{ ok: boolean; status: number; body: string; error?: string }> => {
   const bodyStr = body !== undefined ? JSON.stringify(body) : undefined;
-  const auth = getAuthBearer();
+  const auth = getAuthBearer(options); // default: config salva; listagem passa options no wrapper abaixo
   if (window.fileSystem?.ollamaRequest) {
     return await window.fileSystem.ollamaRequest(method, url, bodyStr, timeoutMs, auth);
   }
   const headers: Record<string, string> = {};
   if (bodyStr) headers['Content-Type'] = 'application/json';
   if (auth) headers['Authorization'] = auth;
-  const r = await fetchWithTimeout(url, {
-    method,
-    headers: Object.keys(headers).length ? headers : undefined,
-    body: bodyStr,
-  }, timeoutMs ?? LOCAL_CHAT_TIMEOUT_MS);
-  const text = await r.text();
-  return { ok: r.ok, status: r.status, body: text };
+  try {
+    const r = await fetchWithTimeout(url, {
+      method,
+      headers: Object.keys(headers).length ? headers : undefined,
+      body: bodyStr,
+    }, timeoutMs ?? LOCAL_CHAT_TIMEOUT_MS);
+    const text = await r.text();
+    return { ok: r.ok, status: r.status, body: text };
+  } catch (error) {
+    const name = error instanceof Error ? error.name : '';
+    const message = error instanceof Error ? error.message : String(error);
+    return {
+      ok: false,
+      status: 0,
+      body: '',
+      error: name === 'AbortError' ? 'timeout' : (message || 'Failed to fetch'),
+    };
+  }
 };
 
 export interface OllamaTagsResponse {
   models: Array<{ name: string; modified_at: string; size: number }>;
 }
 
-export const isReachable = async (): Promise<{ ok: boolean; error?: string }> => {
-  if (resolveOllamaMode() === 'cloud' && !getAuthBearer()) {
+export const isReachable = async (options?: OllamaAccessOptions): Promise<{ ok: boolean; error?: string }> => {
+  const mode = resolveOllamaMode(options);
+  if (mode === 'cloud' && !getAuthBearer(options)) {
     return { ok: false, error: 'Informe a chave da API Ollama Cloud (ollama.com/settings/keys).' };
   }
-  const url = `${getBaseUrl()}/api/tags`;
-  const r = await httpRequest('GET', url, undefined, resolveOllamaMode() === 'cloud' ? 8000 : 2500);
+  const base = getBaseUrl(options);
+  const url = `${base}/api/tags`;
+  const r = await httpRequest('GET', url, undefined, mode === 'cloud' ? 8000 : 2500, options);
   if (r.ok) return { ok: true };
   if (r.status === 401) return { ok: false, error: 'Chave Ollama Cloud inválida ou sem permissão (HTTP 401).' };
-  if (r.error === 'timeout') {
-    return {
-      ok: false,
-      error:
-        resolveOllamaMode() === 'cloud'
-          ? 'Timeout ao contatar ollama.com.'
-          : `Timeout — Ollama não está rodando em ${getBaseUrl()}?`,
-    };
+  if (mode === 'cloud') {
+    if (r.error === 'timeout' || r.error === 'AbortError') {
+      return { ok: false, error: 'Timeout ao contatar ollama.com. Confira a chave e tente de novo.' };
+    }
+    if (r.error) return { ok: false, error: `Não foi possível falar com ollama.com: ${r.error}` };
+    return { ok: false, error: `Ollama Cloud respondeu HTTP ${r.status}` };
   }
-  if (r.error) return { ok: false, error: `Não foi possível conectar: ${r.error}` };
-  return { ok: false, error: `Ollama respondeu HTTP ${r.status}` };
+  return { ok: false, error: explainOllamaLocalFailure(base, r.error || (r.status ? `HTTP ${r.status}` : undefined)) };
 };
 
-export const listModels = async (): Promise<string[]> => {
-  const url = `${getBaseUrl()}/api/tags`;
-  const r = await httpRequest('GET', url, undefined, 2500);
+export const listModels = async (options?: OllamaAccessOptions): Promise<string[]> => {
+  const url = `${getBaseUrl(options)}/api/tags`;
+  const r = await httpRequest('GET', url, undefined, resolveOllamaMode(options) === 'cloud' ? 8000 : 2500, options);
   if (!r.ok) return [];
   let data: OllamaTagsResponse;
   try {
@@ -200,11 +223,12 @@ export const listModels = async (): Promise<string[]> => {
     return [];
   }
   if (!data?.models) return [];
-  // Cloud primeiro; manifests minúsculos (size ~centenas de bytes) também sobem.
-  const ranked = data.models.map(m => ({
-    name: m.name,
-    cloudish: isCloudModel(m.name) || (typeof m.size === 'number' && m.size > 0 && m.size < 50_000),
-  }));
+  const ranked = data.models
+    .map(m => ({
+      name: m.name,
+      cloudish: isCloudModel(m.name) || (typeof m.size === 'number' && m.size > 0 && m.size < 50_000),
+    }))
+    .filter(item => belongsInOllamaSelector(item.name));
   ranked.sort((a, b) => {
     if (a.cloudish !== b.cloudish) return a.cloudish ? -1 : 1;
     return a.name.localeCompare(b.name);

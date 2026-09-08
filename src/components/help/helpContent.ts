@@ -92,11 +92,11 @@ export const TELA_HELP: Record<string, ScreenHelp> = {
     dicas: [
       'O catálogo de progressão é opcional e serve para escolher referências reais.',
       'A ordem e as durações do cronograma determinam o roteiro.',
-      '“Salvar planejamento” funciona sem IA; “Completar com IA” enriquece o rascunho.',
+      '“Salvar planejamento” grava o rascunho mesmo incompleto (pode ir completando). “Completar com IA” enriquece o rascunho.',
       'No cronograma: início, duração, item e responsável. Abertura, intervalos, itens fixos e encerramento ficam preservados.',
       'Em cada atividade, detalhe objetivo, modo de fazer, materiais, progressão e recados para a chefia. “Refazer esta” altera só aquela faixa.',
       'Anexos de contexto: txt, md, html, imagem ou PDF. Ficam só nesta sessão.',
-      'A IA padrão é Gemini (chave em Configurações → IA, só neste navegador). Na xAI, entre com X/Grok no site ou informe uma chave API.',
+      'A IA padrão é Gemini Flash-Lite (chave em Configurações → IA, só neste navegador). Na xAI, entre com X/Grok no site (o administrador precisa ter publicado o Worker) ou informe uma chave API.',
     ],
   },
   CYCLE: {
@@ -203,7 +203,7 @@ export const FAQ: HelpFaq[] = [
   },
   {
     q: 'Como planejo a reunião de sábado?',
-    a: 'Gerar → monte o cronograma e detalhe cada atividade. O essencial é nome, objetivo curto, como fazer, materiais, progressão quando houver e informação para a chefia. Use “Salvar planejamento” sem IA ou “Completar com IA” como apoio. No resultado, “Refazer esta” altera apenas uma atividade. O roteiro salvo aparece em Roteiros e na Agenda.',
+    a: 'Gerar → monte o cronograma e detalhe cada atividade. Pode salvar o rascunho incompleto e ir preenchendo. Use “Salvar planejamento” sem IA ou “Completar com IA” como apoio. No resultado, “Refazer esta” altera apenas uma atividade. O roteiro salvo aparece em Roteiros e na Agenda.',
   },
   {
     q: 'Como edito ou tiro o acesso de alguém?',
@@ -211,7 +211,7 @@ export const FAQ: HelpFaq[] = [
   },
   {
     q: 'Qual IA o site usa?',
-    a: 'Gemini é o padrão. Cole a chave do AI Studio em Configurações → IA (fica só neste navegador). “Ver cota / uso” abre o AI Studio. Na xAI, entre com X/Grok no site ou informe uma chave API. Ollama local não roda neste site.',
+    a: 'Gemini é o padrão e prefere Flash-Lite. Cole a chave do AI Studio em Configurações → IA (fica só neste navegador). Sem chave o seletor não some; a geração avisa. “Ver cota / uso” abre o AI Studio. Na xAI, entre com X/Grok no site: o Pages precisa do Worker Cloudflare e de VITE_XAI_PROXY_URL (ou cole a URL do Worker em Configurações). Sem isso o navegador é bloqueado por CORS. Também vale uma chave API. Ollama Cloud e Ollama local têm “Listar modelos”: Cloud usa a chave ollama.com; local consulta a URL do daemon (padrão http://localhost:11434), sem chave. Se o daemon estiver parado ou o CORS bloquear, o aviso pede que o Ollama aceite a origem do site.',
   },
   {
     q: 'Posso usar sem internet?',

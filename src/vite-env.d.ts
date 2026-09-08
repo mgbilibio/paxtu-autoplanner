@@ -75,7 +75,13 @@ interface Window {
     openGuide?: () => Promise<{ ok: boolean; url?: string; error?: string }>
     ollamaRequest: (method: string, url: string, body?: string, timeoutMs?: number, authBearer?: string) => Promise<{ ok: boolean; status: number; body: string; error?: string }>
     cancelOllamaRequests?: () => Promise<{ ok: boolean }>
-    xaiOAuthStatus?: () => Promise<{ connected: boolean; expiresAt?: string }>
+    xaiOAuthStatus?: () => Promise<{
+      connected: boolean
+      expiresAt?: string
+      installed?: boolean
+      executable?: string
+      message?: string
+    }>
     xaiOAuthLogin?: () => Promise<{ ok: boolean; message?: string; error?: string }>
     xaiOAuthRequest?: (prompt: string, model?: string) => Promise<{ ok: boolean; body: string; error?: string }>
     searchLibrary?: (query: string, limit?: number) => Promise<{
