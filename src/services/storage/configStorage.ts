@@ -1,5 +1,5 @@
 import { AppConfig } from '../../types';
-import { normalizeOllamaBaseUrl } from '../ollamaUrlSecurity';
+import { DEFAULT_OLLAMA_LOCAL_URL, normalizeOllamaBaseUrl } from '../ollamaUrlSecurity';
 
 export const CONFIG_KEY = 'PAXTU_AUTOPLANNER_CONFIG';
 
@@ -29,7 +29,7 @@ export const getAppConfig = (): AppConfig | null => {
     return {
       ...parsed,
       dataFolder: normalizePath(parsed.dataFolder || ''),
-      ollamaBaseUrl: normalizeOllamaBaseUrl(parsed.ollamaBaseUrl) || 'http://localhost:11434',
+      ollamaBaseUrl: normalizeOllamaBaseUrl(parsed.ollamaBaseUrl) || DEFAULT_OLLAMA_LOCAL_URL,
       ollamaGenerationContext: ctx,
       ollamaGenerationOutput: out,
       syncMode: parsed.syncMode === 'sharedFolder' ? 'sharedFolder' : 'local',

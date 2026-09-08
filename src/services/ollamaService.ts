@@ -8,19 +8,19 @@ import { Activity, ActivityEvaluation, GenerateScoutActivityParams, GeneratorPar
 import { getAppConfig } from './storageService';
 import { buildManuaisContextForBranch } from '../data/manuaisReferencia';
 import { normalizeActivityForUse, normalizePlanForUse } from './planNormalizationService';
-import { normalizeOllamaBaseUrl } from './ollamaUrlSecurity';
+import { DEFAULT_OLLAMA_LOCAL_URL, OLLAMA_CLOUD_BASE_URL, normalizeOllamaBaseUrl } from './ollamaUrlSecurity';
 import { extractJson } from './llmJson';
 import { attachmentsToPromptBlock } from './planAttachments';
 import { activityBriefsPromptBlock, buildSingleActivityPrompt, PRACTICAL_CONTENT_RULES } from './activityBriefs';
 import type { PlanAttachment } from './planAttachments';
 import { belongsInOllamaSelector } from './ollamaModels';
-import { explainOllamaLocalFailure } from './ollamaLocalAccess';
+import { explainOllamaCloudFailure, explainOllamaLocalFailure } from './ollamaLocalAccess';
+import { buildOllamaListRequest } from './ollamaListRequest';
 
 export { belongsInOllamaSelector } from './ollamaModels';
-export { explainOllamaLocalFailure } from './ollamaLocalAccess';
-
-const DEFAULT_BASE_URL = 'http://localhost:11434';
-const OLLAMA_CLOUD_BASE_URL = 'https://ollama.com';
+export { explainOllamaCloudFailure, explainOllamaLocalFailure } from './ollamaLocalAccess';
+export { DEFAULT_OLLAMA_LOCAL_URL, OLLAMA_CLOUD_BASE_URL } from './ollamaUrlSecurity';
+export { buildOllamaListRequest } from './ollamaListRequest';
 const DEFAULT_TIMEOUT_MS = 2000;
 
 /** Contexto padrão: 256k (cloud-friendly). Local ainda pode baixar nas configurações. */
@@ -58,7 +58,7 @@ export const resolveOllamaMode = (options?: OllamaAccessOptions): 'local' | 'clo
 const getBaseUrl = (options?: OllamaAccessOptions): string => {
   if (resolveOllamaMode(options) === 'cloud') return OLLAMA_CLOUD_BASE_URL;
   const raw = options?.baseUrl ?? getAppConfig()?.ollamaBaseUrl;
-  return normalizeOllamaBaseUrl(raw) || DEFAULT_BASE_URL;
+  return normalizeOllamaBaseUrl(raw) || DEFAULT_OLLAMA_LOCAL_URL;
 };
 
 const getAuthBearer = (options?: OllamaAccessOptions): string | undefined => {
@@ -67,6 +67,12 @@ const getAuthBearer = (options?: OllamaAccessOptions): string | undefined => {
   if (!key) return undefined;
   return key.startsWith('Bearer ') ? key : `Bearer ${key}`;
 };
+
+const listAccessFrom = (options?: OllamaAccessOptions) => ({
+  mode: resolveOllamaMode(options),
+  baseUrl: options?.baseUrl ?? getAppConfig()?.ollamaBaseUrl,
+  cloudApiKey: options?.cloudApiKey ?? getAppConfig()?.ollamaCloudApiKey,
+});
 
 const resolveOllamaModel = (modelId?: string): string => {
   if (modelId) return modelId;
@@ -161,8 +167,9 @@ const httpRequest = async (
 ): Promise<{ ok: boolean; status: number; body: string; error?: string }> => {
   const bodyStr = body !== undefined ? JSON.stringify(body) : undefined;
   const auth = getAuthBearer(options); // default: config salva; listagem passa options no wrapper abaixo
-  if (window.fileSystem?.ollamaRequest) {
-    return await window.fileSystem.ollamaRequest(method, url, bodyStr, timeoutMs, auth);
+  const ipc = typeof window !== 'undefined' ? window.fileSystem?.ollamaRequest : undefined;
+  if (ipc) {
+    return await ipc(method, url, bodyStr, timeoutMs, auth);
   }
   const headers: Record<string, string> = {};
   if (bodyStr) headers['Content-Type'] = 'application/json';
@@ -205,14 +212,14 @@ export const isReachable = async (options?: OllamaAccessOptions): Promise<{ ok: 
     if (r.error === 'timeout' || r.error === 'AbortError') {
       return { ok: false, error: 'Timeout ao contatar ollama.com. Confira a chave e tente de novo.' };
     }
-    if (r.error) return { ok: false, error: `Não foi possível falar com ollama.com: ${r.error}` };
+    if (r.error) return { ok: false, error: explainOllamaCloudFailure(r.error) };
     return { ok: false, error: `Ollama Cloud respondeu HTTP ${r.status}` };
   }
   return { ok: false, error: explainOllamaLocalFailure(base, r.error || (r.status ? `HTTP ${r.status}` : undefined)) };
 };
 
 export const listModels = async (options?: OllamaAccessOptions): Promise<string[]> => {
-  const url = `${getBaseUrl(options)}/api/tags`;
+  const { url } = buildOllamaListRequest(listAccessFrom(options));
   const r = await httpRequest('GET', url, undefined, resolveOllamaMode(options) === 'cloud' ? 8000 : 2500, options);
   if (!r.ok) return [];
   let data: OllamaTagsResponse;

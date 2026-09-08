@@ -34,7 +34,7 @@ import { hideWelcomePermanently, shouldShowWelcome } from './utils/welcomePrefer
 import { ConfirmDialog } from './components/ConfirmDialog';
 import { canViewAccessLog, getPermissions, getRoleLabel, isOperationalProfile } from './services/roleService';
 import { SectionProgressOverview } from './components/SectionProgressOverview';
-import { normalizeOllamaBaseUrl } from './services/ollamaUrlSecurity';
+import { DEFAULT_OLLAMA_LOCAL_URL, normalizeOllamaBaseUrl } from './services/ollamaUrlSecurity';
 import { buildCustomObjective } from './services/customObjectiveMatcher';
 import { applyMeetingHeader, applyOperationalSchedule, briefsFromCronograma, buildDefaultCronograma, cycleLabelFromDate, DEFAULT_CORE_SLOTS, defaultScheduleOptions, estimateOperationalMinutes, isCoreScheduleSlot, MAX_CORE_SLOTS, mergeGeneratedIntoCronograma, MIN_CORE_SLOTS, stampActivities, stampScheduleTimes, syncCoreSlotCount, tomorrowISODate } from './services/meetingScheduleService';
 import { hasAnyActivityBrief, trimActivityBriefs } from './services/activityBriefs';
@@ -122,7 +122,7 @@ function App() {
   const [htmlPreview, setHtmlPreview] = useState<{ fileName: string; html: string } | null>(null);
   // Providers: Gemini (1º) → Ollama local → Ollama Cloud → xAI OAuth/API
   const [providerInput, setProviderInput] = useState<LlmProviderId>('gemini');
-  const [ollamaUrlInput, setOllamaUrlInput] = useState<string>('http://localhost:11434');
+  const [ollamaUrlInput, setOllamaUrlInput] = useState<string>(DEFAULT_OLLAMA_LOCAL_URL);
   const [ollamaCloudKeyInput, setOllamaCloudKeyInput] = useState<string>('');
   const [xaiKeyInput, setXaiKeyInput] = useState<string>('');
   const [ollamaContextInput, setOllamaContextInput] = useState<number>(262144);
@@ -196,7 +196,7 @@ function App() {
         setApiKeyInput(config.apiKey);
         setFolderInput(config.dataFolder);
         setProviderInput(normalizeProviderId(config.llmProvider));
-        setOllamaUrlInput(config.ollamaBaseUrl || 'http://localhost:11434');
+        setOllamaUrlInput(config.ollamaBaseUrl || DEFAULT_OLLAMA_LOCAL_URL);
         setOllamaCloudKeyInput(config.ollamaCloudApiKey || '');
         setXaiKeyInput(config.xaiApiKey || '');
         setOllamaContextInput(config.ollamaGenerationContext || 262144);
@@ -342,19 +342,35 @@ function App() {
       setAppConfig(next);
       return;
     }
-    const url = normalizeOllamaBaseUrl(ollamaUrlInput) || 'http://localhost:11434';
+    const url = normalizeOllamaBaseUrl(ollamaUrlInput) || DEFAULT_OLLAMA_LOCAL_URL;
     const next = { ...appConfig, ollamaBaseUrl: url };
     saveAppConfig(next);
     setAppConfig(next);
     setOllamaUrlInput(url);
   };
 
-  const selectOllamaProvider = (id: 'ollama-local' | 'ollama-cloud'): void => {
-    setProviderInput(id);
-    setAvailableModels([]);
+  const selectProvider = (id: LlmProviderId): void => {
+    const next = normalizeProviderId(id);
+    setProviderInput(next);
     setOllamaStatus(null);
-    const kept = id === 'ollama-cloud' ? appConfig?.ollamaCloudModel : appConfig?.ollamaModel;
-    setSelectedModel(kept && belongsInOllamaSelector(kept) ? kept : '');
+    if (next === 'gemini') {
+      const fallbacks = offlineGeminiModels();
+      setAvailableModels(fallbacks);
+      setSelectedModel(pickPreferredGeminiModel(fallbacks, appConfig?.geminiModel || getDefaultGeminiModel()));
+      return;
+    }
+    setAvailableModels([]);
+    if (next === 'ollama-cloud') {
+      const kept = appConfig?.ollamaCloudModel;
+      setSelectedModel(kept && belongsInOllamaSelector(kept) ? kept : '');
+      return;
+    }
+    if (next === 'ollama-local') {
+      const kept = appConfig?.ollamaModel;
+      setSelectedModel(kept && belongsInOllamaSelector(kept) ? kept : '');
+      return;
+    }
+    setSelectedModel(appConfig?.xaiOAuthModel || '');
   };
 
   const resolveXaiAccessGap = async (): Promise<string | null> => {
@@ -513,7 +529,7 @@ function App() {
     setApiKeyInput(config.apiKey);
     setFolderInput(config.dataFolder);
     setProviderInput(normalizeProviderId(config.llmProvider));
-    setOllamaUrlInput(config.ollamaBaseUrl || 'http://localhost:11434');
+    setOllamaUrlInput(config.ollamaBaseUrl || DEFAULT_OLLAMA_LOCAL_URL);
     setOllamaCloudKeyInput(config.ollamaCloudApiKey || '');
     setXaiKeyInput(config.xaiApiKey || '');
     setOllamaContextInput(config.ollamaGenerationContext || 262144);
@@ -654,7 +670,7 @@ function App() {
       apiKey: apiKeyInput,
       dataFolder: normalizePath(folderInput),
       llmProvider: prov === 'ollama-local' ? 'ollama-local' : prov,
-      ollamaBaseUrl: normalizeOllamaBaseUrl(ollamaUrlInput) || 'http://localhost:11434',
+      ollamaBaseUrl: normalizeOllamaBaseUrl(ollamaUrlInput) || DEFAULT_OLLAMA_LOCAL_URL,
       ollamaModel: prov === 'ollama-local' ? selectedModel : appConfig.ollamaModel,
       ollamaCloudApiKey: ollamaCloudKeyInput.trim(),
       ollamaCloudModel: prov === 'ollama-cloud' ? selectedModel : appConfig.ollamaCloudModel,
@@ -1460,24 +1476,19 @@ function App() {
                     </p>
                     <div className="flex flex-col gap-2 mb-3">
                         <label className="flex items-center gap-2 cursor-pointer">
-                            <input type="radio" name="provider" checked={normalizeProviderId(providerInput) === 'gemini'} onChange={() => {
-                              setProviderInput('gemini');
-                              const fallbacks = offlineGeminiModels();
-                              setAvailableModels(fallbacks);
-                              setSelectedModel(pickPreferredGeminiModel(fallbacks, appConfig?.geminiModel || getDefaultGeminiModel()));
-                            }} />
+                            <input type="radio" name="provider" checked={normalizeProviderId(providerInput) === 'gemini'} onChange={() => selectProvider('gemini')} />
                             <span className="text-sm"><strong>1. Gemini</strong> <span className="text-[10px] text-emerald-700 font-bold">recomendado</span> <span className="text-[10px] text-gray-500">— AI Studio, grátis/simples</span></span>
                         </label>
                         <label className="flex items-center gap-2 cursor-pointer">
-                            <input type="radio" name="provider" checked={normalizeProviderId(providerInput) === 'ollama-local'} onChange={() => selectOllamaProvider('ollama-local')} />
+                            <input type="radio" name="provider" checked={normalizeProviderId(providerInput) === 'ollama-local'} onChange={() => selectProvider('ollama-local')} />
                             <span className="text-sm"><strong>2. Ollama local</strong> <span className="text-[10px] text-gray-500">— daemon na máquina + porta 11434</span></span>
                         </label>
                         <label className="flex items-center gap-2 cursor-pointer">
-                            <input type="radio" name="provider" checked={normalizeProviderId(providerInput) === 'ollama-cloud'} onChange={() => selectOllamaProvider('ollama-cloud')} />
+                            <input type="radio" name="provider" checked={normalizeProviderId(providerInput) === 'ollama-cloud'} onChange={() => selectProvider('ollama-cloud')} />
                             <span className="text-sm"><strong>3. Ollama Cloud</strong> <span className="text-[10px] text-gray-500">— API web + chave ollama.com</span></span>
                         </label>
                         <label className="flex items-center gap-2 cursor-pointer">
-                            <input type="radio" name="provider" checked={normalizeProviderId(providerInput) === 'xai-oauth'} onChange={() => setProviderInput('xai-oauth')} />
+                            <input type="radio" name="provider" checked={normalizeProviderId(providerInput) === 'xai-oauth'} onChange={() => selectProvider('xai-oauth')} />
                             <span className="text-sm"><strong>4. xAI Grok</strong> <span className="text-[10px] text-gray-500">— entrar com X/Grok ou usar chave API</span></span>
                         </label>
                     </div>
@@ -1504,10 +1515,10 @@ function App() {
                     {normalizeProviderId(providerInput) === 'ollama-local' && (
                         <div className="space-y-2">
                             <p className="text-[11px] text-slate-600">
-                                Sem chave. O daemon Ollama precisa estar rodando na URL abaixo. “Listar modelos” consulta essa URL e preenche o seletor com o que o daemon devolver.
+                                Sem chave. O daemon Ollama precisa estar rodando na URL abaixo. “Listar modelos” consulta essa URL e preenche o seletor com o que o daemon devolver. Também aceita localhost.
                             </p>
                             <div className="flex gap-2">
-                                <input type="text" value={ollamaUrlInput} onChange={(e) => setOllamaUrlInput(e.target.value)} className="flex-1 p-2 border rounded text-sm" placeholder="http://localhost:11434" />
+                                <input type="text" value={ollamaUrlInput} onChange={(e) => setOllamaUrlInput(e.target.value)} className="flex-1 p-2 border rounded text-sm" placeholder={DEFAULT_OLLAMA_LOCAL_URL} />
                                 <button type="button" onClick={() => { void testOllamaConnection(); }} disabled={testingOllama || isRefreshingModels} className="bg-emerald-700 hover:bg-emerald-600 disabled:bg-slate-400 text-white px-3 py-1 rounded font-bold text-xs">
                                     {testingOllama ? '...' : 'Testar'}
                                 </button>
@@ -1542,7 +1553,7 @@ function App() {
                     {normalizeProviderId(providerInput) === 'ollama-cloud' && (
                         <div className="space-y-2">
                             <a href="https://ollama.com/settings/keys" target="_blank" rel="noreferrer" className="inline-block bg-teal-700 text-white px-3 py-1 rounded font-bold text-[11px]">Criar chave ollama.com</a>
-                            <p className="text-[11px] text-gray-600">Chamada direta à API web (não precisa do app Ollama rodando).</p>
+                            <p className="text-[11px] text-gray-600">“Listar modelos” usa a chave colada e consulta https://ollama.com. Geração usa essa chave e esses modelos, não o Gemini nem o daemon local.</p>
                             <input type="password" value={ollamaCloudKeyInput} onChange={(e) => setOllamaCloudKeyInput(e.target.value)} className="w-full p-2 border rounded text-sm" placeholder="API Key Ollama Cloud" />
                             {ollamaStatus && (
                                 <p className={`text-[11px] ${ollamaStatus.ok ? 'text-green-700' : 'text-red-700'}`}>

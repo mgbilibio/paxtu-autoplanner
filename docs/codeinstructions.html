@@ -43,7 +43,7 @@
   <h2>Segurança de IA e backup</h2>
   <ul>
     <li>Backups locais devem limpar todos os segredos da configuração, incluindo <code>apiKey</code> e <code>ollamaCloudApiKey</code>, também na importação.</li>
-    <li>Ollama local no site fala com a URL do daemon (padrão <code>http://localhost:11434</code>) via <code>fetch</code>. Sem chave. Se o daemon estiver parado ou o CORS bloquear, a UI pede que o Ollama aceite a origem do site.</li>
+    <li>Ollama local no site fala com a URL do daemon (padrão <code>http://127.0.0.1:11434</code>, também aceita localhost) via <code>fetch</code>. Sem chave. Se o daemon estiver parado, o CORS bloquear ou o navegador bloquear conteúdo misto, a UI pede que o Ollama aceite a origem <code>https://mgbilibio.github.io</code>.</li>
     <li>Ollama Cloud não deve iniciar chamadas JSON com <code>format=json</code>; use prompt estruturado e parser/fallback do app.</li>
   </ul>
   <h2>OAuth xAI/Grok</h2>

@@ -228,7 +228,7 @@ export interface AppConfig {
   llmProvider?: LlmProviderId;
   /** Modelo Gemini escolhido no seletor (Flash/Flash-Lite). Persistido no localStorage. */
   geminiModel?: string;
-  ollamaBaseUrl?: string; // Default: http://localhost:11434
+  ollamaBaseUrl?: string; // Default: http://127.0.0.1:11434 (também aceita localhost)
   ollamaModel?: string;   // Selecionado pelo usuário a partir da lista dinâmica do Ollama.
   ollamaGenerationContext?: number;
   ollamaGenerationOutput?: number;

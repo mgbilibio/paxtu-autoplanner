@@ -7,5 +7,7 @@ test('seletor Ollama não mostra IDs do catálogo Gemini', () => {
   assert.equal(belongsInOllamaSelector('gemini-3.5-flash-lite'), false);
   assert.equal(belongsInOllamaSelector('llama3.2:latest'), true);
   assert.equal(belongsInOllamaSelector('minimax-m3:cloud'), true);
-  assert.equal(belongsInOllamaSelector('gemini-2.5-flash-preview'), true);
+  assert.equal(belongsInOllamaSelector('gemini-2.5-flash-preview'), false);
+  assert.equal(belongsInOllamaSelector('gemini-3-flash-preview'), false);
+  assert.equal(belongsInOllamaSelector('gemma3:12b'), true);
 });
