@@ -1,6 +1,6 @@
 import React from 'react';
 import { LlmProviderId } from '../types';
-import { normalizeProviderId, GEMINI_USAGE_URL, XAI_USAGE_URL } from '../services/llmProvider';
+import { normalizeProviderId, GEMINI_USAGE_URL, XAI_USAGE_URL, OLLAMA_CLOUD_USAGE_URL } from '../services/llmProvider';
 import { geminiModelLabel } from '../services/geminiService';
 
 interface Props {
@@ -14,10 +14,18 @@ interface Props {
   selectId?: string;
 }
 
-const quotaHref = (provider: LlmProviderId): string | null => {
-  const id = normalizeProviderId(provider);
+function providerFromModel(modelId: string | undefined, provider: LlmProviderId): LlmProviderId {
+  const m = (modelId || '').toLowerCase();
+  if (m.startsWith('grok') || m.includes('grok-')) return 'xai-oauth';
+  if (m.startsWith('gemini') || m.includes('gemini-') || m.startsWith('models/gemini')) return 'gemini';
+  return normalizeProviderId(provider);
+}
+
+const quotaHref = (provider: LlmProviderId, modelId?: string): string | null => {
+  const id = providerFromModel(modelId, provider);
   if (id === 'gemini') return GEMINI_USAGE_URL;
   if (id === 'xai-oauth') return XAI_USAGE_URL;
+  if (id === 'ollama-cloud') return OLLAMA_CLOUD_USAGE_URL;
   return null;
 };
 
@@ -33,7 +41,7 @@ export const LlmModelControls: React.FC<Props> = ({
   selectId = 'model-select',
 }) => {
   const providerId = normalizeProviderId(provider);
-  const usageUrl = quotaHref(providerId);
+  const usageUrl = quotaHref(providerId, value);
   const selectClass = compact
     ? 'bg-transparent text-white text-xs outline-none border-none max-w-[220px]'
     : 'flex-1 min-w-[12rem] p-2 border rounded text-sm';
@@ -73,6 +81,13 @@ export const LlmModelControls: React.FC<Props> = ({
           href={usageUrl}
           target="_blank"
           rel="noopener"
+          title={
+            usageUrl === XAI_USAGE_URL
+              ? 'Abre a cota e o uso da xAI (Grok) na Console.'
+              : usageUrl === GEMINI_USAGE_URL
+                ? 'Abre a cota do Gemini no AI Studio.'
+                : 'Abre o uso da conta Ollama Cloud.'
+          }
           className={compact
             ? 'text-amber-200 hover:text-white text-[10px] font-bold underline whitespace-nowrap'
             : 'inline-block bg-slate-700 hover:bg-slate-600 text-white px-3 py-1 rounded font-bold text-[11px] whitespace-nowrap'}

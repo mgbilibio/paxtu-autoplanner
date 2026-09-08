@@ -12,9 +12,10 @@ import type { PlanAttachment } from './planAttachments';
 
 export const GEMINI_STUDIO_URL = 'https://aistudio.google.com/app/apikey';
 /** Painel de uso/cota do AI Studio (aba de rate limits no mesmo endereço). */
-export const GEMINI_USAGE_URL = 'https://aistudio.google.com/usage';
-/** Usage Explorer oficial da xAI Console. */
-export const XAI_USAGE_URL = 'https://console.x.ai/team/default/usage';
+export const GEMINI_USAGE_URL = 'https://aistudio.google.com/rate-limit';
+/** Cota/uso da xAI: a raiz da Console abre o time da conta (não fixa team/default). */
+export const XAI_USAGE_URL = 'https://console.x.ai/';
+export const OLLAMA_CLOUD_USAGE_URL = 'https://ollama.com/settings';
 export const GEMINI_KEY_HELP =
   'Obtenha uma chave grátis em https://aistudio.google.com/app/apikey (conta Google, sem cartão de crédito) e cole em Configurações. A chave fica só neste aparelho/navegador — nunca no repositório.';
 
