@@ -7,7 +7,7 @@ import {
   stampScheduleTimes,
 } from './meetingScheduleService';
 import { normalizePlanForUse } from './planNormalizationService';
-export { validateManualActivities } from './manualActivityValidation';
+export { canPersistManualDraft, validateManualActivities } from './manualActivityValidation';
 
 export interface ManualPlanInput {
   branch: ScoutBranch;

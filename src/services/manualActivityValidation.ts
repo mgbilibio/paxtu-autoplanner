@@ -1,13 +1,14 @@
 import type { Activity } from '../types';
 
 export interface ManualPlanCheck {
-  errors: string[];
   warnings: string[];
 }
 
-/** Rascunho incremental: nada disto aborta “Salvar planejamento”. */
+/** Sempre true: rascunho incompleto pode (e deve) ser gravado. */
+export const canPersistManualDraft = (_activities?: Activity[]): true => true;
+
+/** Confere lacunas só para aviso. Nunca decide se o salvamento segue. */
 export const validateManualActivities = (activities: Activity[]): ManualPlanCheck => {
-  const errors: string[] = [];
   const warnings: string[] = [];
   const core = activities.filter(activity => !activity.isOperational && !activity.operationalType);
 
@@ -28,5 +29,5 @@ export const validateManualActivities = (activities: Activity[]): ManualPlanChec
       warnings.push(`${label}: sem informação adicional para a chefia.`);
     }
   });
-  return { errors, warnings };
+  return { warnings };
 };

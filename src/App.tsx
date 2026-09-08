@@ -757,6 +757,7 @@ function App() {
       return;
     }
     const check = validateManualActivities(scheduleDraft);
+    // Não há check.errors: descrição/materiais/título vazios só entram em check.warnings.
     const manualPlan = buildManualMeetingPlan({
       branch: selectedBranch,
       activities: scheduleDraft,
