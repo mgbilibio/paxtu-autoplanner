@@ -72,21 +72,11 @@ Tela única: **Continuar com Google**, **Continuar com X** (se habilitado) e **e
 - **Gemini é o padrão**, priorizando **Flash-Lite**. Com credencial, o app consulta o catálogo da conta (`models.list`) e prefere um Flash-Lite disponível. **Sem chave, ou se a listagem falhar**, o seletor não fica em branco: usa o padrão `gemini-3.5-flash-lite` e um fallback curto (não é o inventário completo da Gemini). A geração ainda exige chave/token e avisa na hora.
 - Cada escotista cola a própria chave do [AI Studio](https://aistudio.google.com/app/apikey) (conta Google, sem cartão). A chave fica **só no localStorage**. Sem chave, a UI permanece e avisa na hora de gerar.
 - Se o login Google conseguir um token OAuth da API Gemini (`generative-language`), o site tenta usar; se CORS, app OAuth não verificado ou escopo faltar, volta para “colar chave do AI Studio”.
-- **xAI/Grok (Device OAuth):** o botão “Entrar com X / Grok” **permanece**. O navegador **nunca** chama `auth.x.ai` / `api.x.ai` direto (isso vira “Failed to fetch” por CORS). Precisa do Worker em `workers/xai-proxy` e da variável pública `VITE_XAI_PROXY_URL`. Sem proxy, ou se o Worker estiver fora, a UI mostra alerta em português com o que publicar — nunca o erro cru em inglês. Em Configurações → IA dá para colar a URL do Worker neste navegador. `npm run dev` usa um proxy local (`/__xai_oauth`) sem vazar tokens. Tokens ficam no `sessionStorage` (aba), nunca no Firestore. O Client ID do Device OAuth é público; **não** há client secret no repositório. Catálogo e chat passam pelo Worker (`/v1/language-models`, `/v1/chat/completions`). Uma chave xAI continua sendo alternativa. Não é necessário nenhum binário Grok.
+- **xAI/Grok (Device OAuth):** no site publicado, “Entrar com X / Grok” inicia o Device OAuth no navegador. Device, token e userinfo passam pelo proxy já publicado `https://socialkids-xai-proxy.margusbilibio.workers.dev`. Depois do token no `sessionStorage`, catálogo e chat chamam `https://api.x.ai/v1` direto. Não é preciso instalar nada, publicar Worker, nem variável de build. Tokens ficam na aba (`sessionStorage`), nunca no Firestore. O Client ID do Device OAuth é público; **não** há client secret no repositório. Uma chave xAI continua sendo alternativa.
 - **Sem IA:** em Gerar, “Salvar planejamento” grava o rascunho à mão mesmo incompleto (avisos não bloqueiam). A IA é opcional (“Completar com IA”).
 - **Ollama local** no próprio site: sem chave. “Listar modelos” consulta a URL do daemon (padrão `http://localhost:11434`). Se o daemon estiver parado ou o CORS bloquear, o aviso pede que o Ollama aceite a origem do site — nunca que o usuário abra outro aplicativo. **Ollama Cloud** lista os modelos da chave colada. IDs Gemini não entram nesses seletores.
 
 Nenhuma chave de API entra no repositório nem no bundle do Pages.
-
-#### O que o Margus precisa configurar para o xOAuth no Pages
-
-1. Publicar o Worker: `cd workers/xai-proxy && npx wrangler login && npm run deploy`.
-2. Copiar a URL (ex.: `https://paxtu-xai-proxy.<conta>.workers.dev`).
-3. No repositório GitHub: **Settings → Secrets and variables → Actions → Variables** → `VITE_XAI_PROXY_URL` = essa URL (variável pública, não secret).
-4. Garantir que o workflow `deploy-pages.yml` injeta `VITE_XAI_PROXY_URL` no `npm run build:web` (já está no YAML).
-5. Disparar o deploy do Pages. Sem esse rebuild, o site antigo continua sem proxy.
-
-O Worker aceita `https://mgbilibio.github.io` e qualquer `localhost` / `127.0.0.1`. Encaminha `/oauth/device`, `/oauth/token`, `/oauth/userinfo` para `auth.x.ai` e `/v1/language-models` + `/v1/chat/completions` para `api.x.ai`. Sem o Worker publicado **e** o rebuild do Pages com `VITE_XAI_PROXY_URL`, o botão não inicia o Device OAuth.
 
 ### Dados da seção no site
 
@@ -142,7 +132,7 @@ A publicação do produto é o GitHub Pages (`deploy-pages.yml` em push para `ma
 ```text
 PaxtuAP/
 ├── src/                         Interface React, serviços e regras de fluxo
-├── workers/xai-proxy            Worker CORS do Device OAuth xAI
+├── workers/xai-proxy            Referência histórica; o site não depende deste Worker
 ├── conhecimento/
 │   ├── bd/                      SQLite: progressão, especialidades e biblioteca
 │   └── tools/                   Geração, auditoria e checklist

@@ -1454,7 +1454,7 @@ function App() {
                       {isWebApp() && (
                         <> Cole a chave do{' '}
                           <a href={GEMINI_STUDIO_URL} target="_blank" rel="noreferrer" className="text-blue-700 underline">AI Studio</a>
-                          {' '}(fica só neste navegador). Na xAI, entre com X/Grok neste site (precisa do Worker <code>VITE_XAI_PROXY_URL</code>) ou use uma chave API.
+                          {' '}(fica só neste navegador). Na xAI, entre com X/Grok neste site ou use uma chave API.
                         </>
                       )}
                     </p>
@@ -1564,7 +1564,7 @@ function App() {
                     {normalizeProviderId(providerInput) === 'xai-oauth' && (
                         <div className="space-y-2">
                           <p className="text-[11px] text-slate-600 leading-relaxed">
-                            Entre com sua conta X/Grok para usar os créditos da assinatura. O catálogo de modelos vem da conta autenticada. O Device OAuth exige o Worker Cloudflare (<code>VITE_XAI_PROXY_URL</code>).
+                            Entre com sua conta X/Grok para usar os créditos da assinatura. O catálogo de modelos vem da conta autenticada.
                           </p>
                           <XaiOAuthPanel onConnected={() => void fetchModels()} />
                           <input type="password" value={xaiKeyInput} onChange={(e) => setXaiKeyInput(e.target.value)} className="w-full p-2 border rounded text-sm" placeholder="API Key xAI (opcional quando OAuth estiver conectado)" />

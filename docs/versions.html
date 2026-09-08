@@ -15,11 +15,18 @@
 <body>
 <main>
   <h1>Historico de Versoes</h1>
+  <h2>20260908-xoauth-pages</h2>
+  <p>O botão “Entrar com X / Grok” no GitHub Pages inicia o Device OAuth no próprio navegador, sem Worker novo e sem variável de build.</p>
+  <ul>
+    <li><strong>OAuth:</strong> device, token e userinfo usam o proxy já publicado <code>https://socialkids-xai-proxy.margusbilibio.workers.dev</code>.</li>
+    <li><strong>Catálogo e chat:</strong> depois do token, o site chama <code>https://api.x.ai/v1</code> direto.</li>
+    <li><strong>Produto:</strong> o escotista só abre o site. Sem instalar dependência, sem Vite e sem campo para colar URL de Worker.</li>
+  </ul>
   <h2>20260908-site-unico</h2>
   <p>O site (GitHub Pages) passou a ser o único produto. A pasta <code>electron/</code> permanece no repositório, mas não é caminho de uso nem aparece na interface.</p>
   <ul>
     <li><strong>Produto:</strong> README, manual e configurações descrevem só o site. Scripts <code>electron:build</code> / <code>dist</code> saíram do <code>package.json</code>. <code>npm run dev</code> sobe a SPA web.</li>
-    <li><strong>xOAuth:</strong> “Entrar com X / Grok” continua pelo Worker (<code>VITE_XAI_PROXY_URL</code>). A UI não pede Grok Build, <code>grok.exe</code> nem aplicativo desktop.</li>
+    <li><strong>xOAuth:</strong> “Entrar com X / Grok” permanece no site. A UI não pede Grok Build, <code>grok.exe</code> nem aplicativo desktop.</li>
     <li><strong>Ollama:</strong> local lista modelos na URL do daemon; Cloud na chave ollama.com. Sem IDs Gemini nesses seletores. Falha local fala em origem do site.</li>
     <li><strong>Permanece:</strong> pílulas Gemini/Grok, rascunho incompleto (avisos não bloqueiam Salvar) e código de progressão completo.</li>
   </ul>

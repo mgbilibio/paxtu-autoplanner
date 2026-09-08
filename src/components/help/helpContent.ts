@@ -96,7 +96,7 @@ export const TELA_HELP: Record<string, ScreenHelp> = {
       'No cronograma: início, duração, item e responsável. Abertura, intervalos, itens fixos e encerramento ficam preservados.',
       'Em cada atividade, detalhe objetivo, modo de fazer, materiais, progressão e recados para a chefia. “Refazer esta” altera só aquela faixa.',
       'Anexos de contexto: txt, md, html, imagem ou PDF. Ficam só nesta sessão.',
-      'A IA padrão é Gemini Flash-Lite (chave em Configurações → IA, só neste navegador). Na xAI, entre com X/Grok no site (o administrador precisa ter publicado o Worker) ou informe uma chave API.',
+      'A IA padrão é Gemini Flash-Lite (chave em Configurações → IA, só neste navegador). Na xAI, entre com X/Grok no site ou informe uma chave API.',
     ],
   },
   CYCLE: {
@@ -211,7 +211,7 @@ export const FAQ: HelpFaq[] = [
   },
   {
     q: 'Qual IA o site usa?',
-    a: 'Gemini é o padrão e prefere Flash-Lite. Cole a chave do AI Studio em Configurações → IA (fica só neste navegador). Sem chave o seletor não some; a geração avisa. “Ver cota / uso” abre o AI Studio. Na xAI, entre com X/Grok no site: o Pages precisa do Worker Cloudflare e de VITE_XAI_PROXY_URL (ou cole a URL do Worker em Configurações). Sem isso o navegador é bloqueado por CORS. Também vale uma chave API. Ollama Cloud e Ollama local têm “Listar modelos”: Cloud usa a chave ollama.com; local consulta a URL do daemon (padrão http://localhost:11434), sem chave. Se o daemon estiver parado ou o CORS bloquear, o aviso pede que o Ollama aceite a origem do site.',
+    a: 'Gemini é o padrão e prefere Flash-Lite. Cole a chave do AI Studio em Configurações → IA (fica só neste navegador). Sem chave o seletor não some; a geração avisa. “Ver cota / uso” abre o AI Studio. Na xAI, entre com X/Grok no site ou use uma chave API. Ollama Cloud e Ollama local têm “Listar modelos”: Cloud usa a chave ollama.com; local consulta a URL do daemon (padrão http://localhost:11434), sem chave. Se o daemon estiver parado ou o CORS bloquear, o aviso pede que o Ollama aceite a origem do site.',
   },
   {
     q: 'Posso usar sem internet?',

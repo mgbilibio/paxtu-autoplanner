@@ -39,24 +39,24 @@ test('Grok na web fica verde com sessão xOAuth e proxy, após sonda ok', () => 
   assert.equal(green.label, 'Grok');
 });
 
-test('Grok na web fica vermelho se o proxy falta e não há chave', () => {
+test('Grok na web fica vermelho sem sessão e sem chave', () => {
   const red = deriveGrokLoginStatus({
     ...grokBase,
     proxyConfigured: false,
     grokProbe: 'skipped',
   });
   assert.equal(red.online, false);
-  assert.match(red.detail, /proxy/i);
+  assert.match(red.detail, /X \/ Grok|chave/i);
+  assert.doesNotMatch(red.detail, /VITE_XAI_PROXY_URL|Worker|npm run|Vite/i);
 });
 
-test('Grok sem proxy e sem chave pede Worker, nunca Grok Build nem desktop', () => {
+test('Grok sem sessão e sem chave nunca cita Grok Build nem desktop', () => {
   const red = deriveGrokLoginStatus({
     ...grokBase,
     proxyConfigured: false,
     grokProbe: 'skipped',
   });
   assert.equal(red.online, false);
-  assert.match(red.detail, /proxy/i);
   assert.equal(/Grok Build|grok\.exe|aplicativo desktop|somente no/i.test(red.detail), false);
 });
 

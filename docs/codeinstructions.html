@@ -15,7 +15,7 @@
   <h2>Arquitetura atual</h2>
   <ul>
     <li><code>src/</code>: interface React e regras de apresentação. O produto é o site (GitHub Pages).</li>
-    <li><code>workers/xai-proxy</code>: Worker CORS do Device OAuth xAI.</li>
+    <li>O login xOAuth do site usa o proxy já publicado do SocialKids; catálogo e chat falam com <code>api.x.ai</code> direto.</li>
     <li><code>src/services/storage/</code>: persistência; no site o grupo vive no Firestore. <code>storageService.ts</code> é a fachada pública.</li>
     <li><code>conhecimento/bd/</code>: bancos SQLite auditáveis de progressão, especialidades e biblioteca.</li>
     <li><code>src/data/generated/</code>: derivados TypeScript dos bancos. Não editar manualmente.</li>
@@ -51,11 +51,11 @@
     <li>A edição web usa Device Authorization Grant, reaproveitando o fluxo comprovado do projeto SocialKids.</li>
     <li><code>xaiOAuthDevice.ts</code> inicia e acompanha a autorização; <code>xaiOAuthSession.ts</code> mantém access e refresh tokens somente no <code>sessionStorage</code>.</li>
     <li>Tokens xAI nunca devem ser gravados no Firestore, localStorage, logs, configuração exportada ou repositório.</li>
-    <li>O Worker em <code>workers/xai-proxy</code> encaminha device, token, userinfo, language-models e chat/completions. Origens: <code>https://mgbilibio.github.io</code> e localhost. Nunca funciona como proxy aberto. Respostas 403 levam cabeçalhos CORS para o browser não esconder o erro como “Failed to fetch”.</li>
-    <li>A URL do Worker entra no build por <code>VITE_XAI_PROXY_URL</code> (variável pública do GitHub Actions, não secret). Sem ela, ou se o Worker estiver fora, a UI avisa em português. Em desenvolvimento, <code>/__xai_oauth</code> no Vite é o fallback same-origin. Não colocar tokens, client secrets ou chaves privadas nessa variável.</li>
+    <li>No site publicado, device/token/userinfo vão para <code>https://socialkids-xai-proxy.margusbilibio.workers.dev</code>. Sem Worker novo e sem variável de build. Origem do Pages: <code>https://mgbilibio.github.io</code>.</li>
+    <li>Com o token no <code>sessionStorage</code>, <code>/v1/language-models</code> e <code>/v1/chat/completions</code> chamam <code>https://api.x.ai/v1</code> direto (CORS <code>*</code>). Não encaminhar catálogo/chat pelo proxy OAuth.</li>
     <li>O indicador Gemini/Grok no chrome reusa <code>hasGeminiCredentials</code>, <code>getXaiBrowserStatus</code> e sondas leves de listagem. Verde só se a credencial for utilizável agora.</li>
     <li>O Client ID do Device OAuth é público (app Pages). Tokens só em <code>sessionStorage</code>. Não há client secret no repositório.</li>
-    <li>O provider aceita a sessão OAuth (Worker) ou uma chave API opcional. Ambos consultam <code>/v1/language-models</code> em tempo de execução. Não exigir binário Grok.</li>
+    <li>O provider aceita a sessão OAuth no navegador ou uma chave API opcional. Ambos consultam <code>https://api.x.ai/v1/language-models</code> em tempo de execução. Não exigir binário Grok nem instalar nada na máquina do escotista.</li>
   </ul>
   <h2>Catálogos de modelos</h2>
   <ul>
@@ -79,7 +79,6 @@
   <h2>Validação e release</h2>
   <ol>
     <li><code>npm test</code>.</li>
-    <li><code>npm --prefix workers/xai-proxy test</code>.</li>
     <li><code>npm run build:web</code>.</li>
     <li>Publicar a <code>main</code> e confirmar o workflow GitHub Pages.</li>
     <li>Testar login, catálogo e geração no site implantado.</li>
