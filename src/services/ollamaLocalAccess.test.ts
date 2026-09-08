@@ -5,15 +5,18 @@ import test from 'node:test';
 import { explainOllamaLocalFailure, OLLAMA_LOCAL_ORIGIN_HINT } from './ollamaLocalAccess.ts';
 
 test('falha local fala em origem do site, nunca em aplicativo desktop', () => {
-  const text = explainOllamaLocalFailure('http://localhost:11434', 'Failed to fetch');
-  assert.match(text, new RegExp(OLLAMA_LOCAL_ORIGIN_HINT));
-  assert.match(text, /localhost:11434/);
+  const text = explainOllamaLocalFailure('http://127.0.0.1:11434', 'Failed to fetch');
+  assert.match(text, new RegExp(OLLAMA_LOCAL_ORIGIN_HINT.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  assert.match(text, /127\.0\.0\.1:11434/);
+  assert.match(text, /https:\/\/mgbilibio\.github\.io/);
+  assert.match(text, /conteúdo misto/);
   assert.equal(/aplicativo desktop|só no desktop|não roda neste site/i.test(text), false);
 });
 
 test('timeout e CORS usam o mesmo aviso de origem', () => {
-  assert.match(explainOllamaLocalFailure('http://127.0.0.1:11434', 'timeout'), /origem do site/);
-  assert.match(explainOllamaLocalFailure('http://localhost:11434', 'CORS blocked'), /origem do site/);
+  assert.match(explainOllamaLocalFailure('http://127.0.0.1:11434', 'timeout'), /https:\/\/mgbilibio\.github\.io/);
+  assert.match(explainOllamaLocalFailure('http://localhost:11434', 'CORS blocked'), /https:\/\/mgbilibio\.github\.io/);
+  assert.match(explainOllamaLocalFailure('http://127.0.0.1:11434', 'Mixed Content'), /conteúdo misto/);
 });
 
 test('código do provedor e das configurações não bloqueia Ollama local na web', () => {

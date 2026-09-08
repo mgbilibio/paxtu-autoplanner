@@ -15,6 +15,13 @@
 <body>
 <main>
   <h1>Historico de Versoes</h1>
+  <h2>20260908-ollama-web</h2>
+  <p>Ollama local e Ollama Cloud listam e geram no próprio site (GitHub Pages), sem aplicativo desktop.</p>
+  <ul>
+    <li><strong>Local:</strong> “Listar modelos” consulta a URL do daemon (padrão <code>http://127.0.0.1:11434</code>, também aceita localhost), sem chave. Falha (daemon parado, CORS ou conteúdo misto) pede que o Ollama aceite <code>https://mgbilibio.github.io</code>.</li>
+    <li><strong>Cloud:</strong> a mesma ação usa a chave colada em <code>https://ollama.com/api/tags</code> e <code>/api/chat</code> (Authorization Bearer). Configurações e o assistente inicial expõem o botão e persistem o modelo.</li>
+    <li><strong>Isolamento:</strong> cada provedor guarda o próprio modelo; IDs Gemini não entram nos seletores Ollama. CSP inclui loopback, <code>ollama.com</code>, <code>api.ollama.com</code>, <code>api.x.ai</code> e o proxy Paxtu.</li>
+  </ul>
   <h2>20260908-xoauth-paxtu-proxy</h2>
   <p>O botão “Entrar com X / Grok” no GitHub Pages inicia o Device OAuth no próprio navegador, pelo proxy deste app, sem Vite, npm nem variável de build.</p>
   <ul>

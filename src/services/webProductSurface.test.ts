@@ -116,9 +116,10 @@ test('Ollama Cloud lista com Bearer da chave colada e também filtra Gemini', as
 });
 
 test('daemon parado ou CORS no browser usa o aviso de origem, sem desktop', () => {
-  const text = explainOllamaLocalFailure('http://localhost:11434', 'Failed to fetch');
-  assert.match(text, /Ollama precisa estar rodando e aceitar a origem do site/);
-  assert.match(text, /localhost:11434/);
+  const text = explainOllamaLocalFailure('http://127.0.0.1:11434', 'Failed to fetch');
+  assert.match(text, /Ollama precisa estar rodando e aceitar a origem https:\/\/mgbilibio\.github\.io/);
+  assert.match(text, /127\.0\.0\.1:11434/);
+  assert.match(text, /conteúdo misto/);
   assert.equal(/aplicativo desktop|só no desktop|Grok Build|Baixar Ollama/i.test(text), false);
 });
 
@@ -127,9 +128,32 @@ test('Ollama local no site: URL do daemon, aviso de origem, sem chave', () => {
   const wizard = read('../components/SetupWizard.tsx');
   const help = read('../components/help/helpContent.ts');
   assert.match(app, /Listar modelos|onRefresh/);
-  assert.match(app, /http:\/\/localhost:11434/);
+  assert.match(app, /DEFAULT_OLLAMA_LOCAL_URL/);
+  assert.match(read('./ollamaUrlSecurity.ts'), /http:\/\/127\.0\.0\.1:11434/);
   assert.match(wizard, /Listar modelos/);
-  assert.match(wizard, /aceite a origem do site/);
-  assert.match(help, /localhost:11434/);
+  assert.match(wizard, /https:\/\/mgbilibio\.github\.io/);
+  assert.match(help, /127\.0\.0\.1:11434/);
   assert.equal(/Ollama local só funciona/.test(app + wizard + help), false);
+});
+
+test('assistente e configurações expõem Listar modelos no Cloud e persistem a escolha', () => {
+  const app = read('../App.tsx');
+  const wizard = read('../components/SetupWizard.tsx');
+  assert.match(wizard, /ollama-cloud/);
+  assert.match(wizard, /ollamaCloudApiKey/);
+  assert.match(wizard, /ollamaCloudModel/);
+  assert.equal((wizard.match(/Listar modelos/g) || []).length >= 2, true);
+  assert.match(app, /selectProvider\('ollama-cloud'\)/);
+  assert.match(app, /persistSelectedModel\(id, 'ollama-cloud'\)/);
+});
+
+test('CSP do site libera loopback, ollama.com e o proxy Paxtu', () => {
+  const csp = read('../../index.html');
+  assert.match(csp, /http:\/\/127\.0\.0\.1:\*/);
+  assert.match(csp, /http:\/\/localhost:\*/);
+  assert.match(csp, /https:\/\/ollama\.com/);
+  assert.match(csp, /https:\/\/api\.ollama\.com/);
+  assert.match(csp, /https:\/\/api\.x\.ai/);
+  assert.match(csp, /https:\/\/paxtu-xai-proxy\.margusbilibio\.workers\.dev/);
+  assert.equal(csp.includes('socialkids-xai-proxy'), false);
 });
