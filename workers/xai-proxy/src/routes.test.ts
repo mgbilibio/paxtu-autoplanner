@@ -8,8 +8,8 @@ const read = (fromHere: string): string =>
   readFileSync(fileURLToPath(new URL(fromHere, import.meta.url)), 'utf8');
 
 test('wrangler name é paxtu-xai-proxy', () => {
-  const wrangler = read('../../wrangler.toml');
-  const pkg = read('../../package.json');
+  const wrangler = read('../wrangler.toml');
+  const pkg = read('../package.json');
   assert.match(wrangler, /^name = "paxtu-xai-proxy"$/m);
   assert.match(pkg, /"name": "paxtu-xai-proxy"/);
   assert.doesNotMatch(wrangler, /socialkids/i);
