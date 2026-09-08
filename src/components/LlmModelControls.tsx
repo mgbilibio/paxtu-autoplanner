@@ -21,7 +21,7 @@ const quotaHref = (provider: LlmProviderId): string | null => {
   return null;
 };
 
-/** Seletor de modelo + atalho de cota (Gemini AI Studio / xAI Console). Mesmo UI na web e no desktop. */
+/** Seletor de modelo + atalho de cota (Gemini AI Studio / xAI Console). */
 export const LlmModelControls: React.FC<Props> = ({
   provider,
   models,

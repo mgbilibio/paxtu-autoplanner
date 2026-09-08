@@ -17,14 +17,19 @@ test('timeout e CORS usam o mesmo aviso de origem', () => {
 });
 
 test('código do provedor e das configurações não bloqueia Ollama local na web', () => {
-  const files = ['llmProvider.ts', '../App.tsx', '../components/SetupWizard.tsx'].map(rel =>
-    readFileSync(fileURLToPath(new URL(rel, import.meta.url)), 'utf8'),
-  );
+  const files = [
+    'llmProvider.ts',
+    '../App.tsx',
+    '../components/SetupWizard.tsx',
+    '../components/help/helpContent.ts',
+    '../../README.md',
+  ].map(rel => readFileSync(fileURLToPath(new URL(rel, import.meta.url)), 'utf8'));
   for (const src of files) {
     assert.equal(/Ollama local só funciona no aplicativo desktop/i.test(src), false);
     assert.equal(/Ollama local não roda neste site/i.test(src), false);
     assert.equal(/só no app desktop/i.test(src), false);
     assert.equal(/Baixar Ollama/.test(src), false);
+    assert.equal(/aplicativo desktop/i.test(src), false);
   }
 });
 

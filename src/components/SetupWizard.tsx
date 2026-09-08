@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
-import { AppConfig, DataSyncMode, LlmProviderId } from '../types';
+import { AppConfig, LlmProviderId } from '../types';
 import { normalizeOllamaBaseUrl } from '../services/ollamaUrlSecurity';
 import { belongsInOllamaSelector, isCloudModel, isReachable as ollamaIsReachable, listModels as ollamaListModels } from '../services/ollamaService';
-import { isWebApp } from '../services/platform';
 import { XaiOAuthPanel } from './XaiOAuthPanel';
-import { GrokDesktopOAuthPanel } from './GrokDesktopOAuthPanel';
 import { AiLoginStatusBar } from './AiLoginStatusBar';
 
 interface Props {
@@ -19,8 +17,6 @@ export const SetupWizard: React.FC<Props> = ({ onComplete }) => {
   const [ollamaTestStatus, setOllamaTestStatus] = useState<{ ok: boolean; error?: string; models?: string[] } | null>(null);
   const [testingOllama, setTestingOllama] = useState(false);
   const [selectedOllamaModel, setSelectedOllamaModel] = useState('');
-  const [dataFolder, setDataFolder] = useState('Meus Documentos/PaxtuData');
-  const [syncMode, setSyncMode] = useState<DataSyncMode>('local');
   // Profile State
   const [groupName, setGroupName] = useState('');
   const [sectionName, setSectionName] = useState('');
@@ -28,13 +24,8 @@ export const SetupWizard: React.FC<Props> = ({ onComplete }) => {
   const [defaultLocation, setDefaultLocation] = useState('');
 
   const [step, setStep] = useState<1 | 2 | 3>(1);
-  const [hasFileSystem, setHasFileSystem] = useState(false);
   // V6: erros inline em vez de alert()
   const [errors, setErrors] = useState<{ apiKey?: string; ollama?: string }>({});
-
-  React.useEffect(() => {
-    setHasFileSystem(!!window.fileSystem);
-  }, []);
 
   const testOllama = async () => {
     setTestingOllama(true);
@@ -60,15 +51,14 @@ export const SetupWizard: React.FC<Props> = ({ onComplete }) => {
   };
 
   const canAdvanceFromStep1 = (): boolean => {
-    if (provider === 'gemini') return isWebApp() || !!apiKey.trim();
-    if (provider === 'xai-oauth') return isWebApp() || !!xaiKey.trim() || !!window.fileSystem?.xaiOAuthLogin;
+    if (provider === 'gemini') return true;
+    if (provider === 'xai-oauth') return true;
     if (provider === 'ollama' || provider === 'ollama-local') return true;
     return !!ollamaTestStatus?.ok && !!selectedOllamaModel;
   };
 
   const handleFinish = () => {
     const next: typeof errors = {};
-    if (provider === 'gemini' && !apiKey.trim() && !isWebApp()) next.apiKey = 'A Chave API do Gemini é obrigatória.';
     setErrors(next);
     if (Object.keys(next).length > 0) { setStep(1); return; }
     const resolvedProvider: LlmProviderId =
@@ -79,7 +69,7 @@ export const SetupWizard: React.FC<Props> = ({ onComplete }) => {
           : 'gemini';
     const config: AppConfig = {
       apiKey: resolvedProvider === 'gemini' ? apiKey.trim() : '',
-      dataFolder: isWebApp() ? 'firestore-grupo' : dataFolder.trim(),
+      dataFolder: 'firestore-grupo',
       isConfigured: true,
       llmProvider: resolvedProvider,
       ollamaBaseUrl: normalizeOllamaBaseUrl(ollamaUrl) || 'http://localhost:11434',
@@ -87,7 +77,7 @@ export const SetupWizard: React.FC<Props> = ({ onComplete }) => {
       ollamaGenerationContext: 262144,
       ollamaGenerationOutput: 12288,
       xaiApiKey: xaiKey.trim() || undefined,
-      syncMode: isWebApp() ? 'local' : syncMode,
+      syncMode: 'local',
       profile: { groupName, sectionName, city, defaultLocation, patrols: [] },
     };
     onComplete(config);
@@ -172,24 +162,20 @@ export const SetupWizard: React.FC<Props> = ({ onComplete }) => {
                     className={`w-full p-3 border rounded-lg bg-gray-50 focus:bg-white focus:ring-2 outline-none ${errors.apiKey ? 'border-red-400 focus:ring-red-500' : 'border-gray-300 focus:ring-green-500'}`}
                   />
                   {errors.apiKey && <p id="apikey-error" role="alert" className="text-xs text-red-600 mt-1">{errors.apiKey}</p>}
-                  {isWebApp() && (
-                    <p className="text-[11px] text-slate-600 mt-2 bg-slate-50 border border-slate-200 rounded p-2">
-                      Na web a chave Gemini é opcional e fica só neste navegador — nunca no repositório público.
-                      Sem chave, a geração por Gemini permanece disponível nas mesmas telas e avisa na hora de usar.
-                    </p>
-                  )}
+                  <p className="text-[11px] text-slate-600 mt-2 bg-slate-50 border border-slate-200 rounded p-2">
+                    A chave Gemini é opcional e fica só neste navegador — nunca no repositório público.
+                    Sem chave, a geração por Gemini permanece disponível nas mesmas telas e avisa na hora de usar.
+                  </p>
                 </>
               )}
 
               {provider === 'xai-oauth' && (
                 <>
                   <p className="text-[11px] text-slate-600 bg-slate-50 border border-slate-200 rounded p-3 mb-3 leading-relaxed">
-                    {isWebApp()
-                      ? 'No site, conecte X/Grok pelo Device OAuth (Worker Cloudflare) ou cole uma chave API. Os modelos vêm da conta autenticada.'
-                      : 'No desktop, entre com SuperGrok pelo cliente Grok Build. Sem o binário, o OAuth não inicia — use uma chave API. Os modelos vêm da conta autenticada.'}
+                    Conecte X/Grok pelo Device OAuth (Worker Cloudflare) ou cole uma chave API. Os modelos vêm da conta autenticada.
                   </p>
                   <div className="mb-3">
-                    {isWebApp() ? <XaiOAuthPanel /> : <GrokDesktopOAuthPanel />}
+                    <XaiOAuthPanel />
                   </div>
                   <input
                     type="password"
@@ -275,85 +261,13 @@ export const SetupWizard: React.FC<Props> = ({ onComplete }) => {
           {step === 2 && (
             <div className="animate-slide-in">
               <h2 className="text-xl font-bold text-gray-800 mb-4">📂 Local dos Dados</h2>
-              {isWebApp() ? (
-                <>
-                  <p className="text-gray-600 text-sm mb-6 leading-relaxed">
-                    A tropa e a alcateia deste site ficam no Firestore, compartilhadas pela chefia da seção.
-                  </p>
-                  <div className="bg-sky-50 border border-sky-200 rounded-lg p-3 mb-4 text-[11px] text-sky-950 leading-relaxed">
-                    Cada pessoa entra com o <strong>próprio e-mail</strong> (Gmail, Google Workspace, @escoteiros ou outro).
-                    Não há e-mail único do grupo. Chaves de IA continuam neste navegador.
-                  </div>
-                </>
-              ) : (
-                <>
               <p className="text-gray-600 text-sm mb-6 leading-relaxed">
-                Onde seus roteiros, fichas e configurações devem ser salvos? Escolha uma pasta segura.
+                A tropa e a alcateia deste site ficam no Firestore, compartilhadas pela chefia da seção.
               </p>
-              <label className="block text-xs font-bold text-gray-700 uppercase mb-2">Caminho da Pasta</label>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
-                <button
-                  onClick={() => setSyncMode('local')}
-                  className={`p-3 rounded-lg border-2 text-left ${syncMode === 'local' ? 'border-slate-800 bg-slate-50' : 'border-gray-200'}`}
-                >
-                  <span className="block text-sm font-bold">Uso local</span>
-                  <span className="block text-[11px] text-gray-500 mt-1">Uma máquina principal, menor risco.</span>
-                </button>
-                <button
-                  onClick={() => setSyncMode('sharedFolder')}
-                  className={`p-3 rounded-lg border-2 text-left ${syncMode === 'sharedFolder' ? 'border-blue-700 bg-blue-50' : 'border-gray-200'}`}
-                >
-                  <span className="block text-sm font-bold">Pasta compartilhada</span>
-                  <span className="block text-[11px] text-gray-500 mt-1">Google Drive/OneDrive, sem servidor.</span>
-                </button>
+              <div className="bg-sky-50 border border-sky-200 rounded-lg p-3 mb-4 text-[11px] text-sky-950 leading-relaxed">
+                Cada pessoa entra com o <strong>próprio e-mail</strong> (Gmail, Google Workspace, @escoteiros ou outro).
+                Não há e-mail único do grupo. Chaves de IA continuam neste navegador.
               </div>
-              {syncMode === 'sharedFolder' && (
-                <div className="bg-amber-50 border border-amber-300 rounded-lg p-3 mb-4 text-[11px] text-amber-950 leading-relaxed">
-                  A pasta sincronizada fica no Drive/OneDrive com nomes e dados de jovens. Restrinja o compartilhamento à chefia e espere a sincronização terminar antes de outra pessoa editar.
-                </div>
-              )}
-              <div className="flex gap-2">
-                <div className="flex-1 relative">
-                  <span className="absolute left-3 top-3.5 text-gray-400">📁</span>
-                  <input
-                    type="text"
-                    value={dataFolder}
-                    onChange={(e) => setDataFolder(e.target.value)}
-                    readOnly={hasFileSystem}
-                    placeholder={hasFileSystem ? "Clique em 'Escolher' →" : "Caminho da pasta ou navegador-localStorage"}
-                    className={`w-full pl-10 p-3 border border-gray-300 rounded-lg outline-none ${hasFileSystem ? 'bg-gray-100 text-gray-500 cursor-not-allowed' : 'bg-gray-50 focus:bg-white focus:ring-2 focus:ring-green-500'}`}
-                  />
-                </div>
-                <button
-                  onClick={async () => {
-                    if (window.fileSystem) {
-                      const path = await window.fileSystem.selectFolder();
-                      if (path) setDataFolder(path);
-                      return;
-                    }
-                    if (typeof window.showDirectoryPicker === 'function') {
-                      try {
-                        const handle = await window.showDirectoryPicker();
-                        setDataFolder(`navegador:${handle.name}`);
-                      } catch {
-                        // cancelado pelo usuário
-                      }
-                      return;
-                    }
-                    setDataFolder('navegador-localStorage');
-                  }}
-                  className="px-6 py-2 bg-slate-800 text-white font-bold rounded-lg hover:bg-slate-700 text-sm"
-                >
-                  Escolher
-                </button>
-              </div>
-              {hasFileSystem && dataFolder === 'Meus Documentos/PaxtuData' && (
-                <p role="alert" className="text-[11px] text-amber-700 mt-2 bg-amber-50 border border-amber-200 rounded p-2">
-                  ⚠️ Você ainda não escolheu uma pasta. Clique em <strong>Escolher</strong> para selecionar onde salvar os dados.
-                </p>
-              )}
-                </>
-              )}
               <div className="mt-8 flex gap-3">
                 <button onClick={() => setStep(1)} className="px-4 py-3 text-gray-500 font-medium hover:text-gray-800">Voltar</button>
                 <button onClick={() => setStep(3)} className="flex-1 py-3 bg-slate-800 text-white rounded-lg font-bold hover:bg-slate-700 transition-all">Próximo</button>

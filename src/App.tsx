@@ -6,13 +6,12 @@ import { generateScoutPlanRouted as generateScoutPlan, generateScoutActivityRout
 import { getDefaultGeminiModel, pickPreferredGeminiModel, hasGeminiCredentials, offlineGeminiModels } from './services/geminiService';
 import { pickXaiFastModel } from './services/xaiService';
 import { belongsInOllamaSelector } from './services/ollamaService';
-import { getAnnotations, saveAnnotation, getAppConfig, saveAppConfig, normalizePath, downloadProgressBackup, importProgressBackup, saveSectionAsync, getAllMemberBlocoStates, downloadLocalAppBackup, importLocalAppBackup, ensureWorkspaceMetadata, acquireSectionEditLock, releaseSectionEditLock, renewSectionEditLock, EditLock, getSectionsAsync, savePlanToCatalog, clearWebLocalOperationalData } from './services/storageService';
+import { getAnnotations, saveAnnotation, getAppConfig, saveAppConfig, normalizePath, saveSectionAsync, getAllMemberBlocoStates, ensureWorkspaceMetadata, acquireSectionEditLock, releaseSectionEditLock, renewSectionEditLock, EditLock, getSectionsAsync, savePlanToCatalog, clearWebLocalOperationalData } from './services/storageService';
 import { getProgressionDetail } from './services/progressionDetailService';
 import { PlanDisplay } from './components/PlanDisplay';
 import { Catalog } from './components/Catalog';
 import { SetupWizard } from './components/SetupWizard';
 import { XaiOAuthPanel } from './components/XaiOAuthPanel';
-import { GrokDesktopOAuthPanel } from './components/GrokDesktopOAuthPanel';
 import { AiLoginStatusBar } from './components/AiLoginStatusBar';
 import { explainXaiWebAccessGap } from './services/xaiOAuthSession';
 import { notifyAiLoginChanged } from './services/aiLoginEvents';
@@ -360,12 +359,7 @@ function App() {
 
   const resolveXaiAccessGap = async (): Promise<string | null> => {
     const hasKey = Boolean(appConfig?.xaiApiKey || xaiKeyInput.trim());
-    if (isWebApp()) return explainXaiWebAccessGap(hasKey);
-    if (hasKey) return null;
-    const status = await window.fileSystem?.xaiOAuthStatus?.();
-    if (status?.connected) return null;
-    return status?.message
-      || 'Instale o Grok Build, entre com SuperGrok no aplicativo desktop, ou informe uma chave da API xAI.';
+    return explainXaiWebAccessGap(hasKey);
   };
 
   const fetchModels = async () => {
@@ -1285,7 +1279,7 @@ function App() {
             <AiLoginStatusBar variant="light" onOpenProvider={openAiSettings} />
           </div>
           <button onClick={backFromStructure} className="mb-6 text-slate-500 hover:text-slate-800">
-            {isWebApp() && currentUser ? '→ Entrar no aplicativo' : currentUser ? '← Voltar ao painel' : '← Voltar'}
+            {isWebApp() && currentUser ? '→ Ir ao planejador' : currentUser ? '← Voltar ao painel' : '← Voltar'}
           </button>
           <ProfileConfig
             currentAccountId={currentUser?.id}
@@ -1492,11 +1486,9 @@ function App() {
                         <div className="space-y-2">
                             <a href={GEMINI_STUDIO_URL} target="_blank" rel="noreferrer" className="inline-block bg-blue-600 text-white px-3 py-1 rounded font-bold text-[11px]">Obter chave grátis</a>
                             <input type="password" value={apiKeyInput} onChange={(e) => setApiKeyInput(e.target.value)} className="w-full p-2 border rounded text-sm" placeholder="API Key Gemini (AI Studio)" />
-                            {isWebApp() && (
-                              <p className="text-[11px] text-slate-600 leading-relaxed">
-                                {GEMINI_KEY_HELP} Se o login Google conseguir um token da API Gemini, ele é tentado automaticamente; se CORS ou o app OAuth não permitir, cole a chave aqui.
-                              </p>
-                            )}
+                            <p className="text-[11px] text-slate-600 leading-relaxed">
+                              {GEMINI_KEY_HELP} Se o login Google conseguir um token da API Gemini, ele é tentado automaticamente; se CORS ou o app OAuth não permitir, cole a chave aqui.
+                            </p>
                             <LlmModelControls
                               selectId="settings-gemini-model"
                               provider="gemini"
@@ -1572,11 +1564,9 @@ function App() {
                     {normalizeProviderId(providerInput) === 'xai-oauth' && (
                         <div className="space-y-2">
                           <p className="text-[11px] text-slate-600 leading-relaxed">
-                            Entre com sua conta X/Grok para usar os créditos da assinatura. O catálogo de modelos vem da conta autenticada. No site, o Device OAuth exige o Worker Cloudflare (<code>VITE_XAI_PROXY_URL</code>); no desktop, o cliente Grok Build.
+                            Entre com sua conta X/Grok para usar os créditos da assinatura. O catálogo de modelos vem da conta autenticada. O Device OAuth exige o Worker Cloudflare (<code>VITE_XAI_PROXY_URL</code>).
                           </p>
-                          {isWebApp()
-                            ? <XaiOAuthPanel onConnected={() => void fetchModels()} />
-                            : <GrokDesktopOAuthPanel />}
+                          <XaiOAuthPanel onConnected={() => void fetchModels()} />
                           <input type="password" value={xaiKeyInput} onChange={(e) => setXaiKeyInput(e.target.value)} className="w-full p-2 border rounded text-sm" placeholder="API Key xAI (opcional quando OAuth estiver conectado)" />
                           <LlmModelControls
                             selectId="settings-xai-model"
@@ -1594,63 +1584,11 @@ function App() {
 
                 {settingsTab === 'dados' && (
                 <>
-                {isWebApp() ? (
                 <div className="p-3 bg-sky-50 border border-sky-200 rounded-lg text-[11px] text-sky-950 leading-relaxed">
-                  No ScoutsAuto web, tropa, alcateia, jovens e progressão ficam no <strong>Cloud Firestore</strong>,
+                  No ScoutsAuto, tropa, alcateia, jovens e progressão ficam no <strong>Cloud Firestore</strong>,
                   ligados ao login de cada pessoa. Chefe e assistentes da mesma seção vêem os mesmos dados em máquinas diferentes.
                   Chaves de IA continuam só neste navegador.
                 </div>
-                ) : (
-                <>
-                <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-700 block">Pasta de dados</label>
-                    <div className="flex gap-2">
-                      <input
-                        type="text"
-                        value={folderInput}
-                        onChange={(e) => { if (!window.fileSystem) setFolderInput(e.target.value); }}
-                        readOnly={Boolean(window.fileSystem)}
-                        className={`w-full p-3 border rounded-lg text-sm ${window.fileSystem ? 'bg-gray-100 text-gray-500' : 'bg-gray-50'}`}
-                        placeholder="Pasta de dados"
-                      />
-                      {window.fileSystem && (
-                        <button
-                          type="button"
-                          className="px-3 py-2 bg-slate-800 text-white rounded-lg text-xs font-bold shrink-0"
-                          onClick={() => {
-                            void window.fileSystem?.selectFolder().then(path => {
-                              if (path) setFolderInput(path);
-                            });
-                          }}
-                        >
-                          Escolher
-                        </button>
-                      )}
-                    </div>
-                    {window.fileSystem && (
-                      <p className="text-[11px] text-slate-500">
-                        Só a pasta confirmada no diálogo do sistema é gravada. Depois de atualizar o app, escolha de novo uma vez.
-                      </p>
-                    )}
-                </div>
-                <div className="mt-4 space-y-2">
-                    <label className="text-xs font-bold text-slate-700 block">Modo de compartilhamento</label>
-                    <select
-                        value={syncModeInput}
-                        onChange={e => setSyncModeInput(e.target.value as 'local' | 'sharedFolder')}
-                        className="w-full p-3 border rounded-lg text-sm bg-white"
-                    >
-                        <option value="local">Uso local</option>
-                        <option value="sharedFolder">Pasta compartilhada em nuvem</option>
-                    </select>
-                    {syncModeInput === 'sharedFolder' && (
-                        <p className="text-[11px] text-amber-950 bg-amber-50 border border-amber-300 rounded p-2 leading-relaxed">
-                            A pasta na nuvem (Drive/OneDrive/Dropbox) guarda nomes, progressão e dados de saúde dos jovens no provedor. Use só pasta com acesso restrito à chefia; evite duas pessoas editando ao mesmo tempo.
-                        </p>
-                    )}
-                </div>
-                </>
-                )}
                 </>
                 )}
 
@@ -1668,78 +1606,6 @@ function App() {
                     </label>
                 </div>
 
-                {/* Backup/Restore de progressão por jovem — só desktop. No site o grupo vive no Firestore. */}
-                {!isWebApp() && (
-                <div className="mt-4 p-4 bg-slate-50 border border-slate-200 rounded-lg">
-                    <p className="text-sm font-bold text-slate-700 mb-2">📦 Backup do app local</p>
-                    <p className="text-[11px] text-slate-600 mb-3">
-                        Exporta dados locais do app para transporte entre máquinas. Use o backup completo para troca de máquina e o backup de progressão para auditoria POR 2025+.
-                    </p>
-                    <div className="flex gap-2">
-                        <button
-                            onClick={async () => {
-                              startProcessFeedback('Exportando backup completo...');
-                              downloadLocalAppBackup();
-                              finishProcessFeedback('Backup completo exportado.');
-                              showToast('Backup completo exportado.');
-                            }}
-                            className="flex-1 px-3 py-2 bg-slate-800 text-white rounded text-xs font-bold hover:bg-slate-700"
-                        >
-                            ⬇️ Backup completo
-                        </button>
-                        <button
-                            onClick={async () => {
-                              startProcessFeedback('Exportando backup de progressão...');
-                              await downloadProgressBackup();
-                              finishProcessFeedback('Backup de progressão exportado.');
-                              showToast('Backup de progressão exportado.');
-                            }}
-                            className="flex-1 px-3 py-2 bg-emerald-700 text-white rounded text-xs font-bold hover:bg-emerald-600"
-                        >
-                            ⬇️ Progressão
-                        </button>
-                        <input
-                            id="import-backup"
-                            type="file"
-                            accept="application/json"
-                            className="hidden"
-                            onChange={async (e) => {
-                                const file = e.target.files?.[0];
-                                if (!file) return;
-                                if (file.size > 10 * 1024 * 1024) {
-                                    showToast('Backup recusado: arquivo muito grande.');
-                                    e.target.value = '';
-                                    return;
-                                }
-                                try {
-                                    startProcessFeedback('Importando backup...');
-                                    const text = await file.text();
-                                    const backup = JSON.parse(text);
-                                    if (backup.kind === 'paxtu-local-app-backup') {
-                                        const imported = importLocalAppBackup(backup);
-                                        finishProcessFeedback(`Backup completo importado: ${imported} chaves.`);
-                                        showToast(`Backup completo importado: ${imported} chaves.`);
-                                    } else {
-                                        const result = await importProgressBackup(backup);
-                                        finishProcessFeedback(`Backup de progressão importado: ${result.blocosImportados} blocos.`);
-                                        showToast(`Importado: ${result.blocosImportados} blocos · ${result.reconhecimentosImportados} reconhecimentos.`);
-                                    }
-                                } catch {
-                                    finishProcessFeedback('Falha ao importar backup.');
-                                    showToast('Backup recusado: JSON inválido ou formato não reconhecido.');
-                                }
-                                e.target.value = '';
-                            }}
-                        />
-                        <label
-                            htmlFor="import-backup"
-                            className="flex-1 px-3 py-2 bg-blue-700 text-white rounded text-xs font-bold hover:bg-blue-600 text-center cursor-pointer"
-                        >
-                            ⬆️ Importar
-                        </label>
-                    </div>
-                </div>
-                )}
                 </>
                 )}
 

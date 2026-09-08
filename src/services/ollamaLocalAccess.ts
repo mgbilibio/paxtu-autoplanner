@@ -7,7 +7,7 @@ export const isOllamaLocalTransportFailure = (cause?: string): boolean => {
   return /failed to fetch|networkerror|load failed|cors|blocked|timeout|aborterror|typeerror/i.test(cause);
 };
 
-/** Erro em português para listagem/geração local — nunca menciona aplicativo desktop. */
+/** Erro em português para listagem/geração local — fala na origem do site, não em outro cliente. */
 export const explainOllamaLocalFailure = (base: string, cause?: string): string => {
   const origin =
     typeof window !== 'undefined' && window.location?.origin
