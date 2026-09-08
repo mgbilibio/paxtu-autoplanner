@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readdirSync, readFileSync, statSync } from 'node:fs';
+import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import {
@@ -15,13 +16,29 @@ import {
   xaiOAuthUrls,
 } from './xaiOAuthConfig.ts';
 
+const PAXTU_XAI_PROXY_ORIGIN = 'https://paxtu-xai-proxy.margusbilibio.workers.dev';
+const FOREIGN_XAI_PROXY_HOST = 'socialkids-xai-proxy';
+
 const rel = (fromHere: string): string => fileURLToPath(new URL(fromHere, import.meta.url));
 const read = (fromHere: string): string => readFileSync(rel(fromHere), 'utf8');
 
-test('sem VITE_XAI_PROXY_URL o Device OAuth usa o proxy SocialKids no site', () => {
+const walkRuntimeFiles = (dir: string, acc: string[] = []): string[] => {
+  for (const name of readdirSync(dir)) {
+    const full = join(dir, name);
+    if (statSync(full).isDirectory()) {
+      walkRuntimeFiles(full, acc);
+      continue;
+    }
+    if (/\.test\.[cm]?[jt]sx?$/.test(name)) continue;
+    if (/\.(ts|tsx|js|jsx|html|md|toml)$/.test(name)) acc.push(full);
+  }
+  return acc;
+};
+
+test('sem VITE_XAI_PROXY_URL o Device OAuth usa o proxy Paxtu no site', () => {
   const origin = resolveXaiProxyOriginFrom({});
   assert.equal(origin, DEFAULT_XAI_OAUTH_PROXY_ORIGIN);
-  assert.equal(origin, 'https://socialkids-xai-proxy.margusbilibio.workers.dev');
+  assert.equal(origin, PAXTU_XAI_PROXY_ORIGIN);
   const urls = xaiOAuthUrls();
   assert.equal(urls.proxyConfigured, true);
   assert.equal(urls.proxyOrigin, DEFAULT_XAI_OAUTH_PROXY_ORIGIN);
@@ -30,7 +47,36 @@ test('sem VITE_XAI_PROXY_URL o Device OAuth usa o proxy SocialKids no site', () 
   assert.equal(urls.userInfo, `${DEFAULT_XAI_OAUTH_PROXY_ORIGIN}/oauth/userinfo`);
   assert.doesNotMatch(urls.device, /auth\.x\.ai/);
   assert.doesNotMatch(urls.device, /__xai_oauth|localhost|127\.0\.0\.1/);
+  assert.doesNotMatch(urls.device, new RegExp(FOREIGN_XAI_PROXY_HOST));
   assert.equal(resolveXaiProxyOrigin(), DEFAULT_XAI_OAUTH_PROXY_ORIGIN);
+});
+
+test('src e README não usam o proxy SocialKids como dependência de runtime', () => {
+  assert.equal(DEFAULT_XAI_OAUTH_PROXY_ORIGIN, PAXTU_XAI_PROXY_ORIGIN);
+  const srcRoot = rel('../');
+  const repoRoot = rel('../../');
+  const files = [
+    ...walkRuntimeFiles(srcRoot),
+    join(repoRoot, 'README.md'),
+    join(repoRoot, 'index.html'),
+    join(repoRoot, 'workers/xai-proxy/wrangler.toml'),
+  ];
+  for (const file of files) {
+    const src = readFileSync(file, 'utf8');
+    assert.equal(
+      src.includes(FOREIGN_XAI_PROXY_HOST),
+      false,
+      `${file} ainda cita ${FOREIGN_XAI_PROXY_HOST} como dependência`,
+    );
+  }
+  const wrangler = read('../../workers/xai-proxy/wrangler.toml');
+  assert.match(wrangler, /^name = "paxtu-xai-proxy"$/m);
+  const csp = read('../../index.html');
+  assert.match(csp, /https:\/\/paxtu-xai-proxy\.margusbilibio\.workers\.dev/);
+  assert.equal(csp.includes(FOREIGN_XAI_PROXY_HOST), false);
+  const readme = read('../../README.md');
+  assert.match(readme, /https:\/\/paxtu-xai-proxy\.margusbilibio\.workers\.dev/);
+  assert.equal(readme.includes(FOREIGN_XAI_PROXY_HOST), false);
 });
 
 test('DEV ou ausência de env não desviam o login para Vite/localhost', () => {
@@ -68,7 +114,7 @@ test('catálogo e chat vão direto para api.x.ai, nunca pelo proxy OAuth', () =>
 test('auth.x.ai e api.x.ai não valem como proxy', () => {
   assert.equal(isUsableXaiProxyOrigin('https://auth.x.ai'), false);
   assert.equal(isUsableXaiProxyOrigin('https://api.x.ai/v1'), false);
-  assert.equal(isUsableXaiProxyOrigin('https://socialkids-xai-proxy.margusbilibio.workers.dev'), true);
+  assert.equal(isUsableXaiProxyOrigin(PAXTU_XAI_PROXY_ORIGIN), true);
   assert.equal(isUsableXaiProxyOrigin('/__xai_oauth'), false);
 });
 

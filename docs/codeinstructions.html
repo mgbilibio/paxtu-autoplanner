@@ -15,7 +15,7 @@
   <h2>Arquitetura atual</h2>
   <ul>
     <li><code>src/</code>: interface React e regras de apresentação. O produto é o site (GitHub Pages).</li>
-    <li>O login xOAuth do site usa o proxy já publicado do SocialKids; catálogo e chat falam com <code>api.x.ai</code> direto.</li>
+    <li>O login xOAuth do site usa o proxy deste app <code>https://paxtu-xai-proxy.margusbilibio.workers.dev</code>; catálogo e chat falam com <code>api.x.ai</code> direto.</li>
     <li><code>src/services/storage/</code>: persistência; no site o grupo vive no Firestore. <code>storageService.ts</code> é a fachada pública.</li>
     <li><code>conhecimento/bd/</code>: bancos SQLite auditáveis de progressão, especialidades e biblioteca.</li>
     <li><code>src/data/generated/</code>: derivados TypeScript dos bancos. Não editar manualmente.</li>
@@ -48,10 +48,10 @@
   </ul>
   <h2>OAuth xAI/Grok</h2>
   <ul>
-    <li>A edição web usa Device Authorization Grant, reaproveitando o fluxo comprovado do projeto SocialKids.</li>
+    <li>A edição web usa Device Authorization Grant no próprio navegador (sem Vite, npm nem instalação na máquina do escotista).</li>
     <li><code>xaiOAuthDevice.ts</code> inicia e acompanha a autorização; <code>xaiOAuthSession.ts</code> mantém access e refresh tokens somente no <code>sessionStorage</code>.</li>
     <li>Tokens xAI nunca devem ser gravados no Firestore, localStorage, logs, configuração exportada ou repositório.</li>
-    <li>No site publicado, device/token/userinfo vão para <code>https://socialkids-xai-proxy.margusbilibio.workers.dev</code>. Sem Worker novo e sem variável de build. Origem do Pages: <code>https://mgbilibio.github.io</code>.</li>
+    <li>No site publicado, device/token/userinfo vão para <code>https://paxtu-xai-proxy.margusbilibio.workers.dev</code> (wrangler name <code>paxtu-xai-proxy</code>). Sem variável de build. Origem do Pages: <code>https://mgbilibio.github.io</code>. A allowlist CORS é só o Pages e localhost de teste.</li>
     <li>Com o token no <code>sessionStorage</code>, <code>/v1/language-models</code> e <code>/v1/chat/completions</code> chamam <code>https://api.x.ai/v1</code> direto (CORS <code>*</code>). Não encaminhar catálogo/chat pelo proxy OAuth.</li>
     <li>O indicador Gemini/Grok no chrome reusa <code>hasGeminiCredentials</code>, <code>getXaiBrowserStatus</code> e sondas leves de listagem. Verde só se a credencial for utilizável agora.</li>
     <li>O Client ID do Device OAuth é público (app Pages). Tokens só em <code>sessionStorage</code>. Não há client secret no repositório.</li>

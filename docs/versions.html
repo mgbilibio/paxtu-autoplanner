@@ -15,10 +15,18 @@
 <body>
 <main>
   <h1>Historico de Versoes</h1>
-  <h2>20260908-xoauth-pages</h2>
-  <p>O botão “Entrar com X / Grok” no GitHub Pages inicia o Device OAuth no próprio navegador, sem Worker novo e sem variável de build.</p>
+  <h2>20260908-xoauth-paxtu-proxy</h2>
+  <p>O botão “Entrar com X / Grok” no GitHub Pages inicia o Device OAuth no próprio navegador, pelo proxy deste app, sem Vite, npm nem variável de build.</p>
   <ul>
-    <li><strong>OAuth:</strong> device, token e userinfo usam o proxy já publicado <code>https://socialkids-xai-proxy.margusbilibio.workers.dev</code>.</li>
+    <li><strong>OAuth:</strong> device, token e userinfo usam <code>https://paxtu-xai-proxy.margusbilibio.workers.dev</code> (wrangler name <code>paxtu-xai-proxy</code>).</li>
+    <li><strong>Catálogo e chat:</strong> depois do token, o site chama <code>https://api.x.ai/v1</code> direto.</li>
+    <li><strong>Separação:</strong> o xOAuth usa só o Worker deste app. Allowlist CORS: <code>https://mgbilibio.github.io</code> e localhost de teste.</li>
+    <li><strong>Produto:</strong> o escotista só abre o site. Sem instalar dependência e sem campo para colar URL de Worker.</li>
+  </ul>
+  <h2>20260908-xoauth-pages</h2>
+  <p>O botão “Entrar com X / Grok” no GitHub Pages inicia o Device OAuth no próprio navegador, sem variável de build.</p>
+  <ul>
+    <li><strong>OAuth:</strong> device, token e userinfo passam por um proxy CORS; a origem vigente é o proxy deste app (ver entrada 20260908-xoauth-paxtu-proxy).</li>
     <li><strong>Catálogo e chat:</strong> depois do token, o site chama <code>https://api.x.ai/v1</code> direto.</li>
     <li><strong>Produto:</strong> o escotista só abre o site. Sem instalar dependência, sem Vite e sem campo para colar URL de Worker.</li>
   </ul>

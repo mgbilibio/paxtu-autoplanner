@@ -2,7 +2,7 @@ export const XAI_CLIENT_ID = 'b1a00492-073a-47ea-816f-4c329264a828';
 export const XAI_OAUTH_SCOPE = 'openid profile email offline_access grok-cli:access api:access';
 
 export const XAI_API_BASE = 'https://api.x.ai/v1';
-export const DEFAULT_XAI_OAUTH_PROXY_ORIGIN = 'https://socialkids-xai-proxy.margusbilibio.workers.dev';
+export const DEFAULT_XAI_OAUTH_PROXY_ORIGIN = 'https://paxtu-xai-proxy.margusbilibio.workers.dev';
 export const XAI_PROXY_OVERRIDE_KEY = 'paxtu_xai_proxy_url';
 
 const AUTH_HOSTS = /^(auth|api|accounts)\.x\.ai$/i;
