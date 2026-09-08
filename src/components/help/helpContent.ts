@@ -211,7 +211,7 @@ export const FAQ: HelpFaq[] = [
   },
   {
     q: 'Qual IA o site usa?',
-    a: 'Gemini é o padrão e prefere Flash-Lite. Cole a chave do AI Studio em Configurações → IA (fica só neste navegador). Sem chave o seletor não some; a geração avisa. “Ver cota / uso” segue o modelo escolhido: Gemini abre o AI Studio, Grok abre a Console da xAI, Ollama Cloud abre ollama.com/settings. Na xAI, entre com X/Grok no site ou use uma chave API. Ollama Cloud e Ollama local têm “Listar modelos”: Cloud usa a chave ollama.com em https://ollama.com; local consulta a URL do daemon (padrão http://127.0.0.1:11434, também aceita localhost), sem chave. Se o daemon estiver parado, o CORS bloquear ou o navegador bloquear conteúdo misto, o aviso pede que o Ollama aceite a origem https://mgbilibio.github.io.',
+    a: 'Gemini é o padrão e prefere Flash-Lite. Cole a chave do AI Studio em Configurações → IA (fica só neste navegador). Sem chave o seletor não some; a geração avisa. “Ver cota / uso” segue o modelo escolhido: Gemini abre o AI Studio, Grok abre grok.com/?_s=usage na conta logada, Ollama Cloud abre ollama.com/settings. Na xAI, entre com X/Grok no site ou use uma chave API. Ollama Cloud e Ollama local têm “Listar modelos”: Cloud usa a chave ollama.com em https://ollama.com; local consulta a URL do daemon (padrão http://127.0.0.1:11434, também aceita localhost), sem chave. Se o daemon estiver parado, o CORS bloquear ou o navegador bloquear conteúdo misto, o aviso pede que o Ollama aceite a origem https://mgbilibio.github.io.',
   },
   {
     q: 'Posso usar sem internet?',

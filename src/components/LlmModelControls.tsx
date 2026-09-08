@@ -83,7 +83,7 @@ export const LlmModelControls: React.FC<Props> = ({
           rel="noopener"
           title={
             usageUrl === XAI_USAGE_URL
-              ? 'Abre a cota e o uso da xAI (Grok) na Console.'
+              ? 'Abre a cota e o uso na conta Grok já logada.'
               : usageUrl === GEMINI_USAGE_URL
                 ? 'Abre a cota do Gemini no AI Studio.'
                 : 'Abre o uso da conta Ollama Cloud.'
