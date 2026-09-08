@@ -5,91 +5,13 @@
   "description": "Assistente de Planejamento e Progressão Escoteira",
   "author": "Margus - Grupo Unisselva (Cuiabá/MT)",
   "type": "module",
-  "main": "dist-electron/main.js",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --mode web",
     "dev:web": "vite --mode web",
-    "build": "tsc && vite build",
+    "build": "tsc && vite build --mode web",
     "build:web": "tsc && vite build --mode web",
     "preview": "vite preview",
-    "test": "node --experimental-transform-types --test electron/securityGuards.test.ts electron/grokClient.test.ts src/services/firebase/groupBackupCrypto.test.ts src/services/storage/sectionList.test.ts src/services/firebase/sectionPackMatch.test.ts src/services/storage/localDataPolicy.test.ts src/services/roleService.test.ts src/utils/memberFilters.test.ts src/services/firebase/accessLog.test.ts src/utils/welcomePreference.test.ts src/utils/nationalActivities.test.ts src/utils/scoutEfemerides.test.ts src/utils/calendarEvents.test.ts src/services/manualMeetingPlanService.test.ts src/services/geminiModels.test.ts src/services/xaiOAuthConfig.test.ts src/services/xaiOAuthSession.test.ts src/services/aiLoginStatus.test.ts src/services/activityBriefs.test.ts src/services/ollamaModels.test.ts src/services/ollamaLocalAccess.test.ts",
-    "electron:build": "vite build && electron-builder",
-    "dist": "npm run electron:build"
-  },
-  "build": {
-    "appId": "com.paxtu.autoplanner",
-    "productName": "Paxtu AutoPlanner",
-    "copyright": "Copyright © 2026 Margus - Grupo Unisselva (Cuiabá/MT)",
-    "directories": {
-      "output": "release/20260904-2048"
-    },
-    "files": [
-      "dist",
-      "dist-electron"
-    ],
-    "asarUnpack": [
-      "**/node_modules/better-sqlite3/**"
-    ],
-    "extraResources": [
-      {
-        "from": "docs/biblioteca/manuais_essenciais",
-        "to": "manuais",
-        "filter": [
-          "**/*.pdf",
-          "**/*.txt"
-        ]
-      },
-      {
-        "from": "conhecimento/bd/biblioteca_fts.sqlite",
-        "to": "biblioteca_fts.sqlite"
-      },
-      {
-        "from": "conhecimento/bd/progressao_2025.sqlite",
-        "to": "progressao_2025.sqlite"
-      },
-      {
-        "from": "conhecimento/bd/especialidades_guia.sqlite",
-        "to": "especialidades_guia.sqlite"
-      },
-      {
-        "from": "docs/usersmanual.html",
-        "to": "Guia_de_Uso_Paxtu.html"
-      }
-    ],
-    "win": {
-      "icon": "public/icon.ico",
-      "artifactName": "${productName}_20260904-2048_${arch}.${ext}",
-      "target": [
-        {
-          "target": "nsis",
-          "arch": [
-            "x64"
-          ]
-        },
-        {
-          "target": "portable",
-          "arch": [
-            "x64"
-          ]
-        },
-        {
-          "target": "zip",
-          "arch": [
-            "x64"
-          ]
-        }
-      ]
-    },
-    "nsis": {
-      "oneClick": false,
-      "perMachine": false,
-      "allowToChangeInstallationDirectory": true,
-      "deleteAppDataOnUninstall": false,
-      "artifactName": "${productName}_Setup_20260904-2048.${ext}"
-    },
-    "portable": {
-      "artifactName": "${productName}_Portable_20260904-2048.${ext}"
-    }
+    "test": "node --experimental-transform-types --test electron/securityGuards.test.ts electron/grokClient.test.ts src/services/firebase/groupBackupCrypto.test.ts src/services/storage/sectionList.test.ts src/services/firebase/sectionPackMatch.test.ts src/services/storage/localDataPolicy.test.ts src/services/roleService.test.ts src/utils/memberFilters.test.ts src/services/firebase/accessLog.test.ts src/utils/welcomePreference.test.ts src/utils/nationalActivities.test.ts src/utils/scoutEfemerides.test.ts src/utils/calendarEvents.test.ts src/services/manualMeetingPlanService.test.ts src/services/geminiModels.test.ts src/services/xaiOAuthConfig.test.ts src/services/xaiOAuthSession.test.ts src/services/aiLoginStatus.test.ts src/services/activityBriefs.test.ts src/services/ollamaModels.test.ts src/services/ollamaLocalAccess.test.ts src/services/webProductSurface.test.ts"
   },
   "dependencies": {
     "@google/genai": "^1.0.0",

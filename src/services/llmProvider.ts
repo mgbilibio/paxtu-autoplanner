@@ -1,7 +1,7 @@
 // Abstração de provider de LLM. Alterna Gemini, Ollama local, Ollama Cloud e xAI.
 // Ordem de preferência de produto: gemini → ollama-local → ollama-cloud → xai-oauth.
 // No site o padrão continua Gemini; Ollama local consulta o daemon na URL configurada.
-// xAI usa Device OAuth (Worker) ou chave. A ponte grok.exe, se existir, continua opcional.
+// xAI usa Device OAuth (Worker) ou chave API. O catálogo vem da conta autenticada.
 
 import { Activity, GenerateScoutActivityParams, GeneratorParams, MeetingPlan, LlmProviderId } from '../types';
 import { getAppConfig } from './storageService';

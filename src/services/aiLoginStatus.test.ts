@@ -49,7 +49,18 @@ test('Grok na web fica vermelho se o proxy falta e não há chave', () => {
   assert.match(red.detail, /proxy/i);
 });
 
-test('Grok no desktop não afirma online se o binário falta', () => {
+test('Grok sem proxy e sem chave pede Worker, nunca Grok Build nem desktop', () => {
+  const red = deriveGrokLoginStatus({
+    ...grokBase,
+    proxyConfigured: false,
+    grokProbe: 'skipped',
+  });
+  assert.equal(red.online, false);
+  assert.match(red.detail, /proxy/i);
+  assert.equal(/Grok Build|grok\.exe|aplicativo desktop|somente no/i.test(red.detail), false);
+});
+
+test('pílulas Grok não tratam binário desktop como caminho de login', () => {
   const red = deriveGrokLoginStatus({
     ...grokBase,
     isWeb: false,
@@ -59,5 +70,5 @@ test('Grok no desktop não afirma online se o binário falta', () => {
     grokProbe: 'skipped',
   });
   assert.equal(red.online, false);
-  assert.match(red.detail, /não encontrado/i);
+  assert.equal(/Grok Build|grok\.exe|aplicativo desktop/i.test(red.detail), false);
 });

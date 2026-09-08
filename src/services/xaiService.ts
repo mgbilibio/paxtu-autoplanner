@@ -51,7 +51,7 @@ const hasXaiOAuthBridge = (): boolean => Boolean(window.fileSystem?.xaiOAuthRequ
 
 const requestWithGrokOAuth = async (prompt: string, modelId?: string): Promise<string> => {
   const request = window.fileSystem?.xaiOAuthRequest;
-  if (!request) throw new Error('OAuth xAI está disponível somente no aplicativo desktop.');
+  if (!request) throw new Error(NO_KEY);
   const result = await request(prompt, modelId);
   if (!result.ok) throw new Error(result.error || 'Grok OAuth não retornou resposta.');
   return result.body;
@@ -59,20 +59,9 @@ const requestWithGrokOAuth = async (prompt: string, modelId?: string): Promise<s
 
 export const isReachable = async (): Promise<{ ok: boolean; error?: string }> => {
   if (resolveXaiKey()) return { ok: true };
-  if (isWebApp()) {
-    const gap = explainXaiWebAccessGap(false);
-    if (!gap) return { ok: true };
-    return { ok: false, error: gap };
-  }
-  const status = await window.fileSystem?.xaiOAuthStatus?.();
-  if (status?.connected) return { ok: true };
-  if (status?.installed === false) {
-    return { ok: false, error: status.message || 'Cliente Grok Build não encontrado neste computador.' };
-  }
-  if (hasXaiOAuthBridge()) {
-    return { ok: false, error: status?.message || 'Entre com sua conta SuperGrok no botão de login.' };
-  }
-  return { ok: false, error: NO_KEY };
+  const gap = explainXaiWebAccessGap(false);
+  if (!gap) return { ok: true };
+  return { ok: false, error: gap };
 };
 
 const chat = async (userPrompt: string, modelId?: string, temperature = 0.5): Promise<string> => {
@@ -307,11 +296,7 @@ export const generateScoutActivity = async (params: GenerateScoutActivityParams)
 };
 
 export const probeGrokCredentials = async (): Promise<'ok' | 'fail' | 'skipped'> => {
-  if (!isWebApp()) {
-    const status = await window.fileSystem?.xaiOAuthStatus?.();
-    if (status?.connected && status.installed !== false) return 'ok';
-    if (!resolveXaiKey()) return status?.installed === false ? 'fail' : 'skipped';
-  } else if (!resolveXaiKey() && !getXaiBrowserStatus().connected) {
+  if (!resolveXaiKey() && !getXaiBrowserStatus().connected) {
     return 'skipped';
   }
   const models = await listModels();

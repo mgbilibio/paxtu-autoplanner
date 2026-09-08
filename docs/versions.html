@@ -15,6 +15,14 @@
 <body>
 <main>
   <h1>Historico de Versoes</h1>
+  <h2>20260908-site-unico</h2>
+  <p>O site (GitHub Pages) passou a ser o único produto. A pasta <code>electron/</code> permanece no repositório, mas não é caminho de uso nem aparece na interface.</p>
+  <ul>
+    <li><strong>Produto:</strong> README, manual e configurações descrevem só o site. Scripts <code>electron:build</code> / <code>dist</code> saíram do <code>package.json</code>. <code>npm run dev</code> sobe a SPA web.</li>
+    <li><strong>xOAuth:</strong> “Entrar com X / Grok” continua pelo Worker (<code>VITE_XAI_PROXY_URL</code>). A UI não pede Grok Build, <code>grok.exe</code> nem aplicativo desktop.</li>
+    <li><strong>Ollama:</strong> local lista modelos na URL do daemon; Cloud na chave ollama.com. Sem IDs Gemini nesses seletores. Falha local fala em origem do site.</li>
+    <li><strong>Permanece:</strong> pílulas Gemini/Grok, rascunho incompleto (avisos não bloqueiam Salvar) e código de progressão completo.</li>
+  </ul>
   <h2>20260904-2048</h2>
   <p>Revisão dos commits de 2026-09-04: xOAuth web permanece, Gemini não fica em branco e o desktop Grok deixa de fingir que o OAuth funciona sem o cliente.</p>
   <ul>

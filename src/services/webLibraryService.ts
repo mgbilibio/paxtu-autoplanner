@@ -125,7 +125,7 @@ h1,h2,h3{font-family:system-ui,sans-serif;color:#0f172a}
 .note{background:#eff6ff;border-left:4px solid #2563eb;padding:12px 14px;margin-bottom:20px;font-family:system-ui,sans-serif;font-size:14px;line-height:1.45}
 mark{background:#fde68a;padding:0 2px}
 </style></head><body>
-<div class="note">Consulta em texto no navegador — o mesmo acervo da Biblioteca. No aplicativo desktop o PDF original abre no leitor do sistema. Use <strong>Baixar HTML</strong> para guardar uma cópia.</div>
+<div class="note">Consulta em texto no navegador — o mesmo acervo da Biblioteca. Use <strong>Baixar HTML</strong> para guardar uma cópia.</div>
 ${body}
 ${highlight ? '<script>document.getElementById("trecho")?.scrollIntoView({block:"center"});</script>' : ''}
 </body></html>`;

@@ -118,7 +118,7 @@ export const GlobalSearch: React.FC<Props> = ({ onClose }) => {
             <div className="p-8 text-center text-gray-400 text-sm">
               <p className="text-3xl mb-3">🔍</p>
               <p>Indexados <strong>{totalDocs}</strong> documentos operacionais.</p>
-              <p className="text-xs mt-1">A busca consulta o catálogo operacional e a biblioteca (texto no navegador; FTS5 no app desktop).</p>
+              <p className="text-xs mt-1">A busca consulta o catálogo operacional e a biblioteca em texto no navegador.</p>
               <p className="text-xs mt-2">Digite um termo (ex: "fogueira", "compostagem", "primeiros socorros").</p>
               <p className="text-xs mt-1 opacity-60">ESC para fechar.</p>
             </div>

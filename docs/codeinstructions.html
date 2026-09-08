@@ -14,9 +14,9 @@
   <p>Atualizado em <strong>20260904-2048</strong> (versão <code>2026.9.8</code>). Aplicam-se ao app alvo em <code>PaxtuAP/</code>.</p>
   <h2>Arquitetura atual</h2>
   <ul>
-    <li><code>src/</code>: interface React e regras de apresentação.</li>
-    <li><code>electron/</code>: processo principal, IPC e acesso controlado a arquivos/PDFs.</li>
-    <li><code>src/services/storage/</code>: persistência local e em pasta compartilhada; <code>storageService.ts</code> é a fachada pública.</li>
+    <li><code>src/</code>: interface React e regras de apresentação. O produto é o site (GitHub Pages).</li>
+    <li><code>workers/xai-proxy</code>: Worker CORS do Device OAuth xAI.</li>
+    <li><code>src/services/storage/</code>: persistência; no site o grupo vive no Firestore. <code>storageService.ts</code> é a fachada pública.</li>
     <li><code>conhecimento/bd/</code>: bancos SQLite auditáveis de progressão, especialidades e biblioteca.</li>
     <li><code>src/data/generated/</code>: derivados TypeScript dos bancos. Não editar manualmente.</li>
   </ul>
@@ -43,7 +43,7 @@
   <h2>Segurança de IA e backup</h2>
   <ul>
     <li>Backups locais devem limpar todos os segredos da configuração, incluindo <code>apiKey</code> e <code>ollamaCloudApiKey</code>, também na importação.</li>
-    <li>O IPC <code>ollama:request</code> só deve anexar <code>Authorization</code> após validação por URL parseada e host cloud allowlisted.</li>
+    <li>Ollama local no site fala com a URL do daemon (padrão <code>http://localhost:11434</code>) via <code>fetch</code>. Sem chave. Se o daemon estiver parado ou o CORS bloquear, a UI pede que o Ollama aceite a origem do site.</li>
     <li>Ollama Cloud não deve iniciar chamadas JSON com <code>format=json</code>; use prompt estruturado e parser/fallback do app.</li>
   </ul>
   <h2>OAuth xAI/Grok</h2>
@@ -55,8 +55,7 @@
     <li>A URL do Worker entra no build por <code>VITE_XAI_PROXY_URL</code> (variável pública do GitHub Actions, não secret). Sem ela, ou se o Worker estiver fora, a UI avisa em português. Em desenvolvimento, <code>/__xai_oauth</code> no Vite é o fallback same-origin. Não colocar tokens, client secrets ou chaves privadas nessa variável.</li>
     <li>O indicador Gemini/Grok no chrome reusa <code>hasGeminiCredentials</code>, <code>getXaiBrowserStatus</code> e sondas leves de listagem. Verde só se a credencial for utilizável agora.</li>
     <li>O Client ID do Device OAuth é público (app Pages). Tokens só em <code>sessionStorage</code>. Não há client secret no repositório.</li>
-    <li>No desktop, OAuth usa o cliente Grok Build (<code>electron/grokClient.ts</code>). Sem o binário, o status não afirma que o login funciona.</li>
-    <li>O provider aceita a sessão OAuth ou uma chave API opcional. Ambos consultam <code>/v1/language-models</code> em tempo de execução.</li>
+    <li>O provider aceita a sessão OAuth (Worker) ou uma chave API opcional. Ambos consultam <code>/v1/language-models</code> em tempo de execução. Não exigir binário Grok.</li>
   </ul>
   <h2>Catálogos de modelos</h2>
   <ul>

@@ -35,17 +35,9 @@ export const useAiLoginStatus = (): {
   const [grok, setGrok] = useState<AiLoginState>(emptyGrok);
 
   const refresh = useCallback(async () => {
-    const web = isWebApp();
     const geminiCreds = hasGeminiCredentials();
     const xaiKey = Boolean(getAppConfig()?.xaiApiKey?.trim());
     const browser = getXaiBrowserStatus();
-    let desktopConnected: boolean | undefined;
-    let desktopInstalled: boolean | undefined;
-    if (!web) {
-      const status = await window.fileSystem?.xaiOAuthStatus?.();
-      desktopConnected = status?.connected;
-      desktopInstalled = status?.installed;
-    }
     const [geminiProbe, grokProbe] = await Promise.all([
       probeGeminiCredentials(),
       probeGrokCredentials(),
@@ -56,9 +48,7 @@ export const useAiLoginStatus = (): {
       hasXaiApiKey: xaiKey,
       webSessionConnected: browser.connected,
       proxyConfigured: browser.proxyConfigured,
-      isWeb: web,
-      desktopConnected,
-      desktopInstalled,
+      isWeb: true,
       grokProbe,
     }));
   }, []);

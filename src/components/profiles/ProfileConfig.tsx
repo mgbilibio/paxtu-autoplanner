@@ -121,7 +121,7 @@ export const ProfileConfig: React.FC<Props> = ({
           <p className="text-sm text-green-900 font-bold">✅ Estrutura pronta!</p>
           <p className="text-xs text-green-700 mt-1">
             {isWebApp()
-              ? 'Estrutura pronta. Use “Entrar no aplicativo” para ir ao planejador. A tropa fica no Firestore do ScoutsAuto.'
+              ? 'Estrutura pronta. Use “Ir ao planejador” para começar. A tropa fica no Firestore do ScoutsAuto.'
               : 'Volte ao Login e entre com o usuário criado para começar a planejar.'}
           </p>
         </div>
