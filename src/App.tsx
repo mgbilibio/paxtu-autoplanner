@@ -5,6 +5,7 @@ import { getPlanningCatalog, buildCatalogDigest } from './services/catalogServic
 import { generateScoutPlanRouted as generateScoutPlan, generateScoutActivityRouted as generateScoutActivity, getActiveProvider, getProviderById, normalizeProviderId, GEMINI_STUDIO_URL, GEMINI_KEY_HELP } from './services/llmProvider';
 import { getDefaultGeminiModel, pickPreferredGeminiModel, hasGeminiCredentials, offlineGeminiModels } from './services/geminiService';
 import { pickXaiFastModel } from './services/xaiService';
+import { belongsInOllamaSelector } from './services/ollamaService';
 import { getAnnotations, saveAnnotation, getAppConfig, saveAppConfig, normalizePath, downloadProgressBackup, importProgressBackup, saveSectionAsync, getAllMemberBlocoStates, downloadLocalAppBackup, importLocalAppBackup, ensureWorkspaceMetadata, acquireSectionEditLock, releaseSectionEditLock, renewSectionEditLock, EditLock, getSectionsAsync, savePlanToCatalog, clearWebLocalOperationalData } from './services/storageService';
 import { getProgressionDetail } from './services/progressionDetailService';
 import { PlanDisplay } from './components/PlanDisplay';
@@ -258,13 +259,18 @@ function App() {
       setAppConfig(tmp);
       setOllamaUrlInput(safeUrl);
     }
-    const provider = getProviderById('ollama');
+    const provider = getProviderById('ollama-local');
     const status = await provider.isReachable();
     setOllamaStatus(status);
     if (status.ok) {
-      const models = await provider.listModels();
+      const models = (await provider.listModels()).filter(belongsInOllamaSelector);
       setAvailableModels(models);
-      if (models.length > 0) setSelectedModel(models[0]);
+      const preferred = getAppConfig()?.ollamaModel;
+      if (models.length > 0) {
+        setSelectedModel(preferred && models.includes(preferred) ? preferred : models[0]);
+      }
+    } else {
+      setAvailableModels([]);
     }
     setTestingOllama(false);
   };
@@ -326,6 +332,32 @@ function App() {
     return live.length > 0 ? live : offlineGeminiModels();
   };
 
+  const ollamaSelectorModels = (): string[] =>
+    availableModels.filter(belongsInOllamaSelector);
+
+  const persistOllamaDraft = (mode: 'local' | 'cloud'): void => {
+    if (!appConfig) return;
+    if (mode === 'cloud') {
+      const next = { ...appConfig, ollamaCloudApiKey: ollamaCloudKeyInput.trim() };
+      saveAppConfig(next);
+      setAppConfig(next);
+      return;
+    }
+    const url = normalizeOllamaBaseUrl(ollamaUrlInput) || 'http://localhost:11434';
+    const next = { ...appConfig, ollamaBaseUrl: url };
+    saveAppConfig(next);
+    setAppConfig(next);
+    setOllamaUrlInput(url);
+  };
+
+  const selectOllamaProvider = (id: 'ollama-local' | 'ollama-cloud'): void => {
+    setProviderInput(id);
+    setAvailableModels([]);
+    setOllamaStatus(null);
+    const kept = id === 'ollama-cloud' ? appConfig?.ollamaCloudModel : appConfig?.ollamaModel;
+    setSelectedModel(kept && belongsInOllamaSelector(kept) ? kept : '');
+  };
+
   const resolveXaiAccessGap = async (): Promise<string | null> => {
     const hasKey = Boolean(appConfig?.xaiApiKey || xaiKeyInput.trim());
     if (isWebApp()) return explainXaiWebAccessGap(hasKey);
@@ -340,7 +372,22 @@ function App() {
       const providerId = normalizeProviderId(providerInput || appConfig?.llmProvider || 'gemini');
       setIsRefreshingModels(true);
       try {
-          const models = await getProviderById(providerId).listModels();
+          if (providerId === 'ollama-cloud') persistOllamaDraft('cloud');
+          if (providerId === 'ollama-local') persistOllamaDraft('local');
+          if (providerId === 'ollama-local' || providerId === 'ollama-cloud') {
+              const status = await getProviderById(providerId).isReachable();
+              setOllamaStatus(status);
+              if (!status.ok) {
+                  setAvailableModels([]);
+                  const preferred = providerId === 'ollama-cloud' ? appConfig?.ollamaCloudModel : appConfig?.ollamaModel;
+                  setSelectedModel(preferred && belongsInOllamaSelector(preferred) ? preferred : '');
+                  return;
+              }
+          }
+          let models = await getProviderById(providerId).listModels();
+          if (providerId === 'ollama-local' || providerId === 'ollama-cloud') {
+              models = models.filter(belongsInOllamaSelector);
+          }
           setAvailableModels(models);
           if (models.length > 0) {
               if (providerId === 'gemini') {
@@ -355,6 +402,9 @@ function App() {
               const fallbacks = offlineGeminiModels();
               setAvailableModels(fallbacks);
               setSelectedModel(pickPreferredGeminiModel(fallbacks, appConfig?.geminiModel || selectedModel));
+          } else if (providerId === 'ollama-local' || providerId === 'ollama-cloud') {
+              const preferred = providerId === 'ollama-cloud' ? appConfig?.ollamaCloudModel : appConfig?.ollamaModel;
+              setSelectedModel(preferred && belongsInOllamaSelector(preferred) ? preferred : '');
           }
       } catch (e) { console.error(e); } finally { setIsRefreshingModels(false); }
   };
@@ -1431,11 +1481,11 @@ function App() {
                             <span className="text-sm"><strong>1. Gemini</strong> <span className="text-[10px] text-emerald-700 font-bold">recomendado</span> <span className="text-[10px] text-gray-500">— AI Studio, grátis/simples</span></span>
                         </label>
                         <label className="flex items-center gap-2 cursor-pointer">
-                            <input type="radio" name="provider" checked={normalizeProviderId(providerInput) === 'ollama-local'} onChange={() => setProviderInput('ollama-local')} />
+                            <input type="radio" name="provider" checked={normalizeProviderId(providerInput) === 'ollama-local'} onChange={() => selectOllamaProvider('ollama-local')} />
                             <span className="text-sm"><strong>2. Ollama local</strong> <span className="text-[10px] text-gray-500">— app + porta 11434{isWebApp() ? ' (só desktop)' : ''}</span></span>
                         </label>
                         <label className="flex items-center gap-2 cursor-pointer">
-                            <input type="radio" name="provider" checked={normalizeProviderId(providerInput) === 'ollama-cloud'} onChange={() => setProviderInput('ollama-cloud')} />
+                            <input type="radio" name="provider" checked={normalizeProviderId(providerInput) === 'ollama-cloud'} onChange={() => selectOllamaProvider('ollama-cloud')} />
                             <span className="text-sm"><strong>3. Ollama Cloud</strong> <span className="text-[10px] text-gray-500">— API web + chave ollama.com</span></span>
                         </label>
                         <label className="flex items-center gap-2 cursor-pointer">
@@ -1478,20 +1528,24 @@ function App() {
                             </p>
                             <div className="flex gap-2">
                                 <input type="text" value={ollamaUrlInput} onChange={(e) => setOllamaUrlInput(e.target.value)} className="flex-1 p-2 border rounded text-sm" placeholder="http://localhost:11434" />
-                                <button onClick={testOllamaConnection} disabled={testingOllama} className="bg-emerald-700 hover:bg-emerald-600 disabled:bg-slate-400 text-white px-3 py-1 rounded font-bold text-xs">
+                                <button type="button" onClick={() => { void testOllamaConnection(); }} disabled={testingOllama || isRefreshingModels} className="bg-emerald-700 hover:bg-emerald-600 disabled:bg-slate-400 text-white px-3 py-1 rounded font-bold text-xs">
                                     {testingOllama ? '...' : 'Testar'}
                                 </button>
                             </div>
                             {ollamaStatus && (
                                 <p className={`text-[11px] ${ollamaStatus.ok ? 'text-green-700' : 'text-red-700'}`}>
-                                    {ollamaStatus.ok ? `✓ Conectado · ${availableModels.length} modelo(s)` : `✗ ${ollamaStatus.error}`}
+                                    {ollamaStatus.ok ? `✓ Conectado · ${ollamaSelectorModels().length} modelo(s)` : `✗ ${ollamaStatus.error}`}
                                 </p>
                             )}
-                            {availableModels.length > 0 && (
-                                <select value={selectedModel} onChange={(e) => setSelectedModel(e.target.value)} className="w-full p-2 border rounded text-sm">
-                                    {availableModels.map(m => <option key={m} value={m}>{m}</option>)}
-                                </select>
-                            )}
+                            <LlmModelControls
+                              selectId="settings-ollama-local-model"
+                              provider="ollama-local"
+                              models={ollamaSelectorModels()}
+                              value={selectedModel}
+                              onChange={(id) => persistSelectedModel(id, 'ollama-local')}
+                              refreshing={isRefreshingModels}
+                              onRefresh={() => { void fetchModels(); }}
+                            />
                             <div className="grid grid-cols-2 gap-2 pt-2">
                                 <label className="text-[11px] font-bold text-slate-700">
                                     Contexto
@@ -1510,35 +1564,20 @@ function App() {
                             <a href="https://ollama.com/settings/keys" target="_blank" rel="noreferrer" className="inline-block bg-teal-700 text-white px-3 py-1 rounded font-bold text-[11px]">Criar chave ollama.com</a>
                             <p className="text-[11px] text-gray-600">Chamada direta à API web (não precisa do app Ollama rodando).</p>
                             <input type="password" value={ollamaCloudKeyInput} onChange={(e) => setOllamaCloudKeyInput(e.target.value)} className="w-full p-2 border rounded text-sm" placeholder="API Key Ollama Cloud" />
-                            <button onClick={async () => {
-                              // salva key temporariamente para o teste
-                              if (appConfig) {
-                                const tmp = { ...appConfig, llmProvider: 'ollama-cloud' as const, ollamaCloudApiKey: ollamaCloudKeyInput.trim() };
-                                saveAppConfig(tmp);
-                                setAppConfig(tmp);
-                              }
-                              setTestingOllama(true);
-                              const status = await getProviderById('ollama-cloud').isReachable();
-                              setOllamaStatus(status);
-                              if (status.ok) {
-                                const models = await getProviderById('ollama-cloud').listModels();
-                                setAvailableModels(models);
-                                if (models[0]) setSelectedModel(models[0]);
-                              }
-                              setTestingOllama(false);
-                            }} disabled={testingOllama} className="bg-teal-700 hover:bg-teal-600 disabled:bg-slate-400 text-white px-3 py-1 rounded font-bold text-xs">
-                              {testingOllama ? '...' : 'Testar Cloud'}
-                            </button>
                             {ollamaStatus && (
                                 <p className={`text-[11px] ${ollamaStatus.ok ? 'text-green-700' : 'text-red-700'}`}>
-                                    {ollamaStatus.ok ? `✓ Cloud · ${availableModels.length} modelo(s)` : `✗ ${ollamaStatus.error}`}
+                                    {ollamaStatus.ok ? `✓ Cloud · ${ollamaSelectorModels().length} modelo(s)` : `✗ ${ollamaStatus.error}`}
                                 </p>
                             )}
-                            {availableModels.length > 0 && (
-                                <select value={selectedModel} onChange={(e) => setSelectedModel(e.target.value)} className="w-full p-2 border rounded text-sm">
-                                    {availableModels.map(m => <option key={m} value={m}>{m}</option>)}
-                                </select>
-                            )}
+                            <LlmModelControls
+                              selectId="settings-ollama-cloud-model"
+                              provider="ollama-cloud"
+                              models={ollamaSelectorModels()}
+                              value={selectedModel}
+                              onChange={(id) => persistSelectedModel(id, 'ollama-cloud')}
+                              refreshing={isRefreshingModels}
+                              onRefresh={() => { void fetchModels(); }}
+                            />
                         </div>
                     )}
 
@@ -1937,7 +1976,10 @@ function App() {
                           models={
                             normalizeProviderId(appConfig?.llmProvider) === 'gemini'
                               ? geminiSelectorModels()
-                              : availableModels
+                              : normalizeProviderId(appConfig?.llmProvider) === 'ollama-local'
+                                || normalizeProviderId(appConfig?.llmProvider) === 'ollama-cloud'
+                                ? ollamaSelectorModels()
+                                : availableModels
                           }
                           value={selectedModel}
                           onChange={(id) => persistSelectedModel(id, normalizeProviderId(appConfig?.llmProvider))}

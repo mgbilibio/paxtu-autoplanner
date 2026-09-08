@@ -40,7 +40,11 @@ export const LlmModelControls: React.FC<Props> = ({
   const optionClass = compact ? 'text-black' : undefined;
   const emptyLabel = providerId === 'gemini'
     ? (compact ? 'Flash-Lite (padrão offline)' : 'Gemini Flash-Lite (padrão até carregar o catálogo)')
-    : (compact ? 'Nenhum modelo — configure a IA' : 'Nenhum modelo disponível');
+    : providerId === 'ollama-local'
+      ? (compact ? 'Atualize os modelos locais' : 'Nenhum modelo local — clique em Atualizar modelos')
+    : providerId === 'ollama-cloud'
+      ? (compact ? 'Atualize os modelos Cloud' : 'Nenhum modelo Cloud — clique em Atualizar modelos')
+      : (compact ? 'Nenhum modelo — configure a IA' : 'Nenhum modelo disponível');
 
   return (
     <div className={compact ? 'flex gap-2 items-center flex-wrap' : 'space-y-2'}>

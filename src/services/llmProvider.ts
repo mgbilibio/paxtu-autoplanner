@@ -50,7 +50,7 @@ const geminiProvider: LlmProvider = {
 
 const ollamaLocalProvider: LlmProvider = {
   id: 'ollama-local',
-  listModels: ollama.listModels,
+  listModels: () => ollama.listModels({ mode: 'local' }),
   generateScoutPlan: ollama.generateScoutPlan,
   generateScoutActivity: ollama.generateScoutActivity,
   isReachable: async () => {
@@ -60,16 +60,16 @@ const ollamaLocalProvider: LlmProvider = {
         error: 'Ollama local (localhost:11434) está disponível no aplicativo desktop. Neste site use Gemini (padrão) ou xAI, ou Ollama Cloud se você colar uma chave ollama.com.',
       };
     }
-    return ollama.isReachable();
+    return ollama.isReachable({ mode: 'local' });
   },
 };
 
 const ollamaCloudProvider: LlmProvider = {
   id: 'ollama-cloud',
-  listModels: ollama.listModels,
+  listModels: () => ollama.listModels({ mode: 'cloud' }),
   generateScoutPlan: ollama.generateScoutPlan,
   generateScoutActivity: ollama.generateScoutActivity,
-  isReachable: ollama.isReachable,
+  isReachable: () => ollama.isReachable({ mode: 'cloud' }),
 };
 
 const xaiProvider: LlmProvider = {

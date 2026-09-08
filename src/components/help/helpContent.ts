@@ -211,7 +211,7 @@ export const FAQ: HelpFaq[] = [
   },
   {
     q: 'Qual IA o site usa?',
-    a: 'Gemini é o padrão e prefere Flash-Lite. Cole a chave do AI Studio em Configurações → IA (fica só neste navegador). Sem chave o seletor não some; a geração avisa. “Ver cota / uso” abre o AI Studio. Na xAI, entre com X/Grok no site: o Pages precisa do Worker Cloudflare e de VITE_XAI_PROXY_URL (ou cole a URL do Worker em Configurações). Sem isso o navegador é bloqueado por CORS. Também vale uma chave API. Ollama local não roda neste site.',
+    a: 'Gemini é o padrão e prefere Flash-Lite. Cole a chave do AI Studio em Configurações → IA (fica só neste navegador). Sem chave o seletor não some; a geração avisa. “Ver cota / uso” abre o AI Studio. Na xAI, entre com X/Grok no site: o Pages precisa do Worker Cloudflare e de VITE_XAI_PROXY_URL (ou cole a URL do Worker em Configurações). Sem isso o navegador é bloqueado por CORS. Também vale uma chave API. Ollama Cloud lista os modelos da chave em “Atualizar modelos”; Ollama local faz o mesmo sem chave (aplicativo desktop + porta 11434).',
   },
   {
     q: 'Posso usar sem internet?',

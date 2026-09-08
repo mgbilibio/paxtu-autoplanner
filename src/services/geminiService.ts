@@ -31,10 +31,27 @@ export {
 
 // Remove possiveis segredos (api key) de mensagens de erro da SDK antes de
 // exibir/logar — a SDK as vezes ecoa a URL da request com a chave.
-const sanitizeLlmError = (error: any): string =>
-  String(error?.message || error || 'Desconhecido')
+const sanitizeLlmError = (error: any): string => {
+  let text = String(error?.message || error || 'Desconhecido')
     .replace(/key=[\w-]+/gi, 'key=***')
     .replace(/AIza[\w-]{10,}/g, '***');
+  const jsonMatch = text.match(/\{[\s\S]*"error"[\s\S]*\}/);
+  if (jsonMatch) {
+    try {
+      const parsed = JSON.parse(jsonMatch[0]) as { error?: { code?: number; message?: string; status?: string } };
+      if (parsed.error?.message) text = parsed.error.message;
+      if (parsed.error?.code === 503 || parsed.error?.status === 'UNAVAILABLE') {
+        return 'O modelo de IA está temporariamente indisponível (muita demanda). Espere um pouco e tente de novo.';
+      }
+    } catch {
+      // JSON incompleto: cai no texto já sanitizado
+    }
+  }
+  if (/high demand|UNAVAILABLE|"code"\s*:\s*503/i.test(text)) {
+    return 'O modelo de IA está temporariamente indisponível (muita demanda). Espere um pouco e tente de novo.';
+  }
+  return text;
+};
 
 const GEMINI_MISSING_KEY =
   'Chave Gemini não configurada. Obtenha uma chave grátis em https://aistudio.google.com/app/apikey (conta Google, sem cartão) e cole em Configurações.';
