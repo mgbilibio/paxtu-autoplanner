@@ -48,10 +48,11 @@ test('sem chave e sem sessão o site pede o login no navegador, sem setup', () =
   assert.equal(explainXaiWebAccessGap(true), null);
 });
 
-test('proxy padrão do site é o SocialKids já publicado', () => {
+test('proxy padrão do site é o paxtu-xai-proxy', () => {
   installSessionStorage();
   memory.clear();
   const status = getXaiBrowserStatus();
   assert.equal(status.proxyConfigured, true);
-  assert.equal(DEFAULT_XAI_OAUTH_PROXY_ORIGIN, 'https://socialkids-xai-proxy.margusbilibio.workers.dev');
+  assert.equal(DEFAULT_XAI_OAUTH_PROXY_ORIGIN, 'https://paxtu-xai-proxy.margusbilibio.workers.dev');
+  assert.doesNotMatch(DEFAULT_XAI_OAUTH_PROXY_ORIGIN, /socialkids-xai-proxy/);
 });

@@ -72,7 +72,7 @@ Tela única: **Continuar com Google**, **Continuar com X** (se habilitado) e **e
 - **Gemini é o padrão**, priorizando **Flash-Lite**. Com credencial, o app consulta o catálogo da conta (`models.list`) e prefere um Flash-Lite disponível. **Sem chave, ou se a listagem falhar**, o seletor não fica em branco: usa o padrão `gemini-3.5-flash-lite` e um fallback curto (não é o inventário completo da Gemini). A geração ainda exige chave/token e avisa na hora.
 - Cada escotista cola a própria chave do [AI Studio](https://aistudio.google.com/app/apikey) (conta Google, sem cartão). A chave fica **só no localStorage**. Sem chave, a UI permanece e avisa na hora de gerar.
 - Se o login Google conseguir um token OAuth da API Gemini (`generative-language`), o site tenta usar; se CORS, app OAuth não verificado ou escopo faltar, volta para “colar chave do AI Studio”.
-- **xAI/Grok (Device OAuth):** no site publicado, “Entrar com X / Grok” inicia o Device OAuth no navegador. Device, token e userinfo passam pelo proxy já publicado `https://socialkids-xai-proxy.margusbilibio.workers.dev`. Depois do token no `sessionStorage`, catálogo e chat chamam `https://api.x.ai/v1` direto. Não é preciso instalar nada, publicar Worker, nem variável de build. Tokens ficam na aba (`sessionStorage`), nunca no Firestore. O Client ID do Device OAuth é público; **não** há client secret no repositório. Uma chave xAI continua sendo alternativa.
+- **xAI/Grok (Device OAuth):** no site publicado, “Entrar com X / Grok” inicia o Device OAuth no navegador. Device, token e userinfo passam pelo proxy deste app `https://paxtu-xai-proxy.margusbilibio.workers.dev`. Depois do token no `sessionStorage`, catálogo e chat chamam `https://api.x.ai/v1` direto. Não é preciso instalar nada, Vite, npm nem variável de build. Tokens ficam na aba (`sessionStorage`), nunca no Firestore. O Client ID do Device OAuth é público; **não** há client secret no repositório. Uma chave xAI continua sendo alternativa.
 - **Sem IA:** em Gerar, “Salvar planejamento” grava o rascunho à mão mesmo incompleto (avisos não bloqueiam). A IA é opcional (“Completar com IA”).
 - **Ollama local** no próprio site: sem chave. “Listar modelos” consulta a URL do daemon (padrão `http://localhost:11434`). Se o daemon estiver parado ou o CORS bloquear, o aviso pede que o Ollama aceite a origem do site — nunca que o usuário abra outro aplicativo. **Ollama Cloud** lista os modelos da chave colada. IDs Gemini não entram nesses seletores.
 
@@ -132,7 +132,7 @@ A publicação do produto é o GitHub Pages (`deploy-pages.yml` em push para `ma
 ```text
 PaxtuAP/
 ├── src/                         Interface React, serviços e regras de fluxo
-├── workers/xai-proxy            Referência histórica; o site não depende deste Worker
+├── workers/xai-proxy            Proxy CORS xOAuth deste app (wrangler name: paxtu-xai-proxy)
 ├── conhecimento/
 │   ├── bd/                      SQLite: progressão, especialidades e biblioteca
 │   └── tools/                   Geração, auditoria e checklist

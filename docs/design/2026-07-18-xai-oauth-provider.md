@@ -1,6 +1,6 @@
 # Design: Provedor xAI / Grok via OAuth (assinatura, sem API key)
 
-> Atualização 2026-09-08: o produto é o site. Device/token/userinfo usam o proxy já publicado `https://socialkids-xai-proxy.margusbilibio.workers.dev`. Depois do token, catálogo e chat chamam `https://api.x.ai/v1` direto. Tokens ficam no `sessionStorage`. Sem Worker novo e sem variável de build. Chave API continua sendo alternativa.
+> Atualização 2026-09-08: o produto é o site. Device/token/userinfo usam o proxy deste app `https://paxtu-xai-proxy.margusbilibio.workers.dev`. Depois do token, catálogo e chat chamam `https://api.x.ai/v1` direto. Tokens ficam no `sessionStorage`. Sem Vite, npm nem variável de build. Chave API continua sendo alternativa.
 
 **Status:** em planejamento — decisões Q1–Q3 e Q5 fechadas (2026-07-18)  
 **App:** Paxtu AutoPlanner  
