@@ -14,8 +14,10 @@ import { attachmentsToPromptBlock } from './planAttachments';
 import { activityBriefsPromptBlock, buildSingleActivityPrompt, PRACTICAL_CONTENT_RULES } from './activityBriefs';
 import type { PlanAttachment } from './planAttachments';
 import { belongsInOllamaSelector } from './ollamaModels';
+import { explainOllamaLocalFailure } from './ollamaLocalAccess';
 
 export { belongsInOllamaSelector } from './ollamaModels';
+export { explainOllamaLocalFailure } from './ollamaLocalAccess';
 
 const DEFAULT_BASE_URL = 'http://localhost:11434';
 const OLLAMA_CLOUD_BASE_URL = 'https://ollama.com';
@@ -165,13 +167,24 @@ const httpRequest = async (
   const headers: Record<string, string> = {};
   if (bodyStr) headers['Content-Type'] = 'application/json';
   if (auth) headers['Authorization'] = auth;
-  const r = await fetchWithTimeout(url, {
-    method,
-    headers: Object.keys(headers).length ? headers : undefined,
-    body: bodyStr,
-  }, timeoutMs ?? LOCAL_CHAT_TIMEOUT_MS);
-  const text = await r.text();
-  return { ok: r.ok, status: r.status, body: text };
+  try {
+    const r = await fetchWithTimeout(url, {
+      method,
+      headers: Object.keys(headers).length ? headers : undefined,
+      body: bodyStr,
+    }, timeoutMs ?? LOCAL_CHAT_TIMEOUT_MS);
+    const text = await r.text();
+    return { ok: r.ok, status: r.status, body: text };
+  } catch (error) {
+    const name = error instanceof Error ? error.name : '';
+    const message = error instanceof Error ? error.message : String(error);
+    return {
+      ok: false,
+      status: 0,
+      body: '',
+      error: name === 'AbortError' ? 'timeout' : (message || 'Failed to fetch'),
+    };
+  }
 };
 
 export interface OllamaTagsResponse {
@@ -188,25 +201,14 @@ export const isReachable = async (options?: OllamaAccessOptions): Promise<{ ok: 
   const r = await httpRequest('GET', url, undefined, mode === 'cloud' ? 8000 : 2500, options);
   if (r.ok) return { ok: true };
   if (r.status === 401) return { ok: false, error: 'Chave Ollama Cloud inválida ou sem permissão (HTTP 401).' };
-  if (r.error === 'timeout' || r.error === 'AbortError') {
-    return {
-      ok: false,
-      error:
-        mode === 'cloud'
-          ? 'Timeout ao contatar ollama.com. Confira a chave e tente de novo.'
-          : `Ollama local não respondeu em ${base}. Abra o aplicativo Ollama e tente de novo.`,
-    };
+  if (mode === 'cloud') {
+    if (r.error === 'timeout' || r.error === 'AbortError') {
+      return { ok: false, error: 'Timeout ao contatar ollama.com. Confira a chave e tente de novo.' };
+    }
+    if (r.error) return { ok: false, error: `Não foi possível falar com ollama.com: ${r.error}` };
+    return { ok: false, error: `Ollama Cloud respondeu HTTP ${r.status}` };
   }
-  if (r.error) {
-    return {
-      ok: false,
-      error:
-        mode === 'cloud'
-          ? `Não foi possível falar com ollama.com: ${r.error}`
-          : `Ollama local não está acessível em ${base}. Confira se o aplicativo está rodando.`,
-    };
-  }
-  return { ok: false, error: `Ollama respondeu HTTP ${r.status}` };
+  return { ok: false, error: explainOllamaLocalFailure(base, r.error || (r.status ? `HTTP ${r.status}` : undefined)) };
 };
 
 export const listModels = async (options?: OllamaAccessOptions): Promise<string[]> => {

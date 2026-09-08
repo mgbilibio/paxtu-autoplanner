@@ -11,8 +11,8 @@ export const buildCycleHtml = (cycle: MeetingCycle, branch: ScoutBranch, startDa
       <h3>Semana ${index + 1}: ${escapeHtml(meeting.theme)}</h3>
       <div class="meta">
         <span class="pill">${dateText}</span>
-        <span class="pill">${escapeHtml(meeting.progressionObjective || 'Sem foco definido')}</span>
       </div>
+      <p class="por"><strong>Código de progressão</strong><br>${escapeHtml(meeting.progressionObjective || 'Sem foco definido')}</p>
       <p>${renderText(meeting.generalNotes)}</p>
       <div class="box">
         <h3>Acompanhamento e avaliação</h3>

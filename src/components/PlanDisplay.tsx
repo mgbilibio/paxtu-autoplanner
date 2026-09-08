@@ -473,8 +473,8 @@ export const PlanDisplay: React.FC<Props> = ({
                     </div>
 
                     {/* Card */}
-                    <div className={`border rounded-xl p-6 hover:shadow-md transition-shadow relative ${cardTone(act)}`}>
-                        <div className="flex flex-wrap justify-between items-start gap-2 mb-3">
+                    <div className={`border rounded-xl p-6 hover:shadow-md transition-shadow relative min-w-0 max-w-full overflow-x-clip ${cardTone(act)}`}>
+                        <div className="flex flex-wrap justify-between items-start gap-2 mb-3 min-w-0">
                             <div className="flex-1 min-w-0">
                                 {isEditing ? (
                                     <>
@@ -491,9 +491,9 @@ export const PlanDisplay: React.FC<Props> = ({
                                     />
                                     </>
                                 ) : (
-                                    <h3 className="font-bold text-lg text-slate-800">{act.title}</h3>
+                                    <h3 className="font-bold text-lg text-slate-800 break-words">{act.title}</h3>
                                 )}
-                                <div className="flex gap-2 mt-1">
+                                <div className="flex flex-wrap gap-2 mt-1 min-w-0">
                                     <span className="bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded text-[10px] font-bold uppercase">{act.educationalArea}</span>
                                     {isEditing ? (
                                         <input 
@@ -558,7 +558,7 @@ export const PlanDisplay: React.FC<Props> = ({
                                 className="w-full text-sm text-slate-600 leading-relaxed p-2 border rounded h-24"
                             />
                         ) : (
-                            <p className="text-sm text-slate-600 leading-relaxed whitespace-pre-line">{act.description}</p>
+                            <p className="text-sm text-slate-600 leading-relaxed whitespace-pre-line break-words min-w-0">{act.description}</p>
                         )}
 
                         {(act.conteudoPronto || isEditing) && (
@@ -618,7 +618,7 @@ export const PlanDisplay: React.FC<Props> = ({
                                         rows={2}
                                     />
                                 ) : (
-                                    <p className="italic text-purple-900">{act.fundoDeCena}</p>
+                                    <p className="italic text-purple-900 wrap-por-text">{act.fundoDeCena}</p>
                                 )}
                             </div>
                         )}
@@ -669,7 +669,7 @@ export const PlanDisplay: React.FC<Props> = ({
                                         className="w-full p-1 border rounded text-xs italic"
                                     />
                                 ) : (
-                                    <p className="text-slate-700 italic">{act.objetivoEspecifico}</p>
+                                    <p className="text-slate-700 italic wrap-por-text">{act.objetivoEspecifico}</p>
                                 )}
                             </div>
                         )}
@@ -780,8 +780,9 @@ export const PlanDisplay: React.FC<Props> = ({
                             </div>
                         )}
 
-                        <div className="mt-4 pt-4 border-t border-slate-100 grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-                            <div>
+                        <div className="mt-4 pt-4 border-t border-slate-100 space-y-4 text-xs min-w-0">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 min-w-0">
+                            <div className="min-w-0">
                                 <strong className="text-slate-400 uppercase text-[9px] block mb-1">Materiais (uma por linha)</strong>
                                 {isEditing ? (
                                     <textarea
@@ -793,18 +794,14 @@ export const PlanDisplay: React.FC<Props> = ({
                                     />
                                 ) : (
                                     act.materials.length > 0 ? (
-                                        <ul className="list-disc list-inside text-slate-700 space-y-0.5">
+                                        <ul className="list-disc list-inside text-slate-700 space-y-0.5 break-words">
                                             {act.materials.map((m, idx) => <li key={idx}>{m}</li>)}
                                         </ul>
                                     ) : <span className="text-slate-500">Nenhum</span>
                                 )}
                             </div>
-                            <div>
-                                <strong className="text-slate-400 uppercase text-[9px] block mb-1">Código de progressão</strong>
-                                <span className="text-indigo-600 font-medium">{act.progressionObjective || 'Geral'}</span>
-                            </div>
                             {(act.manualReferencia || isEditing) && (
-                                <div>
+                                <div className="min-w-0">
                                     <strong className="text-slate-400 uppercase text-[9px] block mb-1">📖 Manual de referência</strong>
                                     {isEditing ? (
                                         <input
@@ -815,10 +812,15 @@ export const PlanDisplay: React.FC<Props> = ({
                                             className="w-full p-1 border rounded text-xs italic"
                                         />
                                     ) : (
-                                        <span className="text-slate-700 font-medium italic">{act.manualReferencia}</span>
+                                        <p className="text-slate-700 font-medium italic wrap-por-text">{act.manualReferencia}</p>
                                     )}
                                 </div>
                             )}
+                            </div>
+                            <div className="min-w-0 w-full">
+                                <strong className="text-slate-400 uppercase text-[9px] block mb-1">Código de progressão</strong>
+                                <p className="text-indigo-600 font-medium wrap-por-text">{act.progressionObjective || 'Geral'}</p>
+                            </div>
                         </div>
                     </div>
                 </div>

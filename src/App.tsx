@@ -915,12 +915,6 @@ function App() {
       setShowSettings(true);
       return;
     }
-    if (activeProvider === 'ollama-local' && isWebApp()) {
-      setError('Ollama local só funciona no aplicativo desktop. Neste site use Gemini (padrão) ou cole uma chave xAI.');
-      showToast('Ollama local só no desktop.', 'error');
-      setShowSettings(true);
-      return;
-    }
     if (activeProvider === 'ollama-local' && !(selectedModel || appConfig?.ollamaModel)) {
       setError('Nenhum modelo Ollama local selecionado.');
       showToast('Selecione um modelo Ollama.', 'error');
@@ -1482,7 +1476,7 @@ function App() {
                         </label>
                         <label className="flex items-center gap-2 cursor-pointer">
                             <input type="radio" name="provider" checked={normalizeProviderId(providerInput) === 'ollama-local'} onChange={() => selectOllamaProvider('ollama-local')} />
-                            <span className="text-sm"><strong>2. Ollama local</strong> <span className="text-[10px] text-gray-500">— app + porta 11434{isWebApp() ? ' (só desktop)' : ''}</span></span>
+                            <span className="text-sm"><strong>2. Ollama local</strong> <span className="text-[10px] text-gray-500">— daemon na máquina + porta 11434</span></span>
                         </label>
                         <label className="flex items-center gap-2 cursor-pointer">
                             <input type="radio" name="provider" checked={normalizeProviderId(providerInput) === 'ollama-cloud'} onChange={() => selectOllamaProvider('ollama-cloud')} />
@@ -1517,14 +1511,8 @@ function App() {
 
                     {normalizeProviderId(providerInput) === 'ollama-local' && (
                         <div className="space-y-2">
-                            {isWebApp() && (
-                              <p className="text-[11px] text-amber-800 bg-amber-50 border border-amber-200 rounded p-2">
-                                Ollama local (localhost:11434) só funciona no aplicativo desktop. Neste site escolha Gemini ou cole uma chave xAI / Ollama Cloud.
-                              </p>
-                            )}
-                            <a href="https://ollama.com/download" target="_blank" rel="noreferrer" className="inline-block bg-emerald-700 text-white px-3 py-1 rounded font-bold text-[11px]">Baixar Ollama</a>
-                            <p className="text-[11px] text-gray-600">
-                                Modelos locais ou <code className="bg-gray-100 px-1">:cloud</code> via app (<code className="bg-gray-100 px-1">ollama signin</code>).
+                            <p className="text-[11px] text-slate-600">
+                                Sem chave. O daemon Ollama precisa estar rodando na URL abaixo. “Listar modelos” consulta essa URL e preenche o seletor com o que o daemon devolver.
                             </p>
                             <div className="flex gap-2">
                                 <input type="text" value={ollamaUrlInput} onChange={(e) => setOllamaUrlInput(e.target.value)} className="flex-1 p-2 border rounded text-sm" placeholder="http://localhost:11434" />
