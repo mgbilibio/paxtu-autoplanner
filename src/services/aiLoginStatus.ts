@@ -36,7 +36,7 @@ export const deriveGrokLoginStatus = (facts: AiLoginFacts): AiLoginState => {
   const keyLooksPresent = facts.hasXaiApiKey;
 
   if (!facts.proxyConfigured && !keyLooksPresent) {
-    return { online: false, label: 'Grok', detail: 'Offline — falta o proxy xOAuth (VITE_XAI_PROXY_URL) e não há chave.' };
+    return { online: false, label: 'Grok', detail: 'Offline — entre com X / Grok ou cole uma chave.' };
   }
   if (facts.proxyConfigured && !facts.webSessionConnected && !keyLooksPresent) {
     return { online: false, label: 'Grok', detail: 'Offline — entre com X / Grok ou cole uma chave.' };

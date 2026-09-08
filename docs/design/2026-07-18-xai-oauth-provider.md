@@ -1,6 +1,6 @@
 # Design: Provedor xAI / Grok via OAuth (assinatura, sem API key)
 
-> Atualização 2026-09-08: o desktop usa a sessão do cliente oficial `grok` (`grok login --oauth`). O renderer não recebe tokens. A web (GitHub Pages) usa Device OAuth via Worker `workers/xai-proxy` e `VITE_XAI_PROXY_URL`; o navegador nunca chama `auth.x.ai` direto. Catálogo e chat web também passam pelo Worker. Tokens ficam no `sessionStorage`. Sem proxy, a UI avisa em português. `npm run dev:web` usa `/__xai_oauth`. Chave API continua sendo alternativa.
+> Atualização 2026-09-08: o produto é o site. Device/token/userinfo usam o proxy já publicado `https://socialkids-xai-proxy.margusbilibio.workers.dev`. Depois do token, catálogo e chat chamam `https://api.x.ai/v1` direto. Tokens ficam no `sessionStorage`. Sem Worker novo e sem variável de build. Chave API continua sendo alternativa.
 
 **Status:** em planejamento — decisões Q1–Q3 e Q5 fechadas (2026-07-18)  
 **App:** Paxtu AutoPlanner  

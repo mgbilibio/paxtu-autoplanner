@@ -10,17 +10,7 @@ import { chunkArray, DETAIL_BATCH_SIZE, mergeActivityDetails, STUDY_GUIDE_BATCH_
 import type { PlanAttachment } from './planAttachments';
 import { isWebApp } from './platform';
 import { explainXaiWebAccessGap, getXaiBrowserStatus, resolveXaiBrowserBearer } from './xaiOAuthSession';
-import { describeXaiProxyFailure, xaiOAuthUrls } from './xaiOAuthConfig';
-
-const XAI_API = 'https://api.x.ai/v1';
-
-const xaiHttpUrl = (kind: 'models' | 'chat'): string => {
-  if (isWebApp()) {
-    const urls = xaiOAuthUrls();
-    if (urls.proxyConfigured) return kind === 'models' ? urls.models : urls.chat;
-  }
-  return kind === 'models' ? `${XAI_API}/language-models` : `${XAI_API}/chat/completions`;
-};
+import { describeXaiApiFailure, xaiDirectApiUrl } from './xaiOAuthConfig';
 
 const isTextLanguageModel = (id: string): boolean =>
   Boolean(id.trim())
@@ -74,7 +64,7 @@ const chat = async (userPrompt: string, modelId?: string, temperature = 0.5): Pr
   if (!model) throw new Error('A xAI não retornou nenhum modelo de linguagem disponível para esta conta.');
   let response: Response;
   try {
-    response = await fetch(xaiHttpUrl('chat'), {
+    response = await fetch(xaiDirectApiUrl('chat'), {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${bearer}`,
@@ -94,7 +84,7 @@ const chat = async (userPrompt: string, modelId?: string, temperature = 0.5): Pr
     }),
   });
   } catch (error) {
-    throw new Error(isWebApp() ? describeXaiProxyFailure(error) : sanitize(error));
+    throw new Error(isWebApp() ? describeXaiApiFailure(error) : sanitize(error));
   }
   const raw = await response.text();
   if (!response.ok) {
@@ -124,7 +114,7 @@ export const listModels = async (): Promise<string[]> => {
   try {
     const bearer = apiKey || (isWebApp() ? await resolveXaiBrowserBearer() : undefined);
     if (!bearer) return [];
-    const response = await fetch(xaiHttpUrl('models'), {
+    const response = await fetch(xaiDirectApiUrl('models'), {
       headers: { Authorization: `Bearer ${bearer}` },
     });
     if (!response.ok) return [];

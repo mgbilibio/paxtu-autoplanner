@@ -81,9 +81,7 @@ export const getXaiBrowserStatus = (): XaiBrowserStatus => {
     proxyConfigured,
     message: connected
       ? `Conectado via xOAuth${meta?.email ? ` como ${meta.email}` : ''}.`
-      : proxyConfigured
-        ? 'Sessão xAI não conectada.'
-        : missingXaiProxyMessage(),
+      : 'Sessão xAI não conectada.',
   };
 };
 
@@ -132,7 +130,6 @@ export const explainXaiWebAccessGap = (hasApiKey = false): string | null => {
   if (hasApiKey) return null;
   const status = getXaiBrowserStatus();
   if (status.connected) return null;
-  if (!status.proxyConfigured) return missingXaiProxyMessage();
   return 'Entre com X/Grok neste navegador ou informe uma chave da API xAI.';
 };
 

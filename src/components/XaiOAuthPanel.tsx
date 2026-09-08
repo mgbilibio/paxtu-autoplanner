@@ -3,15 +3,7 @@ import {
   pollXaiDeviceAuthorization,
   startXaiDeviceAuthorization,
 } from '../services/xaiOAuthDevice';
-import {
-  describeXaiProxyFailure,
-  isUsableXaiProxyOrigin,
-  missingXaiProxyMessage,
-  probeXaiProxy,
-  readXaiProxyOverride,
-  resolveXaiProxyOrigin,
-  writeXaiProxyOverride,
-} from '../services/xaiOAuthConfig';
+import { describeXaiProxyFailure } from '../services/xaiOAuthConfig';
 import { notifyAiLoginChanged } from '../services/aiLoginEvents';
 import {
   clearXaiBrowserSession,
@@ -30,8 +22,6 @@ export const XaiOAuthPanel: React.FC<Props> = ({ onConnected }) => {
   const [authorizationUrl, setAuthorizationUrl] = useState('');
   const [message, setMessage] = useState('');
   const [messageError, setMessageError] = useState(false);
-  const [proxyAlert, setProxyAlert] = useState(status.proxyConfigured ? '' : missingXaiProxyMessage());
-  const [proxyDraft, setProxyDraft] = useState(() => readXaiProxyOverride());
   const pollTimer = useRef<ReturnType<typeof setTimeout>>();
 
   const showMessage = (text: string, isError = false): void => {
@@ -52,42 +42,7 @@ export const XaiOAuthPanel: React.FC<Props> = ({ onConnected }) => {
 
   useEffect(() => () => stopPolling(), []);
 
-  useEffect(() => {
-    if (!status.proxyConfigured) {
-      setProxyAlert(missingXaiProxyMessage());
-      return;
-    }
-    let cancelled = false;
-    void probeXaiProxy().then(result => {
-      if (!cancelled && !result.ok) setProxyAlert(result.message);
-      if (!cancelled && result.ok) setProxyAlert('');
-    });
-    return () => { cancelled = true; };
-  }, [status.proxyConfigured, status.message]);
-
-  const applyProxyOverride = (): void => {
-    const value = proxyDraft.trim().replace(/\/+$/, '');
-    if (value && !isUsableXaiProxyOrigin(value)) {
-      showMessage('URL inválida. Cole a URL do Worker Cloudflare (workers.dev), nunca auth.x.ai ou api.x.ai.', true);
-      return;
-    }
-    writeXaiProxyOverride(value);
-    setProxyDraft(value);
-    const next = refreshStatus();
-    notifyAiLoginChanged();
-    showMessage(
-      next.proxyConfigured
-        ? `Proxy xOAuth deste navegador: ${resolveXaiProxyOrigin()}`
-        : missingXaiProxyMessage(),
-      !next.proxyConfigured,
-    );
-  };
-
   const beginLogin = async (): Promise<void> => {
-    if (!status.proxyConfigured) {
-      showMessage(missingXaiProxyMessage(), true);
-      return;
-    }
     stopPolling();
     setBusy(true);
     showMessage('Iniciando autorização…', false);
@@ -147,48 +102,13 @@ export const XaiOAuthPanel: React.FC<Props> = ({ onConnected }) => {
     showMessage('Sessão xAI removida deste navegador.', false);
   };
 
-  const blocked = !status.proxyConfigured;
-  const resolvedProxy = resolveXaiProxyOrigin();
-
   return (
     <div className="rounded-lg border border-indigo-200 bg-indigo-50 p-3 space-y-3">
-      {(blocked || proxyAlert) && (
-        <p className="rounded border border-amber-300 bg-amber-50 p-2 text-xs font-bold text-amber-950" role="alert">
-          {proxyAlert || missingXaiProxyMessage()}
-        </p>
-      )}
       <p className={`text-xs font-bold ${status.connected ? 'text-green-700' : 'text-indigo-900'}`}>
         {status.message}
       </p>
-      <div className="space-y-1">
-        <label htmlFor="xai-proxy-url" className="text-[10px] font-bold uppercase text-indigo-800">
-          URL do Worker xOAuth (opcional neste navegador)
-        </label>
-        <div className="flex flex-wrap gap-2">
-          <input
-            id="xai-proxy-url"
-            type="url"
-            value={proxyDraft}
-            onChange={(event) => setProxyDraft(event.target.value)}
-            placeholder="https://paxtu-xai-proxy.sua-conta.workers.dev"
-            className="min-w-[16rem] flex-1 rounded border border-indigo-200 bg-white px-2 py-1.5 text-xs"
-          />
-          <button
-            type="button"
-            onClick={applyProxyOverride}
-            className="rounded border border-indigo-300 bg-white px-2.5 py-1.5 text-[11px] font-bold text-indigo-800"
-          >
-            Usar esta URL
-          </button>
-        </div>
-        <p className="text-[10px] text-indigo-700">
-          {resolvedProxy
-            ? `Em uso agora: ${resolvedProxy}`
-            : 'Sem proxy neste build. Cole a URL do Worker ou rode npm run dev:web.'}
-        </p>
-      </div>
       <div className="flex flex-wrap gap-2">
-        <button type="button" onClick={() => void beginLogin()} disabled={busy || blocked}
+        <button type="button" onClick={() => void beginLogin()} disabled={busy}
           className="rounded bg-indigo-700 px-3 py-2 text-xs font-bold text-white hover:bg-indigo-800 disabled:opacity-50">
           {busy ? 'Aguardando autorização…' : 'Entrar com X / Grok'}
         </button>
@@ -209,8 +129,8 @@ export const XaiOAuthPanel: React.FC<Props> = ({ onConnected }) => {
       )}
       {message && (
         <p
-          className={`text-[11px] font-bold ${messageError || blocked ? 'text-red-700' : 'text-indigo-900'}`}
-          role={messageError || blocked ? 'alert' : undefined}
+          className={`text-[11px] font-bold ${messageError ? 'text-red-700' : 'text-indigo-900'}`}
+          role={messageError ? 'alert' : undefined}
         >
           {message}
         </p>

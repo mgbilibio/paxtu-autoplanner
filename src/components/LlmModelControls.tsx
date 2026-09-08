@@ -44,7 +44,7 @@ export const LlmModelControls: React.FC<Props> = ({
       ? (compact ? 'Liste os modelos locais' : 'Nenhum modelo local — clique em Listar modelos')
     : providerId === 'ollama-cloud'
       ? (compact ? 'Liste os modelos Cloud' : 'Nenhum modelo Cloud — clique em Listar modelos')
-      : (compact ? 'Nenhum modelo — configure a IA' : 'Nenhum modelo disponível');
+      : (compact ? 'Entre com X/Grok' : 'Entre com X / Grok para listar os modelos');
   const refreshLabel = providerId === 'ollama-local' || providerId === 'ollama-cloud'
     ? (compact ? '🔄' : 'Listar modelos')
     : (compact ? '🔄' : 'Atualizar modelos');

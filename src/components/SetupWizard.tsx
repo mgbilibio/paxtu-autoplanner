@@ -112,7 +112,7 @@ export const SetupWizard: React.FC<Props> = ({ onComplete }) => {
             <div className="animate-slide-in">
               <h2 className="text-xl font-bold text-gray-800 mb-4">🔑 Provedor de IA</h2>
               <p className="text-gray-600 text-sm mb-4 leading-relaxed">
-                <>Padrão: <strong>Gemini Flash-Lite</strong>. Sem chave, o seletor mantém esse padrão. Ollama local consulta o daemon na máquina (sem chave). xAI no site usa Device OAuth (precisa do Worker) ou uma chave API.</>
+                <>Padrão: <strong>Gemini Flash-Lite</strong>. Sem chave, o seletor mantém esse padrão. Ollama local consulta o daemon na máquina (sem chave). xAI no site usa “Entrar com X / Grok” ou uma chave API.</>
               </p>
 
               <div className="grid grid-cols-3 gap-2 mb-6">
@@ -172,7 +172,7 @@ export const SetupWizard: React.FC<Props> = ({ onComplete }) => {
               {provider === 'xai-oauth' && (
                 <>
                   <p className="text-[11px] text-slate-600 bg-slate-50 border border-slate-200 rounded p-3 mb-3 leading-relaxed">
-                    Conecte X/Grok pelo Device OAuth (Worker Cloudflare) ou cole uma chave API. Os modelos vêm da conta autenticada.
+                    Conecte X/Grok neste navegador ou cole uma chave API. Os modelos vêm da conta autenticada.
                   </p>
                   <div className="mb-3">
                     <XaiOAuthPanel />
