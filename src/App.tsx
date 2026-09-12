@@ -250,7 +250,7 @@ function App() {
     setOllamaStatus(null);
     const safeUrl = normalizeOllamaBaseUrl(ollamaUrlInput);
     if (!safeUrl) {
-      setOllamaStatus({ ok: false, error: 'Use apenas http://localhost, 127.0.0.1 ou ::1.' });
+      setOllamaStatus({ ok: false, error: 'Use apenas http://localhost ou http://127.0.0.1.' });
       setTestingOllama(false);
       return;
     }

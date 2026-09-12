@@ -41,7 +41,7 @@ export const SetupWizard: React.FC<Props> = ({ onComplete }) => {
     if (mode === 'local') {
       const baseUrl = normalizeOllamaBaseUrl(ollamaUrl);
       if (!baseUrl) {
-        setOllamaTestStatus({ ok: false, error: 'Use apenas http://localhost, 127.0.0.1 ou ::1.' });
+        setOllamaTestStatus({ ok: false, error: 'Use apenas http://localhost ou http://127.0.0.1.' });
         setTestingOllama(false);
         return;
       }
