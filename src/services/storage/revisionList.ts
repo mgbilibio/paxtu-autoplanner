@@ -22,7 +22,12 @@ export const parseRevisionedList = <T>(data: Record<string, unknown> | null | un
   return { revision, items };
 };
 
-/** Aplica upsert/delete de um item. Conflito se o mesmo id mudou em relação à base lida. */
+/**
+ * Upsert/delete por id sobre a lista viva.
+ * Dois ids distintos acumulam. O mesmo id: a transação do Firestore retenta;
+ * a última gravação desse id vence (política explícita, sem apagar os outros).
+ * Não compara JSON da lista inteira — isso gerava falso conflito com docs antigos.
+ */
 export const applyIdentifiedPatch = <T extends Identified>(
   current: RevisionedList<T>,
   patch: {
@@ -32,18 +37,6 @@ export const applyIdentifiedPatch = <T extends Identified>(
   },
 ): RevisionedList<T> => {
   const index = current.items.findIndex(row => row.id === patch.item.id);
-  if (patch.kind === 'upsert' && index >= 0 && patch.baseItem) {
-    const live = current.items[index];
-    if (fingerprint(live) !== fingerprint(patch.baseItem)) {
-      throw new WriteConflictError();
-    }
-  }
-  if (patch.kind === 'delete' && index >= 0 && patch.baseItem) {
-    const live = current.items[index];
-    if (fingerprint(live) !== fingerprint(patch.baseItem)) {
-      throw new WriteConflictError();
-    }
-  }
   let items: T[];
   if (patch.kind === 'delete') {
     items = current.items.filter(row => row.id !== patch.item.id);

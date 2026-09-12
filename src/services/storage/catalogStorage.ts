@@ -1,6 +1,6 @@
 import { CatalogAnnotation, MeetingPlan } from '../../types';
 import { isWebApp } from '../platform';
-import { listSectionDocuments, readAccessibleItems, readSectionItems, writeSectionItems } from '../firebase/sectionData';
+import { listSectionDocuments, mutateSectionItems, readAccessibleItems, readSectionItems } from '../firebase/sectionData';
 import { getAppConfig } from './configStorage';
 import { isFileBacked, isFirestoreBacked, isWebFirebaseMode, readJsonDoc, writeJsonDoc } from './dualBackend';
 import { DATA_EVENTS, dispatchDataEvent } from './events';
@@ -91,8 +91,7 @@ export const savePlanToCatalog = async (
   assertCanWriteSection(toSave.sectionId);
   if (isFirestoreBacked()) {
     await runExclusive(`firestore-catalog-${sectionId}`, async () => {
-      const current = await readSectionItems<MeetingPlan>(sectionId!, 'catalog');
-      await writeSectionItems(sectionId!, 'catalog', upsertCatalog(current, toSave), { baseItems: current });
+      await mutateSectionItems<MeetingPlan>(sectionId!, 'catalog', live => upsertCatalog(live, toSave));
     });
     dispatchDataEvent(DATA_EVENTS.CATALOG_UPDATED);
     return toSave;
@@ -129,9 +128,10 @@ export const deleteFromCatalog = async (id: string): Promise<void> => {
   if (isFirestoreBacked()) {
     const sections = await listSectionDocuments();
     await Promise.all(sections.map(async section => {
-      const current = await readSectionItems<MeetingPlan>(section.id, 'catalog');
-      if (!current.some(plan => plan.id === id)) return;
-      await writeSectionItems(section.id, 'catalog', current.filter(plan => plan.id !== id), { baseItems: current });
+      await mutateSectionItems<MeetingPlan>(section.id, 'catalog', live => {
+        const next = live.filter(plan => plan.id !== id);
+        return next.length === live.length ? live : next;
+      });
     }));
     dispatchDataEvent(DATA_EVENTS.CATALOG_UPDATED);
     return;

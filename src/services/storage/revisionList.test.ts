@@ -2,7 +2,6 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import {
   applyIdentifiedPatch,
-  emptyRevisionedList,
   replaceRevisionedList,
   WriteConflictError,
 } from './revisionList.ts';
@@ -32,17 +31,35 @@ describe('two-client list writes', () => {
     assert.equal(afterB.items.find(item => item.id === 'b')?.name, 'Roberto');
   });
 
-  it('detects same-field conflict instead of silent last write', () => {
-    const base = emptyRevisionedList<Member>();
-    const seeded = applyIdentifiedPatch(base, { kind: 'upsert', item: { id: 'a', name: 'Ana' } });
-    assert.throws(
-      () => applyIdentifiedPatch(seeded, {
-        kind: 'upsert',
-        item: { id: 'a', name: 'Outro' },
-        baseItem: { id: 'a', name: 'Ana antiga' },
-      }),
-      WriteConflictError,
-    );
+  it('does not treat extra live fields as a conflict on another youth', () => {
+    const live = {
+      revision: 1,
+      items: [
+        { id: 'a', name: 'Ana', extra: 1 } as Member & { extra: number },
+        { id: 'b', name: 'Beto' },
+      ],
+    };
+    const after = applyIdentifiedPatch(live, {
+      kind: 'upsert',
+      item: { id: 'a', name: 'Ana Clara' },
+      baseItem: { id: 'a', name: 'Ana' },
+    });
+    assert.equal(after.items.find(item => item.id === 'a')?.name, 'Ana Clara');
+    assert.equal(after.items.find(item => item.id === 'b')?.name, 'Beto');
+  });
+
+  it('applies a catalog upsert onto the live list without requiring an identical snapshot', () => {
+    const live = {
+      revision: 4,
+      items: [{ id: 'old', name: 'Roteiro antigo' }],
+    };
+    const after = applyIdentifiedPatch(live, {
+      kind: 'upsert',
+      item: { id: 'new', name: 'Rascunho manual' },
+    });
+    assert.equal(after.items.length, 2);
+    assert.ok(after.items.some(item => item.id === 'old'));
+    assert.ok(after.items.some(item => item.id === 'new'));
   });
 
   it('refuses a stale full-list write without replace/baseItems', () => {

@@ -90,9 +90,7 @@ export const saveMemberAsync = async (member: ScoutMember): Promise<void> => {
     if (!sectionId) throw new PersistenceError('Seção não definida para gravar o efetivo.', 'validation');
     try {
       await runExclusive(`firestore-members-${sectionId}`, async () => {
-        const current = await readSectionItems<ScoutMember>(sectionId, 'members', LEAN_MEMBERS);
-        const baseItem = current.find(item => item.id === toSave.id) || null;
-        await patchSectionItem(sectionId, 'members', { kind: 'upsert', item: toSave, baseItem });
+        await patchSectionItem(sectionId, 'members', { kind: 'upsert', item: toSave });
       });
     } catch (error) {
       throw firestoreWriteError(error, 'efetivo');

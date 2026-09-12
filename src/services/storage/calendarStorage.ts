@@ -1,6 +1,6 @@
 import { CalendarEvent } from '../../types';
 import { staleCopiesOfEvent } from '../../utils/calendarEvents';
-import { readAccessibleItems, readSectionItems, writeSectionItems } from '../firebase/sectionData';
+import { mutateSectionItems, readAccessibleItems, readSectionItems } from '../firebase/sectionData';
 import { isFirestoreBacked, readJsonDoc, writeJsonDoc } from './dualBackend';
 import { DATA_EVENTS, dispatchDataEvent } from './events';
 import { CALENDAR_FILENAME, CALENDAR_KEY } from './names';
@@ -9,8 +9,7 @@ import { runExclusive } from './writeQueue';
 
 const deleteEventFromSection = async (sectionId: string, id: string): Promise<void> => {
   await runExclusive(`firestore-calendar-${sectionId}`, async () => {
-    const current = await readSectionItems<CalendarEvent>(sectionId, 'calendar');
-    await writeSectionItems(sectionId, 'calendar', current.filter(item => item.id !== id), { baseItems: current });
+    await mutateSectionItems<CalendarEvent>(sectionId, 'calendar', live => live.filter(item => item.id !== id));
   });
 };
 
@@ -34,11 +33,11 @@ export const saveCalendarEventAsync = async (
     const sectionId = event.sectionId;
     if (!sectionId) throw new Error('Evento sem seção.');
     await runExclusive(`firestore-calendar-${sectionId}`, async () => {
-      const current = await readSectionItems<CalendarEvent>(sectionId, 'calendar');
-      const index = current.findIndex(item => item.id === event.id);
-      const updated = index >= 0 ? [...current] : [...current, event];
-      if (index >= 0) updated[index] = event;
-      await writeSectionItems(sectionId, 'calendar', updated, { baseItems: current });
+      await mutateSectionItems<CalendarEvent>(sectionId, 'calendar', live => {
+        const index = live.findIndex(item => item.id === event.id);
+        if (index < 0) return [...live, event];
+        return live.map((item, i) => (i === index ? event : item));
+      });
     });
     // Admin trocou a seção no edit: grava na nova e apaga a cópia da antiga.
     const accessible = await getCalendarEventsAsync();

@@ -257,6 +257,27 @@ export const writeSectionItems = async <T>(
   }
 };
 
+/** Lê a lista viva na transação, aplica o mutador e grava. Não usa snapshot pré-lido. */
+export const mutateSectionItems = async <T>(
+  sectionId: string,
+  docId: string,
+  mutate: (live: T[]) => T[],
+): Promise<void> => {
+  if (!sectionId) throw new PersistenceError('Seção não definida para gravar os dados.', 'validation');
+  const ref = doc(getFirestoreDb(), 'sections', sectionId, 'docs', docId);
+  await runTransaction(getFirestoreDb(), async tx => {
+    const snap = await tx.get(ref);
+    const current = parseRevisionedList<T>(snap.data() as Record<string, unknown> | undefined);
+    const nextItems = mutate(current.items);
+    if (nextItems === current.items) return;
+    const toWrite = docId === 'members'
+      ? (nextItems as unknown as ScoutMember[]).map(leanMemberForList)
+      : nextItems;
+    tx.set(ref, stripUndefined({ items: toWrite, revision: current.revision + 1 }));
+  });
+  void recordDataChange();
+};
+
 export const patchSectionItem = async <T extends { id: string }>(
   sectionId: string,
   docId: string,

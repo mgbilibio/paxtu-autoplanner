@@ -1,5 +1,5 @@
 import { ProgressLaunch } from '../../types';
-import { readAccessibleItems, readSectionItems, writeSectionItems } from '../firebase/sectionData';
+import { mutateSectionItems, readAccessibleItems, readSectionItems } from '../firebase/sectionData';
 import { isFirestoreBacked, readJsonDoc, writeJsonDoc } from './dualBackend';
 import { DATA_EVENTS, dispatchDataEvent } from './events';
 import { PROGRESS_LAUNCHES_FILENAME, PROGRESS_LAUNCHES_KEY } from './names';
@@ -43,8 +43,11 @@ export const saveProgressLaunchAsync = async (
   assertCanWriteSection(launch.sectionId);
   if (isFirestoreBacked()) {
     await runExclusive(`firestore-launches-${launch.sectionId}`, async () => {
-      const current = await readSectionItems<ProgressLaunch>(launch.sectionId, 'progressLaunches');
-      await writeSectionItems(launch.sectionId, 'progressLaunches', upsertLaunch(current, launch), { baseItems: current });
+      await mutateSectionItems<ProgressLaunch>(
+        launch.sectionId,
+        'progressLaunches',
+        live => upsertLaunch(live, launch),
+      );
     });
     dispatchDataEvent(DATA_EVENTS.PROGRESS_LAUNCHES_UPDATED);
     return;
@@ -63,8 +66,11 @@ export const deleteProgressLaunchAsync = async (id: string): Promise<void> => {
     assertCanWriteSection(launch?.sectionId);
     if (!launch) return;
     await runExclusive(`firestore-launches-${launch.sectionId}`, async () => {
-      const items = await readSectionItems<ProgressLaunch>(launch.sectionId, 'progressLaunches');
-      await writeSectionItems(launch.sectionId, 'progressLaunches', items.filter(item => item.id !== id), { baseItems: items });
+      await mutateSectionItems<ProgressLaunch>(
+        launch.sectionId,
+        'progressLaunches',
+        live => live.filter(item => item.id !== id),
+      );
     });
     dispatchDataEvent(DATA_EVENTS.PROGRESS_LAUNCHES_UPDATED);
     return;
