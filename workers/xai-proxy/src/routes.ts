@@ -14,11 +14,45 @@ const UPSTREAM: Record<string, string> = {
 
 export const MAX_BODY_BYTES = 512_000;
 
-export const allowedOrigin = (origin: string | null): string | null => {
+export const allowedOrigin = (
+  origin: string | null,
+  allowLocalhost = true,
+): string | null => {
   if (!origin) return null;
   if ((PRODUCTION_ORIGINS as readonly string[]).includes(origin)) return origin;
-  if (LOCAL_ORIGIN_PATTERN.test(origin)) return origin;
+  if (allowLocalhost && LOCAL_ORIGIN_PATTERN.test(origin)) return origin;
   return null;
+};
+
+export const readBodyWithLimit = async (
+  request: Request,
+  maxBytes: number,
+): Promise<{ ok: true; body: ArrayBuffer } | { ok: false; status: number; error: string }> => {
+  const declared = Number(request.headers.get('content-length') || '');
+  if (Number.isFinite(declared) && declared > maxBytes) {
+    return { ok: false, status: 413, error: 'corpo grande demais para o proxy' };
+  }
+  const reader = request.body?.getReader();
+  if (!reader) return { ok: true, body: new ArrayBuffer(0) };
+  const chunks: Uint8Array[] = [];
+  let size = 0;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    size += value.byteLength;
+    if (size > maxBytes) {
+      await reader.cancel();
+      return { ok: false, status: 413, error: 'corpo grande demais para o proxy' };
+    }
+    chunks.push(value);
+  }
+  const body = new Uint8Array(size);
+  let offset = 0;
+  for (const chunk of chunks) {
+    body.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+  return { ok: true, body: body.buffer };
 };
 
 export const resolveUpstream = (method: string, pathname: string): string | null => {

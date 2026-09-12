@@ -6,16 +6,29 @@ export const DEFAULT_XAI_OAUTH_PROXY_ORIGIN = 'https://paxtu-xai-proxy.margusbil
 export const XAI_PROXY_OVERRIDE_KEY = 'paxtu_xai_proxy_url';
 
 const AUTH_HOSTS = /^(auth|api|accounts)\.x\.ai$/i;
+const APPROVED_PROXY_HOSTS = [
+  'paxtu-xai-proxy.margusbilibio.workers.dev',
+] as const;
 
 const stripSlash = (raw: string): string => raw.trim().replace(/\/+$/, '');
 
-export const isUsableXaiProxyOrigin = (raw: string): boolean => {
+const isLocalHost = (hostname: string): boolean =>
+  hostname === 'localhost' || hostname === '127.0.0.1';
+
+export const isUsableXaiProxyOrigin = (raw: string, production = true): boolean => {
   const value = stripSlash(raw);
   if (!value) return false;
   try {
     const parsed = new URL(value);
-    if (!/^https?:$/i.test(parsed.protocol)) return false;
+    if (parsed.username || parsed.password) return false;
     if (AUTH_HOSTS.test(parsed.hostname)) return false;
+    if (isLocalHost(parsed.hostname)) {
+      return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+    }
+    if (parsed.protocol !== 'https:') return false;
+    if (production) {
+      return (APPROVED_PROXY_HOSTS as readonly string[]).includes(parsed.hostname);
+    }
     return true;
   } catch {
     return false;
@@ -46,11 +59,13 @@ const envProxy = (): string =>
 export const resolveXaiProxyOriginFrom = (input: {
   override?: string;
   envProxy?: string;
+  production?: boolean;
 }): string => {
+  const production = input.production !== false;
   const override = stripSlash(input.override || '');
-  if (isUsableXaiProxyOrigin(override)) return override;
+  if (isUsableXaiProxyOrigin(override, production)) return override;
   const fromEnv = stripSlash(input.envProxy || '');
-  if (isUsableXaiProxyOrigin(fromEnv)) return fromEnv;
+  if (isUsableXaiProxyOrigin(fromEnv, production)) return fromEnv;
   return DEFAULT_XAI_OAUTH_PROXY_ORIGIN;
 };
 

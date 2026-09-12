@@ -240,6 +240,12 @@ export interface AppConfig {
   /** Modelo preferido quando provider = xai-oauth. */
   xaiOAuthModel?: string;
   syncMode?: DataSyncMode; // local: máquina individual; sharedFolder: Google Drive/OneDrive/Dropbox.
+  /** Se true, chaves de IA coladas ficam no aparelho após logout. Tokens OAuth nunca. */
+  rememberAiCredentials?: boolean;
+  /** UID da conta dona das chaves lembradas. Outra conta no mesmo aparelho não herda. */
+  aiCredentialUid?: string;
+  /** Marca a migração única de contexto Ollama (não reaplicar 32k→262k). */
+  ollamaContextMigratedV2?: boolean;
 }
 
 /** Lançamento de progressão ligado a um evento da agenda (presença ≠ crédito editável). */
@@ -270,6 +276,7 @@ export interface ProgressLaunch {
   applies: ProgressLaunchApply[];
   createdAt: string;
   updatedAt: string;
+  status?: 'pending' | 'completed' | 'failed';
 }
 
 export interface CatalogAnnotation {
@@ -539,6 +546,8 @@ export interface CalendarEvent {
   branch: ScoutBranch;
   attendance: AttendanceRecord[];
   notes?: string;
+  /** Fotografia do roteiro no momento da reunião; editar o catálogo não reescreve isto. */
+  planSnapshot?: { planId?: string; theme: string };
 }
 
 // --- SPECIALTIES & CATALOG ---

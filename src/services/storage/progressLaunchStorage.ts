@@ -44,7 +44,7 @@ export const saveProgressLaunchAsync = async (
   if (isFirestoreBacked()) {
     await runExclusive(`firestore-launches-${launch.sectionId}`, async () => {
       const current = await readSectionItems<ProgressLaunch>(launch.sectionId, 'progressLaunches');
-      await writeSectionItems(launch.sectionId, 'progressLaunches', upsertLaunch(current, launch));
+      await writeSectionItems(launch.sectionId, 'progressLaunches', upsertLaunch(current, launch), { baseItems: current });
     });
     dispatchDataEvent(DATA_EVENTS.PROGRESS_LAUNCHES_UPDATED);
     return;
@@ -64,7 +64,7 @@ export const deleteProgressLaunchAsync = async (id: string): Promise<void> => {
     if (!launch) return;
     await runExclusive(`firestore-launches-${launch.sectionId}`, async () => {
       const items = await readSectionItems<ProgressLaunch>(launch.sectionId, 'progressLaunches');
-      await writeSectionItems(launch.sectionId, 'progressLaunches', items.filter(item => item.id !== id));
+      await writeSectionItems(launch.sectionId, 'progressLaunches', items.filter(item => item.id !== id), { baseItems: items });
     });
     dispatchDataEvent(DATA_EVENTS.PROGRESS_LAUNCHES_UPDATED);
     return;

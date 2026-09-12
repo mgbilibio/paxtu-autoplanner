@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { ScoutMember, TroopRole, ScoutBranch, ScoutSection } from '../types';
-import { getMembersAsync, hydrateMemberOfficialAsync, saveMemberAsync, deleteMemberAsync, getSectionsAsync } from '../services/storageService';
+import { getMembersAsync, hydrateMemberOfficialAsync, saveMemberAsync, archiveMemberAsync, getSectionsAsync, transferMemberAsync } from '../services/storageService';
+import { classifyPersistenceError } from '../services/persistenceResult';
 import { BRANCH_DOT_CLASS } from './profiles/StructureManager';
 
 import { MemberDashboard } from './MemberDashboard';
@@ -65,6 +66,8 @@ export const MembersManager: React.FC<Props> = ({ sectionId, isAdmin, isGlobal, 
 
   const [moveId, setMoveId] = useState<string | null>(null);
   const [moveTargetSection, setMoveTargetSection] = useState('');
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     loadMembers();
@@ -79,22 +82,28 @@ export const MembersManager: React.FC<Props> = ({ sectionId, isAdmin, isGlobal, 
 
   const loadMembers = async () => {
     setLoading(true);
-    const [memData, secData] = await Promise.all([
-      getMembersAsync(sectionId, { hydrateOfficial: false }),
-      getSectionsAsync(),
-    ]);
-    setMembers(memData);
-    setSections(secData);
-    if (secData.length > 0) {
-      const preferred = sectionId && secData.find(s => s.id === sectionId)
-        ? sectionId
-        : secData[0].id;
-      setTargetSectionId(prev => prev || preferred);
-      setMoveTargetSection(secData[0].id);
-      const sec = secData.find(s => s.id === (sectionId || preferred));
-      if (sec && !editId) setBranch(sec.branch);
+    setLoadError(null);
+    try {
+      const [memData, secData] = await Promise.all([
+        getMembersAsync(sectionId, { hydrateOfficial: false }),
+        getSectionsAsync(),
+      ]);
+      setMembers(memData);
+      setSections(secData);
+      if (secData.length > 0) {
+        const preferred = sectionId && secData.find(s => s.id === sectionId)
+          ? sectionId
+          : secData[0].id;
+        setTargetSectionId(prev => prev || preferred);
+        setMoveTargetSection(secData[0].id);
+        const sec = secData.find(s => s.id === (sectionId || preferred));
+        if (sec && !editId) setBranch(sec.branch);
+      }
+    } catch (error) {
+      setLoadError(classifyPersistenceError(error).message);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const resolvedSectionId = globalView ? targetSectionId : sectionId;
@@ -108,40 +117,22 @@ export const MembersManager: React.FC<Props> = ({ sectionId, isAdmin, isGlobal, 
     const member = members.find(m => m.id === moveId);
     if (!member) return;
 
-    const now = new Date().toISOString();
-    const prior = member.enrollments || [];
-    const closedPrior = prior.map(e =>
-      e.isActive ? { ...e, isActive: false, endDate: now } : e
-    );
-    const hadActive = prior.some(e => e.isActive);
-    const closingEntry = hadActive
-      ? []
-      : [{
-          sectionId: member.sectionId || '',
-          role: member.role,
-          startDate: member.admissionDate || now,
-          endDate: now,
-          isActive: false,
-        }];
-    const newActive = {
-      sectionId: moveTargetSection,
-      role: member.role,
-      startDate: now,
-      isActive: true,
-    };
-    const updatedMember = {
-      ...member,
-      sectionId: moveTargetSection,
-      enrollments: [...closedPrior, ...closingEntry, newActive],
-    };
-
-    await saveMemberAsync(updatedMember);
+    const fromSectionId = member.sectionId || '';
+    if (!fromSectionId) return;
+    const target = sections.find(item => item.id === moveTargetSection);
+    await transferMemberAsync({
+      memberId: member.id,
+      fromSectionId,
+      toSectionId: moveTargetSection,
+      toBranch: target?.branch,
+    });
     setMoveId(null);
     loadMembers();
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (submitting) return;
     const finalSectionId = resolvedSectionId;
     if (!finalSectionId) {
       setFormError('Erro: seção não definida.');
@@ -170,23 +161,29 @@ export const MembersManager: React.FC<Props> = ({ sectionId, isAdmin, isGlobal, 
       birthDate: birthDate || undefined,
     };
 
-    await saveMemberAsync(newMember);
-    const incomplete = isMemberProfileIncomplete(newMember);
-    setFormOk(
-      incomplete
-        ? `✓ ${trimmed} salvo. Você pode completar nascimento e outros dados depois.`
-        : `✓ ${trimmed} salvo.`
-    );
-    if (editId) {
-      resetForm();
-      setIsEditing(false);
-    } else {
-      // Mantém o formulário aberto para cadastro sequencial rápido
-      setName('');
-      setRegister('');
-      setBirthDate('');
+    setSubmitting(true);
+    try {
+      await saveMemberAsync(newMember);
+      const incomplete = isMemberProfileIncomplete(newMember);
+      setFormOk(
+        incomplete
+          ? `✓ ${trimmed} salvo. Você pode completar nascimento e outros dados depois.`
+          : `✓ ${trimmed} salvo.`
+      );
+      if (editId) {
+        resetForm();
+        setIsEditing(false);
+      } else {
+        setName('');
+        setRegister('');
+        setBirthDate('');
+      }
+      loadMembers();
+    } catch (error) {
+      setFormError(classifyPersistenceError(error).message);
+    } finally {
+      setSubmitting(false);
     }
-    loadMembers();
   };
 
   const handleBulkSubmit = async (e: React.FormEvent) => {
@@ -273,7 +270,7 @@ export const MembersManager: React.FC<Props> = ({ sectionId, isAdmin, isGlobal, 
   const getSectionName = (id?: string) => sections.find(s => s.id === id)?.name || '---';
 
   const handleDelete = async (id: string) => {
-    await deleteMemberAsync(id);
+    await archiveMemberAsync(id);
     setDeleteTarget(null);
     loadMembers();
   };
@@ -333,6 +330,9 @@ export const MembersManager: React.FC<Props> = ({ sectionId, isAdmin, isGlobal, 
 
   return (
     <div className="w-full max-w-none mx-auto animate-fade-in">
+      {loadError && (
+        <div className="mb-4 p-3 bg-red-50 text-red-800 text-sm font-bold rounded-lg border border-red-100">{loadError}</div>
+      )}
       <div className="flex flex-col lg:flex-row lg:justify-between lg:items-end gap-4 mb-6">
         <div className="min-w-0">
           <h2 className="text-2xl font-bold text-gray-800">👥 Efetivo da Seção</h2>
@@ -737,9 +737,9 @@ export const MembersManager: React.FC<Props> = ({ sectionId, isAdmin, isGlobal, 
 
       {deleteTarget && (
         <ConfirmDialog
-          title="Remover membro"
-          message="Remover este membro da seção? O histórico salvo em arquivos individuais não será apagado automaticamente."
-          confirmText="Remover"
+          title="Arquivar membro"
+          message="Arquivar este membro da seção? O histórico permanece consultável; exclusão definitiva é um procedimento à parte."
+          confirmText="Arquivar"
           danger
           onCancel={() => setDeleteTarget(null)}
           onConfirm={() => handleDelete(deleteTarget)}

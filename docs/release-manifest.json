@@ -1,0 +1,8 @@
+{
+  "appVersion": "2026.9.8",
+  "gitCommit": "main",
+  "frontend": "web-spa",
+  "firestoreRulesRevision": "2026.09.12-authz",
+  "worker": "paxtu-xai-proxy",
+  "dataSchema": "section-docs-revision-v1"
+}

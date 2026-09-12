@@ -92,7 +92,7 @@ export const savePlanToCatalog = async (
   if (isFirestoreBacked()) {
     await runExclusive(`firestore-catalog-${sectionId}`, async () => {
       const current = await readSectionItems<MeetingPlan>(sectionId!, 'catalog');
-      await writeSectionItems(sectionId!, 'catalog', upsertCatalog(current, toSave));
+      await writeSectionItems(sectionId!, 'catalog', upsertCatalog(current, toSave), { baseItems: current });
     });
     dispatchDataEvent(DATA_EVENTS.CATALOG_UPDATED);
     return toSave;
@@ -131,7 +131,7 @@ export const deleteFromCatalog = async (id: string): Promise<void> => {
     await Promise.all(sections.map(async section => {
       const current = await readSectionItems<MeetingPlan>(section.id, 'catalog');
       if (!current.some(plan => plan.id === id)) return;
-      await writeSectionItems(section.id, 'catalog', current.filter(plan => plan.id !== id));
+      await writeSectionItems(section.id, 'catalog', current.filter(plan => plan.id !== id), { baseItems: current });
     }));
     dispatchDataEvent(DATA_EVENTS.CATALOG_UPDATED);
     return;

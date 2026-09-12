@@ -3,7 +3,6 @@ main = "src/index.ts"
 compatibility_date = "2026-09-04"
 workers_dev = true
 
-# github.io e localhost/127.0.0.1 (qualquer porta) estão sempre liberados no código.
-# ALLOW_LOCALHOST ficou sem efeito; o campo existe só para não quebrar deploys antigos.
+# github.io sempre liberado. Localhost só se ALLOW_LOCALHOST não for "false".
 [vars]
-ALLOW_LOCALHOST = "1"
+ALLOW_LOCALHOST = "false"

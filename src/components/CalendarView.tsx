@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { CalendarEvent, GenerationSeed, MeetingPlan, ScoutMember, ScoutBranch, ScoutSection, ProgressLaunch } from '../types';
 import {
   getCalendarEventsAsync,
@@ -26,6 +26,9 @@ import { resolveSectionBranch } from '../services/firebase/sectionKind';
 import { NationalActivitiesPanel } from './NationalActivitiesPanel';
 import { NationalFichaSeedDialog } from './NationalFichaSeedDialog';
 import { NATIONAL_ACTIVITIES_2026 } from '../data/nationalActivities2026';
+import { isCivilToday, shiftVisibleMonth } from '../utils/civilDate';
+import { mergeHistoricalAttendance, shouldApplyEventLoad } from '../utils/calendarEvents';
+import { classifyPersistenceError } from '../services/persistenceResult';
 
 interface Props {
   sectionId?: string;
@@ -58,6 +61,7 @@ export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin, isGl
   // Id do evento aberto no modal. null = novo evento neste dia. Operamos sempre
   // por este id (e nao por events.find(date===) que pegava o primeiro do dia).
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
+  const openEventRef = useRef<string | null>(null);
 
   // Modal State
   const [showModal, setShowModal] = useState(false);
@@ -92,12 +96,10 @@ export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin, isGl
   }, [sectionId]);
 
   const loadData = async () => {
+    try {
     const [evtData, planResult, memData, secData] = await Promise.all([
         getCalendarEventsAsync(sectionId),
-        getCatalogAsync(sectionId).catch(err => {
-          console.error('Falha ao carregar roteiros do catálogo:', err);
-          return [] as MeetingPlan[];
-        }),
+        getCatalogAsync(sectionId),
         getMembersAsync(sectionId, { hydrateOfficial: false }), 
         getSectionsAsync()
     ]);
@@ -106,21 +108,24 @@ export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin, isGl
     setMembers(memData);
     setSections(secData);
     if (secData.length > 0) setTargetSectionId(prev => prev || sectionId || secData[0].id);
+    setError(null);
+    } catch (err) {
+      setError(classifyPersistenceError(err).message);
+    }
   };
 
   const getDaysInMonth = (year: number, month: number) => new Date(year, month + 1, 0).getDate();
   const getFirstDayOfMonth = (year: number, month: number) => new Date(year, month, 1).getDay(); 
 
   const changeMonth = (offset: number) => {
-    const newDate = new Date(currentDate);
-    newDate.setMonth(newDate.getMonth() + offset);
-    setCurrentDate(newDate);
+    setCurrentDate(visible => shiftVisibleMonth(visible, offset));
   };
 
   // Preenche o formulario do modal com os dados de um evento existente (por id).
   // Operamos sempre pelo id do evento (e nao por events.find(date===) que pegava
   // o primeiro do dia quando havia 2+ atividades na mesma data).
   const loadEventIntoForm = (existing: CalendarEvent) => {
+    openEventRef.current = existing.id;
     setSelectedEventId(existing.id);
     setSelectedPlanId(existing.planId || '');
     setEventNotes(existing.notes || '');
@@ -131,7 +136,9 @@ export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin, isGl
     setReviewCreditOpen(false);
     setError(null);
     setFeedback(null);
+    const requestId = existing.id;
     getProgressLaunchByEventId(existing.id).then(launch => {
+      if (!shouldApplyEventLoad(requestId, openEventRef.current)) return;
       setEventLaunch(launch);
       if (launch) {
         setBatchApplied(true);
@@ -143,6 +150,7 @@ export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin, isGl
   // Limpa o formulario para criar uma NOVA atividade no dia ja selecionado, sem
   // sobrescrever nenhum evento existente (selectedEventId volta a ser null).
   const startNewEvent = () => {
+    openEventRef.current = null;
     setSelectedEventId(null);
     setSelectedPlanId('');
     setEventNotes('');
@@ -194,18 +202,21 @@ export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin, isGl
     const targetSection = sections.find(s => s.id === finalSectionId);
     const plan = plans.find(p => p.id === selectedPlanId);
     
+    const previous = events.find(item => item.id === selectedEventId);
     const newEvent: CalendarEvent = {
         id: selectedEventId || Date.now().toString(),
         sectionId: finalSectionId,
         date: selectedDate,
         planId: selectedPlanId,
-        title: plan ? plan.theme : 'Atividade Personalizada',
+        title: plan ? plan.theme : (previous?.planSnapshot?.theme || 'Atividade Personalizada'),
         branch: targetSection ? targetSection.branch : branch,
         notes: eventNotes,
-        attendance: members.filter(m => m.sectionId === finalSectionId).map(m => ({
-            memberId: m.id,
-            present: attendance.includes(m.id)
-        }))
+        attendance: mergeHistoricalAttendance(
+          previous?.attendance,
+          members.filter(m => m.sectionId === finalSectionId).map(m => m.id),
+          attendance,
+        ),
+        planSnapshot: previous?.planSnapshot || (plan ? { planId: plan.id, theme: plan.theme } : undefined),
     };
 
     try {
@@ -254,8 +265,10 @@ export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin, isGl
         onConfirm: async () => {
             try {
               emitProcessProgress('Removendo atividade da agenda...');
-              const launch = eventLaunch || await getProgressLaunchByEventId(existing.id);
-              if (launch) await deleteProgressLaunchAndReverse(launch);
+              const launch = eventLaunch && eventLaunch.eventId === existing.id
+                ? eventLaunch
+                : await getProgressLaunchByEventId(existing.id);
+              if (launch && launch.eventId === existing.id) await deleteProgressLaunchAndReverse(launch);
               await deleteCalendarEventAsync(existing.id);
               emitProcessDone('Atividade removida da agenda.');
               setConfirmAction(null);
@@ -308,18 +321,24 @@ export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin, isGl
           return;
       }
 
-      const youthPresentIds = attendance.filter(id => {
+      if (!reviewCreditOpen) {
+        setReviewCreditedIds([]);
+        setReviewCreditOpen(true);
+        setFeedback('Marque quem conquistou os itens. Presença não concede crédito.');
+        return;
+      }
+      const youthPresentIds = reviewCreditedIds.filter(id => {
         const member = members.find(m => m.id === id);
         return !!member && isYouthMember(member);
       });
       if (youthPresentIds.length === 0) {
-          setError('Nenhum jovem presente. Chefe e Assistente não recebem progressão de blocos/POR.');
+          setError('Selecione pelo menos um jovem que conquistou os itens. Presença sozinha não credita.');
           return;
       }
 
       setConfirmAction({
           title: 'Lançar progressão',
-          message: `Aplicar ${codesToApply.size} item(s) para ${youthPresentIds.length} jovem(ns) presentes?\n\nItens: ${Array.from(codesToApply).join(', ')}\n\nDepois você pode REVISAR e excluir quem não atingiu a avaliação — a presença não muda.`,
+          message: `Aplicar ${codesToApply.size} item(s) para ${youthPresentIds.length} jovem(ns) selecionados na avaliação?\n\nItens: ${Array.from(codesToApply).join(', ')}\n\nA presença não muda.`,
           confirmText: 'Aplicar a todos os presentes',
           onConfirm: async () => {
               try {
@@ -397,7 +416,7 @@ export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin, isGl
                 
                 const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
                 const dayEvents = events.filter(e => e.date === dateStr);
-                const isToday = new Date().toISOString().slice(0, 10) === dateStr;
+                const isToday = isCivilToday(dateStr);
 
                 return (
                     <div
@@ -760,6 +779,39 @@ export const CalendarView: React.FC<Props> = ({ sectionId, branch, isAdmin, isGl
                     </div>
                 </div>
             </div>
+        </div>
+      )}
+
+      {reviewCreditOpen && !eventLaunch && (
+        <div className="fixed inset-0 bg-black/50 z-[70] flex items-center justify-center p-4" onClick={() => setReviewCreditOpen(false)}>
+          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full max-h-[85vh] overflow-hidden flex flex-col" onClick={e => e.stopPropagation()}>
+            <div className="p-4 border-b bg-indigo-50">
+              <h3 className="font-bold text-slate-800">Quem conquistou os itens?</h3>
+              <p className="text-xs text-slate-600 mt-1">
+                Presença não concede crédito. Marque só quem atingiu a avaliação.
+              </p>
+            </div>
+            <div className="p-4 overflow-y-auto flex-1 space-y-2">
+              {members.filter(m => attendance.includes(m.id) && isYouthMember(m)).map(m => (
+                <label key={m.id} className={`flex items-center gap-2 p-2 rounded border cursor-pointer ${reviewCreditedIds.includes(m.id) ? 'bg-green-50 border-green-200' : 'bg-slate-50 border-slate-200'}`}>
+                  <input
+                    type="checkbox"
+                    checked={reviewCreditedIds.includes(m.id)}
+                    onChange={e => {
+                      if (e.target.checked) setReviewCreditedIds(ids => [...ids, m.id]);
+                      else setReviewCreditedIds(ids => ids.filter(id => id !== m.id));
+                    }}
+                    className="w-4 h-4"
+                  />
+                  <span className="text-sm font-medium">{m.name}</span>
+                </label>
+              ))}
+            </div>
+            <div className="p-3 border-t flex justify-end gap-2 bg-gray-50">
+              <button type="button" onClick={() => setReviewCreditOpen(false)} className="px-3 py-2 text-sm text-slate-600 font-bold">Cancelar</button>
+              <button type="button" onClick={() => { void handleBatchProgression(); }} className="px-4 py-2 text-sm bg-indigo-600 text-white rounded-lg font-bold hover:bg-indigo-700">Aplicar crédito selecionado</button>
+            </div>
+          </div>
         </div>
       )}
 

@@ -147,12 +147,18 @@ const chatTimeoutFor = (model: string): number => {
 
 const chatTimeoutForMode = (model: string): number => chatTimeoutFor(model);
 
-const fetchWithTimeout = async (url: string, options: RequestInit = {}, timeoutMs = DEFAULT_TIMEOUT_MS): Promise<Response> => {
+export const fetchWithTimeout = async (url: string, options: RequestInit = {}, timeoutMs = DEFAULT_TIMEOUT_MS): Promise<Response> => {
   const ctrl = new AbortController();
+  const parent = options.signal;
+  const onAbort = () => ctrl.abort();
+  parent?.addEventListener('abort', onAbort);
   const timer = setTimeout(() => ctrl.abort(), timeoutMs);
   try {
-    return await fetch(url, { ...options, signal: ctrl.signal });
+    const response = await fetch(url, { ...options, signal: ctrl.signal });
+    const text = await response.text();
+    return new Response(text, { status: response.status, headers: response.headers });
   } finally {
+    parent?.removeEventListener('abort', onAbort);
     clearTimeout(timer);
   }
 };

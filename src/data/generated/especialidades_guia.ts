@@ -1,4 +1,4 @@
-import dataJson from './especialidades_guia.json';
+import dataJson from './especialidades_guia.json' with { type: 'json' };
 
 export interface RamoEspecialidade { id: number; nome: string; slug: string; }
 export interface EspecialidadeGuia { id: number; ramoId: number; nome: string; slug: string; nivel1: number; nivel2: number; nivel3: number; totalItens: number; fonte: string; }

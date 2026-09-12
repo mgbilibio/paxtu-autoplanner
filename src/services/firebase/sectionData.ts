@@ -4,6 +4,7 @@ import {
   doc,
   getDoc,
   getDocs,
+  runTransaction,
   setDoc,
 } from 'firebase/firestore';
 import { ScoutGroup, ScoutMember, ScoutSection } from '../../types';
@@ -22,6 +23,13 @@ import { firestoreWriteError, sanitizeMemberForFirestore } from './sanitizeFires
 import { withSectionKind } from './sectionKind';
 import { getFirebaseSessionUid } from './session';
 import { recordDataChange } from './accessLog';
+import { classifyPersistenceError, PersistenceError } from '../persistenceResult';
+import {
+  applyIdentifiedPatch,
+  parseRevisionedList,
+  replaceRevisionedList,
+  type ReplaceListOptions,
+} from '../storage/revisionList';
 
 const ITEMS_FIELD = 'items';
 
@@ -72,8 +80,8 @@ const readSectionDocument = async (sectionId: string): Promise<ScoutSection | nu
     const snap = await getDoc(doc(getFirestoreDb(), 'sections', sectionId));
     if (!snap.exists()) return null;
     return withSectionKind({ id: snap.id, ...snap.data() } as ScoutSection);
-  } catch {
-    return null;
+  } catch (error) {
+    throw classifyPersistenceError(error);
   }
 };
 
@@ -209,14 +217,15 @@ export const readSectionItems = async <T>(
   return hydrateMembersOfficial(sectionId, items as ScoutMember[]) as Promise<T[]>;
 };
 
-export const writeSectionItems = async <T>(sectionId: string, docId: string, items: T[]): Promise<void> => {
+export const writeSectionItems = async <T>(
+  sectionId: string,
+  docId: string,
+  items: T[],
+  options: ReplaceListOptions<T> = {},
+): Promise<void> => {
   if (!sectionId) {
     throw new Error('Seção não definida para gravar os dados.');
   }
-  // Firestore rejeita `undefined` e arrays aninhados. stripUndefined remove
-  // undefined; membros passam pelo sanitizer (historico Paxtu string[][]).
-  // official gordo vai para sections/{id}/members/{memberId}/official/*;
-  // docs/members fica só com o resumo (source + nomes/datas de etapa).
   const payload = docId === 'members'
     ? (items as ScoutMember[]).map(sanitizeMemberForFirestore)
     : items;
@@ -227,13 +236,68 @@ export const writeSectionItems = async <T>(sectionId: string, docId: string, ite
     if (docId === 'members') {
       await persistMembersOfficial(sectionId, payload as ScoutMember[]);
     }
-    await setDoc(
-      doc(getFirestoreDb(), 'sections', sectionId, 'docs', docId),
-      stripUndefined({ items: toWrite }),
-    );
+    const ref = doc(getFirestoreDb(), 'sections', sectionId, 'docs', docId);
+    const baseItems = options.baseItems
+      ? (docId === 'members'
+        ? (options.baseItems as ScoutMember[]).map(leanMemberForList) as T[]
+        : options.baseItems)
+      : options.baseItems;
+    await runTransaction(getFirestoreDb(), async tx => {
+      const snap = await tx.get(ref);
+      const current = parseRevisionedList<T>(snap.data() as Record<string, unknown> | undefined);
+      const next = replaceRevisionedList(current, toWrite as T[], {
+        ...options,
+        baseItems,
+      });
+      tx.set(ref, stripUndefined({ items: next.items, revision: next.revision }));
+    });
     void recordDataChange();
   } catch (error) {
     throw firestoreWriteError(error, docId === 'members' ? 'efetivo' : 'dados da seção');
+  }
+};
+
+export const patchSectionItem = async <T extends { id: string }>(
+  sectionId: string,
+  docId: string,
+  patch: { kind: 'upsert' | 'delete'; item: T; baseItem?: T | null },
+): Promise<void> => {
+  if (!sectionId) throw new PersistenceError('Seção não definida para gravar os dados.', 'validation');
+  const ref = doc(getFirestoreDb(), 'sections', sectionId, 'docs', docId);
+  await runTransaction(getFirestoreDb(), async tx => {
+    const snap = await tx.get(ref);
+    const current = parseRevisionedList<T>(snap.data() as Record<string, unknown> | undefined);
+    const next = applyIdentifiedPatch(current, patch);
+    const toWrite = docId === 'members'
+      ? (next.items as unknown as ScoutMember[]).map(leanMemberForList)
+      : next.items;
+    tx.set(ref, stripUndefined({ items: toWrite, revision: next.revision }));
+  });
+  if (docId === 'members' && patch.kind === 'upsert') {
+    await persistMembersOfficial(sectionId, [patch.item as unknown as ScoutMember]);
+  }
+  void recordDataChange();
+};
+
+export const copyMemberSubdocs = async (
+  memberId: string,
+  fromSectionId: string,
+  toSectionId: string,
+): Promise<void> => {
+  for (const col of MEMBER_SUBCOLLECTIONS) {
+    const docs = await listNamedSubcollection('sections', fromSectionId, 'members', memberId, col);
+    await Promise.all(Object.entries(docs).map(([docId, data]) =>
+      writeMemberSubdoc(toSectionId, memberId, col, docId, data),
+    ));
+  }
+};
+
+export const purgeMemberSubdocs = async (sectionId: string, memberId: string): Promise<void> => {
+  for (const col of MEMBER_SUBCOLLECTIONS) {
+    const docs = await listNamedSubcollection('sections', sectionId, 'members', memberId, col);
+    await Promise.all(Object.keys(docs).map(docId =>
+      deleteMemberSubdoc(sectionId, memberId, col, docId),
+    ));
   }
 };
 
@@ -287,6 +351,9 @@ export const writeMemberSubdoc = async (
   docId: string,
   value: object,
 ): Promise<void> => {
+  if (!sectionId || !memberId) {
+    throw new PersistenceError('Seção ou jovem ausente: a gravação não foi feita.', 'missing');
+  }
   await setDoc(
     doc(getFirestoreDb(), 'sections', sectionId, 'members', memberId, collectionName, docId),
     stripUndefined(value) as Record<string, unknown>,

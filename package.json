@@ -11,7 +11,9 @@
     "build": "tsc && vite build --mode web",
     "build:web": "tsc && vite build --mode web",
     "preview": "vite preview",
-    "test": "node --experimental-transform-types --test electron/securityGuards.test.ts electron/grokClient.test.ts src/services/firebase/groupBackupCrypto.test.ts src/services/storage/sectionList.test.ts src/services/firebase/sectionPackMatch.test.ts src/services/storage/localDataPolicy.test.ts src/services/roleService.test.ts src/utils/memberFilters.test.ts src/services/firebase/accessLog.test.ts src/utils/welcomePreference.test.ts src/utils/nationalActivities.test.ts src/utils/scoutEfemerides.test.ts src/utils/calendarEvents.test.ts src/services/manualMeetingPlanService.test.ts src/services/geminiModels.test.ts src/services/xaiOAuthConfig.test.ts src/services/xaiOAuthSession.test.ts src/services/aiLoginStatus.test.ts src/services/activityBriefs.test.ts src/services/ollamaModels.test.ts src/services/ollamaLocalAccess.test.ts src/services/ollamaList.test.ts src/services/webProductSurface.test.ts workers/xai-proxy/src/routes.test.ts"
+    "test": "node scripts/run-unit-tests.mjs",
+    "test:rules": "npx --yes firebase-tools emulators:exec --only firestore --project demo-scoutsauto \"node --experimental-transform-types --test src/services/firebase/firestore.rules.emulator.test.ts\"",
+    "audit:data": "python conhecimento/tools/audit_dados_operacionais.py --fail-on-findings"
   },
   "dependencies": {
     "@google/genai": "^1.0.0",
@@ -22,6 +24,7 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@firebase/rules-unit-testing": "^4.0.1",
     "@types/better-sqlite3": "^7.6.13",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
@@ -29,6 +32,7 @@
     "autoprefixer": "^10.4.19",
     "electron": "^39.8.5",
     "electron-builder": "^26.0.12",
+    "firebase-tools": "^14.27.0",
     "postcss": "^8.5.10",
     "rimraf": "^6.1.2",
     "tailwindcss": "^3.4.3",

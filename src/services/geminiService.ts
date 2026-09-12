@@ -115,7 +115,9 @@ const generateGeminiText = async (
   prompt: string,
   temperature = 0.5,
   extraParts?: GeminiInlinePart[],
+  signal?: AbortSignal,
 ): Promise<{ text: string; finishReason?: string }> => {
+  if (signal?.aborted) throw new Error('Geração cancelada.');
   const parts: Array<{ text: string } | GeminiInlinePart> = [{ text: prompt }, ...(extraParts || [])];
   const apiKey = resolveApiKey();
   try {
@@ -134,6 +136,7 @@ const generateGeminiText = async (
         `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(modelId)}:generateContent`,
         {
           method: 'POST',
+          signal,
           headers: {
             Authorization: `Bearer ${oauth}`,
             'Content-Type': 'application/json',

@@ -3,6 +3,7 @@ import {
   TwitterAuthProvider,
   createUserWithEmailAndPassword,
   onAuthStateChanged,
+  sendEmailVerification,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signInWithPopup,
@@ -40,6 +41,14 @@ import { readGroupWebSettings } from './groupSettings';
 import { setFirebaseSessionUid } from './session';
 import { recordDataChange, recordLastAccess } from './accessLog';
 import { parseIsoField, parseRecentAccesses } from './accessLogFormat';
+import {
+  BOOTSTRAP_NOT_AUTHORIZED_MESSAGE,
+  EMAIL_NOT_VERIFIED_MESSAGE,
+  INVITE_PRIVILEGE_MISMATCH_MESSAGE,
+  buildInviteUserPayload,
+  inviteSectionIds,
+  userCreateMatchesInvite,
+} from './authzPolicy';
 
 export {
   BACKEND_NOT_CONFIGURED_MESSAGE,
@@ -145,10 +154,8 @@ export const isAwaitingAccess = (profile: UserProfile | null | undefined): boole
   !!profile && (profile.pendingApproval === true || profile.rejected === true);
 
 const inviteFromData = (email: string, data: Record<string, unknown>): GroupPerson => {
-  const sectionIds = Array.isArray(data.sectionIds)
-    ? (data.sectionIds as unknown[]).filter((id): id is string => typeof id === 'string')
-    : (typeof data.sectionId === 'string' && data.sectionId ? [data.sectionId] : []);
-  const role = typeof data.role === 'string' ? data.role : 'Chefe de Seção';
+  const sectionIds = inviteSectionIds(data);
+  const role = typeof data.role === 'string' ? data.role : '';
   const awaitingApproval = data.pendingApproval === true;
   const rejected = data.rejected === true;
   const isAdmin = !awaitingApproval && !rejected && (data.isAdmin === true || roleIsAdmin(role));
@@ -206,8 +213,16 @@ const failClosed = async (authUser: User, message: string): Promise<never> => {
 };
 
 const claimBootstrap = async (user: User, email: string): Promise<UserProfile> => {
+  if (!user.emailVerified) throw new Error(EMAIL_NOT_VERIFIED_MESSAGE);
   const db = getFirestoreDb();
   const bootstrapRef = doc(db, 'meta', 'bootstrap');
+  const settingsSnap = await getDoc(doc(db, 'meta', 'settings'));
+  const allowed = settingsSnap.exists()
+    ? String((settingsSnap.data() as { allowedBootstrapUid?: string }).allowedBootstrapUid || '')
+    : '';
+  if (!allowed || allowed !== user.uid) {
+    throw new Error(BOOTSTRAP_NOT_AUTHORIZED_MESSAGE);
+  }
   const userRef = doc(db, 'users', user.uid);
   const displayName = (user.displayName || email.split('@')[0] || 'Administrador').trim();
 
@@ -228,6 +243,7 @@ const claimBootstrap = async (user: User, email: string): Promise<UserProfile> =
       isAdmin: true,
       active: true,
       pendingApproval: false,
+      rejected: false,
       createdAt: serverTimestamp(),
     });
   });
@@ -250,24 +266,38 @@ const claimInvite = async (user: User, email: string, invite: GroupPerson): Prom
   if (!invite.active) {
     throw new Error('Esta conta está desativada. Peça a um administrador.');
   }
+  if (!user.emailVerified) throw new Error(EMAIL_NOT_VERIFIED_MESSAGE);
+  const actor = { uid: user.uid, email, emailVerified: user.emailVerified === true };
+  const inviteRecord = {
+    email,
+    role: invite.role,
+    isAdmin: invite.isAdmin,
+    active: invite.active,
+    sectionIds: invite.sectionIds,
+  };
+  const privileges = buildInviteUserPayload(actor, inviteRecord, invite.displayName);
+  if (!userCreateMatchesInvite(privileges, inviteRecord, actor)) {
+    throw new Error(INVITE_PRIVILEGE_MISMATCH_MESSAGE);
+  }
   const db = getFirestoreDb();
   const userRef = doc(db, 'users', user.uid);
   const inviteRef = doc(db, 'invites', email);
   const displayName = (user.displayName || invite.displayName || email.split('@')[0]).trim();
-  const payload = {
-    email,
-    displayName,
-    role: invite.role,
-    sectionIds: invite.isAdmin ? [] : invite.sectionIds,
-    isAdmin: invite.isAdmin,
-    active: true,
-    pendingApproval: false,
-    rejected: false,
-    createdAt: serverTimestamp(),
-  };
-  await setDoc(userRef, payload);
-  await updateDoc(inviteRef, { uid: user.uid, displayName }).catch(async () => {
-    await setDoc(inviteRef, { ...invite, uid: user.uid, displayName, email }, { merge: true });
+  await runTransaction(db, async tx => {
+    const liveInvite = await tx.get(inviteRef);
+    if (!liveInvite.exists() || liveInvite.data()?.active !== true) {
+      throw new Error(NOT_INVITED_MESSAGE);
+    }
+    tx.set(userRef, {
+      ...privileges,
+      displayName,
+      createdAt: serverTimestamp(),
+    });
+    tx.update(inviteRef, {
+      active: false,
+      consumedByUid: user.uid,
+      consumedAt: serverTimestamp(),
+    });
   });
   return personToProfile({ ...invite, displayName, uid: user.uid, pending: false, awaitingApproval: false, rejected: false }, user.uid);
 };
@@ -345,7 +375,12 @@ export const resolveMembership = async (user: User): Promise<UserProfile> => {
       const profile = await claimBootstrap(user, email);
       return applySession(profile, user.uid);
     } catch (err) {
-      if (!(err instanceof Error && err.message === NOT_INVITED_MESSAGE)) {
+      const message = err instanceof Error ? err.message : '';
+      if (
+        message !== NOT_INVITED_MESSAGE
+        && message !== BOOTSTRAP_NOT_AUTHORIZED_MESSAGE
+        && message !== EMAIL_NOT_VERIFIED_MESSAGE
+      ) {
         throw err;
       }
     }
@@ -369,6 +404,9 @@ const translateAuthError = (err: unknown, fallback: string): Error => {
     || err.message.startsWith('A senha')
     || err.message.startsWith('Novos cadastros')
     || err.message.startsWith('Este e-mail já tem conta')
+    || err.message === EMAIL_NOT_VERIFIED_MESSAGE
+    || err.message === BOOTSTRAP_NOT_AUTHORIZED_MESSAGE
+    || err.message === INVITE_PRIVILEGE_MISMATCH_MESSAGE
   )) {
     return err;
   }
@@ -470,6 +508,13 @@ export const registerWithEmailPassword = async (
       await created.user.reload();
     } catch {
       // o documento do grupo ainda recebe o nome no primeiro write
+    }
+    try {
+      await sendEmailVerification(created.user, {
+        url: 'https://mgbilibio.github.io/paxtu-autoplanner/',
+      });
+    } catch {
+      // o cadastro segue; o convite só conclui com e-mail verificado
     }
     return await afterAuth(created.user);
   } catch (err) {

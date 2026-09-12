@@ -9,23 +9,16 @@ import { belongsInOllamaSelector } from './services/ollamaService';
 import { getAnnotations, saveAnnotation, getAppConfig, saveAppConfig, normalizePath, saveSectionAsync, getAllMemberBlocoStates, ensureWorkspaceMetadata, acquireSectionEditLock, releaseSectionEditLock, renewSectionEditLock, EditLock, getSectionsAsync, savePlanToCatalog, clearWebLocalOperationalData } from './services/storageService';
 import { getProgressionDetail } from './services/progressionDetailService';
 import { PlanDisplay } from './components/PlanDisplay';
-import { Catalog } from './components/Catalog';
 import { SetupWizard } from './components/SetupWizard';
 import { XaiOAuthPanel } from './components/XaiOAuthPanel';
 import { AiLoginStatusBar } from './components/AiLoginStatusBar';
 import { explainXaiWebAccessGap } from './services/xaiOAuthSession';
 import { notifyAiLoginChanged } from './services/aiLoginEvents';
 import { MembersManager } from './components/MembersManager';
-import { CalendarView } from './components/CalendarView';
-import { ReportsDashboard } from './components/reports/ReportsDashboard';
 import { LoginScreen } from './components/profiles/LoginScreen';
 import { ProfileConfig } from './components/profiles/ProfileConfig';
 import { WebAuthGate } from './components/profiles/WebAuthGate';
 import { WebAccountsPanel } from './components/profiles/WebAccountsPanel';
-import { CyclePlanner } from './components/CyclePlanner';
-import { SpecialtyEncyclopedia } from './components/SpecialtyEncyclopedia';
-import { ProgressaoBlocos2025 } from './components/ProgressaoBlocos2025';
-import { BibliotecaView } from './components/BibliotecaView';
 import { GlobalSearch } from './components/GlobalSearch';
 import { HelpPanel } from './components/HelpPanel';
 import { AccessLogPanel } from './components/profiles/AccessLogPanel';
@@ -50,12 +43,22 @@ import { PendingAccessScreen } from './components/profiles/PendingAccessScreen';
 import { LlmModelControls } from './components/LlmModelControls';
 import { PlanAttachmentsControl } from './components/PlanAttachmentsControl';
 import { PlanAttachment } from './services/planAttachments';
-import { clearGeminiOAuthAccessToken, tryRequestGeminiAccessToken } from './services/googleAuth';
+import { tryRequestGeminiAccessToken } from './services/googleAuth';
+import { clearAiSessionOnLogout } from './services/ai/sessionCredentials';
+import { cancelGenerationSnapshot, createGenerationSnapshot, isActiveGeneration as generationStillActive, listingMatchesProvider } from './services/planner/generationControl';
 import { ActivityEditor } from './components/ActivityEditor';
 import {
   buildManualMeetingPlan,
   validateManualActivities,
 } from './services/manualMeetingPlanService';
+
+const Catalog = React.lazy(() => import('./components/Catalog').then(m => ({ default: m.Catalog })));
+const CalendarView = React.lazy(() => import('./components/CalendarView').then(m => ({ default: m.CalendarView })));
+const ReportsDashboard = React.lazy(() => import('./components/reports/ReportsDashboard').then(m => ({ default: m.ReportsDashboard })));
+const CyclePlanner = React.lazy(() => import('./components/CyclePlanner').then(m => ({ default: m.CyclePlanner })));
+const SpecialtyEncyclopedia = React.lazy(() => import('./components/SpecialtyEncyclopedia').then(m => ({ default: m.SpecialtyEncyclopedia })));
+const ProgressaoBlocos2025 = React.lazy(() => import('./components/ProgressaoBlocos2025').then(m => ({ default: m.ProgressaoBlocos2025 })));
+const BibliotecaView = React.lazy(() => import('./components/BibliotecaView').then(m => ({ default: m.BibliotecaView })));
 
 function App() {
   const [appConfig, setAppConfig] = useState<AppConfig | null>(null);
@@ -118,7 +121,7 @@ function App() {
   const [llmProgress, setLlmProgress] = useState<string | null>(null);
   const [llmStartedAt, setLlmStartedAt] = useState<number | null>(null);
   const [llmElapsed, setLlmElapsed] = useState<number>(0);
-  const generationRef = useRef({ id: 0, cancelled: false });
+  const generationRef = useRef(createGenerationSnapshot(0, 'gemini', ''));
   const [htmlPreview, setHtmlPreview] = useState<{ fileName: string; html: string } | null>(null);
   // Providers: Gemini (1º) → Ollama local → Ollama Cloud → xAI OAuth/API
   const [providerInput, setProviderInput] = useState<LlmProviderId>('gemini');
@@ -380,6 +383,7 @@ function App() {
 
   const fetchModels = async () => {
       const providerId = normalizeProviderId(providerInput || appConfig?.llmProvider || 'gemini');
+      const requested = providerId;
       setIsRefreshingModels(true);
       try {
           if (providerId === 'ollama-cloud') persistOllamaDraft('cloud');
@@ -395,6 +399,8 @@ function App() {
               }
           }
           let models = await getProviderById(providerId).listModels();
+          const still = normalizeProviderId(providerInput || appConfig?.llmProvider || 'gemini');
+          if (!listingMatchesProvider(requested, still)) return;
           if (providerId === 'ollama-local' || providerId === 'ollama-cloud') {
               models = models.filter(belongsInOllamaSelector);
           }
@@ -620,7 +626,8 @@ function App() {
     }
     // Cancela qualquer geracao em voo e fecha modais/overlays para nao deixar
     // nada flutuando sobre a tela de login.
-    generationRef.current.cancelled = true;
+    cancelGenerationSnapshot(generationRef.current);
+    setAppConfig(clearAiSessionOnLogout(appConfig, currentUser?.id));
     setOwnEditLock(null);
     setEditLockConflict(null);
     setCurrentUser(null);
@@ -639,7 +646,6 @@ function App() {
     setView('LOGIN');
     if (isWebApp()) {
       void signOutGroup();
-      clearGeminiOAuthAccessToken();
     }
     reset();
   };
@@ -677,15 +683,16 @@ function App() {
       xaiApiKey: xaiKeyInput.trim(),
       xaiOAuthModel: prov === 'xai-oauth' ? selectedModel : appConfig.xaiOAuthModel,
       geminiModel: prov === 'gemini' ? selectedModel : appConfig.geminiModel,
-      ollamaGenerationContext: clampSettingNumber(ollamaContextInput, 262144, 32768, 1048576),
-      ollamaGenerationOutput: clampSettingNumber(ollamaOutputInput, 12288, 2048, 65536),
+      ollamaGenerationContext: clampSettingNumber(ollamaContextInput, appConfig.ollamaGenerationContext || 32768, 2048, 1048576),
+      ollamaGenerationOutput: clampSettingNumber(ollamaOutputInput, appConfig.ollamaGenerationOutput || 12288, 2048, 65536),
+      ollamaContextMigratedV2: true,
       syncMode: syncModeInput,
     };
     saveAppConfig(newConfig);
     await ensureWorkspaceMetadata(newConfig, currentUser?.name);
     setAppConfig(newConfig);
     setFolderInput(newConfig.dataFolder);
-    setOllamaContextInput(newConfig.ollamaGenerationContext || 262144);
+    setOllamaContextInput(newConfig.ollamaGenerationContext || 32768);
     setOllamaOutputInput(newConfig.ollamaGenerationOutput || 12288);
     setShowSettings(false);
     notifyAiLoginChanged();
@@ -754,10 +761,10 @@ function App() {
   // handleSaveAnnotation removed as unused
 
   const isActiveGeneration = (runId: number): boolean =>
-    generationRef.current.id === runId && !generationRef.current.cancelled;
+    generationStillActive(generationRef.current, runId);
 
   const cancelGeneration = () => {
-    generationRef.current.cancelled = true;
+    cancelGenerationSnapshot(generationRef.current);
     window.fileSystem?.cancelOllamaRequests?.();
     setLoading(false);
     setLlmStartedAt(null);
@@ -917,8 +924,8 @@ function App() {
       : scheduleDraft;
 
     const runId = Date.now();
-    generationRef.current = { id: runId, cancelled: false };
     const activeProvider = normalizeProviderId(appConfig?.llmProvider);
+    generationRef.current = createGenerationSnapshot(runId, activeProvider, selectedModel);
     if (activeProvider === 'gemini' && !hasGeminiCredentials()) {
       setError(`Configure a chave do Gemini em Configurações. ${GEMINI_KEY_HELP}`);
       showToast('Configure a chave do Gemini.', 'error');
@@ -1362,6 +1369,7 @@ function App() {
   };
 
   return (
+    <React.Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-slate-900 text-white">Carregando tela…</div>}>
     <div className="min-h-screen bg-gray-100 text-gray-800 font-sans flex flex-col relative">
       {showSearch && <GlobalSearch onClose={() => setShowSearch(false)} />}
       {showHelp && <HelpPanel onClose={() => setShowHelp(false)} currentView={view} />}
@@ -2172,6 +2180,7 @@ function App() {
       )}
 
     </div>
+    </React.Suspense>
   );
 }
 export default App;

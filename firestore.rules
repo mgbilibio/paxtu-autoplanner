@@ -7,6 +7,10 @@ service cloud.firestore {
         && request.auth.token.email.size() > 0;
     }
 
+    function emailVerified() {
+      return signedIn() && request.auth.token.email_verified == true;
+    }
+
     function authEmail() {
       return request.auth.token.email.lower();
     }
@@ -19,10 +23,21 @@ service cloud.firestore {
       return get(userPath()).data;
     }
 
+    function knownRoles() {
+      return ['Chefe de Seção', 'Assistente', 'Diretoria', 'Leitura/Auditoria', 'ADMINISTRADOR'];
+    }
+
+    function isKnownRole(data) {
+      return data.keys().hasAny(['role'])
+        && data.role is string
+        && data.role in knownRoles();
+    }
+
     function isActiveUser() {
       return signedIn()
         && exists(userPath())
-        && userDoc().active == true;
+        && userDoc().active == true
+        && isKnownRole(userDoc());
     }
 
     function isAdmin() {
@@ -31,6 +46,14 @@ service cloud.firestore {
 
     function isBoard() {
       return isActiveUser() && userDoc().role == 'Diretoria';
+    }
+
+    function isChief() {
+      return isActiveUser() && userDoc().role == 'Chefe de Seção';
+    }
+
+    function isAssistant() {
+      return isActiveUser() && userDoc().role == 'Assistente';
     }
 
     function isReadOnly() {
@@ -50,7 +73,13 @@ service cloud.firestore {
     }
 
     function canWriteSection(sectionId) {
-      return hasSection(sectionId) && !isReadOnly();
+      return hasSection(sectionId)
+        && !isReadOnly()
+        && (isAdmin() || isChief() || isAssistant());
+    }
+
+    function canHomologateSection(sectionId) {
+      return hasSection(sectionId) && (isAdmin() || isChief());
     }
 
     function bootstrapRef() {
@@ -65,8 +94,16 @@ service cloud.firestore {
       return /databases/$(database)/documents/invites/$(authEmail());
     }
 
+    function allowedBootstrapUid() {
+      return exists(settingsRef())
+        && get(settingsRef()).data.keys().hasAny(['allowedBootstrapUid'])
+        && get(settingsRef()).data.allowedBootstrapUid is string
+        && get(settingsRef()).data.allowedBootstrapUid == request.auth.uid;
+    }
+
     function isBootstrapClaim() {
-      return signedIn()
+      return emailVerified()
+        && allowedBootstrapUid()
         && (
           !exists(bootstrapRef())
           || getAfter(bootstrapRef()).data.uid == request.auth.uid
@@ -78,6 +115,27 @@ service cloud.firestore {
         && exists(inviteRef())
         && get(inviteRef()).data.active == true
         && get(inviteRef()).data.email == authEmail();
+    }
+
+    function inviteSectionIds() {
+      return get(inviteRef()).data.keys().hasAny(['sectionIds'])
+        && get(inviteRef()).data.sectionIds is list
+        ? get(inviteRef()).data.sectionIds
+        : [];
+    }
+
+    function invitePrivilegesMatch() {
+      return request.resource.data.email == authEmail()
+        && request.resource.data.role == get(inviteRef()).data.role
+        && request.resource.data.isAdmin == get(inviteRef()).data.isAdmin
+        && request.resource.data.active == true
+        && request.resource.data.pendingApproval == false
+        && request.resource.data.rejected == false
+        && (
+          get(inviteRef()).data.isAdmin == true
+            ? request.resource.data.sectionIds.size() == 0
+            : request.resource.data.sectionIds == inviteSectionIds()
+        );
     }
 
     function emptySectionIds(data) {
@@ -101,7 +159,7 @@ service cloud.firestore {
         && emptySectionIds(request.resource.data);
     }
 
-    function isSelfAdminLock() {
+    function isSelfAdminLock(uid) {
       return request.auth.uid == uid
         && resource.data.isAdmin == true
         && (
@@ -110,14 +168,34 @@ service cloud.firestore {
         );
     }
 
-    // lastAccessAt / lastDataChangeAt / recentAccesses: o próprio usuário ativo
-    // atualiza só esses campos (ISO). Sem senha, token ou PII extra.
-    function isSelfActivityUpdate() {
+    function isSelfActivityUpdate(uid) {
       return signedIn()
         && request.auth.uid == uid
         && resource.data.active == true
         && request.resource.data.diff(resource.data).affectedKeys()
           .hasOnly(['lastAccessAt', 'lastDataChangeAt', 'recentAccesses']);
+    }
+
+    function isInviteSelfConsume(emailKey) {
+      return emailVerified()
+        && emailKey == authEmail()
+        && resource.data.email == authEmail()
+        && (
+          (
+            resource.data.active == true
+            && request.resource.data.active == false
+            && request.resource.data.consumedByUid == request.auth.uid
+            && request.resource.data.diff(resource.data).affectedKeys()
+              .hasOnly(['active', 'consumedByUid', 'consumedAt'])
+          )
+          || (
+            resource.data.active == false
+            && resource.data.consumedByUid == request.auth.uid
+            && request.resource.data.consumedByUid == request.auth.uid
+            && request.resource.data.active == false
+            && request.resource.data.diff(resource.data).affectedKeys().size() == 0
+          )
+        );
     }
 
     match /meta/{docId} {
@@ -132,7 +210,8 @@ service cloud.firestore {
 
     match /invites/{emailKey} {
       allow read: if isAdmin() || (signedIn() && emailKey == authEmail());
-      allow create, update, delete: if isAdmin();
+      allow create, delete: if isAdmin();
+      allow update: if isAdmin() || isInviteSelfConsume(emailKey);
     }
 
     match /users/{uid} {
@@ -148,23 +227,25 @@ service cloud.firestore {
           && (
             isPendingSelfPayload()
             || (
-              request.resource.data.active == true
+              emailVerified()
               && hasActiveInvite()
+              && invitePrivilegesMatch()
             )
             || (
               isBootstrapClaim()
               && request.resource.data.active == true
               && request.resource.data.isAdmin == true
               && request.resource.data.role == 'ADMINISTRADOR'
+              && getAfter(bootstrapRef()).data.uid == request.auth.uid
             )
           )
         );
 
       allow update: if (
           isAdmin()
-          && !isSelfAdminLock()
+          && !isSelfAdminLock(uid)
         )
-        || isSelfActivityUpdate()
+        || isSelfActivityUpdate(uid)
         || (
           signedIn()
           && request.auth.uid == uid
@@ -188,12 +269,16 @@ service cloud.firestore {
 
       match /docs/{docId} {
         allow read: if hasSection(sectionId);
-        allow write: if canWriteSection(sectionId);
+        allow write: if docId.matches('homologation.*')
+          ? canHomologateSection(sectionId)
+          : canWriteSection(sectionId);
       }
 
-      match /members/{memberId}/{document=**} {
+      match /members/{memberId}/{col}/{docId} {
         allow read: if hasSection(sectionId);
-        allow write: if canWriteSection(sectionId);
+        allow write: if col == 'homologation'
+          ? canHomologateSection(sectionId)
+          : canWriteSection(sectionId);
       }
     }
   }

@@ -25,7 +25,7 @@ export const HELP_PRODUTO =
 export const ROTEIRO: HelpStep[] = [
   {
     titulo: '1. Entrar e liberar acesso',
-    texto: 'No site, cada pessoa cria a própria conta (Google ou e-mail e senha). O primeiro login vira administrador. Os demais ficam na fila até o admin liberar em Configurações → Acessos, com seção e papel. Pedido pendente não abre tropa nem alcateia.',
+    texto: 'No site, cada pessoa cria a própria conta (Google ou e-mail e senha). O administrador inicial é o UID colocado em meta/settings.allowedBootstrapUid. Os demais ficam na fila até o admin liberar em Configurações → Acessos, com seção e papel. Pedido pendente não abre tropa nem alcateia. Convite só conclui com e-mail verificado.',
   },
   {
     titulo: '2. Montar grupo, seção e efetivo',

@@ -15,6 +15,14 @@
 <body>
 <main>
   <h1>Historico de Versoes</h1>
+  <h2>20260912-revisao-authz-dados</h2>
+  <p>Revisão da main <code>5af8d76</code>: autorização Firestore, concorrência, transferência de jovens, progressão e CI antes do Pages.</p>
+  <ul>
+    <li><strong>Regras:</strong> convite amarra papel/seção; e-mail verificado; bootstrap só com <code>meta/settings.allowedBootstrapUid</code>; homologação só chefe/admin.</li>
+    <li><strong>Dados:</strong> escrita por item com revisão; transferência com journal retomável; importação sem fusão só por nome.</li>
+    <li><strong>CI:</strong> PR e Pages rodam testes, emulador de regras e auditoria UEB 2026.</li>
+    <li><strong>Worker:</strong> <code>ALLOW_LOCALHOST=false</code> em produção; corpo limitado antes de bufferizar.</li>
+  </ul>
   <h2>20260908-ollama-web</h2>
   <p>Ollama local e Ollama Cloud listam e geram no próprio site (GitHub Pages), sem aplicativo desktop.</p>
   <ul>

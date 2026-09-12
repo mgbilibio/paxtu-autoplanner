@@ -100,30 +100,36 @@ export const getPlanningCatalog = (branch: ScoutBranch, system: 'LEGACY_2020' | 
  */
 export const buildCatalogDigest = (
   catalog: CatalogCategory[],
-  options?: { maxItems?: number; maxDescLen?: number },
+  options?: { maxItems?: number; maxDescLen?: number; edition?: string },
 ): string => {
   const maxItems = options?.maxItems ?? 450;
   const maxDescLen = options?.maxDescLen ?? 90;
+  const edition = options?.edition || 'POR 2025+ / UEB 2026';
   const lines: string[] = [];
+  let total = 0;
   for (const cat of catalog) {
     const catName = (cat.name || 'Geral').slice(0, 40);
     for (const item of cat.items || []) {
-      if (lines.length >= maxItems) break;
+      total += 1;
+      if (lines.length >= maxItems) continue;
       const code = (item.code || '—').trim();
-      const desc = (item.description || '')
+      const guidance = String(item.guidance || item.description || '')
         .replace(/\s+/g, ' ')
-        .trim()
-        .slice(0, maxDescLen);
+        .trim();
+      const desc = guidance.slice(0, maxDescLen);
       if (!desc && code === '—') continue;
       lines.push(`${code} | ${catName} | ${desc}`);
     }
-    if (lines.length >= maxItems) break;
   }
   if (lines.length === 0) {
     return '(Catálogo vazio para este ramo — invente atividades coerentes sem códigos.)';
   }
+  const omitted = Math.max(0, total - lines.length);
+  const omittedNote = omitted > 0
+    ? ` ${omitted} item(ns) omitidos do resumo; não invente códigos fora desta lista.`
+    : '';
   return [
-    `CATÁLOGO DE CÓDIGOS (${lines.length} itens — use códigos EXATOS em progressionObjective quando couber):`,
+    `CATÁLOGO DE CÓDIGOS edição ${edition} (${lines.length} itens.${omittedNote} Use códigos EXATOS em progressionObjective quando couber):`,
     ...lines,
   ].join('\n');
 };

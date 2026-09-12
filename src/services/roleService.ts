@@ -25,7 +25,19 @@ export interface RolePermissions {
 const normalizeRole = (role?: string): string =>
   (role || '').trim().toLowerCase();
 
-export const getRoleLabel = (role?: string): UserRole => {
+const DENY_ALL: RolePermissions = {
+  canConfigure: false,
+  canEditYouth: false,
+  canPlan: false,
+  canRecordEvaluation: false,
+  canHomologate: false,
+  canViewReports: false,
+  canExport: false,
+  isGlobal: false,
+  isReadOnly: true,
+};
+
+export const getRoleLabel = (role?: string): UserRole | '' => {
   const normalized = normalizeRole(role);
   if (normalized === 'administrador') return 'ADMINISTRADOR';
   if (normalized === 'diretor' || normalized === 'diretoria') return 'Diretoria';
@@ -35,12 +47,16 @@ export const getRoleLabel = (role?: string): UserRole => {
   if (normalized === 'chefe' || normalized === 'chefe de seção' || normalized === 'chefe de secao') {
     return 'Chefe de Seção';
   }
-  return 'Chefe de Seção';
+  return '';
 };
 
 export const getPermissions = (user?: UserProfile | null): RolePermissions => {
-  const role = getRoleLabel(user?.role);
-  const isAdmin = role === 'ADMINISTRADOR';
+  if (!user || user.active === false || user.pendingApproval === true || user.rejected === true) {
+    return { ...DENY_ALL };
+  }
+  const role = getRoleLabel(user.role);
+  if (!role) return { ...DENY_ALL };
+  const isAdmin = role === 'ADMINISTRADOR' || user.isAdmin === true;
   const isChief = role === 'Chefe de Seção';
   const isAssistant = role === 'Assistente';
   const isBoard = role === 'Diretoria';

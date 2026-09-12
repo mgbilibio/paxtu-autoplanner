@@ -1,6 +1,10 @@
 # Diagnostico da base operacional
 
-Gerado em: 2026-07-09T18:59:47
+Gerado em: 2026-09-11T18:49:42
+
+## Edicao vigente
+
+UEB 2026 (produto atual) + progressao 2025+.
 
 ## Totais progressao 2025+
 
@@ -19,7 +23,7 @@ Gerado em: 2026-07-09T18:59:47
 | `reconhecimentos_ramo` | 2 |
 | `reconhecimento_requisitos` | 9 |
 
-## Totais especialidades
+## Totais especialidades (guia historico)
 
 | Tabela | Total |
 |---|---:|
@@ -75,7 +79,7 @@ Gerado em: 2026-07-09T18:59:47
 | 18 | Vínculos Saudáveis | Lobinho | 2 | 5 | 5 |
 | 18 | Vínculos Saudáveis | Escoteiro | 2 | 10 | 4 |
 
-## Especialidades por ramo
+## Especialidades por ramo (guia)
 
 | Ramo | Especialidades | Nivel 1 | Nivel 2 | Nivel 3 |
 |---|---:|---:|---:|---:|
@@ -87,8 +91,13 @@ Gerado em: 2026-07-09T18:59:47
 
 ## Achados automaticos
 
-- Especialidades sem requisitos: 0
-- Requisitos vazios: 0
+- Especialidades (guia) sem requisitos: 0
+- Requisitos vazios (guia): 0
 - Metas com minimo variavel invalido: 0
 - Metas sem pagina fonte: 0
 - Aliases cadastrados: 37
+- Edicao: UEB 2026
+- Origem: https://www.escoteiros.org.br/especialidades/
+- Especialidades UEB 2026: 208
+- Especialidades UEB 2026 sem requisitos: 0
+- Requisitos vazios UEB 2026: 0

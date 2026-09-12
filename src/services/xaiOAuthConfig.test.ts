@@ -87,17 +87,21 @@ test('DEV ou ausência de env não desviam o login para Vite/localhost', () => {
   assert.doesNotMatch(resolveXaiProxyOriginFrom({}), /__xai_oauth/);
 });
 
-test('override avançado ganha do padrão; env só se não houver override', () => {
+test('produção recusa HTTP externo, host não aprovado e URL com credenciais', () => {
+  assert.equal(isUsableXaiProxyOrigin('http://evil.example'), false);
+  assert.equal(isUsableXaiProxyOrigin('https://other.workers.dev'), false);
+  assert.equal(isUsableXaiProxyOrigin('https://user:pass@paxtu-xai-proxy.margusbilibio.workers.dev'), false);
+  assert.equal(isUsableXaiProxyOrigin('http://localhost:8787'), true);
   assert.equal(
     resolveXaiProxyOriginFrom({
       override: 'https://other.workers.dev',
       envProxy: 'https://custom.workers.dev',
     }),
-    'https://other.workers.dev',
+    DEFAULT_XAI_OAUTH_PROXY_ORIGIN,
   );
   assert.equal(
-    resolveXaiProxyOriginFrom({ envProxy: 'https://custom.workers.dev' }),
-    'https://custom.workers.dev',
+    resolveXaiProxyOriginFrom({ override: PAXTU_XAI_PROXY_ORIGIN }),
+    PAXTU_XAI_PROXY_ORIGIN,
   );
 });
 

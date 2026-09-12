@@ -77,7 +77,9 @@ export const saveMemberBlocoState = async (
   if (isFirestoreBacked()) {
     const member = await findMemberForLayout(stamped.memberId);
     assertCanWriteSection(member?.sectionId);
-    if (!member?.sectionId) return;
+    if (!member?.sectionId) {
+      throw new Error('Seção do jovem não encontrada: a progressão não foi gravada.');
+    }
     await writeMemberSubdoc(member.sectionId, stamped.memberId, 'bloco', String(stamped.blocoId), stamped);
     return;
   }

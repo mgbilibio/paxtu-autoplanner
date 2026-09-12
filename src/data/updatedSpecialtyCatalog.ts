@@ -1,10 +1,15 @@
-import { CatalogCategory, CatalogItem, ScoutBranch } from '../types';
+import type { CatalogCategory, CatalogItem } from '../types.ts';
+import { ScoutBranch } from '../types.ts';
 import {
   EspecialidadeGuia,
   RamoEspecialidade,
   RequisitoEspecialidade,
-} from './generated/especialidades_guia';
-import { ESPECIALIDADES_UEB_2026 } from './generated/especialidades_ueb_2026';
+} from './generated/especialidades_guia.ts';
+import { ESPECIALIDADES_UEB_2026 } from './generated/especialidades_ueb_2026.ts';
+import { specialtyLevelRuleFor } from './specialtyLevelRule.ts';
+
+export type { SpecialtyLevelRule } from './specialtyLevelRule.ts';
+export { specialtyLevelRuleFor } from './specialtyLevelRule.ts';
 
 export const UPDATED_SPECIALTY_PREFIX = 'ESP-UEB26-';
 
@@ -40,15 +45,9 @@ const ramoIdFor = (item: UebEspecialidade): number =>
   RAMO_ID_BY_PUBLICO_EIXO[`${item.publico}|${item.eixo}`] || 2699;
 
 const niveisFor = (item: UebEspecialidade): [number, number, number] => {
-  const total = item.requisitos.length;
-  const niveis = item.niveis as readonly { nome: string; itens: number }[];
-  const nivel1 = niveis.find(nivel => nivel.nome === 'Nível I')?.itens;
-  const nivel2 = niveis.find(nivel => nivel.nome === 'Nível II')?.itens;
-  const nivel3 = niveis.find(nivel => nivel.nome === 'Nível III')?.itens;
-  if (nivel1 || nivel2 || nivel3) {
-    return [nivel1 || total, nivel2 || total, nivel3 || 0];
-  }
-  return [1, total, 0];
+  const rule = specialtyLevelRuleFor(item);
+  if (rule.kind === 'unvalidated') return [0, 0, 0];
+  return [rule.nivel1, rule.nivel2, rule.nivel3];
 };
 
 export const UPDATED_RAMOS_ESPECIALIDADES: RamoEspecialidade[] = [
@@ -152,7 +151,9 @@ const publicoForBranch = (branch: ScoutBranch): string => {
 
 export const getUpdatedSpecialtyId = (code: string): number | null => {
   const match = code.match(/^ESP-UEB26-(\d+)(?:-N[1-3])?$/);
-  return match ? Number(match[1]) : null;
+  if (!match) return null;
+  const id = Number(match[1]);
+  return ESPECIALIDADES_UEB_2026.especialidades.some(item => item.id === id) ? id : null;
 };
 
 export const getUpdatedSpecialtyLevel = (

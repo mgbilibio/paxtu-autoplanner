@@ -14,9 +14,10 @@ import {
 } from './groupBackupCrypto';
 import { MEMBER_SUBCOLLECTIONS, listNamedSubcollection } from './sectionData';
 import { recordDataChange } from './accessLog';
+import { GROUP_BACKUP_KIND, GROUP_BACKUP_VERSION, preflightGroupBackup } from './backupPreflight';
+import { advanceCheckpoint, nextRestoreSlice, restoreFingerprint, type RestoreCheckpoint } from './restoreJournal';
 
-export const GROUP_BACKUP_KIND = 'scoutsauto-firestore-backup';
-export const GROUP_BACKUP_VERSION = 1;
+export { GROUP_BACKUP_KIND, GROUP_BACKUP_VERSION } from './backupPreflight';
 export const GROUP_BACKUP_MAX_BYTES = 20 * 1024 * 1024;
 const BATCH_LIMIT = 400;
 
@@ -124,7 +125,7 @@ const asDocMap = (value: unknown): FirestoreDocMap => {
 export const isGroupFirestoreBackup = (value: unknown): value is GroupFirestoreBackup => {
   if (!isPlainObject(value)) return false;
   if (value.kind !== GROUP_BACKUP_KIND) return false;
-  if (typeof value.version !== 'number' || value.version < 1) return false;
+  if (typeof value.version !== 'number' || value.version !== GROUP_BACKUP_VERSION) return false;
   return isPlainObject(value.users)
     && isPlainObject(value.invites)
     && isPlainObject(value.groups)
@@ -347,12 +348,15 @@ const collectWriteOps = (
   return ops;
 };
 
-const commitWrites = async (ops: Array<{ path: string[]; data: Record<string, unknown> }>): Promise<number> => {
+const commitWrites = async (
+  ops: Array<{ path: string[]; data: Record<string, unknown> }>,
+  checkpoint?: RestoreCheckpoint,
+): Promise<number> => {
   const db = getFirestoreDb();
-  let written = 0;
-  for (let i = 0; i < ops.length; i += BATCH_LIMIT) {
+  let written = checkpoint?.written || 0;
+  while (written < ops.length) {
     const batch = writeBatch(db);
-    const chunk = ops.slice(i, i + BATCH_LIMIT);
+    const chunk = nextRestoreSlice(ops, written, BATCH_LIMIT);
     let added = 0;
     for (const op of chunk) {
       const [first, ...rest] = op.path;
@@ -365,6 +369,7 @@ const commitWrites = async (ops: Array<{ path: string[]; data: Record<string, un
     }
     if (added > 0) await batch.commit();
     written += added;
+    if (checkpoint) Object.assign(checkpoint, advanceCheckpoint(checkpoint, added));
   }
   return written;
 };
@@ -398,10 +403,21 @@ export const parseGroupFirestoreBackupFile = async (
   return { backup: parsed, encrypted: false };
 };
 
-export const importGroupFirestoreBackup = async (backup: GroupFirestoreBackup): Promise<GroupBackupSummary> => {
+export const importGroupFirestoreBackup = async (
+  backup: GroupFirestoreBackup,
+  options?: { allowProjectMigration?: boolean; checkpoint?: RestoreCheckpoint },
+): Promise<GroupBackupSummary> => {
   const current = await assertCurrentUserIsAdmin();
   if (!isGroupFirestoreBackup(backup)) {
     throw new Error('Backup recusado: formato não reconhecido.');
+  }
+  const config = getFirebaseWebConfig();
+  const preflight = preflightGroupBackup(backup, { projectId: config?.projectId, uid: current.uid });
+  if (!preflight.ok) {
+    const projectOnly = preflight.errors.length === 1 && preflight.errors[0].includes('outro projeto');
+    if (!(projectOnly && options?.allowProjectMigration)) {
+      throw new Error(preflight.errors[0] || 'Backup recusado no preflight.');
+    }
   }
   const sanitized: GroupFirestoreBackup = {
     ...backup,
@@ -438,7 +454,11 @@ export const importGroupFirestoreBackup = async (backup: GroupFirestoreBackup): 
     };
   }
   const ops = collectWriteOps(sanitized, current);
-  await commitWrites(ops);
+  const fingerprint = restoreFingerprint(ops.length, sanitized.version);
+  const checkpoint = options?.checkpoint && options.checkpoint.fingerprint === fingerprint
+    ? options.checkpoint
+    : { fingerprint, written: 0 };
+  await commitWrites(ops, checkpoint);
   void recordDataChange();
   Object.values(DATA_EVENTS).forEach(eventName => dispatchDataEvent(eventName));
   return summarizeGroupBackup(sanitized);

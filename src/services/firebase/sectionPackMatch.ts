@@ -110,3 +110,47 @@ export const membersOfTargetSection = <T extends { sectionId?: string }>(
   const targetId = requireExplicitSectionId(sectionId);
   return members.filter(item => !item.sectionId || item.sectionId === targetId);
 };
+
+export const SUPPORTED_SECTION_PACK_VERSIONS = [1, 2] as const;
+
+export const isSupportedSectionPackVersion = (version: unknown): version is number =>
+  typeof version === 'number' && (SUPPORTED_SECTION_PACK_VERSIONS as readonly number[]).includes(version);
+
+export type MemberIdentity = {
+  id?: string;
+  name?: string;
+  registerNumber?: string;
+};
+
+export type MemberMatch<T extends MemberIdentity> =
+  | { kind: 'register' | 'id'; member: T }
+  | { kind: 'ambiguous-name'; candidates: T[] }
+  | { kind: 'none' };
+
+/** Identidade estável only. Nome nunca funde sozinho. */
+export const matchIncomingMember = <T extends MemberIdentity>(
+  incoming: T,
+  existing: T[],
+): MemberMatch<T> => {
+  const register = (incoming.registerNumber || '').trim();
+  if (register) {
+    const byRegister = existing.filter(item => (item.registerNumber || '').trim() === register);
+    if (byRegister.length === 1) return { kind: 'register', member: byRegister[0] };
+    return { kind: 'none' };
+  }
+  if (incoming.id) {
+    const byId = existing.filter(item => item.id === incoming.id);
+    if (byId.length === 1) {
+      const liveRegister = (byId[0].registerNumber || '').trim();
+      if (liveRegister && incoming.registerNumber && liveRegister !== (incoming.registerNumber || '').trim()) {
+        return { kind: 'none' };
+      }
+      return { kind: 'id', member: byId[0] };
+    }
+  }
+  const name = normalizePackName(incoming.name || '');
+  if (!name) return { kind: 'none' };
+  const byName = existing.filter(item => normalizePackName(item.name || '') === name);
+  if (byName.length > 0) return { kind: 'ambiguous-name', candidates: byName };
+  return { kind: 'none' };
+};

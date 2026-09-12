@@ -10,11 +10,16 @@ import {
   saveMemberProgressIndividual,
 } from './storageService';
 import { getOfficialSpecialtyId } from '../data/officialSpecialtyCatalog';
+import { assertProgressionCodes } from './progression/codeResolver';
+import { shouldReuseLaunch } from './progression/launchPolicy';
 import {
   deleteProgressLaunchAsync,
+  getProgressLaunchByEventId,
   getProgressLaunchesAsync,
   saveProgressLaunchAsync,
 } from './storage/progressLaunchStorage';
+
+export { shouldReuseLaunch } from './progression/launchPolicy';
 
 export interface BatchProgressionResult {
   blocos: number;
@@ -146,7 +151,8 @@ export const applyProgressionCodes = async (
     specialtyIdsStarted: [],
     specialtyIdsCredited: [],
   };
-  for (const code of codes) {
+  const validCodes = assertProgressionCodes(codes, branch);
+  for (const code of validCodes) {
     const block = await applyBlocoCode(memberId, branch, code);
     if (block.credited) {
       result.codesCredited.push(code);
@@ -307,10 +313,35 @@ export const createAndApplyProgressLaunch = async (params: {
   memberIds: string[];
   members: Array<{ id: string; branch: ScoutBranch; role?: TroopRole | string }>;
 }): Promise<ProgressLaunch> => {
+  const existingLaunch = await getProgressLaunchByEventId(params.eventId);
+  if (shouldReuseLaunch(existingLaunch, params.eventId)) return existingLaunch as ProgressLaunch;
   const youthIds = params.memberIds.filter(id => {
     const member = params.members.find(m => m.id === id);
     return !!member && isYouthMember(member);
   });
+  const uniqueCodes = [...new Set(params.codes)];
+  if (youthIds[0]) {
+    const sample = params.members.find(item => item.id === youthIds[0]);
+    if (sample) assertProgressionCodes(uniqueCodes, sample.branch);
+  }
+  const now = new Date().toISOString();
+  const launchId = newId();
+  const pending: ProgressLaunch = {
+    id: launchId,
+    eventId: params.eventId,
+    sectionId: params.sectionId,
+    date: params.date,
+    planId: params.planId,
+    planTheme: params.planTheme,
+    codes: uniqueCodes,
+    creditedMemberIds: [...youthIds],
+    excludedMemberIds: [],
+    applies: [],
+    createdAt: now,
+    updatedAt: now,
+    status: 'pending',
+  };
+  await saveProgressLaunchAsync(pending);
   const applies: ProgressLaunchApply[] = [];
   for (const memberId of youthIds) {
     const member = params.members.find(m => m.id === memberId);
@@ -330,20 +361,11 @@ export const createAndApplyProgressLaunch = async (params: {
       specialtyIdsCredited: result.specialtyIdsCredited,
     });
   }
-  const now = new Date().toISOString();
   const launch: ProgressLaunch = {
-    id: newId(),
-    eventId: params.eventId,
-    sectionId: params.sectionId,
-    date: params.date,
-    planId: params.planId,
-    planTheme: params.planTheme,
-    codes: params.codes,
-    creditedMemberIds: [...youthIds],
-    excludedMemberIds: [],
+    ...pending,
     applies,
-    createdAt: now,
-    updatedAt: now,
+    status: 'completed',
+    updatedAt: new Date().toISOString(),
   };
   await saveProgressLaunchAsync(launch);
   return launch;

@@ -2,6 +2,7 @@ import {
   allowedOrigin,
   corsHeaders,
   MAX_BODY_BYTES,
+  readBodyWithLimit,
   requiresUserAuthorization,
   resolveUpstream,
 } from './routes';
@@ -21,11 +22,14 @@ const jsonResponse = (body: unknown, status: number, origin?: string | null): Re
   return new Response(JSON.stringify(body), { status, headers });
 };
 
+const allowLocalhost = (environment: WorkerEnvironment): boolean =>
+  String(environment.ALLOW_LOCALHOST || 'true').toLowerCase() !== 'false';
+
 export default {
-  async fetch(request: Request, _environment: WorkerEnvironment): Promise<Response> {
+  async fetch(request: Request, environment: WorkerEnvironment): Promise<Response> {
     const url = new URL(request.url);
     const requestOrigin = request.headers.get('Origin');
-    const origin = allowedOrigin(requestOrigin);
+    const origin = allowedOrigin(requestOrigin, allowLocalhost(environment));
 
     if (request.method === 'OPTIONS') {
       if (!origin) {
@@ -53,11 +57,11 @@ export default {
       return jsonResponse({ error: 'Authorization Bearer obrigatório nesta rota' }, 401, origin);
     }
 
-    const requestBody = ['GET', 'HEAD'].includes(request.method)
-      ? undefined
-      : await request.arrayBuffer();
-    if (requestBody && requestBody.byteLength > MAX_BODY_BYTES) {
-      return jsonResponse({ error: 'corpo grande demais para o proxy' }, 413, origin);
+    let requestBody: ArrayBuffer | undefined;
+    if (!['GET', 'HEAD'].includes(request.method)) {
+      const limited = await readBodyWithLimit(request, MAX_BODY_BYTES);
+      if (!limited.ok) return jsonResponse({ error: limited.error }, limited.status, origin);
+      requestBody = limited.body;
     }
 
     const headers = new Headers({
@@ -68,15 +72,24 @@ export default {
     if (contentType) headers.set('Content-Type', contentType);
     if (incomingAuth) headers.set('Authorization', incomingAuth);
 
-    const response = await fetch(upstream, {
-      method: request.method,
-      headers,
-      body: requestBody,
-      redirect: 'manual',
-    });
-    const outputHeaders = new Headers(corsHeaders(origin));
-    outputHeaders.set('Cache-Control', 'no-store');
-    outputHeaders.set('Content-Type', response.headers.get('Content-Type') || 'application/json');
-    return new Response(response.body, { status: response.status, headers: outputHeaders });
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 20_000);
+    try {
+      const response = await fetch(upstream, {
+        method: request.method,
+        headers,
+        body: requestBody,
+        redirect: 'manual',
+        signal: controller.signal,
+      });
+      const outputHeaders = new Headers(corsHeaders(origin));
+      outputHeaders.set('Cache-Control', 'no-store');
+      outputHeaders.set('Content-Type', response.headers.get('Content-Type') || 'application/json');
+      return new Response(response.body, { status: response.status, headers: outputHeaders });
+    } catch {
+      return jsonResponse({ error: 'upstream xAI não respondeu' }, 504, origin);
+    } finally {
+      clearTimeout(timer);
+    }
   },
 };

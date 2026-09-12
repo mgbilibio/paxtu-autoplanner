@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import type { CalendarEvent } from '../types.ts';
-import { staleCopiesOfEvent } from './calendarEvents.ts';
+import { mergeHistoricalAttendance, shouldApplyEventLoad, staleCopiesOfEvent } from './calendarEvents.ts';
 
 describe('staleCopiesOfEvent', () => {
   it('finds the old section copy when admin changes section on edit', () => {
@@ -46,5 +46,26 @@ describe('staleCopiesOfEvent', () => {
       branch: 'Lobinho',
     };
     assert.deepEqual(staleCopiesOfEvent([saved, otherSection], saved), []);
+  });
+});
+
+describe('stale event load and historical attendance', () => {
+  it('ignores launch A when event B is open', () => {
+    assert.equal(shouldApplyEventLoad('evt-a', 'evt-b'), false);
+    assert.equal(shouldApplyEventLoad('evt-b', 'evt-b'), true);
+  });
+
+  it('keeps transferred youth on edit of an old meeting', () => {
+    const merged = mergeHistoricalAttendance(
+      [
+        { memberId: 'old', present: true },
+        { memberId: 'stay', present: true },
+      ],
+      ['stay', 'new'],
+      ['stay'],
+    );
+    assert.equal(merged.some(row => row.memberId === 'old' && row.present), true);
+    assert.equal(merged.find(row => row.memberId === 'stay')?.present, true);
+    assert.equal(merged.find(row => row.memberId === 'new')?.present, false);
   });
 });

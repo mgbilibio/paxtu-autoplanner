@@ -23,7 +23,17 @@ jobs:
         with:
           node-version: '22'
           cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
       - run: npm ci
+      - run: npm test
+      - run: npm run test:rules
+      - run: npm run audit:data
       - name: Build web SPA
         run: npm run build:web
         env:

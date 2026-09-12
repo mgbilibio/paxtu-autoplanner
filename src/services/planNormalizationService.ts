@@ -75,9 +75,12 @@ export const normalizeActivityForUse = (activity: Activity, index: number): Acti
 };
 
 export const normalizePlanForUse = (plan: MeetingPlan): MeetingPlan => {
+  if (!Array.isArray(plan?.activities)) {
+    throw new Error('Plano inválido: activities precisa ser uma lista.');
+  }
   const normalized: MeetingPlan = {
     ...plan,
-    activities: (plan.activities || []).map((a, i) => normalizeActivityForUse(a, i)),
+    activities: plan.activities.map((a, i) => normalizeActivityForUse(a, i)),
     studyGuide: plan.studyGuide || [],
     generationSeed: plan.generationSeed,
   };

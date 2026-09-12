@@ -64,11 +64,14 @@ export {
 } from './storage/userStorage';
 
 export {
+  archiveMemberAsync,
   deleteMemberAsync,
   findMemberForLayout,
   getMembersAsync,
   hydrateMemberOfficialAsync,
+  purgeMemberAsync,
   saveMemberAsync,
+  transferMemberAsync,
 } from './storage/memberStorage';
 
 export type { GetMembersOptions } from './storage/memberStorage';

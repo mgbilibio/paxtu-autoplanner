@@ -1,14 +1,18 @@
-"""Audita a base operacional 2025+ e gera relatorio Markdown."""
+"""Audita a base operacional 2025+ e a edicao UEB 2026 usada no produto."""
 
 from __future__ import annotations
 
+import argparse
+import json
 import sqlite3
+import sys
 from datetime import datetime
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 DB_PROGRESSAO = ROOT / "conhecimento" / "bd" / "progressao_2025.sqlite"
 DB_ESPECIALIDADES = ROOT / "conhecimento" / "bd" / "especialidades_guia.sqlite"
+UEB_JSON = ROOT / "conhecimento" / "especialidades" / "2026_ueb_atualizado" / "especialidades_ueb_2026.json"
 OUT = ROOT / "conhecimento" / "docs" / "diagnostico_base_operacional.md"
 
 
@@ -85,8 +89,9 @@ def especialidades_por_ramo(conn: sqlite3.Connection) -> list[str]:
     return linhas
 
 
-def achados(progressao: sqlite3.Connection, especialidades: sqlite3.Connection) -> list[str]:
+def achados_sqlite(progressao: sqlite3.Connection, especialidades: sqlite3.Connection) -> tuple[list[str], int]:
     itens: list[str] = []
+    blocking = 0
     sem_req = rows(especialidades, """
         SELECT e.nome
         FROM especialidades e
@@ -107,21 +112,73 @@ def achados(progressao: sqlite3.Connection, especialidades: sqlite3.Connection) 
     """)
     fonte_vazia = scalar(progressao, "SELECT COUNT(*) FROM bloco_ramo_meta WHERE TRIM(fonte_pagina) = ''")
     aliases = scalar(progressao, "SELECT COUNT(*) FROM especialidade_alias")
-    itens.append(f"- Especialidades sem requisitos: {len(sem_req)}")
-    itens.append(f"- Requisitos vazios: {req_vazios}")
+    itens.append(f"- Especialidades (guia) sem requisitos: {len(sem_req)}")
+    itens.append(f"- Requisitos vazios (guia): {req_vazios}")
     itens.append(f"- Metas com minimo variavel invalido: {min_invalido}")
     itens.append(f"- Metas sem pagina fonte: {fonte_vazia}")
     itens.append(f"- Aliases cadastrados: {aliases}")
-    return itens
+    blocking += req_vazios + min_invalido
+    return itens, blocking
 
 
-def main() -> None:
+def load_ueb(path: Path) -> dict:
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def achados_ueb2026(payload: dict) -> tuple[list[str], int]:
+    especialidades = payload.get("especialidades") or payload.get("items") or []
+    if not especialidades and isinstance(payload.get("categorias"), list):
+        # arquivo de categorias: tentar lista irma no mesmo objeto
+        especialidades = payload.get("especialidades") or []
+    itens = [
+        f"- Edicao: UEB 2026",
+        f"- Origem: {payload.get('fonte') or path_label(payload)}",
+        f"- Especialidades UEB 2026: {len(especialidades) if isinstance(especialidades, list) else 0}",
+    ]
+    empty = 0
+    missing = 0
+    if isinstance(especialidades, list):
+        for item in especialidades:
+            requisitos = item.get("requisitos") if isinstance(item, dict) else None
+            if not requisitos:
+                missing += 1
+                continue
+            for texto in requisitos:
+                if not str(texto or "").strip():
+                    empty += 1
+    itens.append(f"- Especialidades UEB 2026 sem requisitos: {missing}")
+    itens.append(f"- Requisitos vazios UEB 2026: {empty}")
+    blocking = empty + missing
+    return itens, blocking
+
+
+def path_label(payload: dict) -> str:
+    return str(payload.get("capturadoEm") or "UEB 2026")
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--ueb-json", type=Path, default=UEB_JSON)
+    parser.add_argument("--out", type=Path, default=OUT)
+    parser.add_argument("--fail-on-findings", action="store_true", default=True)
+    parser.add_argument("--allow-findings", action="store_true")
+    args = parser.parse_args(argv)
+    fail = args.fail_on_findings and not args.allow_findings
+
     progressao = sqlite3.connect(DB_PROGRESSAO)
     especialidades = sqlite3.connect(DB_ESPECIALIDADES)
+    sqlite_lines, sqlite_blocking = achados_sqlite(progressao, especialidades)
+    ueb_payload = load_ueb(args.ueb_json)
+    ueb_lines, ueb_blocking = achados_ueb2026(ueb_payload)
+    blocking = sqlite_blocking + ueb_blocking
     linhas = [
         "# Diagnostico da base operacional",
         "",
         f"Gerado em: {datetime.now().isoformat(timespec='seconds')}",
+        "",
+        "## Edicao vigente",
+        "",
+        "UEB 2026 (produto atual) + progressao 2025+.",
         "",
         "## Totais progressao 2025+",
         "",
@@ -132,7 +189,7 @@ def main() -> None:
             "reconhecimento_requisitos",
         ]),
         "",
-        "## Totais especialidades",
+        "## Totais especialidades (guia historico)",
         "",
         *tabela_totais(especialidades, ["ramos", "especialidades", "requisitos"]),
         "",
@@ -144,20 +201,26 @@ def main() -> None:
         "",
         *progresso_por_bloco(progressao),
         "",
-        "## Especialidades por ramo",
+        "## Especialidades por ramo (guia)",
         "",
         *especialidades_por_ramo(especialidades),
         "",
         "## Achados automaticos",
         "",
-        *achados(progressao, especialidades),
+        *sqlite_lines,
+        *ueb_lines,
         "",
     ]
-    OUT.write_text("\n".join(linhas), encoding="utf-8")
+    args.out.parent.mkdir(parents=True, exist_ok=True)
+    args.out.write_text("\n".join(linhas), encoding="utf-8")
     progressao.close()
     especialidades.close()
-    print(f"[OK] relatorio gerado: {OUT}")
+    if blocking > 0:
+        print(f"[FAIL] inconsistencias={blocking} relatorio={args.out}")
+        return 1 if fail else 0
+    print(f"[OK] relatorio gerado: {args.out}")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

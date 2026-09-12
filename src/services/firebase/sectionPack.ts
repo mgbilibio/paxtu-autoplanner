@@ -4,7 +4,19 @@ import { getMembersAsync, saveMemberAsync } from '../storage/memberStorage';
 import { getSectionsAsync, saveSectionAsync } from '../storage/sectionStorage';
 import { stripBackupSecrets } from './groupBackup';
 import { firestoreWriteError, sanitizeMemberForFirestore } from './sanitizeFirestoreMember';
-import { membersOfTargetSection, normalizePackName, requireExplicitSectionId } from './sectionPackMatch';
+import {
+  appendImportedId,
+  fingerprintPackMembers,
+  remainingImportItems,
+  type ImportCheckpoint,
+} from './importCheckpoint';
+import {
+  isSupportedSectionPackVersion,
+  matchIncomingMember,
+  membersOfTargetSection,
+  normalizePackName,
+  requireExplicitSectionId,
+} from './sectionPackMatch';
 
 export {
   canManageSectionPack,
@@ -50,6 +62,7 @@ export interface SectionPackMergeResult {
   members: ScoutMember[];
   created: number;
   updated: number;
+  ambiguous: Array<{ incoming: ScoutMember; candidates: ScoutMember[] }>;
 }
 
 const isPlainObject = (value: unknown): value is Record<string, unknown> =>
@@ -89,7 +102,7 @@ const asMembers = (value: unknown): ScoutMember[] => {
 export const isSectionPack = (value: unknown): value is SectionPack => {
   if (!isPlainObject(value)) return false;
   if (value.kind !== SECTION_PACK_KIND) return false;
-  if (typeof value.version !== 'number' || value.version < 1) return false;
+  if (!isSupportedSectionPackVersion(value.version)) return false;
   const members = asMembers(value.members);
   const nested = isPlainObject(value.section) ? asMembers(value.section.members) : [];
   return members.length > 0 || nested.length > 0 || isPlainObject(value.section);
@@ -136,19 +149,8 @@ export const summarizeSectionPack = (
 });
 
 const findMemberMatch = (incoming: ScoutMember, existing: ScoutMember[]): ScoutMember | undefined => {
-  const register = (incoming.registerNumber || '').trim();
-  if (register) {
-    const byRegister = existing.find(item => (item.registerNumber || '').trim() === register);
-    if (byRegister) return byRegister;
-  }
-  if (incoming.id) {
-    const byId = existing.find(item => item.id === incoming.id);
-    if (byId) return byId;
-  }
-  const name = normalizePackName(incoming.name || '');
-  if (name) {
-    return existing.find(item => normalizePackName(item.name || '') === name);
-  }
+  const match = matchIncomingMember(incoming, existing);
+  if (match.kind === 'register' || match.kind === 'id') return match.member;
   return undefined;
 };
 
@@ -174,6 +176,7 @@ export const mergeSectionPackMembers = (
   }));
   let created = 0;
   let updated = 0;
+  const ambiguous: SectionPackMergeResult['ambiguous'] = [];
   const used = new Set<string>();
 
   for (const raw of incoming) {
@@ -181,7 +184,12 @@ export const mergeSectionPackMembers = (
     if (!(incomingMember.name || '').trim() && !incomingMember.id && !(incomingMember.registerNumber || '').trim()) {
       continue;
     }
-    const match = findMemberMatch(incomingMember, next.filter(item => !used.has(item.id)));
+    const classified = matchIncomingMember(incomingMember, next.filter(item => !used.has(item.id)));
+    if (classified.kind === 'ambiguous-name') {
+      ambiguous.push({ incoming: incomingMember, candidates: classified.candidates });
+      continue;
+    }
+    const match = classified.kind === 'none' ? undefined : classified.member;
     if (match) {
       used.add(match.id);
       const idx = next.findIndex(item => item.id === match.id);
@@ -208,7 +216,7 @@ export const mergeSectionPackMembers = (
     created += 1;
   }
 
-  return { members: next.map(member => ({ ...member, sectionId: targetId })), created, updated };
+  return { members: next.map(member => ({ ...member, sectionId: targetId })), created, updated, ambiguous };
 };
 
 export const mergeSectionTeams = (existing: ScoutTeam[] | undefined, incoming: ScoutTeam[] | undefined): ScoutTeam[] => {
@@ -297,6 +305,7 @@ export const parseSectionPackFile = async (file: File): Promise<SectionPack> => 
 export const importSectionPack = async (
   pack: SectionPack,
   sectionId: string,
+  checkpoint?: ImportCheckpoint,
 ): Promise<SectionPackSummary> => {
   // Writes go only to this id. pack.section.id / current section / first section are never used.
   const targetId = requireExplicitSectionId(sectionId, 'importar');
@@ -307,11 +316,19 @@ export const importSectionPack = async (
 
   const currentMembers = await getMembersAsync(targetId);
   const merged = mergeSectionPackMembers(currentMembers, parsed.members, targetId);
+  if (merged.ambiguous.length > 0) {
+    throw new Error('Pacote recusado: homônimos sem registro/ID exigem decisão explícita.');
+  }
   if (merged.members.some(member => member.sectionId !== targetId)) {
     throw new Error('Recusado: o pacote tentaria gravar jovens em outra seção.');
   }
+  const fingerprint = fingerprintPackMembers(merged.members.map(item => item.id));
+  let progress: ImportCheckpoint = checkpoint && checkpoint.sectionId === targetId && checkpoint.fingerprint === fingerprint
+    ? checkpoint
+    : { sectionId: targetId, fingerprint, savedIds: [] };
+  const pending = remainingImportItems(merged.members, progress);
   try {
-    for (const member of merged.members) {
+    for (const member of pending) {
       const toSave = sanitizeMemberForFirestore({ ...member, sectionId: targetId });
       if (toSave.sectionId !== targetId) {
         throw new Error('Recusado: o pacote tentaria gravar jovens em outra seção.');
@@ -320,6 +337,7 @@ export const importSectionPack = async (
       if (!wasExisting || JSON.stringify(currentMembers.find(item => item.id === toSave.id)) !== JSON.stringify(toSave)) {
         await saveMemberAsync(toSave);
       }
+      progress = appendImportedId(progress, toSave.id);
     }
   } catch (error) {
     throw firestoreWriteError(error, 'pacote da seção');

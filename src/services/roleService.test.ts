@@ -8,6 +8,7 @@ const user = (role: string): UserProfile => ({
   name: 'Teste',
   sectionId: 'tropa',
   role,
+  active: true,
 });
 
 describe('getPermissions', () => {
@@ -42,6 +43,23 @@ describe('getPermissions', () => {
     assert.equal(perms.isGlobal, false);
     assert.equal(perms.isReadOnly, true);
     assert.equal(perms.canEditYouth, false);
+  });
+});
+
+describe('deny by default', () => {
+  it('denies unknown, empty, pending and inactive roles', () => {
+    assert.equal(getRoleLabel(''), '');
+    assert.equal(getRoleLabel('visitante'), '');
+    assert.equal(getPermissions(user('')).canEditYouth, false);
+    assert.equal(getPermissions(user('xyz')).canHomologate, false);
+    assert.equal(getPermissions({ ...user('Assistente'), pendingApproval: true }).canPlan, false);
+    assert.equal(getPermissions({ ...user('Chefe de Seção'), active: false }).canEditYouth, false);
+  });
+
+  it('lets chefe homologate and blocks assistant homologation', () => {
+    assert.equal(getPermissions(user('Chefe de Seção')).canHomologate, true);
+    assert.equal(getPermissions(user('Assistente')).canHomologate, false);
+    assert.equal(getPermissions(user('Assistente')).canRecordEvaluation, true);
   });
 });
 

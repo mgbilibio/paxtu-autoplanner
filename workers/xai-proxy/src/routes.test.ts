@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
-import { allowedOrigin, requiresUserAuthorization, resolveUpstream } from './routes.ts';
+import { allowedOrigin, readBodyWithLimit, requiresUserAuthorization, resolveUpstream } from './routes.ts';
 
 const read = (fromHere: string): string =>
   readFileSync(fileURLToPath(new URL(fromHere, import.meta.url)), 'utf8');
@@ -24,6 +24,19 @@ test('libera a origem publicada do Paxtu e qualquer localhost', () => {
   assert.equal(allowedOrigin('https://socialkids.web.app'), null);
   assert.equal(allowedOrigin('https://socialkids.firebaseapp.com'), null);
   assert.equal(allowedOrigin('https://socialkids-xai-proxy.margusbilibio.workers.dev'), null);
+});
+
+test('ALLOW_LOCALHOST=false recusa origem local e o limite de corpo corta cedo', async () => {
+  assert.equal(allowedOrigin('http://localhost:5173', false), null);
+  assert.equal(allowedOrigin('https://mgbilibio.github.io', false), 'https://mgbilibio.github.io');
+  const huge = new Request('https://proxy.test/oauth/device', {
+    method: 'POST',
+    headers: { 'content-length': '999999' },
+    body: 'x',
+  });
+  const limited = await readBodyWithLimit(huge, 512_000);
+  assert.equal(limited.ok, false);
+  if (!limited.ok) assert.equal(limited.status, 413);
 });
 
 test('encaminha device, token, userinfo, modelos e chat — e nada além disso', () => {

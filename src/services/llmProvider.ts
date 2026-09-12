@@ -85,8 +85,11 @@ export const getProviderById = (id: LlmProviderId): LlmProvider => {
   return geminiProvider;
 };
 
-export const generateScoutPlanRouted = (params: Parameters<LlmProvider['generateScoutPlan']>[0]) =>
-  getActiveProvider().generateScoutPlan(params);
+export const generateScoutPlanRouted = async (params: Parameters<LlmProvider['generateScoutPlan']>[0]) => {
+  const plan = await getActiveProvider().generateScoutPlan(params);
+  const { assertPlanJson } = await import('./planSchema');
+  return assertPlanJson(plan, params.branch);
+};
 
 export const generateScoutActivityRouted = (params: GenerateScoutActivityParams) =>
   getActiveProvider().generateScoutActivity(params);

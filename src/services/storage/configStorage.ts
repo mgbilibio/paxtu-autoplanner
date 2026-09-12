@@ -1,5 +1,5 @@
-import { AppConfig } from '../../types';
-import { DEFAULT_OLLAMA_LOCAL_URL, normalizeOllamaBaseUrl } from '../ollamaUrlSecurity';
+import type { AppConfig } from '../../types.ts';
+import { DEFAULT_OLLAMA_LOCAL_URL, normalizeOllamaBaseUrl } from '../ollamaUrlSecurity.ts';
 
 export const CONFIG_KEY = 'PAXTU_AUTOPLANNER_CONFIG';
 
@@ -12,26 +12,39 @@ export const normalizePath = (path: string): string => {
   return normalized;
 };
 
-const DEFAULT_OLLAMA_CONTEXT = 262_144;
+const DEFAULT_OLLAMA_CONTEXT = 32_768;
 const DEFAULT_OLLAMA_OUTPUT = 12_288;
+
+export const migrateOllamaContext = (parsed: AppConfig): AppConfig => {
+  let ctx = parsed.ollamaGenerationContext;
+  let out = parsed.ollamaGenerationOutput;
+  if (parsed.ollamaContextMigratedV2) {
+    return {
+      ...parsed,
+      ollamaGenerationContext: ctx ?? DEFAULT_OLLAMA_CONTEXT,
+      ollamaGenerationOutput: out ?? DEFAULT_OLLAMA_OUTPUT,
+    };
+  }
+  if (ctx == null) ctx = DEFAULT_OLLAMA_CONTEXT;
+  if (out == null || out === 12000) out = DEFAULT_OLLAMA_OUTPUT;
+  return {
+    ...parsed,
+    ollamaGenerationContext: ctx,
+    ollamaGenerationOutput: out,
+    ollamaContextMigratedV2: true,
+  };
+};
 
 export const getAppConfig = (): AppConfig | null => {
   const raw = localStorage.getItem(CONFIG_KEY);
   if (!raw) return null;
   try {
     const parsed = JSON.parse(raw) as AppConfig;
-    // Migração suave: configs antigas com 32k/12k sobem para o piso cloud-friendly
-    // só quando o valor está ausente ou claramente no default antigo.
-    let ctx = parsed.ollamaGenerationContext;
-    let out = parsed.ollamaGenerationOutput;
-    if (ctx == null || ctx === 32768 || ctx === 4096) ctx = DEFAULT_OLLAMA_CONTEXT;
-    if (out == null || out === 12000) out = DEFAULT_OLLAMA_OUTPUT;
+    const migrated = migrateOllamaContext(parsed);
     return {
-      ...parsed,
+      ...migrated,
       dataFolder: normalizePath(parsed.dataFolder || ''),
       ollamaBaseUrl: normalizeOllamaBaseUrl(parsed.ollamaBaseUrl) || DEFAULT_OLLAMA_LOCAL_URL,
-      ollamaGenerationContext: ctx,
-      ollamaGenerationOutput: out,
       syncMode: parsed.syncMode === 'sharedFolder' ? 'sharedFolder' : 'local',
     };
   } catch (e) {

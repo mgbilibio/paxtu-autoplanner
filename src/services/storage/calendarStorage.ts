@@ -10,7 +10,7 @@ import { runExclusive } from './writeQueue';
 const deleteEventFromSection = async (sectionId: string, id: string): Promise<void> => {
   await runExclusive(`firestore-calendar-${sectionId}`, async () => {
     const current = await readSectionItems<CalendarEvent>(sectionId, 'calendar');
-    await writeSectionItems(sectionId, 'calendar', current.filter(item => item.id !== id));
+    await writeSectionItems(sectionId, 'calendar', current.filter(item => item.id !== id), { baseItems: current });
   });
 };
 
@@ -38,7 +38,7 @@ export const saveCalendarEventAsync = async (
       const index = current.findIndex(item => item.id === event.id);
       const updated = index >= 0 ? [...current] : [...current, event];
       if (index >= 0) updated[index] = event;
-      await writeSectionItems(sectionId, 'calendar', updated);
+      await writeSectionItems(sectionId, 'calendar', updated, { baseItems: current });
     });
     // Admin trocou a seção no edit: grava na nova e apaga a cópia da antiga.
     const accessible = await getCalendarEventsAsync();
